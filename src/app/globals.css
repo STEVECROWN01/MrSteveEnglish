@@ -1,0 +1,467 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ============================================================
+   DESIGN SYSTEM — STEVENS AKPOVI, COACH D'ANGLAIS
+   Source de vérité : DIRECTION-ARTISTIQUE.md (§5 palette, §6 typo,
+   §7 design system, §13 motion, §16 accessibilité, §19 handoff)
+   ============================================================ */
+
+@theme inline {
+  /* — Mapping shadcn (compatibilité composants ui/) — */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-public-sans);
+  --font-display: var(--font-fraunces);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+
+  /* — Tokens de marque (DA §19 Developer Handoff, verrouillés) — */
+  --color-blue-deep: #1800AC;        /* Bleu Profond — couleur principale */
+  --color-red-button: #ff0000;       /* Rouge — boutons CTA uniquement */
+  --color-grey-soft: #f2f2f5;        /* fonds de cartes secondaires, séparateurs */
+  --color-grey-line: #e5e5ea;        /* bordures de cards */
+  --color-grey-mid: #6b6b75;         /* texte secondaire / légendes */
+  --color-success: #3e7a5c;          /* état validé, usage fonctionnel */
+
+  --radius-card: 12px;
+  --radius-control: 8px;
+}
+
+:root {
+  /* Rayons verrouillés (DA §7) : 12px cards, 8px boutons/inputs, 999px badges */
+  --radius: 12px;
+
+  /* Variables shadcn alignées sur la palette verrouillée */
+  --background: #ffffff;
+  --foreground: #000000; /* Noir pur — texte de corps sur fond blanc, uniquement */
+  --card: #ffffff;
+  --card-foreground: #000000;
+  --popover: #ffffff;
+  --popover-foreground: #000000;
+  --primary: #1800ac;
+  --primary-foreground: #ffffff;
+  --secondary: #f2f2f5;
+  --secondary-foreground: #000000;
+  --muted: #f2f2f5;
+  --muted-foreground: #6b6b75;
+  --accent: #f2f2f5;
+  --accent-foreground: #1800ac;
+  --destructive: #ff0000;
+  --border: #e5e5ea;
+  --input: #e5e5ea;
+  --ring: #1800ac; /* Focus ring clavier — Bleu Profond, jamais supprimé */
+
+  /* Alias directs du handoff DA §19 */
+  --blue-deep: #1800ac;
+  --white: #ffffff;
+  --red-button: #ff0000;
+  --black-text: #000000;
+  --grey-card-bg: #f2f2f5;
+  --grey-border: #e5e5ea;
+  --grey-secondary-text: #6b6b75;
+  --success: #3e7a5c;
+
+  /* Motion — langage verrouillé (DA §13) */
+  --ease-std: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-micro: 240ms;
+  --dur-reveal: 600ms;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-public-sans), system-ui, -apple-system, sans-serif;
+    font-size: 17px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  @media (max-width: 767px) {
+    body {
+      font-size: 16px;
+      line-height: 1.55;
+    }
+  }
+  /* Focus clavier visible partout — anneau Bleu Profond 2px, offset 2px (DA §7/§16) */
+  :focus-visible {
+    outline: 2px solid var(--blue-deep);
+    outline-offset: 2px;
+  }
+  .on-dark :focus-visible {
+    outline-color: #ffffff;
+  }
+  ::selection {
+    background: var(--blue-deep);
+    color: #ffffff;
+  }
+}
+
+@layer components {
+  /* — Typographie (DA §6, tailles exactes desktop/mobile via clamp) — */
+  .t-h1 {
+    font-family: var(--font-fraunces), Georgia, serif;
+    font-weight: 500;
+    font-size: clamp(2.25rem, 1.55rem + 3.4vw, 4rem); /* 36 → 64px */
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+  }
+  .t-h2 {
+    font-family: var(--font-fraunces), Georgia, serif;
+    font-weight: 500;
+    font-size: clamp(1.75rem, 1.42rem + 1.7vw, 2.625rem); /* 28 → 42px */
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+  }
+  .t-h3 {
+    font-family: var(--font-fraunces), Georgia, serif;
+    font-weight: 500;
+    font-size: clamp(1.375rem, 1.22rem + 0.8vw, 1.75rem); /* 22 → 28px */
+    line-height: 1.2;
+  }
+  .t-body {
+    font-size: clamp(1rem, 0.95rem + 0.28vw, 1.125rem); /* 16 → 18px */
+    line-height: 1.6;
+  }
+  @media (max-width: 767px) {
+    .t-body {
+      line-height: 1.55;
+    }
+  }
+  .t-quote {
+    font-family: var(--font-fraunces), Georgia, serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(1.1875rem, 1.1rem + 0.45vw, 1.5rem); /* 19 → 24px */
+    line-height: 1.35;
+  }
+  .t-stat {
+    font-family: var(--font-public-sans), system-ui, sans-serif;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    font-size: clamp(2.125rem, 1.68rem + 2.1vw, 3.25rem); /* 34 → 52px */
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+  .t-stat-unit {
+    font-family: var(--font-public-sans), system-ui, sans-serif;
+    font-weight: 600;
+    font-size: clamp(1.125rem, 1rem + 0.55vw, 1.5rem);
+    line-height: 1;
+    letter-spacing: -0.01em;
+  }
+  .t-eyebrow {
+    font-family: var(--font-public-sans), system-ui, sans-serif;
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 1.3;
+    letter-spacing: 0.01em;
+    color: #000000; /* texte sur fond blanc — noir pur (instruction propriétaire) */
+  }
+  .t-caption {
+    font-family: var(--font-public-sans), system-ui, sans-serif;
+    font-weight: 400;
+    font-size: 13px;
+    line-height: 1.4;
+  }
+  .t-btn {
+    font-family: var(--font-public-sans), system-ui, sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 1;
+    letter-spacing: 0.01em;
+  }
+
+  /* — Boutons (DA §7) — */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 10px;
+    min-height: 56px;
+    padding: 16px 28px;
+    border-radius: 8px;
+    text-decoration: none;
+    cursor: pointer;
+    transition:
+      transform 180ms var(--ease-std),
+      background-color 180ms var(--ease-std),
+      box-shadow 180ms var(--ease-std),
+      border-color 180ms var(--ease-std);
+  }
+  .btn-primary {
+    background: var(--red-button);
+    color: #ffffff;
+  }
+  .btn-primary:hover {
+    background: #d60000; /* -8 % luminosité, reste du rouge (DA §7) */
+    transform: translateY(-2px);
+  }
+  .btn-primary:active {
+    transform: translateY(0);
+  }
+  .btn-secondary {
+    background: transparent;
+    border: 1.5px solid var(--blue-deep);
+    color: #000000; /* texte sur fond blanc — noir pur (bordure bleue conservée) */
+  }
+  .btn-secondary:hover {
+    background: rgba(24, 0, 172, 0.06);
+    transform: translateY(-2px);
+  }
+  .btn-secondary:active {
+    transform: translateY(0);
+  }
+
+  /* — Cards (DA §7) : radius 12, ombre bleutée, bordure uniquement témoignages — */
+  .card-base {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(24, 0, 172, 0.1);
+  }
+  .card-bordered {
+    border: 1px solid var(--grey-border);
+  }
+  @media (hover: hover) and (min-width: 1024px) {
+    .card-hover {
+      transition:
+        transform 200ms var(--ease-std),
+        box-shadow 200ms var(--ease-std);
+    }
+    .card-hover:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(24, 0, 172, 0.16);
+    }
+  }
+
+  /* — Scroll reveal (DA §13 : 600ms, translateY court, une fois) — */
+  .reveal {
+    opacity: 0;
+    transform: translateY(12px);
+    will-change: opacity, transform;
+  }
+  .reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+    transition:
+      opacity 600ms var(--ease-std),
+      transform 600ms var(--ease-std);
+  }
+
+  /* — Waveform : dessin unique (hero) et respiration (contact, DA §13-14) — */
+  .wave-draw .wave-path {
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 1000;
+  }
+  .wave-draw.is-drawn .wave-path {
+    stroke-dashoffset: 0;
+    transition: stroke-dashoffset 900ms var(--ease-std);
+  }
+  @keyframes wave-breathe {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.7;
+    }
+  }
+  .wave-breathe {
+    animation: wave-breathe 3s ease-in-out infinite;
+  }
+  .wave-frozen {
+    animation: none;
+    opacity: 1;
+  }
+
+  /* — Transition de page (langage motion DA §13) —
+     Keyframe "from" seule : l'état final est l'état naturel de l'élément
+     (transform: none). Ainsi aucun transform persistant ne peut faire de
+     l'ancêtre un containing block qui casserait le position: fixed de la
+     barre CTA sticky. */
+  @keyframes page-enter {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+  }
+  .page-enter {
+    animation: page-enter 240ms var(--ease-std) backwards;
+  }
+
+  /* — Ouverture hero (DA §13 animation 1) — */
+  @keyframes hero-line {
+    from {
+      opacity: 0;
+      transform: translateY(14px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  .hero-line {
+    opacity: 0;
+    animation: hero-line 600ms var(--ease-std) forwards;
+  }
+  /* Orchestration hero (DA §13 animation 1) : délai 150ms, stagger 80ms
+     entre lignes (60ms mobile). */
+  .hero-d1 { animation-delay: 150ms; }
+  .hero-d2 { animation-delay: 230ms; }
+  .hero-d3 { animation-delay: 390ms; }
+  .hero-d4 { animation-delay: 470ms; }
+  @media (max-width: 767px) {
+    .hero-d1 { animation-delay: 150ms; }
+    .hero-d2 { animation-delay: 210ms; }
+    .hero-d3 { animation-delay: 330ms; }
+    .hero-d4 { animation-delay: 390ms; }
+  }
+
+  /* — Fade bleu → blanc à l'entrée de la section Solution (DA §13 animation 2) — */
+  @keyframes blue-fade {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+  .blue-fade {
+    animation: blue-fade 500ms var(--ease-std) forwards;
+  }
+
+  /* — Toggle Avant → Après (DA §14 signature 2, 350ms) — */
+  .ba-text {
+    transition:
+      opacity 350ms var(--ease-std),
+      transform 350ms var(--ease-std),
+      visibility 350ms var(--ease-std);
+  }
+  .ba-wave {
+    transition: opacity 350ms var(--ease-std);
+  }
+
+  /* — Barre CTA sticky mobile — */
+  .sticky-cta {
+    transform: translateY(110%);
+    transition: transform 240ms var(--ease-std);
+  }
+  .sticky-cta.is-shown {
+    transform: translateY(0);
+  }
+
+  /* — Accordéon FAQ (DA §7/§13 animation 5) : hauteur auto + fondu, 280ms — */
+  @keyframes faq-down {
+    from {
+      height: 0;
+      opacity: 0;
+    }
+    to {
+      height: var(--radix-accordion-content-height);
+      opacity: 1;
+    }
+  }
+  @keyframes faq-up {
+    from {
+      height: var(--radix-accordion-content-height);
+      opacity: 1;
+    }
+    to {
+      height: 0;
+      opacity: 0;
+    }
+  }
+  .faq-content[data-state="open"] {
+    animation: faq-down 280ms var(--ease-std);
+  }
+  .faq-content[data-state="closed"] {
+    animation: faq-up 280ms var(--ease-std);
+  }
+  /* Icône plus/moins : le trait vertical se rétracte (→ moins) */
+  .faq-icon-vertical {
+    transition: transform 240ms var(--ease-std);
+    transform-origin: center;
+  }
+  .faq-trigger[data-state="open"] .faq-icon-vertical {
+    transform: scaleY(0);
+  }
+}
+
+/* — Reduced motion (DA §13/§16) : chaque animation a sa version coupée — */
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .reveal.is-visible {
+    transition: none;
+  }
+  .wave-draw .wave-path {
+    stroke-dasharray: none;
+    stroke-dashoffset: 0;
+  }
+  .wave-draw.is-drawn .wave-path {
+    transition: none;
+  }
+  .wave-breathe {
+    animation: none;
+  }
+  .page-enter {
+    animation: none;
+  }
+  .hero-line {
+    opacity: 1;
+    animation: none;
+  }
+  .blue-fade {
+    animation: none;
+    opacity: 0;
+  }
+  .ba-text,
+  .ba-wave {
+    transition: none;
+  }
+  .sticky-cta {
+    transition: none;
+  }
+  .faq-content[data-state="open"],
+  .faq-content[data-state="closed"] {
+    animation: none;
+  }
+  .faq-icon-vertical {
+    transition: none;
+  }
+  .btn,
+  .card-hover,
+  .card-hover:hover {
+    transition: none;
+    transform: none;
+  }
+  * {
+    scroll-behavior: auto !important;
+  }
+}
