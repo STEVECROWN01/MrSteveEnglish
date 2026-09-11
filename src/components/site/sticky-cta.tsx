@@ -55,7 +55,7 @@ export function StickyCTA({
       )}
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >
-      <div className="border-t border-grey-line bg-white/95 px-4 py-3 shadow-[0_-4px_20px_rgba(24,0,172,0.08)] backdrop-blur-[12px]">
+      <div className="border-t border-grey-line bg-white/95 px-4 py-3 shadow-[0_-4px_20px_rgba(0,0,0,0.08)] backdrop-blur-[12px]">
         <a
           href={href}
           target="_blank"

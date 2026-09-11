@@ -25,9 +25,9 @@ const NAV_LINKS: { id: RouteId; label: string; hash: string }[] = [
 export function Header() {
   const route = useHashRoute();
   const scrolled = useScrolled(8);
-  const onBluePage = route === "contact";
+  const onDarkPage = route === "contact";
 
-  const solid = scrolled || onBluePage;
+  const solid = scrolled || onDarkPage;
 
   return (
     <header
@@ -40,7 +40,7 @@ export function Header() {
     >
       <a
         href="#main-content"
-        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-3 focus:z-10 focus:rounded-[8px] focus:bg-blue-deep focus:px-4 focus:py-2 focus:text-white"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-3 focus:z-10 focus:rounded-[8px] focus:bg-black focus:px-4 focus:py-2 focus:text-white"
       >
         Aller au contenu
       </a>

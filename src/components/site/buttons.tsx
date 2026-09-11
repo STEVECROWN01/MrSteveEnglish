@@ -9,20 +9,17 @@ import { waLink } from "@/lib/site";
  * — Primaire : fond Rouge #FF0000, texte blanc 18px/700, radius 8px,
  *   padding 16px/28px. Le SEUL endroit du site où le rouge apparaît.
  *   Un seul bouton primaire visible par écran, toujours.
- * — Secondaire : contour Bleu Profond 1.5px, fond transparent, texte bleu.
+ * — Secondaire : contour noir 1.5px, fond transparent, texte noir.
  */
 export function WhatsAppButton({
   href,
   children,
   className,
-  frozenOnClick,
   ariaLabel,
 }: {
   href: string;
   children: ReactNode;
   className?: string;
-  /** Contact : fige la waveform au clic (signature 1, DA §14). */
-  frozenOnClick?: () => void;
   ariaLabel?: string;
 }) {
   return (
@@ -30,7 +27,6 @@ export function WhatsAppButton({
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      onClick={frozenOnClick}
       aria-label={ariaLabel}
       className={cn("btn btn-primary t-btn", className)}
     >

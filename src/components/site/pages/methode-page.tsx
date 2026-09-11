@@ -115,9 +115,9 @@ export function MethodePage() {
           <Reveal className="mt-12">
             <div className="max-w-[34rem]">
               <div className="flex items-center" aria-hidden="true">
-                <span className="h-3.5 w-3.5 shrink-0 rounded-full bg-blue-deep" />
-                <span className="h-[2px] flex-1 bg-blue-deep" />
-                <span className="h-3.5 w-3.5 shrink-0 rounded-full bg-blue-deep" />
+                <span className="h-3.5 w-3.5 shrink-0 rounded-full bg-black" />
+                <span className="h-[2px] flex-1 bg-black" />
+                <span className="h-3.5 w-3.5 shrink-0 rounded-full bg-black" />
               </div>
               <div className="mt-3 flex items-baseline justify-between">
                 <span className="text-[0.9375rem] font-medium text-black">

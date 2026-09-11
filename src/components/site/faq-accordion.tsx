@@ -24,7 +24,7 @@ function PlusMinusIcon() {
       {/* Trait horizontal — toujours visible */}
       <path
         d="M5.5 11 C 8 10.8, 14 10.8, 16.5 11"
-        stroke="#1800AC"
+        stroke="#000000"
         strokeWidth={1.5}
         strokeLinecap="round"
       />
@@ -32,7 +32,7 @@ function PlusMinusIcon() {
       <path
         className="faq-icon-vertical"
         d="M11 5.5 C 10.8 8, 10.8 14, 11 16.5"
-        stroke="#1800AC"
+        stroke="#000000"
         strokeWidth={1.5}
         strokeLinecap="round"
       />

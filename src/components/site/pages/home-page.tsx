@@ -6,7 +6,6 @@ import { useInViewOnce, usePrefersReducedMotion } from "@/lib/motion";
 import { WA_MESSAGES, waLink, CTA_LABELS } from "@/lib/site";
 import { Container, Eyebrow, Prose } from "../layout-primitives";
 import { WhatsAppButton, SecondaryLink } from "../buttons";
-import { Waveform } from "../waveform";
 import { Reveal } from "../reveal";
 import { CountUp } from "../count-up";
 import { StickyCTA } from "../sticky-cta";
@@ -61,10 +60,6 @@ function Hero() {
                 </WhatsAppButton>
               </span>
             </div>
-            {/* Mini-waveform signature sous le CTA — se dessine une fois */}
-            <div className="hero-line hero-d4 mt-10 max-w-[11rem]">
-              <Waveform animate="draw" color="blue" drawDelay={650} />
-            </div>
           </div>
         </div>
 
@@ -85,25 +80,11 @@ function Hero() {
   );
 }
 
-/* — Problème + Agitation : fond Bleu Profond plein, AGITATION-01 en
-     filigrane blanc à droite (inversion du monochrome, DA §12) — */
+/* — Problème + Agitation : fond noir plein, sobre (waveform filigrane
+     supprimée — instruction propriétaire) — */
 function ProblemeAgitation() {
   return (
-    <section className="on-dark relative overflow-hidden bg-blue-deep text-white">
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute right-[-10%] top-1/2 w-[60%] max-w-[44rem] -translate-y-1/2 opacity-[0.10] select-none lg:right-[-4%] lg:opacity-[0.12]"
-      >
-        <Image
-          src="/assets/AGITATION-01-white.webp"
-          alt=""
-          width={1983}
-          height={793}
-          sizes="(max-width: 1023px) 90vw, 50vw"
-          className="h-auto w-full"
-        />
-      </div>
-
+    <section className="on-dark relative overflow-hidden bg-black text-white">
       <Container className="relative py-12 lg:py-24">
         {/* Section Problème */}
         <Reveal>
@@ -153,13 +134,13 @@ function ProblemeAgitation() {
   );
 }
 
-/* — Solution : retour au blanc. Le fond passe du Bleu Profond au blanc
-     par fondu 500ms à l'entrée dans le viewport (DA §13 animation 2).
-     Card unique avec le chiffre clé 98 % en Bleu Profond (DA §12). — */
+/* — Solution : retour au blanc. Le fond passe du noir au blanc
+     par fondu 500ms à l'entrée dans le viewport.
+     Card unique avec le chiffre clé 98 % en noir. — */
 function Solution() {
   return (
     <section className="relative overflow-hidden bg-white">
-      <BlueFadeOverlay />
+      <DarkFadeOverlay />
       <Container className="relative py-12 lg:py-24">
         <Reveal>
           <div className="card-base card-hover max-w-[46rem] p-6 md:p-10 lg:p-12">
@@ -203,12 +184,12 @@ function Solution() {
   );
 }
 
-/** Overlay bleu → blanc (500ms, une fois, à l'entrée dans le viewport). */
-function BlueFadeOverlay() {
+/** Overlay noir → blanc (500ms, une fois, à l'entrée dans le viewport). */
+function DarkFadeOverlay() {
   const [ref, inView] = useInViewOnce<HTMLDivElement>({ threshold: 0.15 });
   const reduced = usePrefersReducedMotion();
 
-  // Avant l'entrée : bleu plein. À l'entrée : fondu 500ms (ou coupe nette
+  // Avant l'entrée : noir plein. À l'entrée : fondu 500ms (ou coupe nette
   // en reduced motion). Le style inline pilote les cas non animés.
   const animated = inView && !reduced;
 
@@ -217,8 +198,8 @@ function BlueFadeOverlay() {
       ref={ref}
       aria-hidden="true"
       className={cn(
-        "pointer-events-none absolute inset-0 z-10 bg-blue-deep",
-        animated && "blue-fade",
+        "pointer-events-none absolute inset-0 z-10 bg-black",
+        animated && "dark-fade",
       )}
       style={animated ? undefined : { opacity: inView ? 0 : 1 }}
     />

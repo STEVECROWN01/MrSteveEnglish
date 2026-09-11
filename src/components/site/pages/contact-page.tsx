@@ -1,30 +1,21 @@
 "use client";
 
-import { useState } from "react";
 import { WA_MESSAGES, waLink, CTA_LABELS, WHATSAPP_DISPLAY } from "@/lib/site";
 import { Container, PageHero } from "../layout-primitives";
-import { Waveform } from "../waveform";
 import { Reveal } from "../reveal";
 import { StickyCTA } from "../sticky-cta";
-import { usePrefersReducedMotion } from "@/lib/motion";
-import { cn } from "@/lib/utils";
 
 /**
  * PAGE 7 — CONTACT / RÉSERVATION (COPYWRITING.md)
  * Fonction : réduire la friction au maximum, un seul CTA clair.
- * Composition (DA §12) : fond Bleu Profond, un unique bouton CTA WhatsApp
- * rouge centré très grand, CTA-WAVEFORM blanche animée juste en dessous
- * (respiration 3s — signature 1 DA §14, figeage au clic). Aucun autre
- * élément ne concurrence ce bouton. Mobile : bouton pleine largeur,
- * sticky en bas de viewport (DA §15).
+ * Composition : fond noir, un unique bouton CTA WhatsApp rouge centré
+ * très grand, numéro affiché en clair (waveform supprimée — instruction
+ * propriétaire). Mobile : bouton pleine largeur, sticky en bas de viewport.
  */
 
 export function ContactPage() {
-  const [frozen, setFrozen] = useState(false);
-  const reduced = usePrefersReducedMotion();
-
   return (
-    <div className="on-dark min-h-[calc(100svh-72px)] bg-blue-deep pb-20 md:pb-0">
+    <div className="on-dark min-h-[calc(100svh-72px)] bg-black pb-20 md:pb-0">
       <PageHero
         dark
         title="Prêt à parler anglais avec aisance ?"
@@ -49,7 +40,6 @@ export function ContactPage() {
                   href={waLink(WA_MESSAGES.contact)}
                   target="_blank"
                   rel="noopener noreferrer"
-                  onClick={() => setFrozen(true)}
                   className="btn btn-primary t-btn px-10 py-5 text-[1.0625rem] lg:text-[1.125rem]"
                 >
                   {CTA_LABELS.contact}
@@ -62,16 +52,7 @@ export function ContactPage() {
               {WHATSAPP_DISPLAY}
             </p>
 
-            {/* Signature 1 — la waveform respire, puis se fige au clic */}
-            <div className="mx-auto mt-12 max-w-[34rem]">
-              <Waveform
-                color="white"
-                animate="breathe"
-                className={cn(frozen && !reduced && "wave-frozen")}
-              />
-            </div>
-
-            <p className="t-caption mt-10 text-white/70">
+            <p className="t-caption mt-16 text-white/70">
               Réponse personnelle. Aucun engagement avant d&apos;avoir échangé.
             </p>
           </Reveal>

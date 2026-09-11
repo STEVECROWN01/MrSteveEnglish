@@ -33,7 +33,7 @@
   --color-card: var(--card);
 
   /* — Tokens de marque (DA §19 Developer Handoff, verrouillés) — */
-  --color-blue-deep: #1800AC;        /* Bleu Profond — couleur principale */
+  --color-blue-deep: #000000;        /* Noir pur — ex-Bleu Profond, instruction propriétaire */
   --color-red-button: #ff0000;       /* Rouge — boutons CTA uniquement */
   --color-grey-soft: #f2f2f5;        /* fonds de cartes secondaires, séparateurs */
   --color-grey-line: #e5e5ea;        /* bordures de cards */
@@ -55,21 +55,21 @@
   --card-foreground: #000000;
   --popover: #ffffff;
   --popover-foreground: #000000;
-  --primary: #1800ac;
+  --primary: #000000;
   --primary-foreground: #ffffff;
   --secondary: #f2f2f5;
   --secondary-foreground: #000000;
   --muted: #f2f2f5;
   --muted-foreground: #6b6b75;
   --accent: #f2f2f5;
-  --accent-foreground: #1800ac;
+  --accent-foreground: #000000;
   --destructive: #ff0000;
   --border: #e5e5ea;
   --input: #e5e5ea;
-  --ring: #1800ac; /* Focus ring clavier — Bleu Profond, jamais supprimé */
+  --ring: #000000; /* Focus ring clavier — noir, jamais supprimé */
 
   /* Alias directs du handoff DA §19 */
-  --blue-deep: #1800ac;
+  --blue-deep: #000000; /* token conservé pour compat — valeur noire */
   --white: #ffffff;
   --red-button: #ff0000;
   --black-text: #000000;
@@ -229,7 +229,7 @@
     color: #000000; /* texte sur fond blanc — noir pur (bordure bleue conservée) */
   }
   .btn-secondary:hover {
-    background: rgba(24, 0, 172, 0.06);
+    background: rgba(0, 0, 0, 0.05);
     transform: translateY(-2px);
   }
   .btn-secondary:active {
@@ -240,7 +240,7 @@
   .card-base {
     background: #ffffff;
     border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(24, 0, 172, 0.1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   }
   .card-bordered {
     border: 1px solid var(--grey-border);
@@ -253,7 +253,7 @@
     }
     .card-hover:hover {
       transform: translateY(-4px);
-      box-shadow: 0 12px 32px rgba(24, 0, 172, 0.16);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
     }
   }
 
@@ -271,31 +271,8 @@
       transform 600ms var(--ease-std);
   }
 
-  /* — Waveform : dessin unique (hero) et respiration (contact, DA §13-14) — */
-  .wave-draw .wave-path {
-    stroke-dasharray: 1000;
-    stroke-dashoffset: 1000;
-  }
-  .wave-draw.is-drawn .wave-path {
-    stroke-dashoffset: 0;
-    transition: stroke-dashoffset 900ms var(--ease-std);
-  }
-  @keyframes wave-breathe {
-    0%,
-    100% {
-      opacity: 1;
-    }
-    50% {
-      opacity: 0.7;
-    }
-  }
-  .wave-breathe {
-    animation: wave-breathe 3s ease-in-out infinite;
-  }
-  .wave-frozen {
-    animation: none;
-    opacity: 1;
-  }
+  /* — Waveform SVG : SUPPRIMÉES (instruction propriétaire — plus aucune
+     sinusoïde sur le site). Seules les animations textes/cards restent. — */
 
   /* — Transition de page (langage motion DA §13) —
      Keyframe "from" seule : l'état final est l'état naturel de l'élément
@@ -340,8 +317,8 @@
     .hero-d4 { animation-delay: 390ms; }
   }
 
-  /* — Fade bleu → blanc à l'entrée de la section Solution (DA §13 animation 2) — */
-  @keyframes blue-fade {
+  /* — Fade noir → blanc à l'entrée de la section Solution — */
+  @keyframes dark-fade {
     from {
       opacity: 1;
     }
@@ -349,19 +326,16 @@
       opacity: 0;
     }
   }
-  .blue-fade {
-    animation: blue-fade 500ms var(--ease-std) forwards;
+  .dark-fade {
+    animation: dark-fade 500ms var(--ease-std) forwards;
   }
 
-  /* — Toggle Avant → Après (DA §14 signature 2, 350ms) — */
+  /* — Toggle Avant → Après (350ms) — */
   .ba-text {
     transition:
       opacity 350ms var(--ease-std),
       transform 350ms var(--ease-std),
       visibility 350ms var(--ease-std);
-  }
-  .ba-wave {
-    transition: opacity 350ms var(--ease-std);
   }
 
   /* — Barre CTA sticky mobile — */
@@ -420,16 +394,6 @@
   .reveal.is-visible {
     transition: none;
   }
-  .wave-draw .wave-path {
-    stroke-dasharray: none;
-    stroke-dashoffset: 0;
-  }
-  .wave-draw.is-drawn .wave-path {
-    transition: none;
-  }
-  .wave-breathe {
-    animation: none;
-  }
   .page-enter {
     animation: none;
   }
@@ -437,12 +401,11 @@
     opacity: 1;
     animation: none;
   }
-  .blue-fade {
+  .dark-fade {
     animation: none;
     opacity: 0;
   }
-  .ba-text,
-  .ba-wave {
+  .ba-text {
     transition: none;
   }
   .sticky-cta {

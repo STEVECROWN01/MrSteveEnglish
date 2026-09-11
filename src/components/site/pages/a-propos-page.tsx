@@ -24,7 +24,7 @@ export function AProposPage() {
           <div className="grid items-start gap-10 lg:grid-cols-[2fr_3fr] lg:gap-16">
             {/* Portrait — vraie photographie de Stevens (brief 8.4) */}
             <Reveal className="relative mx-auto w-full max-w-[26rem] lg:mx-0">
-              <div className="relative aspect-[3/4] overflow-hidden rounded-[12px] shadow-[0_4px_20px_rgba(24,0,172,0.10)]">
+              <div className="relative aspect-[3/4] overflow-hidden rounded-[12px] shadow-[0_4px_20px_rgba(0,0,0,0.10)]">
                 <Image
                   src="/assets/APROPOS-PORTRAIT.webp"
                   alt="Portrait de Stevens Akpovi, coach d'anglais, regard direct et sourire confiant"

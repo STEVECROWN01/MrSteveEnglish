@@ -9,7 +9,7 @@ import { Container } from "./layout-primitives";
  */
 export function Footer() {
   return (
-    <footer className="on-dark mt-auto bg-blue-deep text-white">
+    <footer className="on-dark mt-auto bg-black text-white">
       <Container className="py-12 lg:py-16">
         <div className="flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-between">
           <div className="max-w-[26rem]">
