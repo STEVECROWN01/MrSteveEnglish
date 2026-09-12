@@ -58,6 +58,11 @@ function Hero() {
           priority
           fetchPriority="high"
           sizes="100vw"
+          /* Servi tel quel, sans ré-encodage par l'optimiseur Next.js :
+             il re-compresserait en JPEG q75 et détruirait la netteté
+             (le WebP q95 préparé par scripts/convert_hero_v2.py EST la
+             version finale). */
+          unoptimized
           className="object-cover object-[75%_center] lg:object-center"
         />
         {/* Overlays de lisibilité : voile renforcé côté gauche (zone du
