@@ -453,6 +453,12 @@ export function ContactPage() {
                     mon WhatsApp et tu es dirigé automatiquement vers le
                     paiement sécurisé pour finaliser ta réservation.
                   </p>
+                  {/* Garantie (instruction propriétaire) — rappel du
+                      renversement du risque au moment exact de la décision */}
+                  <p className="t-caption mt-3 text-center text-white/70">
+                    Garantie : deux mois d&apos;application rigoureuse sans
+                    résultat — remboursement intégral.
+                  </p>
                 </div>
 
                 {/* Confirmation après envoi (pendant la redirection) */}

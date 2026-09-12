@@ -52,6 +52,11 @@ const FAQ_ITEMS = [
     answer:
       "Trois mois, c'est le format qui a permis à un apprenant de décrocher un poste à l'international — c'est celui que je recommande si ton objectif est ambitieux, quel qu'il soit (carrière, examen, expatriation, voyage). Deux mois convient si ton échéance est proche et que tu es prêt à t'investir davantage entre les séances.",
   },
+  {
+    question: "Et si ça ne marche pas pour moi ?",
+    answer:
+      "Si tu appliques rigoureusement la méthode pendant deux mois — les séances, les exercices, les corrections — et que tu ne parles toujours pas, je te rembourse intégralement. Tu me montres que tu as fait le travail, et je te rends ton argent. Le risque est pour moi, pas pour toi.",
+  },
 ];
 
 export function FaqPage() {

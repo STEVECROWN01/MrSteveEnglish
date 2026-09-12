@@ -125,6 +125,25 @@ export function OffresPage() {
               </Reveal>
             ))}
           </div>
+
+          {/* Garantie + rareté (instruction propriétaire : stratégies
+              marketing) — renversement du risque sous les prix, puis
+              places limitées : encart « contrat » à bordure noire épaisse. */}
+          <Reveal className="mt-12 lg:mt-16">
+            <div className="mx-auto max-w-[46rem] rounded-[12px] border-2 border-black p-6 md:p-8">
+              <Eyebrow>Garantie de résultat</Eyebrow>
+              <p className="t-body mt-3">
+                Si tu appliques rigoureusement ce qui est enseigné pendant
+                deux mois et que tu ne parles toujours pas, je te rembourse
+                intégralement. Le risque est pour moi — pas pour toi.
+              </p>
+              <p className="t-body mt-4">
+                Et parce qu&apos;un vrai suivi, c&apos;est trois séances par
+                semaine par élève, les places sont limitées. Quand celles du
+                mois sont prises, il faut attendre le suivant.
+              </p>
+            </div>
+          </Reveal>
         </Container>
       </Section>
 

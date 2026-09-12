@@ -101,6 +101,12 @@ function Hero() {
               <CtaButton href="#/contact">{CTA_LABELS.hero}</CtaButton>
             </span>
           </div>
+          {/* Rareté (instruction propriétaire : stratégie marketing) —
+              places limitées dès le premier écran, sans crier */}
+          <p className="hero-line hero-d5 t-caption mt-6 text-white/75">
+            Places limitées chaque mois — je n&apos;accompagne qu&apos;un
+            nombre restreint d&apos;élèves à la fois.
+          </p>
         </div>
       </Container>
     </section>
@@ -172,6 +178,27 @@ function ProblemeAgitation() {
                 pas. Il se pratique.
               </p>
             </Prose>
+          </div>
+        </Reveal>
+        {/* Coût de l&apos;inaction (instruction propriétaire : FOMO /
+            urgence) — les opportunités passent à ceux qui osent parler.
+            Carte sombre encadrée, même langage que le fond noir. */}
+        <Reveal className="mt-16 lg:mt-24">
+          <div className="rounded-[12px] border border-white/15 bg-white/[0.06] p-6 md:p-8 lg:p-10">
+            <Eyebrow className="text-white/75">
+              Ce que coûte vraiment l&apos;attente
+            </Eyebrow>
+            <h3 className="t-h3 mt-4 text-white">
+              Et pendant ce temps, quelqu&apos;un d&apos;autre postule.
+            </h3>
+            <p className="t-body mt-4 text-white/85">
+              Quelqu&apos;un qui ose parler — même imparfaitement — passe
+              l&apos;entretien, décroche le poste, signe le client, part
+              travailler à l&apos;étranger. Ton blocage ne coûte pas seulement
+              de la frustration : il te coûte des opportunités que tu ne
+              verras même jamais passer. Et chaque mois qui passe éloigne un
+              peu plus les prochaines.
+            </p>
           </div>
         </Reveal>
       </Container>
@@ -433,6 +460,25 @@ function Methode() {
                 </div>
               </Reveal>
 
+              {/* Rareté (instruction propriétaire : stratégie marketing) —
+                  placée juste avant le CTA : un vrai suivi exige trois
+                  séances par semaine par élève, donc des places comptées. */}
+              <Reveal className="mt-10">
+                <div className="max-w-[34rem] rounded-[12px] border border-white/15 bg-white/[0.06] p-5 md:p-6">
+                  <p className="text-[0.9375rem] font-medium text-white">
+                    Places limitées — c&apos;est la condition d&apos;un vrai
+                    suivi.
+                  </p>
+                  <p className="t-body mt-2 text-white/85">
+                    Trois séances par semaine par élève, c&apos;est un temps
+                    réel que je consacre à chaque apprenant. Je ne prends
+                    qu&apos;un nombre restreint d&apos;élèves à la fois :
+                    quand les places du mois sont prises, il faut attendre le
+                    suivant.
+                  </p>
+                </div>
+              </Reveal>
+
               <Reveal className="mt-12">
                 <span data-wa-cta className="inline-flex">
                   <CtaButton href="#/contact">{CTA_LABELS.reserverFormat}</CtaButton>
@@ -472,6 +518,78 @@ function Methode() {
             <SecondaryLink href="#/resultats">
               {CTA_LABELS.voirMethode}
             </SecondaryLink>
+          </Reveal>
+        </Container>
+      </Section>
+
+      {/* — Garantie de résultat (instruction propriétaire : stratégie
+            marketing confiance / renversement du risque) — si l&apos;élève
+            applique rigoureusement la méthode pendant deux mois et ne
+            parle pas, il est remboursé intégralement. Carte « contrat »
+            encadrée sur fond noir, en clôture de narration avant le
+            footer. — */}
+      <Section className="on-dark bg-black text-white">
+        <Container>
+          <Reveal>
+            <div className="mx-auto max-w-[46rem] rounded-[12px] border border-white/20 bg-white/[0.04] p-6 md:p-10">
+              <Eyebrow className="text-white/75">
+                Garantie de résultat
+              </Eyebrow>
+              <h2 className="t-h2 mt-4 text-white">
+                Si tu appliques, tu parles. Sinon, je te rembourse.
+              </h2>
+              <p className="t-body mt-6 text-white/85">
+                Je ne te demande pas de me croire sur parole. Je te demande
+                de faire ta part : les séances, les exercices entre deux,
+                les corrections intégrées. Si tu appliques rigoureusement
+                ce qu&apos;on travaille ensemble, parler devient une
+                conséquence — pas une question de chance, ni de talent.
+              </p>
+              <p className="t-body mt-4 text-white/85">
+                Et si, après deux mois d&apos;application rigoureuse, tu
+                n&apos;arrives toujours pas à t&apos;exprimer, je te rembourse
+                la totalité de ton accompagnement. Pas de justification
+                interminable : tu me montres que tu as fait le travail, et
+                je te rends ton argent.
+              </p>
+
+              {/* Les trois engagements — ce qui active la garantie */}
+              <ul className="mt-8 space-y-3 border-t border-white/15 pt-6">
+                {[
+                  "Tu suis le rythme de séances qu'on définit ensemble.",
+                  "Tu pratiques entre les séances, comme convenu.",
+                  "Tu appliques les corrections travaillées en séance.",
+                ].map((item) => (
+                  <li key={item} className="flex items-start gap-3">
+                    <svg
+                      className="mt-1 h-5 w-5 shrink-0 text-white"
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="M4 10.5 C 6.5 13, 8.5 15, 9 15.5 C 11.5 12, 14 8.5, 16.5 5.5"
+                        stroke="currentColor"
+                        strokeWidth={1.8}
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                    <span className="t-body text-white/85">{item}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <p className="t-body mt-8 text-white/85">
+                Le risque, c&apos;est moi qui le prends. Le seul qui te
+                reste : être exactement au même point dans six mois.
+              </p>
+              <div className="mt-10">
+                <span data-wa-cta className="inline-flex">
+                  <CtaButton href="#/contact">{CTA_LABELS.hero}</CtaButton>
+                </span>
+              </div>
+            </div>
           </Reveal>
         </Container>
       </Section>

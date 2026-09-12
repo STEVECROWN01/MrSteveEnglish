@@ -310,11 +310,13 @@
   .hero-d2 { animation-delay: 230ms; }
   .hero-d3 { animation-delay: 390ms; }
   .hero-d4 { animation-delay: 470ms; }
+  .hero-d5 { animation-delay: 550ms; }
   @media (max-width: 767px) {
     .hero-d1 { animation-delay: 150ms; }
     .hero-d2 { animation-delay: 210ms; }
     .hero-d3 { animation-delay: 330ms; }
     .hero-d4 { animation-delay: 390ms; }
+    .hero-d5 { animation-delay: 450ms; }
   }
 
   /* — Fade noir → blanc à l'entrée de la section Solution — */
