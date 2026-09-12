@@ -1,0 +1,123 @@
+{
+  "/assets/HERO-01.webp": {
+    "natural": [
+      1916,
+      821
+    ],
+    "variants": [
+      480,
+      768,
+      1200
+    ]
+  },
+  "/assets/PROBLEME-01.webp": {
+    "natural": [
+      900,
+      1125
+    ],
+    "variants": [
+      480,
+      800
+    ]
+  },
+  "/assets/METHOD-01.webp": {
+    "natural": [
+      900,
+      1350
+    ],
+    "variants": [
+      480,
+      768
+    ]
+  },
+  "/assets/METHODE-01-rigide.webp": {
+    "natural": [
+      1024,
+      1536
+    ],
+    "variants": [
+      480,
+      768
+    ]
+  },
+  "/assets/METHODE-01-fluide.webp": {
+    "natural": [
+      1024,
+      1536
+    ],
+    "variants": [
+      480,
+      768
+    ]
+  },
+  "/assets/APROPOS-PORTRAIT.webp": {
+    "natural": [
+      900,
+      1350
+    ],
+    "variants": [
+      480,
+      768
+    ]
+  },
+  "/assets/APROPOS-AMBIANCE.webp": {
+    "natural": [
+      1672,
+      941
+    ],
+    "variants": [
+      480,
+      768,
+      1200
+    ]
+  },
+  "/assets/RESULTATS-CAS.webp": {
+    "natural": [
+      1672,
+      941
+    ],
+    "variants": [
+      480,
+      768,
+      1200
+    ]
+  },
+  "/assets/AVATAR-SARAH.webp": {
+    "natural": [
+      1254,
+      1254
+    ],
+    "variants": [
+      128
+    ]
+  },
+  "/assets/AVATAR-DAVID.webp": {
+    "natural": [
+      1254,
+      1254
+    ],
+    "variants": [
+      128
+    ]
+  },
+  "/assets/AVATAR-MICHAEL.webp": {
+    "natural": [
+      1254,
+      1254
+    ],
+    "variants": [
+      128
+    ]
+  },
+  "/assets/OFFRES-TEXTURE.webp": {
+    "natural": [
+      1344,
+      768
+    ],
+    "variants": [
+      480,
+      768,
+      1200
+    ]
+  }
+}

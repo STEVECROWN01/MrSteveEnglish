@@ -28,7 +28,6 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
-
 /* — Palette (DA §19 : noir/blanc/rouge) — */
 const NEON = "#ff1a1a";
 const CHARCOAL = "#161619";
@@ -309,12 +308,22 @@ function Microphone({ reduced }: { reduced: boolean }) {
   );
 }
 
-/** Canvas racine — caméra fixe, ACES, DPR borné, frame à la demande si reduced. */
-export default function MicrophoneCanvas({ reduced }: { reduced: boolean }) {
+/** Canvas racine — caméra fixe, ACES, DPR borné, frame à la demande si
+ *  reduced. PERF : `active` (visibilité viewport, voir microphone-scene)
+ *  coupe le frameloop hors écran — le GPU ne rend rien tant que la scène
+ *  n'est pas visible ; DPR plafonné à 1.5 (scène décorative sombre :
+ *  rendu identique à l'œil, ~44 % de pixels en moins qu'un DPR 2). */
+export default function MicrophoneCanvas({
+  reduced,
+  active = true,
+}: {
+  reduced: boolean;
+  active?: boolean;
+}) {
   return (
     <Canvas
-      dpr={[1, 2]}
-      frameloop={reduced ? "demand" : "always"}
+      dpr={[1, 1.5]}
+      frameloop={reduced ? "demand" : active ? "always" : "never"}
       gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
       camera={{ position: [0.58, 1.75, 7.3], fov: 30, near: 0.1, far: 40 }}
       onCreated={({ camera }) => camera.lookAt(0, 1.3, 0)}

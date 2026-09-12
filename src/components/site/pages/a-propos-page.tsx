@@ -1,10 +1,10 @@
 "use client";
 
-import Image from "next/image";
 import { CTA_LABELS } from "@/lib/site";
 import { Container, Prose, Section } from "../layout-primitives";
 import { CtaButton, SecondaryLink } from "../buttons";
 import { Reveal } from "../reveal";
+import { ResponsiveImage } from "../responsive-image";
 
 /**
  * PAGE 3 — À PROPOS / COACH (COPYWRITING.md)
@@ -27,10 +27,9 @@ export function AProposPage() {
                 intégralement — aucun recadrage, le visage reste entier) */}
             <Reveal className="relative mx-auto w-full max-w-[26rem] lg:mx-0">
               <div className="relative aspect-[2/3] overflow-hidden rounded-[12px] shadow-[0_4px_20px_rgba(0,0,0,0.10)]">
-                <Image
+                <ResponsiveImage
                   src="/assets/APROPOS-PORTRAIT.webp"
                   alt="Portrait professionnel de Stevens Akpovi, coach d'anglais, en costume noir et lunettes, dans un intérieur moderne"
-                  fill
                   priority
                   sizes="(max-width: 1023px) 92vw, 40vw"
                   className="object-cover"
@@ -72,10 +71,9 @@ export function AProposPage() {
         <Container>
           <Reveal>
             <div className="relative aspect-[16/9] overflow-hidden rounded-[12px]">
-              <Image
+              <ResponsiveImage
                 src="/assets/APROPOS-AMBIANCE.webp"
                 alt="Casque audio et ordinateur portable ouvert sur une visioconférence, lumière naturelle de fin d'après-midi"
-                fill
                 sizes="(max-width: 1023px) 92vw, 88vw"
                 className="object-cover"
               />

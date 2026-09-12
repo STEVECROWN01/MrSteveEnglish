@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { useInViewOnce, usePrefersReducedMotion } from "@/lib/motion";
 import { CTA_LABELS } from "@/lib/site";
@@ -10,6 +9,7 @@ import { Reveal } from "../reveal";
 import { CountUp } from "../count-up";
 import { StickyCTA } from "../sticky-cta";
 import { MicrophoneScene } from "../microphone-scene";
+import { ResponsiveImage } from "../responsive-image";
 
 /**
  * PAGE 1 — ACCUEIL
@@ -53,18 +53,14 @@ function Hero() {
     <section className="relative flex min-h-[100svh] items-end overflow-hidden">
       {/* Image — couvre tout le hero */}
       <div className="absolute inset-0">
-        <Image
+        <ResponsiveImage
           src="/assets/HERO-01.webp"
           alt="Stevens AKPOVI, coach d'anglais, souriant, assis à une table dans un intérieur chaleureux"
-          fill
           priority
-          fetchPriority="high"
           sizes="100vw"
-          /* Servi tel quel, sans ré-encodage par l'optimiseur Next.js :
-             il re-compresserait en JPEG q75 et détruirait la netteté
-             (le WebP q95 préparé par scripts/convert_hero_v2.py EST la
-             version finale). */
-          unoptimized
+          /* Variantes pré-générées (mobile 480w ≈ 15 Ko) : le navigateur ne
+             télécharge que la largeur utile — pipeline sans double encodage
+             (leçon hero : jamais de ré-encodage par l'optimiseur Next). */
           className="object-cover object-[75%_center] lg:object-center"
         />
         {/* Overlays de lisibilité : voile renforcé côté gauche (zone du
@@ -147,7 +143,7 @@ function ProblemeAgitation() {
             {/* Image — à gauche du texte (apprenante bloquée, feuille
                 froissée : l'agitation du problème) */}
             <div className="relative mx-auto w-full max-w-[25rem] overflow-hidden rounded-[12px] lg:mx-0">
-              <Image
+              <ResponsiveImage
                 src="/assets/PROBLEME-01.webp"
                 alt="Apprenante démotivée : menton posé sur la main devant ses livres de grammaire anglaise, feuille froissée sur le bureau"
                 width={900}
@@ -280,12 +276,10 @@ function Solution() {
               netteté (leçon hero). */}
           <Reveal delay={120}>
             <div className="relative mx-auto aspect-[2/3] w-full max-w-[22rem] overflow-hidden rounded-[12px] lg:mx-0 lg:aspect-auto lg:h-full">
-              <Image
+              <ResponsiveImage
                 src="/assets/METHOD-01.webp"
                 alt="Apprenante souriante en pleine séance de coaching d'anglais en ligne, concentrée sur son écran — tasse « Small Steps Big Progress » posée sur le bureau"
                 sizes="(max-width: 1023px) 92vw, 352px"
-                fill
-                unoptimized
                 className="object-cover object-[60%_center]"
               />
             </div>
@@ -340,11 +334,9 @@ function Methode() {
           <div className="mt-10 grid gap-6 lg:mt-14 lg:grid-cols-2 lg:gap-8">
             <Reveal>
               <figure className="relative aspect-[4/5] overflow-hidden rounded-[12px]">
-                <Image
+                <ResponsiveImage
                   src="/assets/METHODE-01-rigide.webp"
                   alt="Homme pensif face à ses livres de grammaire anglaise — feuilles froissées sur le bureau, affiche « Discipline » : l'étude rigide qui ne fait pas parler"
-                  fill
-                  unoptimized
                   sizes="(max-width: 1023px) 92vw, 566px"
                   className="object-cover"
                 />
@@ -371,11 +363,9 @@ function Methode() {
 
             <Reveal delay={120}>
               <figure className="relative aspect-[4/5] overflow-hidden rounded-[12px]">
-                <Image
+                <ResponsiveImage
                   src="/assets/METHODE-01-fluide.webp"
                   alt="Femme souriante en séance de coaching d'anglais en visioconférence — casque sur les oreilles, lumière chaude : la pratique vivante qui débloque la parole"
-                  fill
-                  unoptimized
                   sizes="(max-width: 1023px) 92vw, 566px"
                   className="object-cover"
                 />

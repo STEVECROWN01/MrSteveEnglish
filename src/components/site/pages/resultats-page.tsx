@@ -1,12 +1,12 @@
 "use client";
 
-import Image from "next/image";
 import { CTA_LABELS } from "@/lib/site";
 import { Container, Eyebrow, PageHero, Prose, Section } from "../layout-primitives";
 import { CtaButton, SecondaryLink } from "../buttons";
 import { Reveal } from "../reveal";
 import { CountUp } from "../count-up";
 import { BeforeAfter } from "../before-after";
+import { ResponsiveImage } from "../responsive-image";
 
 /**
  * PAGE 4 — RÉSULTATS / TÉMOIGNAGES (COPYWRITING.md)
@@ -78,10 +78,9 @@ export function ResultatsPage() {
         <Container>
           <Reveal>
             <div className="relative aspect-[16/9] overflow-hidden rounded-[12px]">
-              <Image
+              <ResponsiveImage
                 src="/assets/RESULTATS-CAS.webp"
                 alt="Silhouette de dos avec une valise, face à la baie vitrée d'un aéroport baignée de lumière"
-                fill
                 sizes="(max-width: 1023px) 92vw, 88vw"
                 className="object-cover"
               />
@@ -141,7 +140,7 @@ export function ResultatsPage() {
                   {/* Avatar à gauche de la citation (DA §12) */}
                   <div className="flex items-start gap-4">
                     <span className="mt-1 h-14 w-14 shrink-0 overflow-hidden rounded-full lg:h-16 lg:w-16">
-                      <Image
+                      <ResponsiveImage
                         src={t.avatar}
                         alt={t.avatarAlt}
                         width={64}

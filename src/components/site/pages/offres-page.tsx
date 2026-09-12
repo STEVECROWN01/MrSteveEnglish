@@ -1,11 +1,11 @@
 "use client";
 
-import Image from "next/image";
 import { CTA_LABELS, PAGES } from "@/lib/site";
 import { Container, Eyebrow, PageHero, Section } from "../layout-primitives";
 import { CtaButton } from "../buttons";
 import { Reveal } from "../reveal";
 import { StickyCTA } from "../sticky-cta";
+import { ResponsiveImage } from "../responsive-image";
 
 /**
  * PAGE 5 — OFFRES / TARIFS (COPYWRITING.md)
@@ -89,12 +89,11 @@ export function OffresPage() {
           aria-hidden="true"
           className="pointer-events-none absolute inset-0 select-none"
         >
-          <Image
+          <ResponsiveImage
             src="/assets/OFFRES-TEXTURE.webp"
             alt=""
-            fill
             sizes="100vw"
-            className="object-cover opacity-60"
+            className="h-full w-full object-cover opacity-60"
           />
         </div>
 

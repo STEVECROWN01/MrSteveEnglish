@@ -64,6 +64,36 @@ export function useInViewOnce<T extends HTMLElement>(
   return [ref, inView];
 }
 
+/**
+ * Visibilité PERSISTANTE (entrée ET sortie du viewport) — perf :
+ * pilotage du frameloop 3D (rendu coupé dès que la scène quitte
+ * l'écran, repris à son retour). Zéro coût au scroll (IntersectionObserver,
+ * jamais de getBoundingClientRect par événement).
+ */
+export function useInView<T extends HTMLElement>(
+  options?: IntersectionObserverInit,
+): [React.RefObject<T | null>, boolean] {
+  const ref = useRef<T>(null);
+  const [inView, setInView] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    if (typeof IntersectionObserver === "undefined") {
+      setInView(true);
+      return;
+    }
+    const io = new IntersectionObserver(
+      (entries) => setInView(entries.some((e) => e.isIntersecting)),
+      { threshold: 0.05, ...options },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  return [ref, inView];
+}
+
 /** Position de scroll (pour la navigation translucide au scroll, DA §7). */
 export function useScrolled(threshold = 8): boolean {
   const [scrolled, setScrolled] = useState(false);
