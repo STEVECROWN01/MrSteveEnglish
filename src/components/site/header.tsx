@@ -8,7 +8,7 @@ import { Container } from "./layout-primitives";
 
 /**
  * Navigation (instruction propriétaire : navigation complète, comme sur
- * un portfolio professionnel) : fixe, logo texte « Coach Stevens » à
+ * un portfolio professionnel) : fixe, logo texte « Stevens AKPOVI » à
  * gauche, liens à droite + CTA rouge vers le formulaire de contact.
  * Mobile : logo + bouton menu (hamburger) — standard portfolio pro.
  * Fond blanc translucide au scroll (blur 12px).
@@ -91,9 +91,9 @@ export function Header() {
               "font-display text-[1.25rem] leading-none font-medium tracking-tight transition-colors duration-[240ms] lg:text-[1.375rem]",
               overDarkHero ? "text-white" : "text-black",
             )}
-            aria-label="Coach Stevens — retour à l'accueil"
+            aria-label="Stevens AKPOVI — retour à l'accueil"
           >
-            Coach Stevens
+            Stevens AKPOVI
           </a>
 
           {/* Liens desktop — toutes les pages (instruction propriétaire) */}

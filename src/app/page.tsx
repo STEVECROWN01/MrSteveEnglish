@@ -11,7 +11,7 @@ import { FaqPage } from "@/components/site/pages/faq-page";
 import { ContactPage } from "@/components/site/pages/contact-page";
 
 /**
- * Site Coach Stevens — pages routées par hash sur la route /. La méthode
+ * Site Stevens AKPOVI — pages routées par hash sur la route /. La méthode
  * vit désormais SUR la page d'accueil (instruction propriétaire) : le lien
  * « Méthode » y mène via #/?section=methode. Chaque page conserve son rôle
  * dans le parcours utilisateur. Tous les CTA mènent au formulaire de

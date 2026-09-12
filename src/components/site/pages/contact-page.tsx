@@ -136,7 +136,7 @@ function buildMessage(f: FormState): string {
     "📦 FORMULE CHOISIE",
     `• ${formule}`,
     "",
-    "— Message envoyé automatiquement depuis le formulaire du site Coach Stevens",
+    "— Message envoyé automatiquement depuis le formulaire du site Stevens AKPOVI",
   ].join("\n");
 }
 

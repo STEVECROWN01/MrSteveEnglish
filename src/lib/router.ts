@@ -14,12 +14,12 @@ export type RouteId =
   | "contact";
 
 export const ROUTES: Record<RouteId, { hash: string; title: string }> = {
-  accueil: { hash: "#/", title: "Coach Stevens — Coach d'anglais" },
-  "a-propos": { hash: "#/a-propos", title: "À propos — Stevens Akpovi" },
-  resultats: { hash: "#/resultats", title: "Résultats — Coach Stevens" },
-  offres: { hash: "#/offres", title: "Offres — Coach Stevens" },
-  faq: { hash: "#/faq", title: "FAQ — Coach Stevens" },
-  contact: { hash: "#/contact", title: "Contact — Coach Stevens" },
+  accueil: { hash: "#/", title: "Stevens AKPOVI — Coach d'anglais" },
+  "a-propos": { hash: "#/a-propos", title: "À propos — Stevens AKPOVI" },
+  resultats: { hash: "#/resultats", title: "Résultats — Stevens AKPOVI" },
+  offres: { hash: "#/offres", title: "Offres — Stevens AKPOVI" },
+  faq: { hash: "#/faq", title: "FAQ — Stevens AKPOVI" },
+  contact: { hash: "#/contact", title: "Contact — Stevens AKPOVI" },
 };
 
 /**

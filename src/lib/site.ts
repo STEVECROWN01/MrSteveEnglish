@@ -1,5 +1,5 @@
 /**
- * Configuration centrale du site — Coach Stevens (Stevens Akpovi), coach d'anglais.
+ * Configuration centrale du site — Stevens AKPOVI, coach d'anglais.
  * Le numéro WhatsApp n'est JAMAIS affiché sur le site : il sert uniquement
  * à construire le message du formulaire de contact, envoyé automatiquement
  * au coach à la soumission (instruction propriétaire).
@@ -38,7 +38,7 @@ export const CTA_LABELS = {
   hero: "Parlons-en →",
   reserverFormat: "Réserver mon format →",
   voirMethode: "Voir si cette méthode te correspond →",
-  parlerDirect: "Parler directement au Coach Stevens →",
+  parlerDirect: "Parler directement à Stevens AKPOVI →",
   voirResultats: "Voir les résultats obtenus avec cette méthode →",
   cas: "Ça te parle ? Parlons-en →",
   voirObjectif: "Voir si ton objectif est atteignable en 2-3 mois →",

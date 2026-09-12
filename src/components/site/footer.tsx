@@ -3,7 +3,7 @@ import { Container } from "./layout-primitives";
 
 /**
  * Footer (instruction propriétaire) : fond noir, texte blanc, nom
- * « Coach Stevens », icônes sociales — WhatsApp (qui dirige vers le
+ * « Stevens AKPOVI », icônes sociales — WhatsApp (qui dirige vers le
  * formulaire de contact, le numéro n'est jamais affiché sur le site),
  * YouTube et Facebook — navigation complète du site, mentions légales.
  */
@@ -75,7 +75,7 @@ export function Footer() {
         <div className="flex flex-col gap-10 lg:flex-row lg:items-start lg:justify-between">
           <div className="max-w-[26rem]">
             <p className="font-display text-[1.5rem] font-medium leading-tight">
-              Coach Stevens
+              Stevens AKPOVI
             </p>
             <p className="t-caption mt-2 text-white/70">
               Coach d&apos;anglais — parler avec aisance en 2 à 3 mois.
@@ -85,20 +85,20 @@ export function Footer() {
             <div className="mt-6 flex items-center gap-1">
               <SocialLink
                 href="#/contact"
-                label="WhatsApp — contacter le Coach Stevens via le formulaire"
+                label="WhatsApp — contacter Stevens AKPOVI via le formulaire"
               >
                 <WhatsAppIcon />
               </SocialLink>
               <SocialLink
                 href={SOCIAL_LINKS.youtube}
-                label="Chaîne YouTube de Coach Stevens (nouvel onglet)"
+                label="Chaîne YouTube de Stevens AKPOVI (nouvel onglet)"
                 external
               >
                 <YouTubeIcon />
               </SocialLink>
               <SocialLink
                 href={SOCIAL_LINKS.facebook}
-                label="Page Facebook de Coach Stevens (nouvel onglet)"
+                label="Page Facebook de Stevens AKPOVI (nouvel onglet)"
                 external
               >
                 <FacebookIcon />
@@ -128,7 +128,7 @@ export function Footer() {
         </div>
 
         <p className="t-caption mt-10 border-t border-white/15 pt-6 text-white/60">
-          © {new Date().getFullYear()} Coach Stevens — Coach d&apos;anglais en
+          © {new Date().getFullYear()} Stevens AKPOVI — Coach d&apos;anglais en
           ligne.
         </p>
       </Container>

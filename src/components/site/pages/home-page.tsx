@@ -54,7 +54,7 @@ function Hero() {
       <div className="absolute inset-0">
         <Image
           src="/assets/HERO-01.webp"
-          alt="Le Coach Stevens, souriant, assis à une table dans un intérieur chaleureux"
+          alt="Stevens AKPOVI, coach d'anglais, souriant, assis à une table dans un intérieur chaleureux"
           fill
           priority
           fetchPriority="high"
@@ -278,51 +278,74 @@ function Methode() {
             </Prose>
           </Reveal>
 
-          <div className="mt-10 grid items-center gap-8 lg:mt-14 lg:grid-cols-[1fr_1.25fr_1fr] lg:gap-10">
-            {/* Texte gauche — la grammaire bûchée */}
+          {/* Diptyque — les deux textes en OVERLAY sur les images
+              (instruction propriétaire) : la grammaire bûchée sur
+              METHODE-01-rigide (gauche), la méthode vivante sur
+              METHODE-01-fluide (droite). Lisibilité garantie par un voile
+              dégradé bas (fort en bas, transparent en haut — les visages
+              restent clairs) + ombre portée sur le texte. Images en ratio
+              naturel 2:3 (aucun recadrage), servies sans ré-encodage
+              (unoptimized). Côte à côte desktop, empilé mobile. */}
+          <div className="mt-10 grid gap-6 lg:mt-14 lg:grid-cols-2 lg:gap-8">
             <Reveal>
-              <p className="t-body">
-                Tu peux connaître toutes les règles de grammaire anglaise et
-                rester muet face à un anglophone. Ce n&apos;est pas un manque de
-                connaissances. C&apos;est un manque de pratique orale réelle,
-                avec quelqu&apos;un qui corrige au bon moment, sans te bloquer
-                dans la peur de l&apos;erreur.
-              </p>
-            </Reveal>
-
-            {/* Diptyque — le point de bascule : grammaire bûchée (froide,
-                studieuse) face à la méthode vivante (conversation en visio).
-                Côte à côte desktop, empilé mobile */}
-            <Reveal delay={120}>
-              <div className="flex flex-col gap-6 lg:flex-row lg:items-center">
+              <figure className="relative aspect-[2/3] overflow-hidden rounded-[12px]">
                 <Image
                   src="/assets/METHODE-01-rigide.webp"
-                  alt=""
-                  width={724}
-                  height={1086}
-                  sizes="(max-width: 1023px) 92vw, 34vw"
-                  className="h-auto w-full"
+                  alt="Homme pensif face à ses livres de grammaire anglaise — feuilles froissées sur le bureau, affiche « Discipline » : l'étude rigide qui ne fait pas parler"
+                  fill
+                  unoptimized
+                  sizes="(max-width: 1023px) 92vw, 566px"
+                  className="object-cover"
+                />
+                {/* Voile de lisibilité — concentré sur la zone texte (bas) */}
+                <div
                   aria-hidden="true"
+                  className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/60 to-transparent"
                 />
-                <Image
-                  src="/assets/METHODE-01-fluide.webp"
-                  alt="Apprenante épanouie en pleine séance de coaching d'anglais en visioconférence, lumière chaude, méthode vivante"
-                  width={724}
-                  height={1086}
-                  sizes="(max-width: 1023px) 92vw, 34vw"
-                  className="h-auto w-full"
-                />
-              </div>
+                {/* Texte en overlay (instruction propriétaire) */}
+                <figcaption className="absolute inset-x-0 bottom-0 p-6 [text-shadow:0_1px_12px_rgba(0,0,0,0.5)] md:p-8">
+                  <Eyebrow className="text-white/80">
+                    La grammaire seule
+                  </Eyebrow>
+                  <p className="t-body mt-3 text-white">
+                    Tu peux connaître toutes les règles de grammaire anglaise
+                    et rester muet face à un anglophone. Ce n&apos;est pas un
+                    manque de connaissances. C&apos;est un manque de pratique
+                    orale réelle, avec quelqu&apos;un qui corrige au bon
+                    moment, sans te bloquer dans la peur de l&apos;erreur.
+                  </p>
+                </figcaption>
+              </figure>
             </Reveal>
 
-            {/* Texte droite — la méthode vivante */}
-            <Reveal delay={240}>
-              <p className="t-body">
-                C&apos;est exactement ce que je fais avec toi. Chaque séance
-                part de ce que tu sais déjà dire — et pousse un peu plus loin.
-                Pas de manuel figé. Pas de leçon générique. Une conversation,
-                structurée, qui avance à ton rythme.
-              </p>
+            <Reveal delay={120}>
+              <figure className="relative aspect-[2/3] overflow-hidden rounded-[12px]">
+                <Image
+                  src="/assets/METHODE-01-fluide.webp"
+                  alt="Femme souriante en séance de coaching d'anglais en visioconférence — casque sur les oreilles, lumière chaude : la pratique vivante qui débloque la parole"
+                  fill
+                  unoptimized
+                  sizes="(max-width: 1023px) 92vw, 566px"
+                  className="object-cover"
+                />
+                {/* Voile de lisibilité — concentré sur la zone texte (bas) */}
+                <div
+                  aria-hidden="true"
+                  className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/60 to-transparent"
+                />
+                {/* Texte en overlay (instruction propriétaire) */}
+                <figcaption className="absolute inset-x-0 bottom-0 p-6 [text-shadow:0_1px_12px_rgba(0,0,0,0.5)] md:p-8">
+                  <Eyebrow className="text-white/80">
+                    La méthode vivante
+                  </Eyebrow>
+                  <p className="t-body mt-3 text-white">
+                    C&apos;est exactement ce que je fais avec toi. Chaque séance
+                    part de ce que tu sais déjà dire — et pousse un peu plus
+                    loin. Pas de manuel figé. Pas de leçon générique. Une
+                    conversation, structurée, qui avance à ton rythme.
+                  </p>
+                </figcaption>
+              </figure>
             </Reveal>
           </div>
         </Container>
