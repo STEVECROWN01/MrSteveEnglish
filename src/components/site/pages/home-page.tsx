@@ -3,19 +3,20 @@
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { useInViewOnce, usePrefersReducedMotion } from "@/lib/motion";
-import { WA_MESSAGES, waLink, CTA_LABELS } from "@/lib/site";
+import { CTA_LABELS } from "@/lib/site";
 import { Container, Eyebrow, Prose } from "../layout-primitives";
-import { WhatsAppButton, SecondaryLink } from "../buttons";
+import { CtaButton, SecondaryLink } from "../buttons";
 import { Reveal } from "../reveal";
 import { CountUp } from "../count-up";
 import { StickyCTA } from "../sticky-cta";
 
 /**
- * PAGE 1 — ACCUEIL (COPYWRITING.md)
+ * PAGE 1 — ACCUEIL
  * Fonction : capter en 3 secondes, nommer le problème, promettre la
  * transformation.
- * Hero → Problème/Agitation (fond Bleu Profond, DA §12) → Solution
- * (retour blanc avec fondu bleu → blanc, DA §13 animation 2).
+ * Hero → Problème/Agitation (fond noir) → Solution (retour blanc avec
+ * fondu noir → blanc). Tous les CTA mènent au formulaire de contact
+ * (instruction propriétaire).
  */
 
 export function HomePage() {
@@ -24,10 +25,7 @@ export function HomePage() {
       <Hero />
       <ProblemeAgitation />
       <Solution />
-      <StickyCTA
-        href={waLink(WA_MESSAGES.hero)}
-        label={CTA_LABELS.hero}
-      />
+      <StickyCTA href="#/contact" label={CTA_LABELS.hero} />
     </>
   );
 }
@@ -49,15 +47,13 @@ function Hero() {
               </span>
             </h1>
             <p className="hero-line hero-d3 t-body mt-6 text-grey-mid">
-              Stevens AKPOVI t&apos;accompagne pour parler anglais avec aisance
+              Coach Stevens t&apos;accompagne pour parler anglais avec aisance
               en 2 à 3 mois — pas en révisant des règles, mais en
               t&apos;exprimant, vraiment, dès la première séance.
             </p>
             <div className="hero-line hero-d4 mt-8">
               <span data-wa-cta className="inline-flex">
-                <WhatsAppButton href={waLink(WA_MESSAGES.hero)}>
-                  {CTA_LABELS.hero}
-                </WhatsAppButton>
+                <CtaButton href="#/contact">{CTA_LABELS.hero}</CtaButton>
               </span>
             </div>
           </div>
@@ -144,12 +140,12 @@ function Solution() {
       <Container className="relative py-12 lg:py-24">
         <Reveal>
           <div className="card-base card-hover max-w-[46rem] p-6 md:p-10 lg:p-12">
-            <Eyebrow>La méthode Stevens Akpovi</Eyebrow>
+            <Eyebrow>La méthode du Coach Stevens</Eyebrow>
             <h2 className="t-h2 mt-4 text-black">
               Une méthode qui s&apos;adapte à toi, séance après séance.
             </h2>
             <p className="t-body mt-6">
-              Stevens ne suit pas un programme figé. Il ajuste chaque séance à
+              Le Coach ne suit pas un programme figé. Il ajuste chaque séance à
               ce que tu as réellement compris — pas à ce qui était prévu sur le
               papier. Résultat : 98 % de ses débutants absolus s&apos;expriment
               librement après un mois de coaching.

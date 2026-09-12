@@ -1,9 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import { WA_MESSAGES, waLink, CTA_LABELS } from "@/lib/site";
+import { CTA_LABELS } from "@/lib/site";
 import { Container, PageHero, Prose, Section } from "../layout-primitives";
-import { WhatsAppButton, SecondaryLink } from "../buttons";
+import { CtaButton, SecondaryLink } from "../buttons";
 import { Reveal } from "../reveal";
 
 /**
@@ -46,8 +46,9 @@ export function MethodePage() {
               </p>
             </Reveal>
 
-            {/* Diptyque METHODE-01 — le point de bascule (DA §15 :
-                côte à côte desktop, empilé rigide/fluide mobile) */}
+            {/* Diptyque — le point de bascule : grammaire bûchée (froide,
+                studieuse) face à la méthode vivante (conversation en visio).
+                Côte à côte desktop, empilé mobile */}
             <Reveal delay={120}>
               <div className="flex flex-col gap-6 lg:flex-row lg:items-center">
                 <Image
@@ -61,7 +62,7 @@ export function MethodePage() {
                 />
                 <Image
                   src="/assets/METHODE-01-fluide.webp"
-                  alt="Deux chemins comparés : une grille rigide de lignes parallèles face à une ligne organique et fluide qui s'adapte"
+                  alt="Apprenante épanouie en pleine séance de coaching d'anglais en visioconférence, lumière chaude, méthode vivante"
                   width={724}
                   height={1086}
                   sizes="(max-width: 1023px) 92vw, 34vw"
@@ -73,10 +74,10 @@ export function MethodePage() {
             {/* Texte droite — la méthode vivante */}
             <Reveal delay={240}>
               <p className="t-body">
-                C&apos;est exactement ce que fait Stevens. Chaque séance part de
-                ce que tu sais déjà dire — et pousse un peu plus loin. Pas de
-                manuel figé. Pas de leçon générique. Une conversation,
-                structurée, qui avance à ton rythme.
+                C&apos;est exactement ce que fait le Coach Stevens. Chaque
+                séance part de ce que tu sais déjà dire — et pousse un peu plus
+                loin. Pas de manuel figé. Pas de leçon générique. Une
+                conversation, structurée, qui avance à ton rythme.
               </p>
             </Reveal>
           </div>
@@ -132,9 +133,7 @@ export function MethodePage() {
 
           <Reveal className="mt-12">
             <span data-wa-cta className="inline-flex">
-              <WhatsAppButton href={waLink(WA_MESSAGES.format)}>
-                {CTA_LABELS.reserverFormat}
-              </WhatsAppButton>
+              <CtaButton href="#/contact">{CTA_LABELS.reserverFormat}</CtaButton>
             </span>
           </Reveal>
         </Container>

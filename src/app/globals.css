@@ -382,6 +382,63 @@
   .faq-trigger[data-state="open"] .faq-icon-vertical {
     transform: scaleY(0);
   }
+
+  /* — Formulaire de contact (page Contact, fond noir) — */
+  html {
+    scroll-behavior: smooth;
+  }
+  .form-label {
+    display: block;
+    font-family: var(--font-public-sans), system-ui, sans-serif;
+    font-weight: 500;
+    font-size: 15px;
+    line-height: 1.4;
+    color: rgba(255, 255, 255, 0.85);
+  }
+  .form-input {
+    display: block;
+    width: 100%;
+    min-height: 52px;
+    padding: 14px 16px;
+    border-radius: 8px; /* radius control DA §7 */
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    background: rgba(255, 255, 255, 0.06);
+    color: #ffffff;
+    font-size: 1rem;
+    line-height: 1.5;
+    font-family: var(--font-public-sans), system-ui, sans-serif;
+    transition:
+      border-color 240ms var(--ease-std),
+      background-color 240ms var(--ease-std);
+  }
+  .form-input::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+  }
+  .form-input:focus {
+    outline: none;
+    border-color: #ffffff;
+    background: rgba(255, 255, 255, 0.1);
+  }
+  .form-input[aria-invalid="true"] {
+    border-color: #ff6b6b;
+  }
+  /* Options natives des select : fond blanc, texte noir (lisibilité) */
+  select.form-input option {
+    color: #000000;
+    background: #ffffff;
+  }
+  .form-error {
+    margin-top: 6px;
+    font-family: var(--font-public-sans), system-ui, sans-serif;
+    font-size: 13px;
+    line-height: 1.4;
+    color: #ffb3b3;
+  }
+  /* Choix radio (test de niveau) — état sélectionné */
+  .form-choice:has(input:checked) {
+    border-color: #ffffff;
+    background: rgba(255, 255, 255, 0.12);
+  }
 }
 
 /* — Reduced motion (DA §13/§16) : chaque animation a sa version coupée — */

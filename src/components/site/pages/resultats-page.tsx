@@ -1,9 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import { WA_MESSAGES, waLink, CTA_LABELS } from "@/lib/site";
+import { CTA_LABELS } from "@/lib/site";
 import { Container, Eyebrow, PageHero, Prose, Section } from "../layout-primitives";
-import { WhatsAppButton, SecondaryLink } from "../buttons";
+import { CtaButton, SecondaryLink } from "../buttons";
 import { Reveal } from "../reveal";
 import { CountUp } from "../count-up";
 import { BeforeAfter } from "../before-after";
@@ -109,21 +109,19 @@ export function ResultatsPage() {
                 résultat, parce que l&apos;anglais ne s&apos;apprend pas ainsi.
               </p>
               <p className="t-body">
-                Il a suivi le format recommandé par Stevens : trois mois de
-                coaching, trois séances de 1h30 par semaine, entièrement
-                orientées vers la pratique orale de son domaine professionnel.
-                À la fin des trois mois, il s&apos;exprimait avec l&apos;aisance
-                nécessaire pour prendre son nouveau poste à l&apos;international
-                — avec succès.
+                Il a suivi le format recommandé par le Coach Stevens : trois
+                mois de coaching, trois séances de 1h30 par semaine,
+                entièrement orientées vers la pratique orale de son domaine
+                professionnel. À la fin des trois mois, il s&apos;exprimait avec
+                l&apos;aisance nécessaire pour prendre son nouveau poste à
+                l&apos;international — avec succès.
               </p>
             </Prose>
           </Reveal>
 
           <Reveal className="mt-10">
             <span data-wa-cta className="inline-flex">
-              <WhatsAppButton href={waLink(WA_MESSAGES.cas)}>
-                {CTA_LABELS.cas}
-              </WhatsAppButton>
+              <CtaButton href="#/contact">{CTA_LABELS.cas}</CtaButton>
             </span>
           </Reveal>
         </Container>

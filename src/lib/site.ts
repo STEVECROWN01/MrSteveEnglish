@@ -1,49 +1,56 @@
 /**
- * Configuration centrale du site — Stevens Akpovi, coach d'anglais.
- * Tous les textes de CTA et messages pré-remplis proviennent
- * EXACTEMENT de COPYWRITING.md (fidélité absolue, §7 du prompt maître).
+ * Configuration centrale du site — Coach Stevens (Stevens Akpovi), coach d'anglais.
+ * Le numéro WhatsApp n'est JAMAIS affiché sur le site : il sert uniquement
+ * à construire le message du formulaire de contact, envoyé automatiquement
+ * au coach à la soumission (instruction propriétaire).
  */
 
 /**
- * Numéro WhatsApp officiel de Stevens Akpovi, fourni par le propriétaire.
+ * Numéro WhatsApp officiel, fourni par le propriétaire.
  * Format wa.me : indicatif pays (Bénin, 229) + numéro, sans « + » ni espaces.
- * Affichage lisible : +229 01 59 17 30 98.
+ * USAGE INTERNE UNIQUEMENT (formulaire) — jamais rendu visible à l'écran.
  */
 export const WHATSAPP_NUMBER = "2290159173098";
 
-/** Numéro au format lisible, pour affichage sur la page Contact. */
-export const WHATSAPP_DISPLAY = "+229 01 59 17 30 98";
+/**
+ * Page de paiement vers laquelle le prospect est dirigé automatiquement
+ * après l'envoi du formulaire (instruction propriétaire).
+ */
+export const CHECKOUT_URL =
+  "https://shefapro.mymaketou.shop/products/cv-premium-optimisation-linkedin-profil-qui-attire-les-recruteurs/checkout";
 
-/** Construit un lien WhatsApp avec message pré-rempli (encodé). */
+/** Réseaux sociaux officiels (instruction propriétaire). */
+export const SOCIAL_LINKS = {
+  facebook: "https://www.facebook.com/Mr.SteveEnglish",
+  youtube: "https://www.youtube.com/@Mr.SteveEnglish",
+} as const;
+
+/** Construit un lien WhatsApp avec message pré-rempli (encodé). Usage interne. */
 export function waLink(message?: string): string {
   const base = `https://wa.me/${WHATSAPP_NUMBER}`;
   return message ? `${base}?text=${encodeURIComponent(message)}` : base;
 }
 
-/** Messages pré-remplis définis mot pour mot dans COPYWRITING.md. */
-export const WA_MESSAGES = {
-  hero: "Bonjour Stevens, je veux enfin parler anglais avec aisance.",
-  format: "Bonjour Stevens, je veux réserver mon format de coaching.",
-  parcours: "Bonjour Stevens, ton parcours me parle, j'aimerais en savoir plus.",
-  cas: "Bonjour Stevens, mon objectif ressemble à celui-ci, parlons-en.",
-  reservation: "Bonjour Stevens, je veux réserver mon coaching.",
-  contact:
-    "Bonjour Stevens, je veux parler anglais avec aisance. Voici mon objectif : ___",
+/** Libellés des CTA — tous mènent au formulaire de la page Contact. */
+export const CTA_LABELS = {
+  hero: "Parler au Coach Stevens →",
+  decouvrir: "Découvrir comment ça marche →",
+  reserverFormat: "Réserver mon format →",
+  voirMethode: "Voir si cette méthode te correspond →",
+  parlerDirect: "Parler directement au Coach Stevens →",
+  voirResultats: "Voir les résultats obtenus avec cette méthode →",
+  cas: "Ça te parle ? Parlons-en →",
+  voirObjectif: "Voir si ton objectif est atteignable en 2-3 mois →",
+  reserver3mois: "Réserver le coaching 3 mois →",
+  reserver2mois: "Réserver le coaching 2 mois →",
+  reserverPlace: "Réserver ma place →",
+  faq: "Pose ta question au Coach Stevens →",
+  contact: "Envoyer mes informations au Coach Stevens →",
 } as const;
 
-/** Libellés des CTA — copiés exactement depuis COPYWRITING.md. */
-export const CTA_LABELS = {
-  hero: "Parler à Stevens sur WhatsApp →",
-  decouvrir: "Découvrir comment ça marche →",
-  reserverFormat: "Réserver mon format sur WhatsApp →",
-  voirMethode: "Voir si cette méthode te correspond →",
-  parlerDirect: "Parler directement à Stevens sur WhatsApp →",
-  voirResultats: "Voir les résultats obtenus avec cette méthode →",
-  cas: "Ça te parle ? Écris à Stevens sur WhatsApp →",
-  voirObjectif: "Voir si ton objectif est atteignable en 2-3 mois →",
-  reserver3mois: "Réserver le coaching 3 mois sur WhatsApp →",
-  reserver2mois: "Réserver le coaching 2 mois sur WhatsApp →",
-  reserverPlace: "Réserver ma place sur WhatsApp →",
-  faq: "Demande directement à Stevens sur WhatsApp →",
-  contact: "Écrire à Stevens sur WhatsApp →",
+/** Pages internes (navigation hash) — cible de tous les CTA principaux. */
+export const PAGES = {
+  contact: "#/contact",
+  contactOffre3mois: "#/contact?offre=3mois",
+  contactOffre2mois: "#/contact?offre=2mois",
 } as const;

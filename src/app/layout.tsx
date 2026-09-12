@@ -28,19 +28,19 @@ export const metadata: Metadata = {
     process.env.NEXT_PUBLIC_SITE_URL ??
       (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000"),
   ),
-  title: "Stevens Akpovi — Coach d'anglais",
+  title: "Coach Stevens — Coach d'anglais",
   description:
-    "Stevens AKPOVI t'accompagne pour parler anglais avec aisance en 2 à 3 mois — pas en révisant des règles, mais en t'exprimant, vraiment, dès la première séance.",
+    "Coach Stevens t'accompagne pour parler anglais avec aisance en 2 à 3 mois — pas en révisant des règles, mais en t'exprimant, vraiment, dès la première séance.",
   icons: {
     icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
   },
   openGraph: {
-    title: "Stevens Akpovi — Coach d'anglais",
+    title: "Coach Stevens — Coach d'anglais",
     description:
       "Parler anglais avec aisance. Pas dans 2 ans. Dans 2 à 3 mois.",
     type: "website",
     locale: "fr_FR",
-    siteName: "Stevens Akpovi",
+    siteName: "Coach Stevens",
     images: [
       {
         url: "/assets/OG-SOCIAL.png",
@@ -52,7 +52,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Stevens Akpovi — Coach d'anglais",
+    title: "Coach Stevens — Coach d'anglais",
     description:
       "Parler anglais avec aisance. Pas dans 2 ans. Dans 2 à 3 mois.",
   },

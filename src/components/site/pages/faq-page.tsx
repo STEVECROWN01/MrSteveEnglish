@@ -1,14 +1,14 @@
 "use client";
 
-import { waLink } from "@/lib/site";
 import { CTA_LABELS } from "@/lib/site";
 import { Container, PageHero, Section } from "../layout-primitives";
 import { FaqAccordion } from "../faq-accordion";
 import { Reveal } from "../reveal";
 
 /**
- * PAGE 6 — FAQ (COPYWRITING.md)
- * Fonction : lever les dernières hésitations avant le message WhatsApp,
+ * PAGE 6 — FAQ
+ * Fonction : lever les dernières hésitations avant le formulaire de
+ * contact,
  * réduire les questions redondantes, rassurer ceux qui n'osent pas
  * encore écrire.
  * Composition (DA §12) : accordéon pleine largeur, fond blanc, une seule
@@ -35,7 +35,7 @@ const FAQ_ITEMS = [
   {
     question: "Et si je dois annuler une séance ?",
     answer:
-      "Préviens Stevens au plus tôt : la séance est reprogrammée dans la mesure du possible, pour que ton rythme de progression ne soit pas cassé.",
+      "Préviens le Coach au plus tôt : la séance est reprogrammée dans la mesure du possible, pour que ton rythme de progression ne soit pas cassé.",
   },
   {
     question: "Combien de temps avant de voir de vrais résultats ?",
@@ -59,7 +59,7 @@ export function FaqPage() {
     <>
       <PageHero
         title="Tes questions, avant de te lancer."
-        subtitle="Pas de réponse ici ? Pose-la directement à Stevens."
+        subtitle="Pas de réponse ici ? Pose-la directement au Coach Stevens via le formulaire."
       />
 
       <Section className="pt-0">
@@ -76,12 +76,7 @@ export function FaqPage() {
                   question: "Une dernière hésitation ?",
                   answer: (
                     <span data-wa-cta className="inline-flex">
-                      <a
-                        href={waLink()}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="btn btn-primary t-btn"
-                      >
+                      <a href="#/contact" className="btn btn-primary t-btn">
                         {CTA_LABELS.faq}
                       </a>
                     </span>

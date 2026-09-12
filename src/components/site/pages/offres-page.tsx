@@ -1,9 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import { WA_MESSAGES, waLink, CTA_LABELS } from "@/lib/site";
+import { CTA_LABELS, PAGES } from "@/lib/site";
 import { Container, Eyebrow, PageHero, Section } from "../layout-primitives";
-import { WhatsAppButton } from "../buttons";
+import { CtaButton } from "../buttons";
 import { Reveal } from "../reveal";
 import { StickyCTA } from "../sticky-cta";
 
@@ -28,14 +28,14 @@ const FORMULES = [
         <p className="t-body">
           Trois séances de 1h30 par semaine, pendant trois mois. C&apos;est le
           format suivi par l&apos;apprenant qui a réussi son passage à un poste
-          international. C&apos;est la formule que Stevens recommande, parce
+          international. C&apos;est la formule que le Coach recommande, parce
           qu&apos;elle laisse le temps à l&apos;anglais de s&apos;installer
           durablement.
         </p>
       </>
     ),
     cta: CTA_LABELS.reserver3mois,
-    message: WA_MESSAGES.reservation,
+    href: PAGES.contactOffre3mois,
   },
   {
     eyebrow: "Formule courte",
@@ -55,7 +55,7 @@ const FORMULES = [
       </>
     ),
     cta: CTA_LABELS.reserver2mois,
-    message: WA_MESSAGES.reservation,
+    href: PAGES.contactOffre2mois,
   },
 ];
 
@@ -116,9 +116,9 @@ export function OffresPage() {
 
                   <div className="mt-auto pt-8">
                     <span data-wa-cta className="inline-flex w-full">
-                      <WhatsAppButton href={waLink(f.message)} className="w-full">
+                      <CtaButton href={f.href} className="w-full">
                         {f.cta}
-                      </WhatsAppButton>
+                      </CtaButton>
                     </span>
                   </div>
                 </div>
@@ -154,9 +154,9 @@ export function OffresPage() {
               </p>
               <div className="mt-8">
                 <span data-wa-cta className="inline-flex">
-                  <WhatsAppButton href={waLink(WA_MESSAGES.reservation)}>
+                  <CtaButton href={PAGES.contact}>
                     {CTA_LABELS.reserverPlace}
-                  </WhatsAppButton>
+                  </CtaButton>
                 </span>
               </div>
             </div>
@@ -164,8 +164,8 @@ export function OffresPage() {
         </Container>
       </Section>
 
-      {/* CTA sticky mobile (DA §15 — page Offres) */}
-      <StickyCTA href={waLink(WA_MESSAGES.reservation)} label={CTA_LABELS.reserverPlace} />
+      {/* CTA sticky mobile (page Offres) */}
+      <StickyCTA href={PAGES.contact} label={CTA_LABELS.reserverPlace} />
     </>
   );
 }

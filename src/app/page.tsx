@@ -1,6 +1,6 @@
 "use client";
 
-import { useHashRoute } from "@/lib/router";
+import { useHashRoute, useRouteEffects } from "@/lib/router";
 import { Header } from "@/components/site/header";
 import { Footer } from "@/components/site/footer";
 import { HomePage } from "@/components/site/pages/home-page";
@@ -12,8 +12,9 @@ import { FaqPage } from "@/components/site/pages/faq-page";
 import { ContactPage } from "@/components/site/pages/contact-page";
 
 /**
- * Site Stevens Akpovi — 7 pages (COPYWRITING.md) routées par hash sur la
- * route /. Chaque page conserve son rôle dans le parcours utilisateur.
+ * Site Coach Stevens — 7 pages routées par hash sur la route /. Chaque
+ * page conserve son rôle dans le parcours utilisateur. Tous les CTA
+ * mènent au formulaire de contact (instruction propriétaire).
  * Le footer reste collé en bas de viewport quand le contenu est court
  * et est poussé naturellement quand il déborde.
  */
@@ -39,6 +40,7 @@ function renderPage(route: string) {
 
 export default function Page() {
   const route = useHashRoute();
+  useRouteEffects(route);
 
   return (
     <div className="flex min-h-screen flex-col bg-white">

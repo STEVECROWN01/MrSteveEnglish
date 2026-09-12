@@ -1,9 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import { WA_MESSAGES, waLink, CTA_LABELS } from "@/lib/site";
+import { CTA_LABELS } from "@/lib/site";
 import { Container, Prose, Section } from "../layout-primitives";
-import { WhatsAppButton, SecondaryLink } from "../buttons";
+import { CtaButton, SecondaryLink } from "../buttons";
 import { Reveal } from "../reveal";
 
 /**
@@ -57,9 +57,7 @@ export function AProposPage() {
               </Reveal>
               <Reveal className="mt-10">
                 <span data-wa-cta className="inline-flex">
-                  <WhatsAppButton href={waLink(WA_MESSAGES.parcours)}>
-                    {CTA_LABELS.parlerDirect}
-                  </WhatsAppButton>
+                  <CtaButton href="#/contact">{CTA_LABELS.parlerDirect}</CtaButton>
                 </span>
               </Reveal>
             </div>

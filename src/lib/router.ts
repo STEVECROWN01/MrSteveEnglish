@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useSyncExternalStore } from "react";
 
-/** Les 7 pages du site (COPYWRITING.md) — routées par hash sur la route /. */
+/** Les 7 pages du site — routées par hash sur la route /. */
 export type RouteId =
   | "accueil"
   | "methode"
@@ -13,18 +13,39 @@ export type RouteId =
   | "contact";
 
 export const ROUTES: Record<RouteId, { hash: string; title: string }> = {
-  accueil: { hash: "#/", title: "Stevens Akpovi — Coach d'anglais" },
-  methode: { hash: "#/methode", title: "La méthode — Stevens Akpovi" },
+  accueil: { hash: "#/", title: "Coach Stevens — Coach d'anglais" },
+  methode: { hash: "#/methode", title: "La méthode — Coach Stevens" },
   "a-propos": { hash: "#/a-propos", title: "À propos — Stevens Akpovi" },
-  resultats: { hash: "#/resultats", title: "Résultats — Stevens Akpovi" },
-  offres: { hash: "#/offres", title: "Offres — Stevens Akpovi" },
-  faq: { hash: "#/faq", title: "FAQ — Stevens Akpovi" },
-  contact: { hash: "#/contact", title: "Contact — Stevens Akpovi" },
+  resultats: { hash: "#/resultats", title: "Résultats — Coach Stevens" },
+  offres: { hash: "#/offres", title: "Offres — Coach Stevens" },
+  faq: { hash: "#/faq", title: "FAQ — Coach Stevens" },
+  contact: { hash: "#/contact", title: "Contact — Coach Stevens" },
 };
 
-/** Normalise un hash ou une route en clé comparable : "#/methode" → "methode", "#/" → "". */
+/**
+ * Normalise un hash ou une route en clé comparable : "#/methode" → "methode",
+ * "#/" → "".
+ * La query éventuelle (ex. "#/contact?offre=3mois") est ignorée pour la
+ * résolution de la route mais reste disponible pour la page (lecture via
+ * `hashQuery`).
+ */
 function normalizeHash(hash: string): string {
-  return hash.replace(/^#\/?/, "").replace(/\/+$/, "");
+  return hash
+    .replace(/^#\/?/, "")
+    .split("?")[0]
+    .replace(/\/+$/, "");
+}
+
+/**
+ * Lit la query du hash : "#/contact?offre=3mois" → "3mois".
+ * Retourne null si le paramètre est absent.
+ */
+export function hashQuery(name: string): string | null {
+  if (typeof window === "undefined") return null;
+  const q = window.location.hash.split("?")[1];
+  if (!q) return null;
+  const params = new URLSearchParams(q);
+  return params.get(name);
 }
 
 export function parseHash(hash: string): RouteId {
@@ -35,41 +56,84 @@ export function parseHash(hash: string): RouteId {
   return found ?? "accueil";
 }
 
+/** Abonnement au hash (useSyncExternalStore). */
+function subscribeToHash(callback: () => void) {
+  window.addEventListener("hashchange", callback);
+  return () => window.removeEventListener("hashchange", callback);
+}
+
 /**
- * Hook de routage par hash — permet les 7 pages sur la route / unique.
- * Au changement : titre du document mis à jour, scroll remonté,
- * focus déplacé sur le contenu (accessibilité navigation clavier).
+ * Route courante — via useSyncExternalStore : le serveur rend toujours
+ * « accueil » (getServerSnapshot), le client se synchronise sur le hash
+ * réel dès l'hydratation. Aucun mismatch d'hydratation, même en deep-link
+ * direct (ex. partage du lien .../#/contact).
  */
 export function useHashRoute(): RouteId {
-  const [route, setRoute] = useState<RouteId>(() =>
-    typeof window === "undefined" ? "accueil" : parseHash(window.location.hash),
+  return useSyncExternalStore(
+    subscribeToHash,
+    () => parseHash(window.location.hash),
+    () => "accueil" as RouteId,
   );
+}
+
+/**
+ * Effets de navigation, à appeler une seule fois au niveau de la page :
+ * — titre du document synchronisé sur la route ;
+ * — au CHANGEMENT de page uniquement : scroll remonté + focus déplacé
+ *   sur le contenu (accessibilité navigation clavier).
+ * Remarque : un changement de hash qui ne change PAS de page (ancre
+ * interne « #contact » du sticky, query ?offre=…) ne remonte PAS en
+ * haut — le navigateur gère le scroll vers l'ancre.
+ * Note : aucune réécriture du hash ici — écraser l'URL pendant
+ * l'hydratation (serveur « accueil » vs deep-link « #/contact »)
+ * casserait le partage de liens directs.
+ */
+export function useRouteEffects(route: RouteId) {
+  const isFirstRun = useRef(true);
 
   useEffect(() => {
-    const onHashChange = () => {
-      const next = parseHash(window.location.hash);
-      setRoute(next);
-      document.title = ROUTES[next].title;
-      window.scrollTo({ top: 0, left: 0, behavior: "instant" as ScrollBehavior });
-      // Accessibilité : le focus suit la navigation pour les lecteurs d'écran
-      requestAnimationFrame(() => {
-        const main = document.getElementById("main-content");
-        if (main) {
-          main.focus({ preventScroll: true });
+    document.title = ROUTES[route].title;
+
+    // Garde-fou deep-link : pendant l'hydratation, React/Next peuvent
+    // restaurer le <title> SSR statique plusieurs ticks après le mount.
+    // Pendant une courte fenêtre, toute écrasement est immédiatement
+    // corrigé — ensuite l'observateur se retire.
+    const expected = ROUTES[route].title;
+    const titleEl = document.querySelector("title");
+    let observer: MutationObserver | null = null;
+    if (titleEl) {
+      observer = new MutationObserver(() => {
+        if (document.title !== expected) {
+          document.title = expected;
         }
       });
-    };
-
-    // Normalise un hash inconnu dès le premier rendu côté client
-    const initial = parseHash(window.location.hash);
-    if (window.location.hash !== ROUTES[initial].hash) {
-      window.history.replaceState(null, "", ROUTES[initial].hash);
+      observer.observe(titleEl, {
+        childList: true,
+        characterData: true,
+        subtree: true,
+      });
     }
-    document.title = ROUTES[initial].title;
+    const stop = window.setTimeout(() => observer?.disconnect(), 1500);
 
-    window.addEventListener("hashchange", onHashChange);
-    return () => window.removeEventListener("hashchange", onHashChange);
-  }, []);
+    if (isFirstRun.current) {
+      isFirstRun.current = false;
+      return () => {
+        observer?.disconnect();
+        window.clearTimeout(stop);
+      };
+    }
 
-  return route;
+    // Changement de page réel : reset du scroll + focus a11y
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" as ScrollBehavior });
+    requestAnimationFrame(() => {
+      const main = document.getElementById("main-content");
+      if (main) {
+        main.focus({ preventScroll: true });
+      }
+    });
+    return () => {
+      observer?.disconnect();
+      window.clearTimeout(stop);
+    };
+  }, [route]);
 }
