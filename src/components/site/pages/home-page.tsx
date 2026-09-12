@@ -20,7 +20,8 @@ import { StickyCTA } from "../sticky-cta";
  * à gauche) → Problème/Agitation (fond noir, image PROBLEME-01 à gauche
  * du texte d'agitation aligné à droite — instruction propriétaire) →
  * Solution (retour blanc avec fondu noir → blanc, 98 %, image METHOD-01
- * miroir à droite du bloc contenu — instruction propriétaire) → La
+ * nouvelle version à droite du bloc contenu, de même hauteur que lui —
+ * instruction propriétaire) → La
  * Méthode (angle grammaire vs vivante, format, objection). Voix éditoriale :
  * le coach parle à la première personne (« je ») directement au prospect
  * (instruction propriétaire). Tous les CTA mènent au formulaire de
@@ -180,15 +181,18 @@ function ProblemeAgitation() {
 /* — Solution : retour au blanc. Le fond passe du noir au blanc
      par fondu 500ms à l'entrée dans le viewport.
      Card avec le chiffre clé 98 % en noir, et l'image METHOD-01
-     (miroir horizontal — instruction propriétaire) intégrée À DROITE
-     du bloc enveloppant le contenu. Voix première personne
+     (nouvelle version, SANS miroir — instruction propriétaire) intégrée
+     À DROITE du bloc enveloppant le contenu, à la MÊME HAUTEUR que lui
+     (instruction propriétaire). Voix première personne
      (instruction propriétaire). Mobile : bloc puis image, empilés. — */
 function Solution() {
   return (
     <section className="relative overflow-hidden bg-white">
       <DarkFadeOverlay />
       <Container className="relative py-12 lg:py-24">
-        <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,46rem)_minmax(0,22rem)] lg:justify-center lg:gap-12">
+        {/* items-stretch : l'image (droite) prend la MÊME HAUTEUR que le
+            bloc texte (gauche) — instruction propriétaire. */}
+        <div className="grid gap-10 lg:grid-cols-[minmax(0,46rem)_minmax(0,22rem)] lg:items-stretch lg:justify-center lg:gap-12">
           {/* Bloc contenu (à gauche de l'image) */}
           <Reveal>
             <div className="card-base card-hover p-6 md:p-10 lg:p-12">
@@ -222,17 +226,23 @@ function Solution() {
             </div>
           </Reveal>
 
-          {/* Image METHOD-01 — à droite du bloc (retournée en miroir :
-              l'apprenante souriante regarde vers le contenu, à sa gauche) */}
+          {/* Image METHOD-01 (nouvelle version, SANS miroir — instruction
+              propriétaire : le sujet regarde déjà vers la gauche, vers le
+              contenu). Même hauteur que le bloc à sa gauche sur desktop :
+              le conteneur est étiré (lg:h-full) et l'image recadrée par
+              object-cover, décalée à 60 % pour préserver la tasse
+              « Small Steps Big Progress ». Mobile : ratio naturel 2:3,
+              aucune coupe. Servie sans ré-encodage (unoptimized) pour la
+              netteté (leçon hero). */}
           <Reveal delay={120}>
-            <div className="relative mx-auto w-full max-w-[22rem] overflow-hidden rounded-[12px] lg:mx-0">
+            <div className="relative mx-auto aspect-[2/3] w-full max-w-[22rem] overflow-hidden rounded-[12px] lg:mx-0 lg:aspect-auto lg:h-full">
               <Image
                 src="/assets/METHOD-01.webp"
-                alt="Apprenante épanouie et souriante en pleine séance de coaching d'anglais en visioconférence, tournée vers la méthode"
-                width={900}
-                height={1350}
+                alt="Apprenante souriante en pleine séance de coaching d'anglais en ligne, concentrée sur son écran — tasse « Small Steps Big Progress » posée sur le bureau"
                 sizes="(max-width: 1023px) 92vw, 352px"
-                className="h-auto w-full"
+                fill
+                unoptimized
+                className="object-cover object-[60%_center]"
               />
             </div>
           </Reveal>
