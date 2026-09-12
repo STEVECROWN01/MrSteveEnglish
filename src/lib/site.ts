@@ -35,7 +35,7 @@ export function waLink(message?: string): string {
  *  Voix éditoriale première personne (instruction propriétaire) : le
  *  coach s'adresse directement au prospect — plus de « Parler au Coach ». */
 export const CTA_LABELS = {
-  hero: "Parlons-en →",
+  hero: "Parlons-en maintenant →",
   reserverFormat: "Réserver mon format →",
   voirMethode: "Voir si cette méthode te correspond →",
   parlerDirect: "Parler directement à Stevens AKPOVI →",

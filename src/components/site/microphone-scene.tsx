@@ -5,12 +5,13 @@ import { useInViewOnce, usePrefersReducedMotion } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
 /**
- * Panneau 3D « microphone tech » (section Comment se déroule le coaching).
+ * Scène 3D « microphone tech » (section Comment se déroule le coaching).
  * Le Canvas (three.js, ~150 Ko gz) n'est JAMAIS dans le bundle initial :
  * import dynamique ssr:false + montage uniquement à l'approche du viewport
- * (rootMargin 500px). Le panneau sombre (fond radial CSS) sert de
- * « fenêtre studio » sur fond blanc — l'asset Spline désigné par le
- * propriétaire vit sur fond noir infini, conservé ici.
+ * (rootMargin 500px). Depuis l'instruction propriétaire, la scène vit
+ * directement sur le fond sombre de la section (radial commun posé sur
+ * le <Section>) : plus de carte — ni angles arrondis, ni ombre, ni fond
+ * propre — le micro flotte sur le fond studio étendu à toute la section.
  * prefers-reduced-motion : scène rendue en statique (une frame).
  */
 
@@ -37,9 +38,7 @@ export function MicrophoneScene({ className }: { className?: string }) {
       role="img"
       aria-label="Microphone studio 3D stylisé tech, accents néon rouges et arcs orbitaux animés — l'outil des séances de coaching en ligne"
       className={cn(
-        "relative aspect-[4/5] w-full overflow-hidden rounded-[12px]",
-        "bg-[radial-gradient(120%_85%_at_50%_16%,#1b1b1f_0%,#0c0c0e_52%,#050506_100%)]",
-        "shadow-[0_24px_50px_-24px_rgba(2,6,23,0.45)]",
+        "relative aspect-[4/5] w-full",
         className,
       )}
     >

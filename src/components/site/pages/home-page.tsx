@@ -188,8 +188,24 @@ function ProblemeAgitation() {
      (instruction propriétaire). Mobile : bloc puis image, empilés. — */
 function Solution() {
   return (
-    <section className="relative overflow-hidden bg-white">
+    <section
+      id="methode"
+      className="relative scroll-mt-20 overflow-hidden bg-white lg:scroll-mt-24"
+    >
       <DarkFadeOverlay />
+      {/* Limite de section oblique (instruction propriétaire) : la
+          frontière avec la section noire ci-dessus monte de la gauche
+          vers la droite — coin noir plein en haut-gauche, aligné au
+          bord. Sous le voile dark-fade : invisible avant le fondu,
+          révélée avec lui. */}
+      <svg
+        aria-hidden="true"
+        viewBox="0 0 100 100"
+        preserveAspectRatio="none"
+        className="absolute inset-x-0 top-0 block h-10 w-full lg:h-14"
+      >
+        <polygon points="0,0 100,0 0,100" fill="#000000" />
+      </svg>
       <Container className="relative py-12 lg:py-24">
         {/* items-stretch : l'image (droite) prend la MÊME HAUTEUR que le
             bloc texte (gauche) — instruction propriétaire. */}
@@ -258,12 +274,18 @@ function Solution() {
      compléter la page d'accueil »). Emplacement stratégique : juste
      après la promesse Solution — la narration enchaîne naturellement
      « ce que ça t'apporte » → « comment ça marche ».
-     Point d'ancrage de la navigation : #/?section=methode. — */
+     Point d'ancrage de la navigation : #/?section=methode — ancre
+     posée sur la section « Ma méthode » (Solution) ci-dessus
+     (instruction propriétaire : le menu « Méthode » y mène). — */
 function Methode() {
   return (
-    <div id="methode" className="scroll-mt-20 lg:scroll-mt-24">
+    <div>
       {/* — Angle : méthode vs grammaire bûchée — */}
       <Section>
+        {/* Trait de séparation court (instruction propriétaire) :
+            marque la limite « Ma méthode » / « Comment ça marche » —
+            horizontal, centré, noir pur #000000, légèrement épais. */}
+        <div aria-hidden="true" className="mx-auto h-[3px] w-20 bg-black" />
         <Container>
           <Reveal>
             <Prose>
@@ -356,49 +378,55 @@ function Methode() {
       {/* — Comment se déroule le coaching — texte à gauche, scène 3D
            « microphone tech » à droite (instruction propriétaire :
            recréation animée de l'asset Spline désigné, accents néon
-           adaptés au rouge DA §19). Mobile : texte puis scène. — */}
-      <Section>
+           adaptés au rouge DA §19). Fond commun sombre — le radial
+           studio de la scène s'étend à toute la section (hotspot
+           repositionné sur le micro : centré-bas mobile, colonne
+           droite desktop) : le micro ne vit plus dans un bloc, il
+           flotte directement sur le fond (instruction propriétaire).
+           Mobile : texte puis scène. — */}
+      <Section className="on-dark relative overflow-hidden bg-[radial-gradient(120%_85%_at_50%_78%,#1b1b1f_0%,#0c0c0e_52%,#050506_100%)] text-white lg:bg-[radial-gradient(120%_85%_at_70%_20%,#1b1b1f_0%,#0c0c0e_52%,#050506_100%)]">
         <Container>
           <div className="grid gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-16">
             <div>
               <Reveal>
                 <Prose>
-                  <h2 className="t-h2 text-black">
+                  <h2 className="t-h2 text-white">
                     Trois mois. Trois séances par semaine. Une transformation.
                   </h2>
-                  <p className="t-body">
+                  <p className="t-body text-white/85">
                     Le format que je recommande — celui qui a mené un apprenant
                     jusqu&apos;à l&apos;expatriation professionnelle —
                     c&apos;est trois séances de 1h30 par semaine, pendant trois
                     mois. Un rythme qui installe l&apos;anglais dans ton
                     quotidien, sans le laisser retomber entre deux séances.
                   </p>
-                  <p className="t-body">
+                  <p className="t-body text-white/85">
                     Je propose aussi une version plus courte, sur deux mois, si
                     tu veux avancer plus vite. Le résultat dépend surtout
                     d&apos;une chose : que tu mettes en application ce qui est
                     vu en séance.
                   </p>
-                  <p className="t-body">
+                  <p className="t-body text-white/85">
                     Individuel, pour un accompagnement sur-mesure. Ou en petit
                     groupe, si tu apprends mieux en interaction.
                   </p>
                 </Prose>
               </Reveal>
 
-              {/* Timeline — ligne horizontale simple avec deux points (DA §12) */}
+              {/* Timeline — ligne horizontale simple avec deux points (DA §12),
+                  déclinée en blanc sur le fond sombre */}
               <Reveal className="mt-12">
                 <div className="max-w-[34rem]">
                   <div className="flex items-center" aria-hidden="true">
-                    <span className="h-3.5 w-3.5 shrink-0 rounded-full bg-black" />
-                    <span className="h-[2px] flex-1 bg-black" />
-                    <span className="h-3.5 w-3.5 shrink-0 rounded-full bg-black" />
+                    <span className="h-3.5 w-3.5 shrink-0 rounded-full bg-white" />
+                    <span className="h-[2px] flex-1 bg-white" />
+                    <span className="h-3.5 w-3.5 shrink-0 rounded-full bg-white" />
                   </div>
                   <div className="mt-3 flex items-baseline justify-between">
-                    <span className="text-[0.9375rem] font-medium text-black">
+                    <span className="text-[0.9375rem] font-medium text-white">
                       Mois 1
                     </span>
-                    <span className="text-[0.9375rem] font-medium text-black">
+                    <span className="text-[0.9375rem] font-medium text-white">
                       Mois 2-3
                     </span>
                   </div>
@@ -420,11 +448,13 @@ function Methode() {
         </Container>
       </Section>
 
-      {/* — Traitement d'objection — */}
+      {/* — Traitement d'objection — centré (instruction propriétaire :
+            moment d'affirmation courte, DA §7 réserve le centrage à
+            ces moments). — */}
       <Section>
         <Container>
           <Reveal>
-            <Prose>
+            <Prose className="mx-auto text-center">
               <h2 className="t-h2 text-black">
                 « J&apos;ai déjà essayé, ça n&apos;a jamais marché. »
               </h2>
@@ -438,7 +468,7 @@ function Methode() {
               </p>
             </Prose>
           </Reveal>
-          <Reveal className="mt-10">
+          <Reveal className="mt-10 flex justify-center">
             <SecondaryLink href="#/resultats">
               {CTA_LABELS.voirMethode}
             </SecondaryLink>

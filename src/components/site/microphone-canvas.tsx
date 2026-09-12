@@ -9,7 +9,8 @@
  *
  * Adaptation DA : le néon VERT de l'original devient le ROUGE verrouillé
  * du site (#ff0000, DA §19) — cohérence avec CTA et accents. Le fond
- * sombre infini est conservé (panneau CSS radial, canvas transparent).
+ * sombre infini est conservé (posé sur la <Section> entière, canvas
+ * transparent — le micro flotte hors de tout bloc).
  *
  * Composition : capsule micro brillante (réflexions studio via
  * RoomEnvironment), corps charbon maté, anneau accent + 2 LED émissives
@@ -143,8 +144,9 @@ function Microphone({ reduced }: { reduced: boolean }) {
     if (reduced || !group.current) return;
     const t = state.clock.elapsedTime;
 
-    /* Flottement lent + balancement discret */
-    group.current.position.y = -0.32 + Math.sin(t * 0.85) * 0.045;
+    /* Flottement lent + balancement discret (base remontée : le socle
+       entier tient dans le cadre — instruction propriétaire) */
+    group.current.position.y = -0.1 + Math.sin(t * 0.85) * 0.045;
 
     /* Parallaxe pointeur : lerp doux vers la cible (cédée par state.pointer) */
     const targetY = state.pointer.x * 0.22;
@@ -162,7 +164,7 @@ function Microphone({ reduced }: { reduced: boolean }) {
   });
 
   return (
-    <group ref={group} position={[0, -0.32, 0]}>
+    <group ref={group} position={[0, -0.1, 0]}>
       {/* — Socle : trois étages, anneau néon sur l'étage médian — */}
       <mesh position={[0, 0.07, 0]} castShadow>
         <cylinderGeometry args={[1.02, 1.06, 0.14, 64]} />
@@ -314,8 +316,8 @@ export default function MicrophoneCanvas({ reduced }: { reduced: boolean }) {
       dpr={[1, 2]}
       frameloop={reduced ? "demand" : "always"}
       gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
-      camera={{ position: [0.55, 2.0, 5.7], fov: 30, near: 0.1, far: 40 }}
-      onCreated={({ camera }) => camera.lookAt(0, 1.32, 0)}
+      camera={{ position: [0.58, 1.75, 7.3], fov: 30, near: 0.1, far: 40 }}
+      onCreated={({ camera }) => camera.lookAt(0, 1.3, 0)}
       style={{ position: "absolute", inset: 0 }}
       aria-hidden="true"
     >
