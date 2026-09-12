@@ -9,6 +9,7 @@ import { CtaButton, SecondaryLink } from "../buttons";
 import { Reveal } from "../reveal";
 import { CountUp } from "../count-up";
 import { StickyCTA } from "../sticky-cta";
+import { MicrophoneScene } from "../microphone-scene";
 
 /**
  * PAGE 1 — ACCUEIL
@@ -351,57 +352,70 @@ function Methode() {
         </Container>
       </Section>
 
-      {/* — Comment se déroule le coaching — */}
+      {/* — Comment se déroule le coaching — texte à gauche, scène 3D
+           « microphone tech » à droite (instruction propriétaire :
+           recréation animée de l'asset Spline désigné, accents néon
+           adaptés au rouge DA §19). Mobile : texte puis scène. — */}
       <Section>
         <Container>
-          <Reveal>
-            <Prose>
-              <h2 className="t-h2 text-black">
-                Trois mois. Trois séances par semaine. Une transformation.
-              </h2>
-              <p className="t-body">
-                Le format que je recommande — celui qui a mené un apprenant
-                jusqu&apos;à l&apos;expatriation professionnelle — c&apos;est
-                trois séances de 1h30 par semaine, pendant trois mois. Un
-                rythme qui installe l&apos;anglais dans ton quotidien, sans le
-                laisser retomber entre deux séances.
-              </p>
-              <p className="t-body">
-                Je propose aussi une version plus courte, sur deux mois, si tu
-                veux avancer plus vite. Le résultat dépend surtout d&apos;une
-                chose : que tu mettes en application ce qui est vu en séance.
-              </p>
-              <p className="t-body">
-                Individuel, pour un accompagnement sur-mesure. Ou en petit
-                groupe, si tu apprends mieux en interaction.
-              </p>
-            </Prose>
-          </Reveal>
+          <div className="grid gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-16">
+            <div>
+              <Reveal>
+                <Prose>
+                  <h2 className="t-h2 text-black">
+                    Trois mois. Trois séances par semaine. Une transformation.
+                  </h2>
+                  <p className="t-body">
+                    Le format que je recommande — celui qui a mené un apprenant
+                    jusqu&apos;à l&apos;expatriation professionnelle —
+                    c&apos;est trois séances de 1h30 par semaine, pendant trois
+                    mois. Un rythme qui installe l&apos;anglais dans ton
+                    quotidien, sans le laisser retomber entre deux séances.
+                  </p>
+                  <p className="t-body">
+                    Je propose aussi une version plus courte, sur deux mois, si
+                    tu veux avancer plus vite. Le résultat dépend surtout
+                    d&apos;une chose : que tu mettes en application ce qui est
+                    vu en séance.
+                  </p>
+                  <p className="t-body">
+                    Individuel, pour un accompagnement sur-mesure. Ou en petit
+                    groupe, si tu apprends mieux en interaction.
+                  </p>
+                </Prose>
+              </Reveal>
 
-          {/* Timeline — ligne horizontale simple avec deux points (DA §12) */}
-          <Reveal className="mt-12">
-            <div className="max-w-[34rem]">
-              <div className="flex items-center" aria-hidden="true">
-                <span className="h-3.5 w-3.5 shrink-0 rounded-full bg-black" />
-                <span className="h-[2px] flex-1 bg-black" />
-                <span className="h-3.5 w-3.5 shrink-0 rounded-full bg-black" />
-              </div>
-              <div className="mt-3 flex items-baseline justify-between">
-                <span className="text-[0.9375rem] font-medium text-black">
-                  Mois 1
+              {/* Timeline — ligne horizontale simple avec deux points (DA §12) */}
+              <Reveal className="mt-12">
+                <div className="max-w-[34rem]">
+                  <div className="flex items-center" aria-hidden="true">
+                    <span className="h-3.5 w-3.5 shrink-0 rounded-full bg-black" />
+                    <span className="h-[2px] flex-1 bg-black" />
+                    <span className="h-3.5 w-3.5 shrink-0 rounded-full bg-black" />
+                  </div>
+                  <div className="mt-3 flex items-baseline justify-between">
+                    <span className="text-[0.9375rem] font-medium text-black">
+                      Mois 1
+                    </span>
+                    <span className="text-[0.9375rem] font-medium text-black">
+                      Mois 2-3
+                    </span>
+                  </div>
+                </div>
+              </Reveal>
+
+              <Reveal className="mt-12">
+                <span data-wa-cta className="inline-flex">
+                  <CtaButton href="#/contact">{CTA_LABELS.reserverFormat}</CtaButton>
                 </span>
-                <span className="text-[0.9375rem] font-medium text-black">
-                  Mois 2-3
-                </span>
-              </div>
+              </Reveal>
             </div>
-          </Reveal>
 
-          <Reveal className="mt-12">
-            <span data-wa-cta className="inline-flex">
-              <CtaButton href="#/contact">{CTA_LABELS.reserverFormat}</CtaButton>
-            </span>
-          </Reveal>
+            {/* Scène 3D — chargée à l'approche du viewport uniquement */}
+            <Reveal delay={120}>
+              <MicrophoneScene className="mx-auto max-w-[30rem] lg:max-w-none" />
+            </Reveal>
+          </div>
         </Container>
       </Section>
 
