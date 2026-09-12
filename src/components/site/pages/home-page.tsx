@@ -284,12 +284,13 @@ function Methode() {
               METHODE-01-rigide (gauche), la méthode vivante sur
               METHODE-01-fluide (droite). Lisibilité garantie par un voile
               dégradé bas (fort en bas, transparent en haut — les visages
-              restent clairs) + ombre portée sur le texte. Images en ratio
-              naturel 2:3 (aucun recadrage), servies sans ré-encodage
-              (unoptimized). Côte à côte desktop, empilé mobile. */}
+              restent clairs) + ombre portée sur le texte. Ratio 4:5 —
+              hauteur réduite à la demande (recadrage object-cover centré,
+              visages préservés), servies sans ré-encodage (unoptimized).
+              Côte à côte desktop, empilé mobile. */}
           <div className="mt-10 grid gap-6 lg:mt-14 lg:grid-cols-2 lg:gap-8">
             <Reveal>
-              <figure className="relative aspect-[2/3] overflow-hidden rounded-[12px]">
+              <figure className="relative aspect-[4/5] overflow-hidden rounded-[12px]">
                 <Image
                   src="/assets/METHODE-01-rigide.webp"
                   alt="Homme pensif face à ses livres de grammaire anglaise — feuilles froissées sur le bureau, affiche « Discipline » : l'étude rigide qui ne fait pas parler"
@@ -320,7 +321,7 @@ function Methode() {
             </Reveal>
 
             <Reveal delay={120}>
-              <figure className="relative aspect-[2/3] overflow-hidden rounded-[12px]">
+              <figure className="relative aspect-[4/5] overflow-hidden rounded-[12px]">
                 <Image
                   src="/assets/METHODE-01-fluide.webp"
                   alt="Femme souriante en séance de coaching d'anglais en visioconférence — casque sur les oreilles, lumière chaude : la pratique vivante qui débloque la parole"
