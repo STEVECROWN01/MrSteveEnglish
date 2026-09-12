@@ -22,12 +22,14 @@ export function AProposPage() {
       <section className="pt-[112px] lg:pt-[168px]">
         <Container>
           <div className="grid items-start gap-10 lg:grid-cols-[2fr_3fr] lg:gap-16">
-            {/* Portrait — vraie photographie de Stevens (brief 8.4) */}
+            {/* Portrait — nouvelle photographie professionnelle de
+                Stevens (remplacement propriétaire, ratio 2:3 conservé
+                intégralement — aucun recadrage, le visage reste entier) */}
             <Reveal className="relative mx-auto w-full max-w-[26rem] lg:mx-0">
-              <div className="relative aspect-[3/4] overflow-hidden rounded-[12px] shadow-[0_4px_20px_rgba(0,0,0,0.10)]">
+              <div className="relative aspect-[2/3] overflow-hidden rounded-[12px] shadow-[0_4px_20px_rgba(0,0,0,0.10)]">
                 <Image
                   src="/assets/APROPOS-PORTRAIT.webp"
-                  alt="Portrait de Stevens Akpovi, coach d'anglais, regard direct et sourire confiant"
+                  alt="Portrait professionnel de Stevens Akpovi, coach d'anglais, en costume noir et lunettes, dans un intérieur moderne"
                   fill
                   priority
                   sizes="(max-width: 1023px) 92vw, 40vw"
