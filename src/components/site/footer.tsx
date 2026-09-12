@@ -36,7 +36,7 @@ function FacebookIcon() {
 }
 
 const FOOTER_LINKS = [
-  { label: "Méthode", hash: "#/methode" },
+  { label: "Méthode", hash: "#/?section=methode" },
   { label: "À propos", hash: "#/a-propos" },
   { label: "Résultats", hash: "#/resultats" },
   { label: "Offres", hash: "#/offres" },

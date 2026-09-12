@@ -109,12 +109,12 @@ export function ResultatsPage() {
                 résultat, parce que l&apos;anglais ne s&apos;apprend pas ainsi.
               </p>
               <p className="t-body">
-                Il a suivi le format recommandé par le Coach Stevens : trois
-                mois de coaching, trois séances de 1h30 par semaine,
-                entièrement orientées vers la pratique orale de son domaine
-                professionnel. À la fin des trois mois, il s&apos;exprimait avec
-                l&apos;aisance nécessaire pour prendre son nouveau poste à
-                l&apos;international — avec succès.
+                Il a suivi le format que je recommande : trois mois de
+                coaching, trois séances de 1h30 par semaine, entièrement
+                orientées vers la pratique orale de son domaine professionnel.
+                À la fin des trois mois, il s&apos;exprimait avec l&apos;aisance
+                nécessaire pour prendre son nouveau poste à l&apos;international
+                — avec succès.
               </p>
             </Prose>
           </Reveal>
@@ -196,7 +196,7 @@ export function ResultatsPage() {
               </h2>
               <p className="t-body">
                 Chaque parcours est différent, mais la trajectoire reste la
-                même : les tout premiers débutants qui suivent la méthode
+                même : les tout premiers débutants qui suivent ma méthode
                 s&apos;expriment librement dès le premier mois, dans neuf cas
                 sur dix. Avec deux à trois mois de coaching régulier,
                 l&apos;objectif visé — entretien, examen, expatriation, voyage,

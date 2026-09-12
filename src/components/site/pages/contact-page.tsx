@@ -193,7 +193,7 @@ export function ContactPage() {
       <PageHero
         dark
         title="Prêt à parler anglais avec aisance ?"
-        subtitle="Un formulaire. Une réponse personnelle du Coach. Et ton coaching peut démarrer cette semaine."
+        subtitle="Un formulaire. Ma réponse personnelle. Et ton coaching peut démarrer cette semaine."
       />
 
       <section id="contact" className="scroll-mt-20 pb-12 pt-8 lg:pb-24 lg:pt-12">
@@ -211,12 +211,11 @@ export function ContactPage() {
                   Bienvenue à toi.
                 </p>
                 <p className="t-body mt-3 text-white/80">
-                  Pour contacter directement le Coach Stevens, remplis
-                  l&apos;intégralité du formulaire ci-dessous avec tes
-                  informations exactes — toutes les informations sont
-                  obligatoires. Dès que tu envoies, ta demande arrive
-                  directement sur le WhatsApp du Coach, avec ton niveau réel et
-                  ton objectif. Il te répond personnellement.
+                  Pour me contacter directement, remplis l&apos;intégralité du
+                  formulaire ci-dessous avec tes informations exactes — toutes
+                  les informations sont obligatoires. Dès que tu envoies, ta
+                  demande arrive directement sur mon WhatsApp, avec ton niveau
+                  réel et ton objectif. Je te réponds personnellement.
                 </p>
               </div>
             </Reveal>
@@ -450,8 +449,8 @@ export function ContactPage() {
                     {CTA_LABELS.contact}
                   </button>
                   <p className="t-caption mt-4 text-center text-white/70">
-                    En soumettant, tes informations partent directement au
-                    Coach Stevens et tu es dirigé automatiquement vers le
+                    En soumettant, tes informations arrivent directement sur
+                    mon WhatsApp et tu es dirigé automatiquement vers le
                     paiement sécurisé pour finaliser ta réservation.
                   </p>
                 </div>
@@ -463,8 +462,8 @@ export function ContactPage() {
                     className="mt-6 rounded-[12px] border border-white/25 bg-white/[0.06] p-6 text-center"
                   >
                     <p className="t-body text-white">
-                      Merci ! Ta demande a été préparée pour le Coach Stevens.
-                      Redirection vers le paiement en cours…
+                      Merci ! Ta demande part sur mon WhatsApp. Redirection
+                      vers le paiement en cours…
                     </p>
                     {lastMessage ? (
                       <p className="t-caption mt-3 text-white/70">
@@ -487,7 +486,7 @@ export function ContactPage() {
 
             <Reveal delay={200}>
               <p className="t-caption mt-12 text-center text-white/60">
-                Réponse personnelle du Coach. Aucun engagement avant
+                Je te réponds personnellement. Aucun engagement avant
                 d&apos;avoir échangé.
               </p>
             </Reveal>

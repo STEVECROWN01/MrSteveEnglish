@@ -31,10 +31,11 @@ export function waLink(message?: string): string {
   return message ? `${base}?text=${encodeURIComponent(message)}` : base;
 }
 
-/** Libellés des CTA — tous mènent au formulaire de la page Contact. */
+/** Libellés des CTA — tous mènent au formulaire de la page Contact.
+ *  Voix éditoriale première personne (instruction propriétaire) : le
+ *  coach s'adresse directement au prospect — plus de « Parler au Coach ». */
 export const CTA_LABELS = {
-  hero: "Parler au Coach Stevens →",
-  decouvrir: "Découvrir comment ça marche →",
+  hero: "Parlons-en →",
   reserverFormat: "Réserver mon format →",
   voirMethode: "Voir si cette méthode te correspond →",
   parlerDirect: "Parler directement au Coach Stevens →",
@@ -44,8 +45,8 @@ export const CTA_LABELS = {
   reserver3mois: "Réserver le coaching 3 mois →",
   reserver2mois: "Réserver le coaching 2 mois →",
   reserverPlace: "Réserver ma place →",
-  faq: "Pose ta question au Coach Stevens →",
-  contact: "Envoyer mes informations au Coach Stevens →",
+  faq: "Pose-moi ta question →",
+  contact: "Envoie-moi tes informations →",
 } as const;
 
 /** Pages internes (navigation hash) — cible de tous les CTA principaux. */

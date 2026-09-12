@@ -20,12 +20,12 @@ const FAQ_ITEMS = [
   {
     question: "Je suis complètement débutant, est-ce que ça marche pour moi ?",
     answer:
-      "Oui. 98 % des débutants absolus qui suivent la méthode s'expriment librement dès le premier mois. La méthode s'adapte à ton niveau de départ, pas l'inverse.",
+      "Oui. 98 % des débutants absolus que je coache s'expriment librement dès le premier mois. Ma méthode s'adapte à ton niveau de départ, pas l'inverse.",
   },
   {
     question: "Individuel ou en groupe, comment choisir ?",
     answer:
-      "En individuel, tout le rythme de la séance est calé sur toi. En petit groupe, tu gagnes en pratique d'interaction, avec d'autres apprenants au niveau proche du tien. Les deux formats suivent la même méthode.",
+      "En individuel, tout le rythme de la séance est calé sur toi. En petit groupe, tu gagnes en pratique d'interaction, avec d'autres apprenants au niveau proche du tien. Les deux formats suivent ma méthode.",
   },
   {
     question: "Comment se déroulent les séances concrètement ?",
@@ -35,7 +35,7 @@ const FAQ_ITEMS = [
   {
     question: "Et si je dois annuler une séance ?",
     answer:
-      "Préviens le Coach au plus tôt : la séance est reprogrammée dans la mesure du possible, pour que ton rythme de progression ne soit pas cassé.",
+      "Préviens-moi au plus tôt : je reprogramme la séance dans la mesure du possible, pour que ton rythme de progression ne soit pas cassé.",
   },
   {
     question: "Combien de temps avant de voir de vrais résultats ?",
@@ -50,7 +50,7 @@ const FAQ_ITEMS = [
   {
     question: "Je peux choisir entre 2 et 3 mois, laquelle me convient ?",
     answer:
-      "Trois mois, c'est le format qui a permis à un apprenant de décrocher un poste à l'international — recommandé si ton objectif est ambitieux, quel qu'il soit (carrière, examen, expatriation, voyage). Deux mois convient si ton échéance est proche et que tu es prêt à t'investir davantage entre les séances.",
+      "Trois mois, c'est le format qui a permis à un apprenant de décrocher un poste à l'international — c'est celui que je recommande si ton objectif est ambitieux, quel qu'il soit (carrière, examen, expatriation, voyage). Deux mois convient si ton échéance est proche et que tu es prêt à t'investir davantage entre les séances.",
   },
 ];
 
@@ -59,7 +59,7 @@ export function FaqPage() {
     <>
       <PageHero
         title="Tes questions, avant de te lancer."
-        subtitle="Pas de réponse ici ? Pose-la directement au Coach Stevens via le formulaire."
+        subtitle="Pas de réponse ici ? Pose-la-moi directement via le formulaire."
       />
 
       <Section className="pt-0">

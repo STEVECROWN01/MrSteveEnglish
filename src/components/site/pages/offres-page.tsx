@@ -28,7 +28,7 @@ const FORMULES = [
         <p className="t-body">
           Trois séances de 1h30 par semaine, pendant trois mois. C&apos;est le
           format suivi par l&apos;apprenant qui a réussi son passage à un poste
-          international. C&apos;est la formule que le Coach recommande, parce
+          international. C&apos;est la formule que je recommande, parce
           qu&apos;elle laisse le temps à l&apos;anglais de s&apos;installer
           durablement.
         </p>

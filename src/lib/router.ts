@@ -2,10 +2,11 @@
 
 import { useEffect, useRef, useSyncExternalStore } from "react";
 
-/** Les 7 pages du site — routées par hash sur la route /. */
+/** Les pages du site — routées par hash sur la route /. La méthode vit
+ * désormais SUR l'accueil (instruction propriétaire) : le lien de
+ * navigation « Méthode » pointe vers #/?section=methode. */
 export type RouteId =
   | "accueil"
-  | "methode"
   | "a-propos"
   | "resultats"
   | "offres"
@@ -14,7 +15,6 @@ export type RouteId =
 
 export const ROUTES: Record<RouteId, { hash: string; title: string }> = {
   accueil: { hash: "#/", title: "Coach Stevens — Coach d'anglais" },
-  methode: { hash: "#/methode", title: "La méthode — Coach Stevens" },
   "a-propos": { hash: "#/a-propos", title: "À propos — Stevens Akpovi" },
   resultats: { hash: "#/resultats", title: "Résultats — Coach Stevens" },
   offres: { hash: "#/offres", title: "Offres — Coach Stevens" },
@@ -23,8 +23,8 @@ export const ROUTES: Record<RouteId, { hash: string; title: string }> = {
 };
 
 /**
- * Normalise un hash ou une route en clé comparable : "#/methode" → "methode",
- * "#/" → "".
+ * Normalise un hash ou une route en clé comparable : "#/a-propos" →
+ * "a-propos", "#/" → "".
  * La query éventuelle (ex. "#/contact?offre=3mois") est ignorée pour la
  * résolution de la route mais reste disponible pour la page (lecture via
  * `hashQuery`).
@@ -77,6 +77,60 @@ export function useHashRoute(): RouteId {
 }
 
 /**
+ * Section d'ancre demandée dans le hash : "#/?section=methode" →
+ * "methode". Sert de cible intermédiaire aux liens de navigation qui
+ * pointent vers une section d'une page (ici : la section Méthode
+ * intégrée à l'accueil). Retourne null si absent.
+ */
+export function useHashSection(): string | null {
+  const section = useSyncExternalStore(
+    subscribeToHash,
+    () => {
+      const q = window.location.hash.split("?")[1];
+      return q ? new URLSearchParams(q).get("section") : "";
+    },
+    () => "",
+  );
+  return section || null;
+}
+
+/**
+ * Fait défiler la page vers la section demandée via ?section= dans le
+ * hash (ex. "#/?section=methode"). Au premier chargement (deep-link),
+ * un léger délai laisse le rendu et les polices se poser. Quand on
+ * revient à l'accueil pur ("#/"), remonte en haut de page.
+ */
+export function useSectionScroll() {
+  const hash = useSyncExternalStore(
+    subscribeToHash,
+    () => window.location.hash,
+    () => "",
+  );
+  const section = hash.split("?")[1]
+    ? (new URLSearchParams(hash.split("?")[1]).get("section") ?? "")
+    : "";
+  const hadSection = useRef(false);
+
+  useEffect(() => {
+    if (!section) {
+      // Retour « Accueil » pur depuis une section : remonter en haut
+      if (hadSection.current && normalizeHash(window.location.hash) === "") {
+        window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+      }
+      hadSection.current = false;
+      return;
+    }
+    hadSection.current = true;
+    const target = document.getElementById(section);
+    if (!target) return;
+    const t = window.setTimeout(() => {
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 150);
+    return () => window.clearTimeout(t);
+  }, [section]);
+}
+
+/**
  * Effets de navigation, à appeler une seule fois au niveau de la page :
  * — titre du document synchronisé sur la route ;
  * — au CHANGEMENT de page uniquement : scroll remonté + focus déplacé
@@ -123,8 +177,17 @@ export function useRouteEffects(route: RouteId) {
       };
     }
 
-    // Changement de page réel : reset du scroll + focus a11y
-    window.scrollTo({ top: 0, left: 0, behavior: "instant" as ScrollBehavior });
+    // Changement de page réel : reset du scroll + focus a11y — sauf si
+    // une section est demandée (?section=…) : le défilement vers la
+    // section est alors géré par useSectionScroll (pas de flash du haut
+    // de page avant la descente).
+    const q = window.location.hash.split("?")[1];
+    const sectionTarget = q
+      ? new URLSearchParams(q).get("section")
+      : null;
+    if (!sectionTarget) {
+      window.scrollTo({ top: 0, left: 0, behavior: "instant" as ScrollBehavior });
+    }
     requestAnimationFrame(() => {
       const main = document.getElementById("main-content");
       if (main) {
