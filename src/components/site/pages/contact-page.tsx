@@ -9,7 +9,7 @@ import { StickyCTA } from "../sticky-cta";
 /**
  * PAGE 7 — CONTACT / INSCRIPTION (instruction propriétaire)
  * Fonction : conversion finale — le formulaire qualifie le prospect
- * pour L'OFFRE UNIQUE (Programme « De « Comprendre » à « Parler » » —
+ * pour L'OFFRE UNIQUE (Programme « De Comprendre à Parler » —
  * 03 mois — 70 000 FCFA — paiement unique), puis — à la soumission —
  * envoie automatiquement une fiche professionnelle sur le WhatsApp du
  * coach ET dirige le prospect vers la page de paiement.
@@ -23,7 +23,7 @@ import { StickyCTA } from "../sticky-cta";
      (instruction propriétaire : la conversion tourne autour d'UNE
      SEULE offre). — */
 const PROGRAMME_LABEL =
-  "Programme « De « Comprendre » à « Parler » » — 03 mois — 70 000 FCFA — paiement unique";
+  "Programme « De Comprendre à Parler » — 03 mois — 70 000 FCFA — paiement unique";
 
 /* — Question test : détecte débutant ou intermédiaire — */
 const NIVEAU_QUESTION = "She ___ English every day.";
@@ -205,11 +205,14 @@ export function ContactPage() {
                   réel et ton objectif. Je te réponds personnellement.
                 </p>
                 {/* Rappel du programme (offre unique — instruction
-                    propriétaire) au moment exact de la décision */}
+                    propriétaire) au moment exact de la décision.
+                    « Comprendre » et « Parler » en rouge (instruction
+                    propriétaire — plus de guillemets imbriqués). */}
                 <p className="t-caption mt-4 border-t border-white/15 pt-4 text-white/75">
-                  Programme « De « Comprendre » à « Parler » » — 03 mois de
-                  coaching d&apos;anglais personnalisé — 70 000 FCFA — paiement
-                  unique.
+                  Programme « De <span className="text-red-button">Comprendre</span> à{" "}
+                  <span className="text-red-button">Parler</span> » — 03 mois
+                  de coaching d&apos;anglais personnalisé — 70 000 FCFA —
+                  paiement unique.
                 </p>
               </div>
             </Reveal>

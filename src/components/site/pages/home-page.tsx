@@ -6,6 +6,7 @@ import { useInViewOnce, usePrefersReducedMotion } from "@/lib/motion";
 import { CTA_LABELS, OFFRE } from "@/lib/site";
 import { Container, Eyebrow, Prose, Section } from "../layout-primitives";
 import { CtaButton, SecondaryLink } from "../buttons";
+import { IconCheck, IconCross } from "../icons";
 import { Reveal } from "../reveal";
 import { CountUp } from "../count-up";
 import { StickyCTA } from "../sticky-cta";
@@ -41,7 +42,6 @@ export function HomePage() {
       <PourQui />
       <SectionPrix />
       <Garantie />
-      <Preuve />
       <FaqSection />
       <CtaFinal />
       <StickyCTA href="#/contact" label={CTA_LABELS.decouvrirCourt} />
@@ -187,14 +187,19 @@ function Hero() {
         />
       </div>
 
-      {/* Texte sur l'image — aligné à gauche, calé vers le bas */}
-      <Container className="relative w-full pb-24 pt-28 lg:pb-20 lg:pt-24 [@media(min-height:1050px)]:lg:pb-48">
-        <div className="max-w-[30rem]">
-          {/* Pleine taille DA (64px) sur écrans standard ; plafond léger
-              min(4rem, 7,1svh) uniquement pour que le titre multi-lignes
+      {/* Texte sur l'image — aligné à gauche, calé vers le bas.
+          Colonne élargie à 33rem (instruction propriétaire : titre
+          plus grand sans ajouter de lignes — les phrases cassent
+          moins) ; espacements compactés pour garantir 0px de
+          débordement sur les portables bas. */}
+      <Container className="relative w-full pb-24 pt-28 lg:pb-16 lg:pt-20 [@media(min-height:1050px)]:lg:pb-48">
+        <div className="max-w-[33rem]">
+          {/* Pleine taille DA (64px+) sur écrans standard ; plafond léger
+              min(4.25rem, 7,7svh) — titre encore légèrement agrandi
+              (instruction propriétaire) — pour que le titre multi-lignes
               tienne dans le premier écran des portables bas — 1080p garde
-              64px nets. */}
-          <h1 className="t-h1 text-white lg:text-[length:min(4rem,7.1svh)]">
+              68px nets. Mobile : léger rehaussement du clamp t-h1. */}
+          <h1 className="t-h1 text-white text-[length:clamp(2.375rem,1.65rem+3.4vw,4.25rem)] lg:text-[length:min(4.25rem,7.7svh)]">
             <span className="hero-line hero-d1 block">
               Tu comprends l&apos;anglais depuis des années.
             </span>
@@ -205,17 +210,17 @@ function Hero() {
             <HeroTypewriter />
           </h1>
           {/* Sous-titre (instruction propriétaire — nouveau) */}
-          <p className="hero-line hero-d3 t-body mt-5 text-white/85 lg:mt-5">
-            En 3 mois, transforme ton anglais que tu comprends en anglais
-            que tu oses vraiment parler.
+          <p className="hero-line hero-d3 t-body mt-4 text-white/85 lg:mt-4">
+            En 03 mois, transforme ton anglais que tu comprends en anglais
+            que tu oses vraiment parler avec confiance.
           </p>
-          <div className="hero-line hero-d4 mt-6 lg:mt-6">
+          <div className="hero-line hero-d4 mt-5 lg:mt-5">
             <span data-wa-cta className="inline-flex">
               <CtaButton href="#/contact">{CTA_LABELS.hero}</CtaButton>
             </span>
           </div>
           {/* Ligne programme sous le CTA (instruction propriétaire) */}
-          <p className="hero-line hero-d5 t-caption mt-5 text-white/75">
+          <p className="hero-line hero-d5 t-caption mt-4 text-white/75">
             {OFFRE.resumeSousCta}
           </p>
         </div>
@@ -229,6 +234,32 @@ function Hero() {
      propriétaire : plus de FOMO/urgence artificielle) et remplacée par
      une urgence strictement ÉTHIQUE, ancrée dans la situation du
      prospect — pas de faux compte à rebours, pas de rareté inventée. — */
+/* — Coût de l'inaction — URGENCE ÉTHIQUE (instruction propriétaire :
+            l'urgence vient de la situation du prospect, jamais d'un
+            artifice). En CARTE sombre encadrée (instruction propriétaire :
+            même langage que l'ancienne carte « quelqu'un d'autre postule »).
+            Composant réutilisé par le CTA final. — */
+function CarteUrgenceEthique({ className }: { className?: string }) {
+  return (
+    <div
+      className={cn(
+        "rounded-[12px] border border-white/15 bg-white/[0.06] p-6 md:p-8 lg:p-10",
+        className,
+      )}
+    >
+      <Eyebrow className="text-white/75">Le coût de l&apos;inaction</Eyebrow>
+      <p className="font-display mt-4 text-[1.375rem] leading-snug text-white md:text-[1.625rem] lg:text-[1.75rem]">
+        Chaque mois où tu repousses ta pratique est un mois supplémentaire
+        pendant lequel tu restes dans la même situation.
+      </p>
+      <p className="t-body mt-4 text-white/85">
+        Ta prochaine opportunité ne commencera pas quand tu te sentiras
+        parfaitement prêt. Commence maintenant.
+      </p>
+    </div>
+  );
+}
+
 function ProblemeAgitation() {
   return (
     <section className="on-dark relative overflow-hidden bg-black text-white">
@@ -274,7 +305,8 @@ function ProblemeAgitation() {
             {/* Texte — positionné à droite de l'image */}
             <Prose>
               <h2 className="t-h2 text-white">
-                Et pendant ce temps, ton projet attend.
+                Et pendant ce temps, ton projet attend… puis quelqu&apos;un
+                d&apos;autre postule.
               </h2>
               <p className="t-body text-white/85">
                 Un poste qui exige l&apos;anglais. Un examen qui approche. Un
@@ -283,6 +315,18 @@ function ProblemeAgitation() {
                 voyageur — peu importe ton objectif, il attend que tu sois capable
                 de parler. Chaque mois qui passe sans progrès, c&apos;est cet
                 objectif qui se rapproche sans que tu sois prêt.
+              </p>
+              {/* Fusion intelligente (instruction propriétaire) : le contenu
+                  de l&apos;ancienne carte « quelqu&apos;un d&apos;autre postule » complète
+                  ce bloc — uniquement ce qui n&apos;y était pas déjà. */}
+              <p className="t-body text-white/85">
+                Et pendant ce temps, quelqu&apos;un d&apos;autre postule. Quelqu&apos;un
+                qui ose parler — même imparfaitement — passe l&apos;entretien,
+                décroche le poste, signe le client, part travailler à
+                l&apos;étranger. Ton blocage ne coûte pas seulement de la
+                frustration : il te coûte des opportunités que tu ne verras
+                même jamais passer. Et chaque mois qui passe éloigne un peu
+                plus les prochaines.
               </p>
               <p className="t-body text-white/85">
                 Tu as peut-être déjà essayé. Des applications. Des cours en groupe
@@ -295,20 +339,11 @@ function ProblemeAgitation() {
           </div>
         </Reveal>
 
-        {/* Coût de l'inaction — URGENCE ÉTHIQUE (instruction
-            propriétaire : l'urgence vient de la situation du prospect,
-            jamais d'un artifice). Centré : moment d'affirmation (DA §7). */}
+        {/* Coût de l'inaction — URGENCE ÉTHIQUE en carte (instruction
+            propriétaire : le moment d'affirmation prend le même langage
+            visuel que l'ancienne carte « quelqu'un d'autre postule »). */}
         <Reveal className="mt-16 lg:mt-24">
-          <Prose className="mx-auto max-w-[42rem] text-center">
-            <p className="font-display text-[1.375rem] leading-snug text-white md:text-[1.625rem] lg:text-[1.75rem]">
-              Chaque mois où tu repousses ta pratique est un mois
-              supplémentaire pendant lequel tu restes dans la même situation.
-            </p>
-            <p className="t-body mt-6 text-white/85">
-              Ta prochaine opportunité ne commencera pas quand tu te sentiras
-              parfaitement prêt. Commence maintenant.
-            </p>
-          </Prose>
+          <CarteUrgenceEthique />
         </Reveal>
       </Container>
     </section>
@@ -395,35 +430,41 @@ function Solution() {
      l'ancienne section « Comment ça marche » devient le traitement des
      anciennes méthodes). QUATRE cartes image de fond + texte overlay :
      applications, cours traditionnels (visuels PROVISOIRES en attente
-     des images du propriétaire), grammaire seule, méthode vivante. — */
+     des images du propriétaire), grammaire seule, méthode vivante.
+     Cartes COMPACTES (instruction propriétaire : hauteur réduite) et
+     descriptions VRAIMENT percutantes — pas une phrase jetée. — */
 const ANCIENNES_METHODES = [
   {
     image: "/assets/METHODE-02-applications.webp",
     alt: "Apprenant seul chez lui, le regard fatigué, devant une application d'anglais sur son téléphone : personne pour le faire parler",
     eyebrow: "Les applications",
+    titre: "Des badges, pas des mots.",
     texte:
-      "Tu apprends seul, mais personne ne te force réellement à parler.",
+      "Des mois de séries de mots, de badges dorés, de scores parfaits. Et le jour où quelqu'un te parle en vrai ? Le silence. Taper sur un écran n'a jamais débloqué une bouche : tu révises, tu mémorises… et tu ne parles toujours pas.",
   },
   {
     image: "/assets/METHODE-02-traditionnel.webp",
     alt: "Salle de classe traditionnelle : le professeur écrit des règles de grammaire au tableau, les apprenants copient passivement",
     eyebrow: "Les cours traditionnels",
+    titre: "Trois minutes de parole par heure.",
     texte:
-      "Beaucoup de théorie, peu de temps consacré à ta propre prise de parole.",
+      "Le professeur parle, le tableau se remplit, tu recopies. Sur soixante minutes de cours, tu parles trois minutes — parfois moins. Tu paies pour écouter quelqu'un d'autre parler anglais. Des années comme ça, et le blocage est toujours là.",
   },
   {
     image: "/assets/METHODE-01-rigide.webp",
     alt: "Homme pensif face à ses livres de grammaire anglaise — feuilles froissées sur le bureau, affiche « Discipline » : l'étude rigide qui ne fait pas parler",
     eyebrow: "La grammaire seule",
+    titre: "La théorie ne parle pas.",
     texte:
-      "Connaître les règles ne signifie pas savoir tenir une conversation.",
+      "Tu connais les règles sur le bout des doigts. Mais face à un anglophone, aucune règle ne vient à ta rescousse. Personne n'a jamais appris à parler en relisant des tableaux de conjugaison — comme personne n'a appris à nager dans un livre.",
   },
   {
     image: "/assets/METHODE-01-fluide.webp",
     alt: "Femme souriante en séance de coaching d'anglais en visioconférence — casque sur les oreilles, lumière chaude : la pratique vivante qui débloque la parole",
     eyebrow: "La méthode vivante",
+    titre: "Ici, tu parles. Dès la première séance.",
     texte:
-      "Ici, on ne se contente pas d'apprendre l'anglais. On le pratique.",
+      "Pas de badge à collectionner, pas de tableau à recopier : tu parles dès la première séance, à ton niveau, sur tes vraies situations. On pratique, on corrige, on répète — jusqu'à ce que parler devienne un réflexe.",
   },
 ];
 
@@ -453,11 +494,12 @@ function PourquoiCaMarchaitPas() {
         </Reveal>
 
         {/* Quatre cartes — image de fond + voile + texte overlay.
-            2×2 desktop (sm:), empilées mobile. */}
+            2×2 desktop (sm:), empilées mobile. Ratio COMPACT (instruction
+            propriétaire : cartes beaucoup moins hautes qu’avant). */}
         <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:mt-14 lg:gap-8">
           {ANCIENNES_METHODES.map((carte, i) => (
             <Reveal key={carte.eyebrow} delay={(i % 2) * 120}>
-              <figure className="relative aspect-[4/5] overflow-hidden rounded-[12px]">
+              <figure className="relative aspect-[4/3] overflow-hidden rounded-[12px] sm:aspect-[3/2]">
                 <ResponsiveImage
                   src={carte.image}
                   alt={carte.alt}
@@ -467,11 +509,14 @@ function PourquoiCaMarchaitPas() {
                 />
                 <div
                   aria-hidden="true"
-                  className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/60 to-transparent"
+                  className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/65 to-black/10"
                 />
-                <figcaption className="absolute inset-x-0 bottom-0 p-6 [text-shadow:0_1px_12px_rgba(0,0,0,0.5)] md:p-8">
+                <figcaption className="absolute inset-x-0 bottom-0 p-6 [text-shadow:0_1px_12px_rgba(0,0,0,0.5)] md:p-7">
                   <Eyebrow className="text-white/80">{carte.eyebrow}</Eyebrow>
-                  <p className="t-body mt-3 text-white">{carte.texte}</p>
+                  <h3 className="t-h3 mt-2 text-white">{carte.titre}</h3>
+                  <p className="mt-2.5 text-[0.9375rem] leading-relaxed text-white/90">
+                    {carte.texte}
+                  </p>
                 </figcaption>
               </figure>
             </Reveal>
@@ -678,20 +723,7 @@ function AvantApres() {
                 <ul className="mt-4 space-y-2.5">
                   {APRES.map((item) => (
                     <li key={item} className="flex items-start gap-3">
-                      <svg
-                        className="mt-1 h-5 w-5 shrink-0 text-white"
-                        viewBox="0 0 20 20"
-                        fill="none"
-                        aria-hidden="true"
-                      >
-                        <path
-                          d="M4 10.5 C 6.5 13, 8.5 15, 9 15.5 C 11.5 12, 14 8.5, 16.5 5.5"
-                          stroke="currentColor"
-                          strokeWidth={1.8}
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
+                      <IconCheck className="mt-0.5 text-white" fg="#000000" />
                       <span className="t-body text-white">« {item} »</span>
                     </li>
                   ))}
@@ -744,20 +776,7 @@ function CeQueTuAchetes() {
           {AXES_PROGRAMME.map((axe, i) => (
             <Reveal key={axe} delay={(i % 2) * 80}>
               <div className="flex items-start gap-3 border-b border-grey-line pb-4">
-                <svg
-                  className="mt-1 h-5 w-5 shrink-0 text-black"
-                  viewBox="0 0 20 20"
-                  fill="none"
-                  aria-hidden="true"
-                >
-                  <path
-                    d="M4 10.5 C 6.5 13, 8.5 15, 9 15.5 C 11.5 12, 14 8.5, 16.5 5.5"
-                    stroke="currentColor"
-                    strokeWidth={1.8}
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
+                <IconCheck className="mt-0.5 text-black" />
                 <span className="t-body text-black">{axe}</span>
               </div>
             </Reveal>
@@ -769,7 +788,9 @@ function CeQueTuAchetes() {
 }
 
 /* — « CE QUI EST INCLUS » (instruction propriétaire) : le programme
-     présenté comme un package à forte valeur perçue — 6 blocs numérotés. — */
+     présenté comme un package à forte valeur perçue — blocs numérotés.
+     PODCASTS inclus (instruction propriétaire) : ressource de pratique
+     pure mise à disposition de l'apprenant. — */
 const INCLUS = [
   {
     num: "01",
@@ -801,6 +822,12 @@ const INCLUS = [
     titre: "Suivi",
     corps: "Une progression structurée pendant les trois mois.",
   },
+  {
+    num: "07",
+    titre: "Podcasts",
+    corps:
+      "Des podcasts à ta disposition pour la pratique pure : de l'anglais réel à écouter, entre les séances, à ton rythme.",
+  },
 ];
 
 function CeQuiEstInclus() {
@@ -811,16 +838,16 @@ function CeQuiEstInclus() {
           <Prose className="mx-auto max-w-[46rem] text-center">
             <Eyebrow>Ce qui est inclus</Eyebrow>
             <h2 className="t-h2 mt-4 text-black">
-              Mon accompagnement de 03 mois comprend :
+              Ton accompagnement de 03 mois comprend :
             </h2>
           </Prose>
         </Reveal>
 
-        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:mt-14 lg:grid-cols-3 lg:gap-8">
+        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:mt-14 lg:grid-cols-4 lg:gap-x-6 lg:gap-y-8">
           {INCLUS.map((item, i) => (
-            <Reveal key={item.num} delay={(i % 3) * 100}>
-              <div className="card-base card-hover flex h-full flex-col p-6 lg:p-8">
-                <p className="font-display text-[2rem] font-medium leading-none text-grey-line lg:text-[2.25rem]">
+            <Reveal key={item.num} delay={(i % 4) * 100}>
+              <div className="card-base card-hover flex h-full flex-col p-6">
+                <p className="font-display text-[2rem] font-medium leading-none text-grey-line">
                   {item.num}
                 </p>
                 <h3 className="t-h3 mt-5 text-black">{item.titre}</h3>
@@ -882,26 +909,16 @@ function PourquoiMoi() {
               <ul className="mt-6 space-y-3">
                 {POURQUOI_MOI.map((item) => (
                   <li key={item} className="flex items-start gap-3">
-                    <svg
-                      className="mt-1 h-5 w-5 shrink-0 text-black"
-                      viewBox="0 0 20 20"
-                      fill="none"
-                      aria-hidden="true"
-                    >
-                      <path
-                        d="M4 10.5 C 6.5 13, 8.5 15, 9 15.5 C 11.5 12, 14 8.5, 16.5 5.5"
-                        stroke="currentColor"
-                        strokeWidth={1.8}
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
+                    <IconCheck className="mt-0.5 text-black" />
                     <span className="t-body">{item}</span>
                   </li>
                 ))}
               </ul>
               <div className="mt-10">
-                <SecondaryLink href="#/a-propos">
+                <SecondaryLink
+                  href="#/a-propos"
+                  className="btn-invert-hover"
+                >
                   {CTA_LABELS.pourquoiMoi}
                 </SecondaryLink>
               </div>
@@ -956,20 +973,7 @@ function PourQui() {
               <ul className="mt-6 space-y-3.5">
                 {POUR_TOI.map((item) => (
                   <li key={item} className="flex items-start gap-3">
-                    <svg
-                      className="mt-1 h-5 w-5 shrink-0 text-black"
-                      viewBox="0 0 20 20"
-                      fill="none"
-                      aria-hidden="true"
-                    >
-                      <path
-                        d="M4 10.5 C 6.5 13, 8.5 15, 9 15.5 C 11.5 12, 14 8.5, 16.5 5.5"
-                        stroke="currentColor"
-                        strokeWidth={1.8}
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
+                    <IconCheck className="mt-0.5 text-black" />
                     <span className="t-body">{item}</span>
                   </li>
                 ))}
@@ -986,20 +990,7 @@ function PourQui() {
               <ul className="mt-6 space-y-3.5">
                 {PAS_POUR_TOI.map((item) => (
                   <li key={item} className="flex items-start gap-3">
-                    <svg
-                      className="mt-1 h-5 w-5 shrink-0"
-                      style={{ color: "#ff0000" }}
-                      viewBox="0 0 20 20"
-                      fill="none"
-                      aria-hidden="true"
-                    >
-                      <path
-                        d="M5 5 C 8.5 8.5, 13.5 13.5, 17 17 M17 5 C 13.5 8.5, 8.5 13.5, 5 17"
-                        stroke="currentColor"
-                        strokeWidth={1.8}
-                        strokeLinecap="round"
-                      />
-                    </svg>
+                    <IconCross className="mt-0.5" />
                     <span className="t-body">{item}</span>
                   </li>
                 ))}
@@ -1020,7 +1011,22 @@ function PourQui() {
 /* — SECTION PRIX (instruction propriétaire) : le contenu de l'ancienne
      page Offres, RENFORCÉ, devient le bloc central de conversion de
      l'accueil — offre unique, value stack complet à côté du prix, CTA
-     dédié. Fond noir : moment le plus fort du funnel. — */
+     dédié. Fond noir : moment le plus fort du funnel. Value stack en
+     DEUX COLONNES de cinq (instruction propriétaire) avec les PODCASTS
+     (pratique pure) inclus. — */
+const VALUE_STACK = [
+  "Pratique orale régulière",
+  "Conversations réelles",
+  "Corrections personnalisées",
+  "Prononciation",
+  "Vocabulaire utile",
+  "Construction des phrases",
+  "Confiance à l'oral",
+  "Accompagnement personnalisé",
+  "Exercices entre les séances",
+  "Des podcasts pour la pratique pure",
+];
+
 function SectionPrix() {
   return (
     <Section className="on-dark relative overflow-hidden bg-black text-white">
@@ -1029,16 +1035,18 @@ function SectionPrix() {
           <Prose className="mx-auto max-w-[46rem] text-center">
             <Eyebrow className="text-white/75">L&apos;offre</Eyebrow>
             <h2 className="t-h2 mt-4 text-white">
-              03 mois pour passer de la compréhension à la parole.
+              <span className="text-red-button">03 mois</span> pour passer de
+              la compréhension à la parole.
             </h2>
             <p className="t-body text-white/85">
-              Programme « De « Comprendre » à « Parler » » — 03 mois de
+              Programme « De <span className="text-red-button">Comprendre</span>{" "}
+              à <span className="text-red-button">Parler</span> » — 03 mois de
               coaching d&apos;anglais personnalisé, en ligne.
             </p>
           </Prose>
         </Reveal>
 
-        <div className="mx-auto mt-10 grid max-w-[60rem] gap-6 lg:mt-14 lg:grid-cols-[minmax(0,26rem)_minmax(0,30rem)] lg:gap-8">
+        <div className="mx-auto mt-10 grid max-w-[64rem] gap-6 lg:mt-14 lg:grid-cols-[minmax(0,28rem)_minmax(0,32rem)] lg:justify-center lg:gap-8">
           {/* Bloc prix */}
           <Reveal>
             <div className="flex h-full flex-col rounded-[12px] border border-white/20 bg-white/[0.06] p-6 md:p-10">
@@ -1089,32 +1097,19 @@ function SectionPrix() {
           </Reveal>
 
           {/* Value stack — tout ce que tu reçois (instruction
-              propriétaire : ne jamais écrire juste « 70 000 FCFA ») */}
+              propriétaire : ne jamais écrire juste « 70 000 FCFA »).
+              Liste longue → DEUX colonnes de cinq dans la même carte
+              (instruction propriétaire). */}
           <Reveal delay={120}>
             <div className="h-full rounded-[12px] border border-white/15 bg-white/[0.03] p-6 md:p-10">
               <h3 className="t-h3 text-white">
                 Voici tout ce que tu reçois pour {OFFRE.prix}{" "}
                 {OFFRE.devise} :
               </h3>
-              <ul className="mt-6 space-y-3.5">
-                {[
-                  ...AXES_PROGRAMME.map((a) => a[0].toUpperCase() + a.slice(1)),
-                ].map((item) => (
+              <ul className="mt-6 grid gap-x-8 gap-y-4 sm:grid-cols-2 sm:grid-rows-5 sm:grid-flow-col">
+                {VALUE_STACK.map((item) => (
                   <li key={item} className="flex items-start gap-3">
-                    <svg
-                      className="mt-1 h-5 w-5 shrink-0 text-white"
-                      viewBox="0 0 20 20"
-                      fill="none"
-                      aria-hidden="true"
-                    >
-                      <path
-                        d="M4 10.5 C 6.5 13, 8.5 15, 9 15.5 C 11.5 12, 14 8.5, 16.5 5.5"
-                        stroke="currentColor"
-                        strokeWidth={1.8}
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
+                    <IconCheck className="mt-0.5 text-white" fg="#000000" />
                     <span className="t-body text-white/90">{item}</span>
                   </li>
                 ))}
@@ -1132,77 +1127,58 @@ function SectionPrix() {
   );
 }
 
-/* — GARANTIE (instruction propriétaire) : basée sur l'ENGAGEMENT, jamais
-     une promesse absolue de résultat sans conditions. Conditions
-     affichées explicitement ; à 02 mois sans expression malgré des
-     conditions respectées → 100 % remboursé. Carte « contrat » sur fond
-     clair, bordure noire épaisse (héritage DA de l'encart Offres). — */
+/* — GARANTIE + PREUVE (instruction propriétaire) : la garantie est
+     basée sur l'ENGAGEMENT, jamais une promesse absolue de résultat
+     sans conditions ; le contenu PREUVE (cas réel + 98 %) vit
+     désormais À DROITE du cadre garantie — hors du cadre, pas dedans.
+     Carte « contrat » sur fond clair, bordure noire épaisse (héritage
+     DA de l'encart Offres). — */
 function Garantie() {
   return (
     <Section>
       <Container>
-        <Reveal>
-          <div className="mx-auto max-w-[46rem] rounded-[12px] border-2 border-black p-6 md:p-10">
-            <Eyebrow>Garantie</Eyebrow>
-            <h2 className="t-h2 mt-4 text-black">
-              Une garantie basée sur ton engagement.
-            </h2>
-            <p className="t-body mt-6">
-              Je ne te promets pas un résultat sans conditions — personne ne
-              peut honnêtement contrôler à ta place si tu parles. Ce que je
-              peux t&apos;engager, c&apos;est ceci : si tu remplis les
-              conditions ci-dessous et qu&apos;à deux mois tu ne t&apos;exprimes
-              toujours pas en anglais, je te rembourse 100 % de ton argent,
-              en entièreté.
-            </p>
-
-            {/* Les conditions — ce que la garantie exige */}
-            <ul className="mt-8 space-y-3 border-t border-grey-line pt-6">
-              {[
-                "Tu participes régulièrement aux séances du programme.",
-                "Tu fais les exercices personnalisés entre les séances.",
-                "Tu appliques les corrections travaillées ensemble.",
-              ].map((item) => (
-                <li key={item} className="flex items-start gap-3">
-                  <svg
-                    className="mt-1 h-5 w-5 shrink-0 text-black"
-                    viewBox="0 0 20 20"
-                    fill="none"
-                    aria-hidden="true"
-                  >
-                    <path
-                      d="M4 10.5 C 6.5 13, 8.5 15, 9 15.5 C 11.5 12, 14 8.5, 16.5 5.5"
-                      stroke="currentColor"
-                      strokeWidth={1.8}
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                  <span className="t-body">{item}</span>
-                </li>
-              ))}
-            </ul>
-
-            <p className="t-body mt-6 text-grey-mid">
-              Ce que je ne promets pas : que l&apos;anglais arrive tout seul.
-              Ce que je promets : si tu fais ta part et que ça ne suffit pas,
-              tu ne perds pas ton argent.
-            </p>
-          </div>
-        </Reveal>
-      </Container>
-    </Section>
-  );
-}
-
-/* — PREUVE : le cas réel (expatriation professionnelle) + 98 % —
-    renvoi vers la page Résultats. — */
-function Preuve() {
-  return (
-    <Section className="bg-grey-soft">
-      <Container>
-        <div className="mx-auto max-w-[46rem]">
+        <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-12">
+          {/* Cadre garantie — à gauche */}
           <Reveal>
+            <div className="h-full rounded-[12px] border-2 border-black p-6 md:p-10">
+              <Eyebrow>Garantie</Eyebrow>
+              <h2 className="t-h2 mt-4 text-black">
+                Une garantie basée sur ton engagement.
+              </h2>
+              <p className="t-body mt-6">
+                Je ne te promets pas un résultat sans conditions — personne ne
+                peut honnêtement contrôler à ta place si tu parles. Ce que je
+                peux t&apos;engager, c&apos;est ceci : si tu remplis les
+                conditions ci-dessous et qu&apos;à deux mois tu ne t&apos;exprimes
+                toujours pas en anglais, je te rembourse 100 % de ton argent,
+                en entièreté.
+              </p>
+
+              {/* Les conditions — ce que la garantie exige */}
+              <ul className="mt-8 space-y-3 border-t border-grey-line pt-6">
+                {[
+                  "Tu participes régulièrement aux séances du programme.",
+                  "Tu fais les exercices personnalisés entre les séances.",
+                  "Tu appliques les corrections travaillées ensemble.",
+                ].map((item) => (
+                  <li key={item} className="flex items-start gap-3">
+                    <IconCheck className="mt-0.5 text-black" />
+                    <span className="t-body">{item}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <p className="t-body mt-6 text-grey-mid">
+                Ce que je ne promets pas : que l&apos;anglais arrive tout seul.
+                Ce que je promets : si tu fais ta part et que ça ne suffit pas,
+                tu ne perds pas ton argent.
+              </p>
+            </div>
+          </Reveal>
+
+          {/* Preuve — à DROITE du cadre, hors du cadre
+              (instruction propriétaire) */}
+          <Reveal delay={120}>
             <Prose>
               <Eyebrow>Preuve</Eyebrow>
               <h2 className="t-h2 mt-4 text-black">
@@ -1221,12 +1197,15 @@ function Preuve() {
                 Ce n&apos;est pas un cas isolé : 98 % de mes débutants
                 absolus s&apos;expriment librement après un mois de coaching.
               </p>
+              <div className="mt-8">
+                <SecondaryLink
+                  href="#/resultats"
+                  className="btn-invert-hover"
+                >
+                  {CTA_LABELS.voirResultats}
+                </SecondaryLink>
+              </div>
             </Prose>
-          </Reveal>
-          <Reveal className="mt-10">
-            <SecondaryLink href="#/resultats">
-              {CTA_LABELS.voirResultats}
-            </SecondaryLink>
           </Reveal>
         </div>
       </Container>
@@ -1235,8 +1214,10 @@ function Preuve() {
 }
 
 /* — FAQ (instruction propriétaire) : le contenu de la page FAQ, renforcé,
-     intégré à l'accueil pour traiter les objections avant le CTA final. — */
-export const FAQ_OBJECTIONS = [
+     intégré à l'accueil pour traiter les objections avant le CTA final.
+     Ancre #faq : la navigation « FAQ » (header + footer) pointe directement
+     ici — la page FAQ autonome a été supprimée (instruction propriétaire). — */
+const FAQ_OBJECTIONS = [
   {
     question: "Et si je suis débutant ?",
     answer:
@@ -1287,7 +1268,7 @@ export const FAQ_OBJECTIONS = [
 
 function FaqSection() {
   return (
-    <Section>
+    <Section id="faq" className="scroll-mt-20 lg:scroll-mt-24">
       <Container>
         <Reveal>
           <Prose className="mx-auto max-w-[46rem] text-center">
@@ -1309,22 +1290,14 @@ function FaqSection() {
 }
 
 /* — CTA FINAL : urgence éthique (instruction propriétaire — jamais
-     d'artifice) + CTA principal répété. Centré : clôture du funnel. — */
+     d'artifice) en CARTE (même langage que la carte « quelqu'un d'autre
+     postule ») + CTA principal répété. Centré : clôture du funnel. — */
 function CtaFinal() {
   return (
     <Section className="on-dark bg-black text-white">
       <Container>
         <Reveal>
-          <Prose className="mx-auto max-w-[42rem] text-center">
-            <p className="font-display text-[1.375rem] leading-snug text-white md:text-[1.625rem] lg:text-[1.75rem]">
-              Chaque mois où tu repousses ta pratique est un mois
-              supplémentaire pendant lequel tu restes dans la même situation.
-            </p>
-            <p className="t-body mt-6 text-white/85">
-              Ta prochaine opportunité ne commencera pas quand tu te sentiras
-              parfaitement prêt. Commence maintenant.
-            </p>
-          </Prose>
+          <CarteUrgenceEthique className="mx-auto max-w-[46rem]" />
         </Reveal>
         <Reveal className="mt-10">
           <div className="flex flex-col items-center gap-5">

@@ -206,7 +206,10 @@ export function ResultatsPage() {
             </Prose>
           </Reveal>
           <Reveal className="mt-10">
-            <SecondaryLink href="#/programme">
+            <SecondaryLink
+              href="#/programme"
+              className="btn-invert-hover"
+            >
               {CTA_LABELS.decouvrir}
             </SecondaryLink>
           </Reveal>

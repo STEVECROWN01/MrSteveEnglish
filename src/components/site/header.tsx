@@ -16,20 +16,22 @@ import { Container } from "./layout-primitives";
  * « Découvrir le programme » vers la page Programme. Mobile : logo +
  * bouton menu (hamburger) — panneau déroulant noir.
  * Le lien « Méthode » mène à la section Méthode intégrée à l'accueil
- * (#/?section=methode) — instruction propriétaire.
+ * (#/?section=methode). Le lien « FAQ » mène désormais à la section
+ * « Questions fréquentes » de l'accueil (#/?section=faq) — la page FAQ
+ * autonome a été supprimée (instruction propriétaire).
  */
 
-const NAV_LINKS: { id: RouteId | "methode-section"; label: string; hash: string }[] = [
+const NAV_LINKS: { id: RouteId | "methode-section" | "faq-section"; label: string; hash: string }[] = [
   { id: "methode-section", label: "Méthode", hash: "#/?section=methode" },
   { id: "a-propos", label: "À propos", hash: "#/a-propos" },
   { id: "resultats", label: "Résultats", hash: "#/resultats" },
   { id: "programme", label: "Programme", hash: "#/programme" },
-  { id: "faq", label: "FAQ", hash: "#/faq" },
+  { id: "faq-section", label: "FAQ", hash: "#/?section=faq" },
   { id: "contact", label: "Inscription", hash: "#/contact" },
 ];
 
 /** Liens du menu mobile — Accueil inclus. */
-const MOBILE_LINKS: { id: RouteId | "methode-section"; label: string; hash: string }[] = [
+const MOBILE_LINKS: { id: RouteId | "methode-section" | "faq-section"; label: string; hash: string }[] = [
   { id: "accueil", label: "Accueil", hash: "#/" },
   ...NAV_LINKS,
 ];
@@ -55,6 +57,11 @@ export function Header() {
 
   // Le lien « Méthode » est actif quand on visualise sa section sur l'accueil
   const methodeActive = route === "accueil" && section === "methode";
+
+  // Le lien « FAQ » est actif sur la section Questions fréquentes de
+  // l'accueil (ou via un ancien lien #/faq — la page est supprimée)
+  const faqActive =
+    (route === "accueil" && section === "faq") || route === "faq";
 
   // Ferme le menu mobile à la touche Escape (accessibilité)
   useEffect(() => {
@@ -102,7 +109,8 @@ export function Header() {
               {NAV_LINKS.map((link) => {
                 const active =
                   route === link.id ||
-                  (link.id === "methode-section" && methodeActive);
+                  (link.id === "methode-section" && methodeActive) ||
+                  (link.id === "faq-section" && faqActive);
                 return (
                   <li key={link.id}>
                     <a
@@ -187,7 +195,8 @@ export function Header() {
               {MOBILE_LINKS.map((link) => {
                 const active =
                   route === link.id ||
-                  (link.id === "methode-section" && methodeActive);
+                  (link.id === "methode-section" && methodeActive) ||
+                  (link.id === "faq-section" && faqActive);
                 return (
                   <li key={link.id}>
                     <a

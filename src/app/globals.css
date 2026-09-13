@@ -213,6 +213,8 @@
       border-color 180ms var(--ease-std);
   }
   .btn-primary {
+    position: relative;
+    overflow: hidden; /* contient le balayage lumineux (instruction propriétaire) */
     background: var(--red-button);
     color: #ffffff;
   }
@@ -222,6 +224,42 @@
   }
   .btn-primary:active {
     transform: translateY(0);
+  }
+  /* Balayage lumineux gauche → droite au survol (instruction
+     propriétaire : tous les boutons rouges). Un reflet incliné
+     traverse le bouton une fois, de la gauche vers la droite.
+     L'animation ne joue qu'au :hover ; en repartant, le pseudo-élément
+     saute hors-champ (clippé par overflow:hidden) — jamais de retour
+     arrière visible. */
+  .btn-primary::after {
+    content: "";
+    position: absolute;
+    inset: -2px;
+    z-index: 1;
+    background: linear-gradient(
+      110deg,
+      transparent 32%,
+      rgba(255, 255, 255, 0.45) 50%,
+      transparent 68%
+    );
+    transform: translateX(-140%) skewX(-14deg);
+    pointer-events: none;
+  }
+  .btn-primary:hover::after {
+    animation: btn-shine 750ms var(--ease-std);
+  }
+  @keyframes btn-shine {
+    from {
+      transform: translateX(-140%) skewX(-14deg);
+    }
+    to {
+      transform: translateX(140%) skewX(-14deg);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .btn-primary::after {
+      display: none;
+    }
   }
   .btn-secondary {
     background: transparent;

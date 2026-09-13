@@ -110,7 +110,10 @@ export function AProposPage() {
             </Prose>
           </Reveal>
           <Reveal className="mt-12">
-            <SecondaryLink href="#/resultats">
+            <SecondaryLink
+              href="#/resultats"
+              className="btn-invert-hover"
+            >
               {CTA_LABELS.voirResultats}
             </SecondaryLink>
           </Reveal>

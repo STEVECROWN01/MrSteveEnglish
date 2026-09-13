@@ -3,6 +3,7 @@
 import { CTA_LABELS, OFFRE } from "@/lib/site";
 import { Container, Eyebrow, PageHero, Section } from "../layout-primitives";
 import { CtaButton } from "../buttons";
+import { IconCheck } from "../icons";
 import { Reveal } from "../reveal";
 import { StickyCTA } from "../sticky-cta";
 import { ResponsiveImage } from "../responsive-image";
@@ -10,7 +11,7 @@ import { ResponsiveImage } from "../responsive-image";
 /**
  * PAGE 5 — PROGRAMME (ex-Offres) : L'OFFRE UNIQUE (instruction
  * propriétaire) — la conversion tourne autour d'UNE SEULE offre :
- * Programme « De "Comprendre" à "Parler" » — 03 mois de coaching
+ * Programme « De Comprendre à Parler » — 03 mois de coaching
  * d'anglais personnalisé — 70 000 FCFA — paiement unique. Plus aucun
  * multi-format, aucune offre 2 mois, aucun tarif multiple. Le site
  * vend une transformation, pas des heures de cours.
@@ -34,11 +35,31 @@ const OBJECTIONS = [
   },
 ];
 
+/* Tout ce que comprend le programme — podcasts inclus (instruction
+   propriétaire : ressource de pratique pure). */
+const PROGRAMME_INCLUS = [
+  "Pratique orale régulière",
+  "Conversations réelles",
+  "Corrections personnalisées",
+  "Prononciation",
+  "Vocabulaire utile",
+  "Construction des phrases",
+  "Confiance à l'oral",
+  "Accompagnement personnalisé",
+  "Exercices entre les séances",
+  "Des podcasts pour la pratique pure",
+];
+
 export function ProgrammePage() {
   return (
     <>
       <PageHero
-        title="De « Comprendre » à « Parler »."
+        title={
+          <>
+            De <span className="text-red-button">Comprendre</span> à{" "}
+            <span className="text-red-button">Parler</span>.
+          </>
+        }
         subtitle="Le programme d'accompagnement de 03 mois — un seul objectif : que tu parles anglais avec confiance."
       />
 
@@ -119,36 +140,12 @@ export function ProgrammePage() {
                 Voici tout ce que comprend le programme :
               </h3>
               <div className="mt-6 grid gap-x-10 gap-y-4 sm:grid-cols-2">
-                {[
-                  "Pratique orale régulière",
-                  "Conversations réelles",
-                  "Corrections personnalisées",
-                  "Prononciation",
-                  "Vocabulaire utile",
-                  "Compréhension orale",
-                  "Construction des phrases",
-                  "Confiance à l'oral",
-                  "Accompagnement personnalisé",
-                  "Exercices entre les séances",
-                ].map((item) => (
+                {PROGRAMME_INCLUS.map((item) => (
                   <div
                     key={item}
                     className="flex items-start gap-3 border-b border-grey-line pb-4"
                   >
-                    <svg
-                      className="mt-1 h-5 w-5 shrink-0 text-black"
-                      viewBox="0 0 20 20"
-                      fill="none"
-                      aria-hidden="true"
-                    >
-                      <path
-                        d="M4 10.5 C 6.5 13, 8.5 15, 9 15.5 C 11.5 12, 14 8.5, 16.5 5.5"
-                        stroke="currentColor"
-                        strokeWidth={1.8}
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
+                    <IconCheck className="mt-0.5 text-black" />
                     <span className="t-body">{item}</span>
                   </div>
                 ))}

@@ -34,11 +34,11 @@ export function waLink(message?: string): string {
 /**
  * OFFRE UNIQUE (instruction propriétaire — la conversion tourne autour
  * d'UNE SEULE offre, plus aucun multi-format / multi-durée / multi-prix) :
- * Programme « De "Comprendre" à "Parler" » — 03 mois de coaching d'anglais
+ * Programme « De Comprendre à Parler » — 03 mois de coaching d'anglais
  * personnalisé — 70 000 FCFA — paiement unique.
  */
 export const OFFRE = {
-  programme: "Programme « De « Comprendre » à « Parler » »",
+  programme: "Programme « De Comprendre à Parler »",
   duree: "03 mois",
   rythme: "Trois séances de 1h30 par semaine",
   prix: "70 000",

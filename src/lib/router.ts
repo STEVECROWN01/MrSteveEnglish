@@ -2,11 +2,14 @@
 
 import { useEffect, useRef, useSyncExternalStore } from "react";
 
-/** Les pages du site — routées par hash sur la route /. La méthode vit
- * désormais SUR l'accueil (instruction propriétaire) : le lien de
- * navigation « Méthode » pointe vers #/?section=methode.
- * « offres » reste une clé valide : les anciens liens partagés #/offres
- * atterrissent sur la page Programme (offre unique). */
+/** Les pages du site — routées par hash sur la route /. La méthode et
+ * la FAQ vivent désormais SUR l'accueil (instruction propriétaire) : les
+ * liens de navigation « Méthode » et « FAQ » pointent vers
+ * #/?section=methode et #/?section=faq.
+ * « offres » et « faq » restent des clés valides : les anciens liens
+ * partagés #/offres atterrissent sur la page Programme, et #/faq sur
+ * l'accueil (défilement automatique vers la section Questions
+ * fréquentes — géré dans app/page.tsx). */
 export type RouteId =
   | "accueil"
   | "a-propos"
@@ -22,7 +25,7 @@ export const ROUTES: Record<RouteId, { hash: string; title: string }> = {
   resultats: { hash: "#/resultats", title: "Résultats — Stevens AKPOVI" },
   programme: { hash: "#/programme", title: "Programme — Stevens AKPOVI" },
   offres: { hash: "#/programme", title: "Programme — Stevens AKPOVI" },
-  faq: { hash: "#/faq", title: "FAQ — Stevens AKPOVI" },
+  faq: { hash: "#/faq", title: "Questions fréquentes — Stevens AKPOVI" },
   contact: { hash: "#/contact", title: "Inscription — Stevens AKPOVI" },
 };
 

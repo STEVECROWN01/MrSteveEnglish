@@ -9,15 +9,18 @@ import { HomePage } from "@/components/site/pages/home-page";
 
 /**
  * Site Stevens AKPOVI — pages routées par hash sur la route /. La méthode
- * vit désormais SUR la page d'accueil (instruction propriétaire) : le lien
- * « Méthode » y mène via #/?section=methode. Chaque page conserve son rôle
- * dans le parcours utilisateur. Tous les CTA mènent au formulaire de
- * contact (instruction propriétaire).
- * Le footer reste collé en bas de viewport quand le contenu est court
- * et est poussé naturellement quand il déborde.
+ * et la FAQ vivent désormais SUR la page d'accueil (instruction
+ * propriétaire) : les liens « Méthode » et « FAQ » y mènent via
+ * #/?section=methode et #/?section=faq. La page FAQ autonome a été
+ * SUPPRIMÉE : la clé de route « faq » est conservée comme alias de
+ * l'accueil — les anciens liens partagés #/faq atterrissent sur
+ * l'accueil, avec défilement automatique vers la section « Questions
+ * fréquentes ». Tous les CTA mènent au formulaire de contact
+ * (instruction propriétaire). Le footer reste collé en bas de viewport
+ * quand le contenu est court.
  *
  * PERF (instruction propriétaire : site lent, boutons lents à diriger) :
- * les 5 pages secondaires sont code-split — le bundle initial n'embarque
+ * les pages secondaires sont code-split — le bundle initial n'embarque
  * que l'accueil, l'hydratation est plus rapide et TOUT le site répond
  * plus tôt (les <a href="#/…"> deviennent fonctionnels dès que React est
  * hydraté). Les chunks sont ensuite PRÉCHAUFFÉS pendant l'inactivité du
@@ -40,10 +43,6 @@ const ProgrammePage = dynamic(
   () => import("@/components/site/pages/programme-page").then((m) => m.ProgrammePage),
   { ssr: false, loading: PageLoading },
 );
-const FaqPage = dynamic(
-  () => import("@/components/site/pages/faq-page").then((m) => m.FaqPage),
-  { ssr: false, loading: PageLoading },
-);
 const ContactPage = dynamic(
   () => import("@/components/site/pages/contact-page").then((m) => m.ContactPage),
   { ssr: false, loading: PageLoading },
@@ -58,8 +57,8 @@ function renderPage(route: RouteId) {
     case "programme":
     case "offres": // anciens liens partagés #/offres
       return <ProgrammePage />;
-    case "faq":
-      return <FaqPage />;
+    case "faq": // anciens liens #/faq → FAQ vit désormais sur l'accueil
+      return <HomePage />;
     case "contact":
       return <ContactPage />;
     default:
@@ -72,7 +71,21 @@ export default function Page() {
   useRouteEffects(route);
   useSectionScroll();
 
-  /* Préchauffage à l'inactivité (idle) : les 5 pages secondaires (~35 Ko
+  /* Anciens liens partagés #/faq : la page FAQ est supprimée, la route
+     « faq » rend l'accueil — on défile alors vers la section « Questions
+     fréquentes » (id="faq"). Le léger délai laisse le rendu se poser
+     après le reset de scroll du changement de page. */
+  useEffect(() => {
+    if (route !== "faq") return;
+    const t = window.setTimeout(() => {
+      document
+        .getElementById("faq")
+        ?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 250);
+    return () => window.clearTimeout(t);
+  }, [route]);
+
+  /* Préchauffage à l'inactivité (idle) : les pages secondaires (~30 Ko
      gz au total) sont chargées pendant le repos du navigateur — la
      navigation reste instantanée, y compris à la première interaction,
      sans jamais retarder le chargement initial. La scène 3D (three.js,
@@ -84,12 +97,11 @@ export default function Page() {
       void import("@/components/site/pages/a-propos-page");
       void import("@/components/site/pages/resultats-page");
       void import("@/components/site/pages/programme-page");
-      void import("@/components/site/pages/faq-page");
       void import("@/components/site/pages/contact-page");
     };
-    if ("requestIdleCallback" in window) {
-      const id = requestIdleCallback(warm, { timeout: 4000 });
-      return () => cancelIdleCallback(id);
+    if (typeof window.requestIdleCallback === "function") {
+      const id = window.requestIdleCallback(warm, { timeout: 4000 });
+      return () => window.cancelIdleCallback(id);
     }
     const t = window.setTimeout(warm, 2500);
     return () => window.clearTimeout(t);
