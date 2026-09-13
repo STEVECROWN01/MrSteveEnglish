@@ -81,6 +81,7 @@ export function ResultatsPage() {
               <ResponsiveImage
                 src="/assets/RESULTATS-CAS.webp"
                 alt="Silhouette de dos avec une valise, face à la baie vitrée d'un aéroport baignée de lumière"
+                fill
                 sizes="(max-width: 1023px) 92vw, 88vw"
                 className="object-cover"
               />

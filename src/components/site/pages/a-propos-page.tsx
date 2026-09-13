@@ -30,6 +30,7 @@ export function AProposPage() {
                 <ResponsiveImage
                   src="/assets/APROPOS-PORTRAIT.webp"
                   alt="Portrait professionnel de Stevens Akpovi, coach d'anglais, en costume noir et lunettes, dans un intérieur moderne"
+                  fill
                   priority
                   sizes="(max-width: 1023px) 92vw, 40vw"
                   className="object-cover"
@@ -74,6 +75,7 @@ export function AProposPage() {
               <ResponsiveImage
                 src="/assets/APROPOS-AMBIANCE.webp"
                 alt="Casque audio et ordinateur portable ouvert sur une visioconférence, lumière naturelle de fin d'après-midi"
+                fill
                 sizes="(max-width: 1023px) 92vw, 88vw"
                 className="object-cover"
               />

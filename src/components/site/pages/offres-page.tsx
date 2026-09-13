@@ -92,8 +92,9 @@ export function OffresPage() {
           <ResponsiveImage
             src="/assets/OFFRES-TEXTURE.webp"
             alt=""
+            fill
             sizes="100vw"
-            className="h-full w-full object-cover opacity-60"
+            className="object-cover opacity-60"
           />
         </div>
 

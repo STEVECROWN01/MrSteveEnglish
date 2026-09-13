@@ -155,6 +155,7 @@ function Hero() {
         <ResponsiveImage
           src="/assets/HERO-01.webp"
           alt="Stevens AKPOVI, coach d'anglais, souriant, assis à une table dans un intérieur chaleureux"
+          fill
           priority
           sizes="100vw"
           /* Variantes pré-générées (mobile 480w ≈ 15 Ko) : le navigateur ne
@@ -381,6 +382,7 @@ function Solution() {
               <ResponsiveImage
                 src="/assets/METHOD-01.webp"
                 alt="Apprenante souriante en pleine séance de coaching d'anglais en ligne, concentrée sur son écran — tasse « Small Steps Big Progress » posée sur le bureau"
+                fill
                 sizes="(max-width: 1023px) 92vw, 352px"
                 className="object-cover object-[60%_center]"
               />
@@ -447,6 +449,7 @@ function Methode() {
                 <ResponsiveImage
                   src="/assets/METHODE-01-rigide.webp"
                   alt="Homme pensif face à ses livres de grammaire anglaise — feuilles froissées sur le bureau, affiche « Discipline » : l'étude rigide qui ne fait pas parler"
+                  fill
                   sizes="(max-width: 1023px) 92vw, 566px"
                   className="object-cover"
                 />
@@ -476,6 +479,7 @@ function Methode() {
                 <ResponsiveImage
                   src="/assets/METHODE-01-fluide.webp"
                   alt="Femme souriante en séance de coaching d'anglais en visioconférence — casque sur les oreilles, lumière chaude : la pratique vivante qui débloque la parole"
+                  fill
                   sizes="(max-width: 1023px) 92vw, 566px"
                   className="object-cover"
                 />
