@@ -32,7 +32,7 @@ export function AProposPage() {
                   alt="Portrait professionnel de Stevens Akpovi, coach d'anglais, en costume noir et lunettes, dans un intérieur moderne"
                   fill
                   priority
-                  sizes="(max-width: 1023px) 92vw, 40vw"
+                  sizes="(max-width: 639px) 92vw, 480px"
                   className="object-cover"
                 />
               </div>

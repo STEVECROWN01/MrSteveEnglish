@@ -7,7 +7,8 @@
     "variants": [
       480,
       768,
-      1200
+      1200,
+      2560
     ]
   },
   "/assets/PROBLEME-01.webp": {
@@ -17,7 +18,9 @@
     ],
     "variants": [
       480,
-      800
+      800,
+      1152,
+      1800
     ]
   },
   "/assets/METHOD-01.webp": {
@@ -27,7 +30,9 @@
     ],
     "variants": [
       480,
-      768
+      768,
+      1152,
+      1800
     ]
   },
   "/assets/METHODE-01-rigide.webp": {
@@ -37,7 +42,9 @@
     ],
     "variants": [
       480,
-      768
+      768,
+      1280,
+      2048
     ]
   },
   "/assets/METHODE-01-fluide.webp": {
@@ -47,7 +54,9 @@
     ],
     "variants": [
       480,
-      768
+      768,
+      1280,
+      2048
     ]
   },
   "/assets/APROPOS-PORTRAIT.webp": {
@@ -57,7 +66,9 @@
     ],
     "variants": [
       480,
-      768
+      768,
+      1152,
+      1800
     ]
   },
   "/assets/APROPOS-AMBIANCE.webp": {
@@ -88,7 +99,8 @@
       1254
     ],
     "variants": [
-      128
+      128,
+      256
     ]
   },
   "/assets/AVATAR-DAVID.webp": {
@@ -97,7 +109,8 @@
       1254
     ],
     "variants": [
-      128
+      128,
+      256
     ]
   },
   "/assets/AVATAR-MICHAEL.webp": {
@@ -106,7 +119,8 @@
       1254
     ],
     "variants": [
-      128
+      128,
+      256
     ]
   },
   "/assets/OFFRES-TEXTURE.webp": {
@@ -127,7 +141,9 @@
     ],
     "variants": [
       480,
-      768
+      768,
+      1080,
+      1728
     ]
   },
   "/assets/METHODE-02-traditionnel.webp": {
@@ -137,7 +153,9 @@
     ],
     "variants": [
       480,
-      768
+      768,
+      1080,
+      1728
     ]
   }
 }

@@ -168,10 +168,13 @@ function Hero() {
           alt="Stevens AKPOVI, coach d'anglais, souriant, assis à une table dans un intérieur chaleureux"
           fill
           priority
-          sizes="100vw"
-          /* Variantes pré-générées (mobile 480w ≈ 15 Ko) : le navigateur ne
-             télécharge que la largeur utile — pipeline sans double encodage
-             (leçon hero : jamais de ré-encodage par l'optimiseur Next). */
+          /* Netteté haute densité (instruction propriétaire) : le hero
+             recadre un visuel paysage dans un viewport portrait — le crop
+             amplifie l'étirement, d'où des tailles surfaites (300vw mobile /
+             200vw tablette) qui forcent la variante 2560w sur les écrans
+             DPR 2–3 (mobile : 2,1× plus de pixels qu'avant). Desktop
+             100vw → 2560w (100 Ko, plus légère que l'originale). */
+          sizes="(max-width: 640px) 300vw, (max-width: 1024px) 200vw, 100vw"
           className="object-cover object-[75%_center] lg:object-center"
         />
         {/* Overlays de lisibilité : voile renforcé côté gauche (zone du
@@ -192,14 +195,15 @@ function Hero() {
           plus grand sans ajouter de lignes — les phrases cassent
           moins) ; espacements compactés pour garantir 0px de
           débordement sur les portables bas. */}
-      <Container className="relative w-full pb-24 pt-28 lg:pb-16 lg:pt-20 [@media(min-height:1050px)]:lg:pb-48">
+      <Container className="relative w-full pb-24 pt-28 lg:pb-16 lg:pt-20 [@media(max-height:750px)]:pb-16 [@media(max-height:750px)]:pt-24 [@media(max-height:750px)]:lg:pb-12 [@media(max-height:750px)]:lg:pt-16 [@media(min-height:1050px)]:lg:pb-48">
         <div className="max-w-[33rem]">
           {/* Pleine taille DA (64px+) sur écrans standard ; plafond léger
-              min(4.25rem, 7,7svh) — titre encore légèrement agrandi
-              (instruction propriétaire) — pour que le titre multi-lignes
-              tienne dans le premier écran des portables bas — 1080p garde
-              68px nets. Mobile : léger rehaussement du clamp t-h1. */}
-          <h1 className="t-h1 text-white text-[length:clamp(2.375rem,1.65rem+3.4vw,4.25rem)] lg:text-[length:min(4.25rem,7.7svh)]">
+              min(4.5rem, 8.15svh) — titre encore un peu agrandi
+              (instruction propriétaire, 2e demande) — pour que le titre
+              multi-lignes tienne dans le premier écran des portables bas —
+              1080p garde 72px nets. Mobile : clamp rehaussé
+              (2.5rem → 4.5rem, pente 3.6vw). */}
+          <h1 className="t-h1 text-white text-[length:clamp(2.5rem,1.7rem+3.6vw,4.5rem)] lg:text-[length:min(4.5rem,8.15svh)]">
             <span className="hero-line hero-d1 block">
               Tu comprends l&apos;anglais depuis des années.
             </span>
@@ -415,7 +419,7 @@ function Solution() {
                 src="/assets/METHOD-01.webp"
                 alt="Apprenante souriante en pleine séance de coaching d'anglais en ligne, concentrée sur son écran — tasse « Small Steps Big Progress » posée sur le bureau"
                 fill
-                sizes="(max-width: 1023px) 92vw, 352px"
+                sizes="352px"
                 className="object-cover object-[60%_center]"
               />
             </div>
@@ -504,7 +508,7 @@ function PourquoiCaMarchaitPas() {
                   src={carte.image}
                   alt={carte.alt}
                   fill
-                  sizes="(max-width: 639px) 92vw, (max-width: 1023px) 46vw, 566px"
+                  sizes="(max-width: 639px) 92vw, (max-width: 1023px) 60vw, 566px"
                   className="object-cover"
                 />
                 <div
@@ -660,7 +664,7 @@ function AvantApres() {
                 src="/assets/PROBLEME-01.webp"
                 alt="Apprenante bloquée : menton posé sur la main devant ses livres, feuille froissée — l'anglais compris mais pas parlé"
                 fill
-                sizes="(max-width: 1023px) 92vw, 44vw"
+                sizes="(max-width: 1023px) 180vw, 44vw"
                 className="object-cover [filter:grayscale(35%)]"
               />
               <div
@@ -709,7 +713,7 @@ function AvantApres() {
                 src="/assets/METHOD-01.webp"
                 alt="Apprenante épanouie en séance de coaching en ligne, tasse « Small Steps Big Progress » sur le bureau — l'anglais qu'on ose parler"
                 fill
-                sizes="(max-width: 1023px) 92vw, 44vw"
+                sizes="(max-width: 1023px) 180vw, 44vw"
                 className="object-cover"
               />
               <div
@@ -887,7 +891,7 @@ function PourquoiMoi() {
                 src="/assets/APROPOS-PORTRAIT.webp"
                 alt="Portrait professionnel de Stevens Akpovi, coach d'anglais, en costume noir et lunettes, dans un intérieur moderne"
                 fill
-                sizes="(max-width: 1023px) 92vw, 352px"
+                sizes="352px"
                 className="object-cover"
               />
             </div>
