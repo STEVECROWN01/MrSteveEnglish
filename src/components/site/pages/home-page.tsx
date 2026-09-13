@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { useInViewOnce, usePrefersReducedMotion } from "@/lib/motion";
 import { CTA_LABELS } from "@/lib/site";
@@ -38,6 +39,59 @@ export function HomePage() {
       <Methode />
       <StickyCTA href="#/contact" label={CTA_LABELS.hero} />
     </>
+  );
+}
+
+/** Fin du titre hero rotative (instruction propriétaire) : la phrase
+ *  clé change en boucle — « ta gorge se noue. » → « ta gorge se serre. »
+ *  → « tu te bloques. » → « tu perds tes mots. » puis retour à la
+ *  première. Chaque variante reste affichée 3 s (la première attend
+ *  la fin de la révélation de la ligne hero-d2), permutation par fondu
+ *  450 ms (classes .hero-phrase). Rendu initial identique au serveur
+ *  (index 0) : aucun décalage d'hydratation. Reduced motion : texte
+ *  statique sur la première variante. */
+const HERO_PHRASES = [
+  "ta gorge se noue.",
+  "ta gorge se serre.",
+  "tu te bloques.",
+  "tu perds tes mots.",
+] as const;
+
+function HeroRotatingPhrase() {
+  const [index, setIndex] = useState(0);
+  const [hidden, setHidden] = useState(false);
+  const firstCycle = useRef(true);
+  const reduced = usePrefersReducedMotion();
+
+  useEffect(() => {
+    if (reduced) return;
+    // Premier cycle : 3 s après l'affichage complet de la ligne
+    // (hero-d2 : délai 230 ms + animation 600 ms ≈ 830 ms). Ensuite :
+    // 3 s pleines après chaque permutation.
+    const initial = firstCycle.current;
+    firstCycle.current = false;
+    let swap: ReturnType<typeof setTimeout> | undefined;
+    const hold = setTimeout(
+      () => {
+        setHidden(true);
+        // Fondu de sortie terminé (450 ms + marge) : permutation.
+        swap = setTimeout(() => {
+          setIndex((i) => (i + 1) % HERO_PHRASES.length);
+          setHidden(false);
+        }, 480);
+      },
+      initial ? 3800 : 3000,
+    );
+    return () => {
+      clearTimeout(hold);
+      if (swap) clearTimeout(swap);
+    };
+  }, [index, reduced]);
+
+  return (
+    <span className={cn("hero-phrase", hidden && "hero-phrase-hidden")}>
+      {HERO_PHRASES[index]}
+    </span>
   );
 }
 
@@ -84,7 +138,8 @@ function Hero() {
               Tu comprends l&apos;anglais depuis des années.
             </span>
             <span className="hero-line hero-d2 block">
-              Mais dès qu&apos;il faut parler, ta gorge se noue.
+              Mais dès qu&apos;il faut parler,{" "}
+              <HeroRotatingPhrase />
             </span>
           </h1>
           <p className="hero-line hero-d3 t-body mt-6 text-white/85">
@@ -219,13 +274,14 @@ function Solution() {
       {/* Limite de section oblique (instruction propriétaire) : la
           frontière avec la section noire ci-dessus monte de la gauche
           vers la droite — coin noir plein en haut-gauche, aligné au
-          bord. Sous le voile dark-fade : invisible avant le fondu,
-          révélée avec lui. */}
+          bord. Inclinaison réduite (instruction propriétaire) :
+          24 px mobile / 32 px desktop. Sous le voile dark-fade :
+          invisible avant le fondu, révélée avec lui. */}
       <svg
         aria-hidden="true"
         viewBox="0 0 100 100"
         preserveAspectRatio="none"
-        className="absolute inset-x-0 top-0 block h-10 w-full lg:h-14"
+        className="absolute inset-x-0 top-0 block h-6 w-full lg:h-8"
       >
         <polygon points="0,0 100,0 0,100" fill="#000000" />
       </svg>
@@ -305,8 +361,16 @@ function Methode() {
       <Section>
         {/* Trait de séparation court (instruction propriétaire) :
             marque la limite « Ma méthode » / « Comment ça marche » —
-            horizontal, centré, noir pur #000000, légèrement épais. */}
-        <div aria-hidden="true" className="mx-auto h-[3px] w-20 bg-black" />
+            horizontal, centré, noir pur #000000, légèrement épais.
+            Allongé (112 px). Margin-top négatif = le trait remonte au
+            centre vertical de l'espace inter-sections ; margin-bottom
+            équivalent = le contenu « Comment ça marche » garde sa
+            position (seul le trait bouge). Desktop : 96 px de chaque
+            côté, mobile : 48 px. */}
+        <div
+          aria-hidden="true"
+          className="mx-auto -mt-12 mb-12 h-[3px] w-28 bg-black lg:-mt-24 lg:mb-24"
+        />
         <Container>
           <Reveal>
             <Prose>
@@ -505,7 +569,12 @@ function Methode() {
             </Prose>
           </Reveal>
           <Reveal className="mt-10 flex justify-center">
-            <SecondaryLink href="#/resultats">
+            {/* btn-invert-hover (instruction propriétaire) : au survol,
+                fond noir pur #000000 + texte blanc. */}
+            <SecondaryLink
+              href="#/resultats"
+              className="btn-invert-hover"
+            >
               {CTA_LABELS.voirMethode}
             </SecondaryLink>
           </Reveal>

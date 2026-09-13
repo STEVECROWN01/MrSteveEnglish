@@ -235,6 +235,24 @@
   .btn-secondary:active {
     transform: translateY(0);
   }
+  /* Inversion au survol (instruction propriétaire) : le bouton devient
+     un bloc noir plein #000000 — texte blanc pour la lisibilité.
+     Classe opt-in : n'affecte que les instances décorées (accueil,
+     section objection). Les autres boutons secondaires du site
+     conservent le survol discret rgba(0,0,0,0.05). */
+  .btn-invert-hover {
+    transition:
+      transform 180ms var(--ease-std),
+      background-color 180ms var(--ease-std),
+      border-color 180ms var(--ease-std),
+      color 180ms var(--ease-std),
+      box-shadow 180ms var(--ease-std);
+  }
+  .btn-invert-hover:hover {
+    background: #000000;
+    border-color: #000000;
+    color: #ffffff;
+  }
 
   /* — Cards (DA §7) : radius 12, ombre bleutée, bordure uniquement témoignages — */
   .card-base {
@@ -317,6 +335,21 @@
     .hero-d3 { animation-delay: 330ms; }
     .hero-d4 { animation-delay: 390ms; }
     .hero-d5 { animation-delay: 450ms; }
+  }
+
+  /* — Rotation de la fin du titre hero (instruction propriétaire) :
+     « ta gorge se noue. » → « ta gorge se serre. » → « tu te bloques. »
+     → « tu perds tes mots. » — chaque variante tenue 3 s, permutation
+     par fondu 450 ms, boucle continue (logique JS : HeroRotatingPhrase
+     dans home-page.tsx). */
+  .hero-phrase {
+    transition:
+      opacity 450ms var(--ease-std),
+      transform 450ms var(--ease-std);
+  }
+  .hero-phrase-hidden {
+    opacity: 0;
+    transform: translateY(0.08em);
   }
 
   /* — Fade noir → blanc à l'entrée de la section Solution — */
@@ -459,6 +492,12 @@
   .hero-line {
     opacity: 1;
     animation: none;
+  }
+  .hero-phrase,
+  .hero-phrase-hidden {
+    transition: none;
+    opacity: 1;
+    transform: none;
   }
   .dark-fade {
     animation: none;
