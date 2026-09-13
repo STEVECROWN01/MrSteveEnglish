@@ -176,10 +176,17 @@ function Hero() {
         />
       </div>
 
-      {/* Texte sur l'image — aligné à gauche, espace large sous le CTA */}
-      <Container className="relative w-full pb-24 pt-28 lg:pb-48 lg:pt-32">
+      {/* Texte sur l'image — aligné à gauche. Desktop : paddings compactés
+          + titre calibré sur la hauteur d'écran (min(4rem, 6svh)) pour que
+          le hero tienne TOUJOURS dans le premier écran (le recadrage de
+          l'image en dépend aussi : hero = viewport ⇒ moins de zoom) ;
+          écrans très hauts (≥ 1050px) retrouvent le grand souffle bas. — */}
+      <Container className="relative w-full pb-24 pt-28 lg:pb-24 lg:pt-24 [@media(min-height:1050px)]:lg:pb-48">
         <div className="max-w-[30rem]">
-          <h1 className="t-h1 text-white">
+          {/* lg:text-[length:min(4rem,6svh)] : capped par la hauteur — la
+              typo DA §6 (clamp vw) reste intacte mobile et sur grands
+              écrans (6svh ≥ 64px dès 1067px de haut). */}
+          <h1 className="t-h1 text-white lg:text-[length:min(4rem,6svh)]">
             <span className="hero-line hero-d1 block">
               Tu comprends l&apos;anglais depuis des années.
             </span>
