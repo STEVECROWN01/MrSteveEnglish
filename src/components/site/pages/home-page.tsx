@@ -308,9 +308,10 @@ function ProblemeAgitation() {
 
             {/* Texte — positionné à droite de l'image */}
             <Prose>
+              {/* Deux temps, deux titres (instruction propriétaire) :
+                  le constat d&apos;abord, puis la conséquence. */}
               <h2 className="t-h2 text-white">
-                Et pendant ce temps, ton projet attend… puis quelqu&apos;un
-                d&apos;autre postule.
+                Et pendant ce temps, ton projet attend.
               </h2>
               <p className="t-body text-white/85">
                 Un poste qui exige l&apos;anglais. Un examen qui approche. Un
@@ -320,17 +321,16 @@ function ProblemeAgitation() {
                 de parler. Chaque mois qui passe sans progrès, c&apos;est cet
                 objectif qui se rapproche sans que tu sois prêt.
               </p>
-              {/* Fusion intelligente (instruction propriétaire) : le contenu
-                  de l&apos;ancienne carte « quelqu&apos;un d&apos;autre postule » complète
-                  ce bloc — uniquement ce qui n&apos;y était pas déjà. */}
+              <h2 className="t-h2 mt-12 text-white">
+                Puis quelqu&apos;un d&apos;autre postule.
+              </h2>
               <p className="t-body text-white/85">
-                Et pendant ce temps, quelqu&apos;un d&apos;autre postule. Quelqu&apos;un
-                qui ose parler — même imparfaitement — passe l&apos;entretien,
-                décroche le poste, signe le client, part travailler à
-                l&apos;étranger. Ton blocage ne coûte pas seulement de la
-                frustration : il te coûte des opportunités que tu ne verras
-                même jamais passer. Et chaque mois qui passe éloigne un peu
-                plus les prochaines.
+                Quelqu&apos;un qui ose parler — même imparfaitement — passe
+                l&apos;entretien, décroche le poste, signe le client, part
+                travailler à l&apos;étranger. Ton blocage ne coûte pas seulement
+                de la frustration : il te coûte des opportunités que tu ne
+                verras même jamais passer. Et chaque mois qui passe éloigne un
+                peu plus les prochaines.
               </p>
             </Prose>
           </div>
@@ -381,8 +381,16 @@ function Solution() {
               <p className="t-body mt-6">
                 Je ne suis pas un programme figé. J&apos;ajuste chaque séance à
                 ce que tu as réellement compris — pas à ce qui était prévu sur
-                le papier. Résultat : 98 % de mes débutants absolus
-                s&apos;expriment librement après un mois de coaching.
+                le papier.
+              </p>
+              <p className="t-body mt-4">
+                Résultat : Après quelques semaines, le changement ne se mesure
+                plus seulement dans ce que tu connais, mais dans ce que tu oses
+                enfin faire. Répondre sans préparer chaque phrase. Trouver tes
+                mots sans paniquer. Continuer une conversation même quand ton
+                anglais n&apos;est pas parfait. C&apos;est à ce moment-là que
+                l&apos;anglais commence réellement à devenir une langue que tu
+                utilises — et plus seulement une matière que tu étudies.
               </p>
               <p className="t-body mt-4">
                 Je t&apos;accompagne en ligne, pendant trois mois, avec un
@@ -491,12 +499,16 @@ function PourquoiCaMarchaitPas() {
         </Reveal>
 
         {/* Quatre cartes — image de fond + voile + texte overlay.
-            2×2 desktop (sm:), empilées mobile. Ratio COMPACT (instruction
-            propriétaire : cartes beaucoup moins hautes qu’avant). */}
+            2×2 desktop (sm:), empilées mobile. Hauteur FLEXIBLE
+            (instruction propriétaire : les titres des cartes 2-4 restaient
+            coincés contre le bord supérieur — l'ancien ratio fixe 4:3/3:2
+            était trop court pour le texte sur mobile). La carte garde une
+            hauteur minimum compacte et GRANDIT si le texte l'exige :
+            plus aucun texte ne peut déborder du cadre. */}
         <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:mt-14 lg:gap-8">
           {ANCIENNES_METHODES.map((carte, i) => (
             <Reveal key={carte.eyebrow} delay={(i % 2) * 120}>
-              <figure className="relative aspect-[4/3] overflow-hidden rounded-[12px] sm:aspect-[3/2]">
+              <figure className="relative flex min-h-[21rem] flex-col justify-end overflow-hidden rounded-[12px] sm:min-h-[23rem] lg:min-h-[24rem]">
                 <ResponsiveImage
                   src={carte.image}
                   alt={carte.alt}
@@ -508,7 +520,7 @@ function PourquoiCaMarchaitPas() {
                   aria-hidden="true"
                   className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/65 to-black/10"
                 />
-                <figcaption className="absolute inset-x-0 bottom-0 p-6 [text-shadow:0_1px_12px_rgba(0,0,0,0.5)] md:p-7">
+                <figcaption className="relative p-6 [text-shadow:0_1px_12px_rgba(0,0,0,0.5)] md:p-7">
                   <Eyebrow className="text-white/80">{carte.eyebrow}</Eyebrow>
                   <h3 className="t-h3 mt-2 text-white">{carte.titre}</h3>
                   <p className="mt-2.5 text-[0.9375rem] leading-relaxed text-white/90">
@@ -520,14 +532,6 @@ function PourquoiCaMarchaitPas() {
           ))}
         </div>
 
-        <Reveal className="mt-12 lg:mt-16">
-          <Prose className="mx-auto max-w-[42rem] text-center">
-            <h3 className="t-h3 text-black">
-              La différence : ici, tu parles. Vraiment. Dès la première
-              séance.
-            </h3>
-          </Prose>
-        </Reveal>
       </Container>
     </Section>
   );
@@ -675,7 +679,7 @@ function AvantApres() {
                         aria-hidden="true"
                         className="mt-[0.55em] h-1.5 w-1.5 shrink-0 rounded-full bg-white/60"
                       />
-                      <span className="t-body text-white/90">« {item} »</span>
+                      <span className="t-body text-white/90">{item}</span>
                     </li>
                   ))}
                 </ul>
@@ -721,7 +725,7 @@ function AvantApres() {
                   {APRES.map((item) => (
                     <li key={item} className="flex items-start gap-3">
                       <IconCheck className="mt-0.5 text-white" fg="#000000" />
-                      <span className="t-body text-white">« {item} »</span>
+                      <span className="t-body text-white">{item}</span>
                     </li>
                   ))}
                 </ul>
@@ -874,7 +878,7 @@ const POURQUOI_MOI = [
 
 function PourquoiMoi() {
   return (
-    <Section className="bg-grey-soft">
+    <Section className="on-dark bg-black text-white">
       <Container>
         <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,24rem)_minmax(0,40rem)] lg:gap-16">
           {/* Portrait Stevens */}
@@ -892,12 +896,12 @@ function PourquoiMoi() {
 
           <Reveal delay={120}>
             <Prose>
-              <Eyebrow>Pourquoi moi ?</Eyebrow>
-              <h2 className="t-h2 mt-4 text-black">
+              <Eyebrow className="text-white/75">Pourquoi moi ?</Eyebrow>
+              <h2 className="t-h2 mt-4 text-white">
                 Pourquoi apprendre avec moi, plutôt qu&apos;avec une
                 application ou un autre professeur ?
               </h2>
-              <p className="t-body">
+              <p className="t-body text-white/85">
                 Parce qu&apos;une application ne t&apos;entend pas. Parce
                 qu&apos;un programme figé ne s&apos;adapte pas. Et parce que
                 ce blocage spécifique — comprendre sans oser parler — est
@@ -906,15 +910,15 @@ function PourquoiMoi() {
               <ul className="mt-6 space-y-3">
                 {POURQUOI_MOI.map((item) => (
                   <li key={item} className="flex items-start gap-3">
-                    <IconCheck className="mt-0.5 text-black" />
-                    <span className="t-body">{item}</span>
+                    <IconCheck className="mt-0.5 text-white" fg="#000000" />
+                    <span className="t-body text-white/85">{item}</span>
                   </li>
                 ))}
               </ul>
               <div className="mt-10">
                 <SecondaryLink
                   href="#/a-propos"
-                  className="btn-invert-hover"
+                  className="btn-secondary-dark"
                 >
                   {CTA_LABELS.pourquoiMoi}
                 </SecondaryLink>
@@ -1265,7 +1269,7 @@ const FAQ_OBJECTIONS = [
 
 function FaqSection() {
   return (
-    <Section id="faq" className="scroll-mt-20 lg:scroll-mt-24">
+    <Section id="faq" className="scroll-mt-20 bg-grey-soft lg:scroll-mt-24">
       <Container>
         <Reveal>
           <Prose className="mx-auto max-w-[46rem] text-center">
