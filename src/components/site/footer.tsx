@@ -39,9 +39,9 @@ const FOOTER_LINKS = [
   { label: "Méthode", hash: "#/?section=methode" },
   { label: "À propos", hash: "#/a-propos" },
   { label: "Résultats", hash: "#/resultats" },
-  { label: "Offres", hash: "#/offres" },
+  { label: "Programme", hash: "#/programme" },
   { label: "FAQ", hash: "#/faq" },
-  { label: "Contact", hash: "#/contact" },
+  { label: "Inscription", hash: "#/contact" },
 ];
 
 /** Lien social carré, accessible, target externe. */
@@ -78,7 +78,8 @@ export function Footer() {
               Stevens AKPOVI
             </p>
             <p className="t-caption mt-2 text-white/70">
-              Coach d&apos;anglais — parler avec aisance en 2 à 3 mois.
+              Coach d&apos;anglais — De « Comprendre » à « Parler », en 03
+              mois.
             </p>
 
             {/* Réseaux sociaux — WhatsApp (vers le formulaire), YouTube, Facebook */}
@@ -122,7 +123,7 @@ export function Footer() {
               </ul>
             </nav>
             <a href="#/contact" data-wa-cta className="btn btn-primary t-btn">
-              {CTA_LABELS.hero}
+              {CTA_LABELS.decouvrirCourt}
             </a>
           </div>
         </div>

@@ -36,8 +36,8 @@ const ResultatsPage = dynamic(
   () => import("@/components/site/pages/resultats-page").then((m) => m.ResultatsPage),
   { ssr: false, loading: PageLoading },
 );
-const OffresPage = dynamic(
-  () => import("@/components/site/pages/offres-page").then((m) => m.OffresPage),
+const ProgrammePage = dynamic(
+  () => import("@/components/site/pages/programme-page").then((m) => m.ProgrammePage),
   { ssr: false, loading: PageLoading },
 );
 const FaqPage = dynamic(
@@ -55,8 +55,9 @@ function renderPage(route: RouteId) {
       return <AProposPage />;
     case "resultats":
       return <ResultatsPage />;
-    case "offres":
-      return <OffresPage />;
+    case "programme":
+    case "offres": // anciens liens partagés #/offres
+      return <ProgrammePage />;
     case "faq":
       return <FaqPage />;
     case "contact":
@@ -82,7 +83,7 @@ export default function Page() {
     const warm = () => {
       void import("@/components/site/pages/a-propos-page");
       void import("@/components/site/pages/resultats-page");
-      void import("@/components/site/pages/offres-page");
+      void import("@/components/site/pages/programme-page");
       void import("@/components/site/pages/faq-page");
       void import("@/components/site/pages/contact-page");
     };

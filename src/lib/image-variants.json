@@ -119,5 +119,25 @@
       768,
       1200
     ]
+  },
+  "/assets/METHODE-02-applications.webp": {
+    "natural": [
+      864,
+      1152
+    ],
+    "variants": [
+      480,
+      768
+    ]
+  },
+  "/assets/METHODE-02-traditionnel.webp": {
+    "natural": [
+      864,
+      1152
+    ],
+    "variants": [
+      480,
+      768
+    ]
   }
 }

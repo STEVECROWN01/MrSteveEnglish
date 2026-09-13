@@ -52,14 +52,14 @@ export function AProposPage() {
                 <p className="t-body mt-6">
                   Stevens n&apos;a jamais cru que le secret d&apos;un bon coach,
                   c&apos;était un accent impeccable. Le secret, c&apos;est
-                  d&apos;entendre exactement où l&apos;élève bloque — et de
+                  d&apos;entendre exactement où l&apos;apprenant bloque — et de
                   s&apos;y adapter, séance après séance, plutôt que de dérouler
                   un programme prévu à l&apos;avance.
                 </p>
               </Reveal>
               <Reveal className="mt-10">
                 <span data-wa-cta className="inline-flex">
-                  <CtaButton href="#/contact">{CTA_LABELS.parlerDirect}</CtaButton>
+                  <CtaButton href="#/contact">{CTA_LABELS.hero}</CtaButton>
                 </span>
               </Reveal>
             </div>
@@ -104,8 +104,8 @@ export function AProposPage() {
                 Aujourd&apos;hui encore, il continue d&apos;accompagner des
                 débutants au sein d&apos;une académie internationale de langue
                 anglaise en ligne. Trois ans de pratique constante, une seule
-                obsession : faire parler ses élèves, pas seulement leur faire
-                réciter des règles.
+                obsession : faire parler ses apprenants, pas seulement
+                leur faire réciter des règles.
               </p>
             </Prose>
           </Reveal>

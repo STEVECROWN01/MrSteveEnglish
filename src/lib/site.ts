@@ -31,27 +31,43 @@ export function waLink(message?: string): string {
   return message ? `${base}?text=${encodeURIComponent(message)}` : base;
 }
 
-/** Libellés des CTA — tous mènent au formulaire de la page Contact.
- *  Voix éditoriale première personne (instruction propriétaire) : le
- *  coach s'adresse directement au prospect — plus de « Parler au Coach ». */
+/**
+ * OFFRE UNIQUE (instruction propriétaire — la conversion tourne autour
+ * d'UNE SEULE offre, plus aucun multi-format / multi-durée / multi-prix) :
+ * Programme « De "Comprendre" à "Parler" » — 03 mois de coaching d'anglais
+ * personnalisé — 70 000 FCFA — paiement unique.
+ */
+export const OFFRE = {
+  programme: "Programme « De « Comprendre » à « Parler » »",
+  duree: "03 mois",
+  rythme: "Trois séances de 1h30 par semaine",
+  prix: "70 000",
+  devise: "FCFA",
+  paiement: "Paiement unique",
+  resumeSousCta:
+    "03 mois • Coaching en ligne • Accompagnement personnalisé • 70 000 FCFA",
+  sousCtaPrix: "Paiement unique • Accès au programme pendant 03 mois",
+} as const;
+
+/** Libellés des CTA (instruction propriétaire : ne pas multiplier les CTA
+ *  différents — principalement « Je veux parler anglais avec confiance »,
+ *  secondairement « Découvrir le programme »). Le CTA principal mène au
+ *  formulaire d'inscription, le secondaire à la page Programme. */
 export const CTA_LABELS = {
-  hero: "Parlons-en maintenant →",
-  reserverFormat: "Réserver mon format →",
-  voirMethode: "Voir si cette méthode te correspond →",
-  parlerDirect: "Parler directement à Stevens AKPOVI →",
+  hero: "Je veux parler anglais avec confiance",
+  decouvrir: "Découvrir le programme →",
+  decouvrirCourt: "Découvrir le programme",
+  rejoindre: "Rejoindre le programme — 70 000 FCFA",
+  pourquoiMoi: "Découvrir mon parcours →",
   voirResultats: "Voir les résultats obtenus avec cette méthode →",
-  cas: "Ça te parle ? Parlons-en →",
-  voirObjectif: "Voir si ton objectif est atteignable en 2-3 mois →",
-  reserver3mois: "Réserver le coaching 3 mois →",
-  reserver2mois: "Réserver le coaching 2 mois →",
-  reserverPlace: "Réserver ma place →",
   faq: "Pose-moi ta question →",
   contact: "Envoie-moi tes informations →",
 } as const;
 
-/** Pages internes (navigation hash) — cible de tous les CTA principaux. */
+/** Pages internes (navigation hash) — cible des CTA. */
 export const PAGES = {
   contact: "#/contact",
-  contactOffre3mois: "#/contact?offre=3mois",
-  contactOffre2mois: "#/contact?offre=2mois",
+  programme: "#/programme",
+  aPropos: "#/a-propos",
+  resultats: "#/resultats",
 } as const;

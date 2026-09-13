@@ -254,6 +254,20 @@
     color: #ffffff;
   }
 
+  /* Variante sombre du lien secondaire (fonds noirs — CTA final) :
+     bordure et texte blancs, survol renforcé. Évite de lutter contre
+     les couleurs de .btn-secondary avec des utilitaires. */
+  .btn-secondary-dark {
+    background: transparent;
+    border-color: rgba(255, 255, 255, 0.4);
+    color: #ffffff;
+  }
+  .btn-secondary-dark:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: #ffffff;
+    color: #ffffff;
+  }
+
   /* — Cards (DA §7) : radius 12, ombre bleutée, bordure uniquement témoignages — */
   .card-base {
     background: #ffffff;

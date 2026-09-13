@@ -1,29 +1,29 @@
 "use client";
 
 import { useState } from "react";
-import { hashQuery } from "@/lib/router";
 import { CHECKOUT_URL, CTA_LABELS, waLink } from "@/lib/site";
 import { Container, PageHero } from "../layout-primitives";
 import { Reveal } from "../reveal";
 import { StickyCTA } from "../sticky-cta";
 
 /**
- * PAGE 7 — CONTACT / RÉSERVATION (instruction propriétaire)
- * Fonction : capturer toutes les informations utiles sur le prospect via
- * un formulaire obligatoire, puis — à la soumission — envoyer
- * automatiquement une fiche professionnelle sur le WhatsApp du coach ET
- * diriger le prospect vers la page de paiement.
+ * PAGE 7 — CONTACT / INSCRIPTION (instruction propriétaire)
+ * Fonction : conversion finale — le formulaire qualifie le prospect
+ * pour L'OFFRE UNIQUE (Programme « De « Comprendre » à « Parler » » —
+ * 03 mois — 70 000 FCFA — paiement unique), puis — à la soumission —
+ * envoie automatiquement une fiche professionnelle sur le WhatsApp du
+ * coach ET dirige le prospect vers la page de paiement.
  * Composition : fond noir, message d'accueil chaleureux sous le titre,
- * formulaire en une colonne lisible, bouton d'envoi rouge pleine largeur.
+ * rappel du programme au-dessus du formulaire, formulaire en une
+ * colonne lisible, bouton d'envoi rouge pleine largeur.
  * Le numéro WhatsApp n'est JAMAIS affiché (instruction propriétaire).
  */
 
-/* — Options de formule (page Offres → param ?offre=) — */
-const FORMULE_OPTIONS = [
-  { value: "3mois", label: "Coaching 3 mois — 70 000 FCFA (formule recommandée)" },
-  { value: "2mois", label: "Coaching 2 mois — 60 000 FCFA" },
-  { value: "conseil", label: "Je ne sais pas encore — je souhaite un conseil" },
-];
+/* — Le programme (offre unique) — plus de choix de formule
+     (instruction propriétaire : la conversion tourne autour d'UNE
+     SEULE offre). — */
+const PROGRAMME_LABEL =
+  "Programme « De « Comprendre » à « Parler » » — 03 mois — 70 000 FCFA — paiement unique";
 
 /* — Question test : détecte débutant ou intermédiaire — */
 const NIVEAU_QUESTION = "She ___ English every day.";
@@ -35,7 +35,6 @@ const NIVEAU_OPTIONS = [
 ];
 
 type FormState = {
-  formule: string;
   nom: string;
   age: string;
   profession: string;
@@ -49,7 +48,6 @@ type FormState = {
 type FormErrors = Partial<Record<keyof FormState, string>>;
 
 const INITIAL_FORM: FormState = {
-  formule: "3mois",
   nom: "",
   age: "",
   profession: "",
@@ -104,8 +102,6 @@ function validate(f: FormState): FormErrors {
 
 /** Fiche professionnelle envoyée sur le WhatsApp du coach. */
 function buildMessage(f: FormState): string {
-  const formule =
-    FORMULE_OPTIONS.find((o) => o.value === f.formule)?.label ?? f.formule;
   const niveauDetecte =
     f.niveau === "speaks"
       ? "Intermédiaire (réponse correcte au test)"
@@ -133,24 +129,15 @@ function buildMessage(f: FormState): string {
     "🎯 MOTIVATION",
     `• ${f.motivation.trim()}`,
     "",
-    "📦 FORMULE CHOISIE",
-    `• ${formule}`,
+    "📦 PROGRAMME (offre unique)",
+    `• ${PROGRAMME_LABEL}`,
     "",
     "— Message envoyé automatiquement depuis le formulaire du site Stevens AKPOVI",
   ].join("\n");
 }
 
-/** Valeur initiale : formule pré-sélectionnée depuis la page Offres. */
-function initialForm(): FormState {
-  const offre =
-    typeof window !== "undefined" ? hashQuery("offre") : null;
-  const valid =
-    offre && FORMULE_OPTIONS.some((o) => o.value === offre) ? offre : "3mois";
-  return { ...INITIAL_FORM, formule: valid };
-}
-
 export function ContactPage() {
-  const [form, setForm] = useState<FormState>(initialForm);
+  const [form, setForm] = useState<FormState>(INITIAL_FORM);
   const [errors, setErrors] = useState<FormErrors>({});
   const [sent, setSent] = useState(false);
   const [lastMessage, setLastMessage] = useState("");
@@ -192,8 +179,8 @@ export function ContactPage() {
     <div className="on-dark min-h-[calc(100svh-72px)] bg-black pb-20 text-white md:pb-0">
       <PageHero
         dark
-        title="Prêt à parler anglais avec aisance ?"
-        subtitle="Un formulaire. Ma réponse personnelle. Et ton coaching peut démarrer cette semaine."
+        title="Prêt à parler anglais avec confiance ?"
+        subtitle="Un formulaire. Ma réponse personnelle. Et ton programme de 03 mois peut démarrer cette semaine."
       />
 
       <section id="contact" className="scroll-mt-20 pb-12 pt-8 lg:pb-24 lg:pt-12">
@@ -211,11 +198,18 @@ export function ContactPage() {
                   Bienvenue à toi.
                 </p>
                 <p className="t-body mt-3 text-white/80">
-                  Pour me contacter directement, remplis l&apos;intégralité du
+                  Pour rejoindre le programme, remplis l&apos;intégralité du
                   formulaire ci-dessous avec tes informations exactes — toutes
                   les informations sont obligatoires. Dès que tu envoies, ta
                   demande arrive directement sur mon WhatsApp, avec ton niveau
                   réel et ton objectif. Je te réponds personnellement.
+                </p>
+                {/* Rappel du programme (offre unique — instruction
+                    propriétaire) au moment exact de la décision */}
+                <p className="t-caption mt-4 border-t border-white/15 pt-4 text-white/75">
+                  Programme « De « Comprendre » à « Parler » » — 03 mois de
+                  coaching d&apos;anglais personnalisé — 70 000 FCFA — paiement
+                  unique.
                 </p>
               </div>
             </Reveal>
@@ -223,26 +217,7 @@ export function ContactPage() {
             {/* — Formulaire de qualification — */}
             <Reveal delay={120}>
               <form onSubmit={handleSubmit} noValidate className="mt-10">
-                {/* Formule souhaitée — pré-remplie depuis la page Offres */}
                 <div>
-                  <label htmlFor="f-formule" className="form-label">
-                    Formule souhaitée
-                  </label>
-                  <select
-                    id="f-formule"
-                    value={form.formule}
-                    onChange={set("formule")}
-                    className="form-input mt-2"
-                  >
-                    {FORMULE_OPTIONS.map((o) => (
-                      <option key={o.value} value={o.value}>
-                        {o.label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="mt-6">
                   <label htmlFor="f-nom" className="form-label">
                     Nom complet <span aria-hidden="true">*</span>
                   </label>
@@ -451,13 +426,15 @@ export function ContactPage() {
                   <p className="t-caption mt-4 text-center text-white/70">
                     En soumettant, tes informations arrivent directement sur
                     mon WhatsApp et tu es dirigé automatiquement vers le
-                    paiement sécurisé pour finaliser ta réservation.
+                    paiement sécurisé du programme (70 000 FCFA — paiement
+                    unique).
                   </p>
-                  {/* Garantie (instruction propriétaire) — rappel du
-                      renversement du risque au moment exact de la décision */}
+                  {/* Garantie basée sur l'engagement (instruction
+                      propriétaire) — rappel au moment exact de la
+                      décision */}
                   <p className="t-caption mt-3 text-center text-white/70">
-                    Garantie : deux mois d&apos;application rigoureuse sans
-                    résultat — remboursement intégral.
+                    Garantie basée sur ton engagement : conditions respectées
+                    sans expression à 02 mois — remboursement intégral.
                   </p>
                 </div>
 

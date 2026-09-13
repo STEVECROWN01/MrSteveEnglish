@@ -4,11 +4,14 @@ import { useEffect, useRef, useSyncExternalStore } from "react";
 
 /** Les pages du site — routées par hash sur la route /. La méthode vit
  * désormais SUR l'accueil (instruction propriétaire) : le lien de
- * navigation « Méthode » pointe vers #/?section=methode. */
+ * navigation « Méthode » pointe vers #/?section=methode.
+ * « offres » reste une clé valide : les anciens liens partagés #/offres
+ * atterrissent sur la page Programme (offre unique). */
 export type RouteId =
   | "accueil"
   | "a-propos"
   | "resultats"
+  | "programme"
   | "offres"
   | "faq"
   | "contact";
@@ -17,9 +20,10 @@ export const ROUTES: Record<RouteId, { hash: string; title: string }> = {
   accueil: { hash: "#/", title: "Stevens AKPOVI — Coach d'anglais" },
   "a-propos": { hash: "#/a-propos", title: "À propos — Stevens AKPOVI" },
   resultats: { hash: "#/resultats", title: "Résultats — Stevens AKPOVI" },
-  offres: { hash: "#/offres", title: "Offres — Stevens AKPOVI" },
+  programme: { hash: "#/programme", title: "Programme — Stevens AKPOVI" },
+  offres: { hash: "#/programme", title: "Programme — Stevens AKPOVI" },
   faq: { hash: "#/faq", title: "FAQ — Stevens AKPOVI" },
-  contact: { hash: "#/contact", title: "Contact — Stevens AKPOVI" },
+  contact: { hash: "#/contact", title: "Inscription — Stevens AKPOVI" },
 };
 
 /**

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { useInViewOnce, usePrefersReducedMotion } from "@/lib/motion";
-import { CTA_LABELS } from "@/lib/site";
+import { CTA_LABELS, OFFRE } from "@/lib/site";
 import { Container, Eyebrow, Prose, Section } from "../layout-primitives";
 import { CtaButton, SecondaryLink } from "../buttons";
 import { Reveal } from "../reveal";
@@ -11,23 +11,19 @@ import { CountUp } from "../count-up";
 import { StickyCTA } from "../sticky-cta";
 import { MicrophoneScene } from "../microphone-scene";
 import { ResponsiveImage } from "../responsive-image";
+import { FaqAccordion } from "../faq-accordion";
 
 /**
- * PAGE 1 — ACCUEIL
- * Fonction : capter en 3 secondes, nommer le problème, promettre la
- * transformation, PUIS expliquer la méthode (instruction propriétaire :
- * le contenu de l'ancienne page Méthode complète désormais l'accueil).
- * Hero plein cadre (l'image couvre toute la section, y compris derrière
- * la barre de navigation translucide — le texte est en overlay, aligné
- * à gauche) → Problème/Agitation (fond noir, image PROBLEME-01 à gauche
- * du texte d'agitation aligné à droite — instruction propriétaire) →
- * Solution (retour blanc avec fondu noir → blanc, 98 %, image METHOD-01
- * nouvelle version à droite du bloc contenu, de même hauteur que lui —
- * instruction propriétaire) → La
- * Méthode (angle grammaire vs vivante, format, objection). Voix éditoriale :
- * le coach parle à la première personne (« je ») directement au prospect
- * (instruction propriétaire). Tous les CTA mènent au formulaire de
- * contact.
+ * PAGE 1 — ACCUEIL — FUNNEL DE CONVERSION AUTOUR DE L'OFFRE UNIQUE
+ * (instruction propriétaire : le site vend une TRANSFORMATION, pas des
+ * cours — « Comprendre l'anglais » → « Oser le parler » → « Parler avec
+ * confiance »).
+ * Parcours (instruction propriétaire) : problème → coût de l'inaction →
+ * solution → méthode → transformation → offre → preuve → FAQ → CTA.
+ * Une seule offre partout : Programme « De "Comprendre" à "Parler" » —
+ * 03 mois — 70 000 FCFA — paiement unique. Aucun multi-format, aucune
+ * mention d'offre 2 mois, aucun compte à rebours inventé (urgence
+ * strictement éthique). Voix première personne : le coach parle en « je ».
  */
 
 export function HomePage() {
@@ -36,8 +32,19 @@ export function HomePage() {
       <Hero />
       <ProblemeAgitation />
       <Solution />
-      <Methode />
-      <StickyCTA href="#/contact" label={CTA_LABELS.hero} />
+      <PourquoiCaMarchaitPas />
+      <Accompagnement />
+      <AvantApres />
+      <CeQueTuAchetes />
+      <CeQuiEstInclus />
+      <PourquoiMoi />
+      <PourQui />
+      <SectionPrix />
+      <Garantie />
+      <Preuve />
+      <FaqSection />
+      <CtaFinal />
+      <StickyCTA href="#/contact" label={CTA_LABELS.decouvrirCourt} />
     </>
   );
 }
@@ -142,11 +149,15 @@ function HeroTypewriter() {
 
 /* — Hero : l'image HERO-01 couvre la totalité de la section (plein
      cadre, edge-to-edge) et passe derrière la barre de navigation
-     translucide. Le texte est posé SUR l'image (overlay), aligné à
-     gauche dans la zone sombre, ancré vers le bas avec un espace
-     déterministe et généreux sous le CTA (96px mobile / 192px desktop)
-     avant la limite de section qui sépare le hero de la suite
-     (instruction propriétaire : ne jamais coller le bouton au bord). — */
+     transparente (instruction propriétaire : au sommet, le header est
+     sans fond). Le texte est posé SUR l'image (overlay), aligné à
+     gauche dans la zone sombre, ancré vers le bas.
+     Typo : taille DA §6 RESTAURÉE à pleine échelle (instruction
+     propriétaire : titre redevenu trop petit après le calibrage
+     précédent) — un léger plafond lié à la hauteur d'écran (7,1svh)
+     garde le hero dans le premier écran sur les portables bas (le
+     contenu hero est plus court qu'avant : sous-titre d'une ligne
+     d'esprit, ligne programme compacte). — */
 function Hero() {
   return (
     <section className="relative flex min-h-[100svh] items-end overflow-hidden">
@@ -176,17 +187,14 @@ function Hero() {
         />
       </div>
 
-      {/* Texte sur l'image — aligné à gauche. Desktop : paddings compactés
-          + titre calibré sur la hauteur d'écran (min(4rem, 6svh)) pour que
-          le hero tienne TOUJOURS dans le premier écran (le recadrage de
-          l'image en dépend aussi : hero = viewport ⇒ moins de zoom) ;
-          écrans très hauts (≥ 1050px) retrouvent le grand souffle bas. — */}
-      <Container className="relative w-full pb-24 pt-28 lg:pb-24 lg:pt-24 [@media(min-height:1050px)]:lg:pb-48">
+      {/* Texte sur l'image — aligné à gauche, calé vers le bas */}
+      <Container className="relative w-full pb-24 pt-28 lg:pb-20 lg:pt-24 [@media(min-height:1050px)]:lg:pb-48">
         <div className="max-w-[30rem]">
-          {/* lg:text-[length:min(4rem,6svh)] : capped par la hauteur — la
-              typo DA §6 (clamp vw) reste intacte mobile et sur grands
-              écrans (6svh ≥ 64px dès 1067px de haut). */}
-          <h1 className="t-h1 text-white lg:text-[length:min(4rem,6svh)]">
+          {/* Pleine taille DA (64px) sur écrans standard ; plafond léger
+              min(4rem, 7,1svh) uniquement pour que le titre multi-lignes
+              tienne dans le premier écran des portables bas — 1080p garde
+              64px nets. */}
+          <h1 className="t-h1 text-white lg:text-[length:min(4rem,7.1svh)]">
             <span className="hero-line hero-d1 block">
               Tu comprends l&apos;anglais depuis des années.
             </span>
@@ -196,21 +204,19 @@ function Hero() {
             </span>
             <HeroTypewriter />
           </h1>
-          <p className="hero-line hero-d3 t-body mt-6 text-white/85">
-            Je t&apos;accompagne pour parler anglais avec aisance en 2 à 3
-            mois — pas en révisant des règles, mais en t&apos;exprimant,
-            vraiment, dès la première séance.
+          {/* Sous-titre (instruction propriétaire — nouveau) */}
+          <p className="hero-line hero-d3 t-body mt-5 text-white/85 lg:mt-5">
+            En 3 mois, transforme ton anglais que tu comprends en anglais
+            que tu oses vraiment parler.
           </p>
-          <div className="hero-line hero-d4 mt-8">
+          <div className="hero-line hero-d4 mt-6 lg:mt-6">
             <span data-wa-cta className="inline-flex">
               <CtaButton href="#/contact">{CTA_LABELS.hero}</CtaButton>
             </span>
           </div>
-          {/* Rareté (instruction propriétaire : stratégie marketing) —
-              places limitées dès le premier écran, sans crier */}
-          <p className="hero-line hero-d5 t-caption mt-6 text-white/75">
-            Places limitées chaque mois — je n&apos;accompagne qu&apos;un
-            nombre restreint d&apos;élèves à la fois.
+          {/* Ligne programme sous le CTA (instruction propriétaire) */}
+          <p className="hero-line hero-d5 t-caption mt-5 text-white/75">
+            {OFFRE.resumeSousCta}
           </p>
         </div>
       </Container>
@@ -218,8 +224,11 @@ function Hero() {
   );
 }
 
-/* — Problème + Agitation : fond noir plein, sobre (waveform filigrane
-     supprimée — instruction propriétaire) — */
+/* — Problème + Agitation : fond noir plein, sobre. La carte FOMO
+     (« quelqu'un d'autre postule ») a été RETIRÉE (instruction
+     propriétaire : plus de FOMO/urgence artificielle) et remplacée par
+     une urgence strictement ÉTHIQUE, ancrée dans la situation du
+     prospect — pas de faux compte à rebours, pas de rareté inventée. — */
 function ProblemeAgitation() {
   return (
     <section className="on-dark relative overflow-hidden bg-black text-white">
@@ -285,26 +294,21 @@ function ProblemeAgitation() {
             </Prose>
           </div>
         </Reveal>
-        {/* Coût de l&apos;inaction (instruction propriétaire : FOMO /
-            urgence) — les opportunités passent à ceux qui osent parler.
-            Carte sombre encadrée, même langage que le fond noir. */}
+
+        {/* Coût de l'inaction — URGENCE ÉTHIQUE (instruction
+            propriétaire : l'urgence vient de la situation du prospect,
+            jamais d'un artifice). Centré : moment d'affirmation (DA §7). */}
         <Reveal className="mt-16 lg:mt-24">
-          <div className="rounded-[12px] border border-white/15 bg-white/[0.06] p-6 md:p-8 lg:p-10">
-            <Eyebrow className="text-white/75">
-              Ce que coûte vraiment l&apos;attente
-            </Eyebrow>
-            <h3 className="t-h3 mt-4 text-white">
-              Et pendant ce temps, quelqu&apos;un d&apos;autre postule.
-            </h3>
-            <p className="t-body mt-4 text-white/85">
-              Quelqu&apos;un qui ose parler — même imparfaitement — passe
-              l&apos;entretien, décroche le poste, signe le client, part
-              travailler à l&apos;étranger. Ton blocage ne coûte pas seulement
-              de la frustration : il te coûte des opportunités que tu ne
-              verras même jamais passer. Et chaque mois qui passe éloigne un
-              peu plus les prochaines.
+          <Prose className="mx-auto max-w-[42rem] text-center">
+            <p className="font-display text-[1.375rem] leading-snug text-white md:text-[1.625rem] lg:text-[1.75rem]">
+              Chaque mois où tu repousses ta pratique est un mois
+              supplémentaire pendant lequel tu restes dans la même situation.
             </p>
-          </div>
+            <p className="t-body mt-6 text-white/85">
+              Ta prochaine opportunité ne commencera pas quand tu te sentiras
+              parfaitement prêt. Commence maintenant.
+            </p>
+          </Prose>
         </Reveal>
       </Container>
     </section>
@@ -312,12 +316,10 @@ function ProblemeAgitation() {
 }
 
 /* — Solution : retour au blanc. Le fond passe du noir au blanc
-     par fondu 500ms à l'entrée dans le viewport.
-     Card avec le chiffre clé 98 % en noir, et l'image METHOD-01
-     (nouvelle version, SANS miroir — instruction propriétaire) intégrée
-     À DROITE du bloc enveloppant le contenu, à la MÊME HAUTEUR que lui
-     (instruction propriétaire). Voix première personne
-     (instruction propriétaire). Mobile : bloc puis image, empilés. — */
+     par fondu 500ms à l'entrée dans le viewport. Card avec le chiffre
+     clé 98 % en noir, image METHOD-01 À DROITE du bloc contenu, à la
+     MÊME HAUTEUR que lui (instruction propriétaire). Offre unique :
+     plus aucune mention de format multiples. — */
 function Solution() {
   return (
     <section
@@ -325,12 +327,8 @@ function Solution() {
       className="relative scroll-mt-20 overflow-hidden bg-white lg:scroll-mt-24"
     >
       <DarkFadeOverlay />
-      {/* Limite de section oblique (instruction propriétaire) : la
-          frontière avec la section noire ci-dessus monte de la gauche
-          vers la droite — coin noir plein en haut-gauche, aligné au
-          bord. Inclinaison réduite (instruction propriétaire) :
-          24 px mobile / 32 px desktop. Sous le voile dark-fade :
-          invisible avant le fondu, révélée avec lui. */}
+      {/* Limite de section oblique (instruction propriétaire) :
+          24 px mobile / 32 px desktop, sous le voile dark-fade. */}
       <svg
         aria-hidden="true"
         viewBox="0 0 100 100"
@@ -340,8 +338,6 @@ function Solution() {
         <polygon points="0,0 100,0 0,100" fill="#000000" />
       </svg>
       <Container className="relative py-12 lg:py-24">
-        {/* items-stretch : l'image (droite) prend la MÊME HAUTEUR que le
-            bloc texte (gauche) — instruction propriétaire. */}
         <div className="grid gap-10 lg:grid-cols-[minmax(0,46rem)_minmax(0,22rem)] lg:items-stretch lg:justify-center lg:gap-12">
           {/* Bloc contenu (à gauche de l'image) */}
           <Reveal>
@@ -357,8 +353,8 @@ function Solution() {
                 s&apos;expriment librement après un mois de coaching.
               </p>
               <p className="t-body mt-4">
-                Je te coache en individuel ou en petit groupe, en ligne, avec
-                un objectif clair : que tu parles anglais avec confiance, dans
+                Je t&apos;accompagne en ligne, pendant trois mois, avec un
+                objectif clair : que tu parles anglais avec confiance, dans
                 ton domaine, pour ton objectif à toi.
               </p>
 
@@ -376,14 +372,8 @@ function Solution() {
             </div>
           </Reveal>
 
-          {/* Image METHOD-01 (nouvelle version, SANS miroir — instruction
-              propriétaire : le sujet regarde déjà vers la gauche, vers le
-              contenu). Même hauteur que le bloc à sa gauche sur desktop :
-              le conteneur est étiré (lg:h-full) et l'image recadrée par
-              object-cover, décalée à 60 % pour préserver la tasse
-              « Small Steps Big Progress ». Mobile : ratio naturel 2:3,
-              aucune coupe. Servie sans ré-encodage (unoptimized) pour la
-              netteté (leçon hero). */}
+          {/* Image METHOD-01 — même hauteur que le bloc à sa gauche sur
+              desktop (lg:h-full + object-cover 60 %). Mobile : 2:3. */}
           <Reveal delay={120}>
             <div className="relative mx-auto aspect-[2/3] w-full max-w-[22rem] overflow-hidden rounded-[12px] lg:mx-0 lg:aspect-auto lg:h-full">
               <ResponsiveImage
@@ -401,280 +391,714 @@ function Solution() {
   );
 }
 
-/* — La Méthode — ancienne page Méthode intégrée à l'accueil
-     (instruction propriétaire : « prendre la page méthode pour
-     compléter la page d'accueil »). Emplacement stratégique : juste
-     après la promesse Solution — la narration enchaîne naturellement
-     « ce que ça t'apporte » → « comment ça marche ».
-     Point d'ancrage de la navigation : #/?section=methode — ancre
-     posée sur la section « Ma méthode » (Solution) ci-dessus
-     (instruction propriétaire : le menu « Méthode » y mène). — */
-function Methode() {
+/* — « POURQUOI ÇA NE MARCHAIT PAS AVANT » (instruction propriétaire :
+     l'ancienne section « Comment ça marche » devient le traitement des
+     anciennes méthodes). QUATRE cartes image de fond + texte overlay :
+     applications, cours traditionnels (visuels PROVISOIRES en attente
+     des images du propriétaire), grammaire seule, méthode vivante. — */
+const ANCIENNES_METHODES = [
+  {
+    image: "/assets/METHODE-02-applications.webp",
+    alt: "Apprenant seul chez lui, le regard fatigué, devant une application d'anglais sur son téléphone : personne pour le faire parler",
+    eyebrow: "Les applications",
+    texte:
+      "Tu apprends seul, mais personne ne te force réellement à parler.",
+  },
+  {
+    image: "/assets/METHODE-02-traditionnel.webp",
+    alt: "Salle de classe traditionnelle : le professeur écrit des règles de grammaire au tableau, les apprenants copient passivement",
+    eyebrow: "Les cours traditionnels",
+    texte:
+      "Beaucoup de théorie, peu de temps consacré à ta propre prise de parole.",
+  },
+  {
+    image: "/assets/METHODE-01-rigide.webp",
+    alt: "Homme pensif face à ses livres de grammaire anglaise — feuilles froissées sur le bureau, affiche « Discipline » : l'étude rigide qui ne fait pas parler",
+    eyebrow: "La grammaire seule",
+    texte:
+      "Connaître les règles ne signifie pas savoir tenir une conversation.",
+  },
+  {
+    image: "/assets/METHODE-01-fluide.webp",
+    alt: "Femme souriante en séance de coaching d'anglais en visioconférence — casque sur les oreilles, lumière chaude : la pratique vivante qui débloque la parole",
+    eyebrow: "La méthode vivante",
+    texte:
+      "Ici, on ne se contente pas d'apprendre l'anglais. On le pratique.",
+  },
+];
+
+function PourquoiCaMarchaitPas() {
   return (
-    <div>
-      {/* — Angle : méthode vs grammaire bûchée — */}
-      <Section>
-        {/* Trait de séparation court (instruction propriétaire) :
-            marque la limite « Ma méthode » / « Comment ça marche » —
-            horizontal, centré, noir pur #000000, légèrement épais.
-            Allongé (112 px). Margin-top négatif = le trait remonte au
-            centre vertical de l'espace inter-sections ; margin-bottom
-            équivalent = le contenu « Comment ça marche » garde sa
-            position (seul le trait bouge). Desktop : 96 px de chaque
-            côté, mobile : 48 px. */}
-        <div
-          aria-hidden="true"
-          className="mx-auto -mt-12 mb-12 h-[3px] w-28 bg-black lg:-mt-24 lg:mb-24"
-        />
-        <Container>
-          <Reveal>
-            <Prose>
-              <Eyebrow>Comment ça marche</Eyebrow>
-              <h2 className="t-h2 mt-4 text-black">
-                Pourquoi la grammaire seule ne t&apos;a jamais fait parler
-                anglais.
-              </h2>
-              <p className="t-body">
-                Et pourquoi une méthode vivante, adaptée à toi, y arrive en
-                quelques semaines.
-              </p>
-            </Prose>
-          </Reveal>
+    <Section>
+      {/* Trait de séparation court (instruction propriétaire) : 112 px,
+          centré verticalement dans l'espace inter-sections (compensé
+          par le margin-bottom équivalent — seul le trait bouge). */}
+      <div
+        aria-hidden="true"
+        className="mx-auto -mt-12 mb-12 h-[3px] w-28 bg-black lg:-mt-24 lg:mb-24"
+      />
+      <Container>
+        <Reveal>
+          <Prose>
+            <Eyebrow>Pourquoi ça ne marchait pas avant</Eyebrow>
+            <h2 className="t-h2 mt-4 text-black">
+              Ce que tu as déjà essayé ne pouvait pas te faire parler.
+            </h2>
+            <p className="t-body">
+              Ce n&apos;est pas ta faute : ces méthodes n&apos;ont simplement
+              pas été conçues pour débloquer ta prise de parole. Voici
+              pourquoi — et ce qui change ici.
+            </p>
+          </Prose>
+        </Reveal>
 
-          {/* Diptyque — les deux textes en OVERLAY sur les images
-              (instruction propriétaire) : la grammaire bûchée sur
-              METHODE-01-rigide (gauche), la méthode vivante sur
-              METHODE-01-fluide (droite). Lisibilité garantie par un voile
-              dégradé bas (fort en bas, transparent en haut — les visages
-              restent clairs) + ombre portée sur le texte. Ratio 4:5 —
-              hauteur réduite à la demande (recadrage object-cover centré,
-              visages préservés), servies sans ré-encodage (unoptimized).
-              Côte à côte desktop, empilé mobile. */}
-          <div className="mt-10 grid gap-6 lg:mt-14 lg:grid-cols-2 lg:gap-8">
+        {/* Quatre cartes — image de fond + voile + texte overlay.
+            2×2 desktop (sm:), empilées mobile. */}
+        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:mt-14 lg:gap-8">
+          {ANCIENNES_METHODES.map((carte, i) => (
+            <Reveal key={carte.eyebrow} delay={(i % 2) * 120}>
+              <figure className="relative aspect-[4/5] overflow-hidden rounded-[12px]">
+                <ResponsiveImage
+                  src={carte.image}
+                  alt={carte.alt}
+                  fill
+                  sizes="(max-width: 639px) 92vw, (max-width: 1023px) 46vw, 566px"
+                  className="object-cover"
+                />
+                <div
+                  aria-hidden="true"
+                  className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/60 to-transparent"
+                />
+                <figcaption className="absolute inset-x-0 bottom-0 p-6 [text-shadow:0_1px_12px_rgba(0,0,0,0.5)] md:p-8">
+                  <Eyebrow className="text-white/80">{carte.eyebrow}</Eyebrow>
+                  <p className="t-body mt-3 text-white">{carte.texte}</p>
+                </figcaption>
+              </figure>
+            </Reveal>
+          ))}
+        </div>
+
+        <Reveal className="mt-12 lg:mt-16">
+          <Prose className="mx-auto max-w-[42rem] text-center">
+            <h3 className="t-h3 text-black">
+              La différence : ici, tu parles. Vraiment. Dès la première
+              séance.
+            </h3>
+          </Prose>
+        </Reveal>
+      </Container>
+    </Section>
+  );
+}
+
+/* — Comment se déroule l'accompagnement (méthode) — texte à gauche,
+     scène 3D « microphone tech » à droite. Fond commun sombre (radial
+     studio étendu à toute la section). OFFRE UNIQUE : plus de version
+     2 mois, plus de choix individuel/groupe, plus de carte « places
+     limitées » (rareté retirée — instruction propriétaire). — */
+function Accompagnement() {
+  return (
+    <Section className="on-dark relative overflow-hidden bg-[radial-gradient(120%_85%_at_50%_78%,#1b1b1f_0%,#0c0c0e_52%,#050506_100%)] text-white lg:bg-[radial-gradient(120%_85%_at_70%_20%,#1b1b1f_0%,#0c0c0e_52%,#050506_100%)]">
+      <Container>
+        <div className="grid gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-16">
+          <div>
             <Reveal>
-              <figure className="relative aspect-[4/5] overflow-hidden rounded-[12px]">
-                <ResponsiveImage
-                  src="/assets/METHODE-01-rigide.webp"
-                  alt="Homme pensif face à ses livres de grammaire anglaise — feuilles froissées sur le bureau, affiche « Discipline » : l'étude rigide qui ne fait pas parler"
-                  fill
-                  sizes="(max-width: 1023px) 92vw, 566px"
-                  className="object-cover"
-                />
-                {/* Voile de lisibilité — concentré sur la zone texte (bas) */}
-                <div
-                  aria-hidden="true"
-                  className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/60 to-transparent"
-                />
-                {/* Texte en overlay (instruction propriétaire) */}
-                <figcaption className="absolute inset-x-0 bottom-0 p-6 [text-shadow:0_1px_12px_rgba(0,0,0,0.5)] md:p-8">
-                  <Eyebrow className="text-white/80">
-                    La grammaire seule
-                  </Eyebrow>
-                  <p className="t-body mt-3 text-white">
-                    Tu peux connaître toutes les règles de grammaire anglaise
-                    et rester muet face à un anglophone. Ce n&apos;est pas un
-                    manque de connaissances. C&apos;est un manque de pratique
-                    orale réelle, avec quelqu&apos;un qui corrige au bon
-                    moment, sans te bloquer dans la peur de l&apos;erreur.
-                  </p>
-                </figcaption>
-              </figure>
+              <Prose>
+                <h2 className="t-h2 text-white">
+                  Trois mois. Trois séances par semaine. Une transformation.
+                </h2>
+                <p className="t-body text-white/85">
+                  Le programme dure trois mois, à raison de trois séances de
+                  1h30 par semaine. C&apos;est le rythme qui a mené un
+                  apprenant jusqu&apos;à l&apos;expatriation professionnelle
+                  — un rythme qui installe l&apos;anglais dans ton quotidien,
+                  sans le laisser retomber entre deux séances.
+                </p>
+                <p className="t-body text-white/85">
+                  Chaque séance est une vraie prise de parole : des
+                  conversations inspirées de situations réelles, des
+                  corrections personnalisées au bon moment, un travail sur ta
+                  prononciation. Et entre les séances, des exercices courts
+                  prolongent la progression.
+                </p>
+                <p className="t-body text-white/85">
+                  Le résultat dépend d&apos;une chose : que tu mettes en
+                  application ce qui est travaillé ensemble. C&apos;est
+                  exactement ce que la garantie engage.
+                </p>
+              </Prose>
             </Reveal>
 
-            <Reveal delay={120}>
-              <figure className="relative aspect-[4/5] overflow-hidden rounded-[12px]">
-                <ResponsiveImage
-                  src="/assets/METHODE-01-fluide.webp"
-                  alt="Femme souriante en séance de coaching d'anglais en visioconférence — casque sur les oreilles, lumière chaude : la pratique vivante qui débloque la parole"
-                  fill
-                  sizes="(max-width: 1023px) 92vw, 566px"
-                  className="object-cover"
-                />
-                {/* Voile de lisibilité — concentré sur la zone texte (bas) */}
-                <div
-                  aria-hidden="true"
-                  className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/60 to-transparent"
-                />
-                {/* Texte en overlay (instruction propriétaire) */}
-                <figcaption className="absolute inset-x-0 bottom-0 p-6 [text-shadow:0_1px_12px_rgba(0,0,0,0.5)] md:p-8">
-                  <Eyebrow className="text-white/80">
-                    La méthode vivante
-                  </Eyebrow>
-                  <p className="t-body mt-3 text-white">
-                    C&apos;est exactement ce que je fais avec toi. Chaque séance
-                    part de ce que tu sais déjà dire — et pousse un peu plus
-                    loin. Pas de manuel figé. Pas de leçon générique. Une
-                    conversation, structurée, qui avance à ton rythme.
-                  </p>
-                </figcaption>
-              </figure>
+            {/* Timeline — DA §12, déclinée en blanc sur le fond sombre */}
+            <Reveal className="mt-12">
+              <div className="max-w-[34rem]">
+                <div className="flex items-center" aria-hidden="true">
+                  <span className="h-3.5 w-3.5 shrink-0 rounded-full bg-white" />
+                  <span className="h-[2px] flex-1 bg-white" />
+                  <span className="h-3.5 w-3.5 shrink-0 rounded-full bg-white" />
+                </div>
+                <div className="mt-3 flex items-baseline justify-between">
+                  <span className="text-[0.9375rem] font-medium text-white">
+                    Mois 1
+                  </span>
+                  <span className="text-[0.9375rem] font-medium text-white">
+                    Mois 2-3
+                  </span>
+                </div>
+              </div>
+            </Reveal>
+
+            <Reveal className="mt-12">
+              <span data-wa-cta className="inline-flex">
+                <CtaButton href="#/contact">{CTA_LABELS.hero}</CtaButton>
+              </span>
+              {/* Ligne programme sous le CTA (instruction propriétaire) */}
+              <p className="t-caption mt-4 text-white/70">
+                {OFFRE.resumeSousCta}
+              </p>
             </Reveal>
           </div>
-        </Container>
-      </Section>
 
-      {/* — Comment se déroule le coaching — texte à gauche, scène 3D
-           « microphone tech » à droite (instruction propriétaire :
-           recréation animée de l'asset Spline désigné, accents néon
-           adaptés au rouge DA §19). Fond commun sombre — le radial
-           studio de la scène s'étend à toute la section (hotspot
-           repositionné sur le micro : centré-bas mobile, colonne
-           droite desktop) : le micro ne vit plus dans un bloc, il
-           flotte directement sur le fond (instruction propriétaire).
-           Mobile : texte puis scène. — */}
-      <Section className="on-dark relative overflow-hidden bg-[radial-gradient(120%_85%_at_50%_78%,#1b1b1f_0%,#0c0c0e_52%,#050506_100%)] text-white lg:bg-[radial-gradient(120%_85%_at_70%_20%,#1b1b1f_0%,#0c0c0e_52%,#050506_100%)]">
-        <Container>
-          <div className="grid gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-16">
-            <div>
-              <Reveal>
-                <Prose>
-                  <h2 className="t-h2 text-white">
-                    Trois mois. Trois séances par semaine. Une transformation.
-                  </h2>
-                  <p className="t-body text-white/85">
-                    Le format que je recommande — celui qui a mené un apprenant
-                    jusqu&apos;à l&apos;expatriation professionnelle —
-                    c&apos;est trois séances de 1h30 par semaine, pendant trois
-                    mois. Un rythme qui installe l&apos;anglais dans ton
-                    quotidien, sans le laisser retomber entre deux séances.
-                  </p>
-                  <p className="t-body text-white/85">
-                    Je propose aussi une version plus courte, sur deux mois, si
-                    tu veux avancer plus vite. Le résultat dépend surtout
-                    d&apos;une chose : que tu mettes en application ce qui est
-                    vu en séance.
-                  </p>
-                  <p className="t-body text-white/85">
-                    Individuel, pour un accompagnement sur-mesure. Ou en petit
-                    groupe, si tu apprends mieux en interaction.
-                  </p>
-                </Prose>
-              </Reveal>
+          {/* Scène 3D — chargée à l'approche du viewport uniquement */}
+          <Reveal delay={120}>
+            <MicrophoneScene className="mx-auto max-w-[30rem] lg:max-w-none" />
+          </Reveal>
+        </div>
+      </Container>
+    </Section>
+  );
+}
 
-              {/* Timeline — ligne horizontale simple avec deux points (DA §12),
-                  déclinée en blanc sur le fond sombre */}
-              <Reveal className="mt-12">
-                <div className="max-w-[34rem]">
-                  <div className="flex items-center" aria-hidden="true">
-                    <span className="h-3.5 w-3.5 shrink-0 rounded-full bg-white" />
-                    <span className="h-[2px] flex-1 bg-white" />
-                    <span className="h-3.5 w-3.5 shrink-0 rounded-full bg-white" />
-                  </div>
-                  <div className="mt-3 flex items-baseline justify-between">
-                    <span className="text-[0.9375rem] font-medium text-white">
-                      Mois 1
-                    </span>
-                    <span className="text-[0.9375rem] font-medium text-white">
-                      Mois 2-3
-                    </span>
-                  </div>
-                </div>
-              </Reveal>
+/* — « AVANT → APRÈS » (instruction propriétaire) : comparaison visuelle
+     très forte, deux cartes plein image avec texte en overlay. Images
+     PROVISOIRES (en attente des visuels du propriétaire) : PROBLEME-01
+     pour l'avant, METHOD-01 pour l'après. Flèche de transformation au
+     centre sur desktop. — */
+const AVANT = [
+  "Je comprends mais je n'arrive pas à répondre.",
+  "Je cherche mes mots.",
+  "J'ai peur de faire des erreurs.",
+  "Je traduis dans ma tête.",
+  "Je manque de confiance.",
+];
 
-              {/* Rareté (instruction propriétaire : stratégie marketing) —
-                  placée juste avant le CTA : un vrai suivi exige trois
-                  séances par semaine par élève, donc des places comptées. */}
-              <Reveal className="mt-10">
-                <div className="max-w-[34rem] rounded-[12px] border border-white/15 bg-white/[0.06] p-5 md:p-6">
-                  <p className="text-[0.9375rem] font-medium text-white">
-                    Places limitées — c&apos;est la condition d&apos;un vrai
-                    suivi.
-                  </p>
-                  <p className="t-body mt-2 text-white/85">
-                    Trois séances par semaine par élève, c&apos;est un temps
-                    réel que je consacre à chaque apprenant. Je ne prends
-                    qu&apos;un nombre restreint d&apos;élèves à la fois :
-                    quand les places du mois sont prises, il faut attendre le
-                    suivant.
-                  </p>
-                </div>
-              </Reveal>
+const APRES = [
+  "Je prends la parole plus facilement.",
+  "Je construis mes phrases plus naturelment.",
+  "Je comprends mieux les conversations.",
+  "Je fais moins de traductions mentales.",
+  "Je parle avec davantage de confiance.",
+];
 
-              <Reveal className="mt-12">
-                <span data-wa-cta className="inline-flex">
-                  <CtaButton href="#/contact">{CTA_LABELS.reserverFormat}</CtaButton>
-                </span>
-              </Reveal>
-            </div>
+function AvantApres() {
+  return (
+    <Section>
+      <Container>
+        <Reveal>
+          <Prose className="mx-auto max-w-[42rem] text-center">
+            <Eyebrow>La transformation</Eyebrow>
+            <h2 className="t-h2 mt-4 text-black">
+              Avant le programme. Après le programme.
+            </h2>
+            <p className="t-body">
+              Le même apprenant, trois mois d&apos;écart — la différence
+              entre comprendre l&apos;anglais et oser le parler.
+            </p>
+          </Prose>
+        </Reveal>
 
-            {/* Scène 3D — chargée à l'approche du viewport uniquement */}
-            <Reveal delay={120}>
-              <MicrophoneScene className="mx-auto max-w-[30rem] lg:max-w-none" />
-            </Reveal>
-          </div>
-        </Container>
-      </Section>
-
-      {/* — Traitement d'objection — centré (instruction propriétaire :
-            moment d'affirmation courte, DA §7 réserve le centrage à
-            ces moments). — */}
-      <Section>
-        <Container>
+        <div className="mt-10 grid items-stretch gap-6 lg:mt-14 lg:grid-cols-[1fr_auto_1fr] lg:gap-4">
+          {/* AVANT */}
           <Reveal>
-            <Prose className="mx-auto text-center">
-              <h2 className="t-h2 text-black">
-                « J&apos;ai déjà essayé, ça n&apos;a jamais marché. »
+            <figure className="relative h-full min-h-[26rem] overflow-hidden rounded-[12px]">
+              <ResponsiveImage
+                src="/assets/PROBLEME-01.webp"
+                alt="Apprenante bloquée : menton posé sur la main devant ses livres, feuille froissée — l'anglais compris mais pas parlé"
+                fill
+                sizes="(max-width: 1023px) 92vw, 44vw"
+                className="object-cover [filter:grayscale(35%)]"
+              />
+              <div
+                aria-hidden="true"
+                className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/70 to-black/25"
+              />
+              <figcaption className="absolute inset-x-0 bottom-0 p-6 [text-shadow:0_1px_12px_rgba(0,0,0,0.5)] md:p-8">
+                <p className="font-display text-[1.375rem] font-medium text-white/90">
+                  AVANT
+                </p>
+                <ul className="mt-4 space-y-2.5">
+                  {AVANT.map((item) => (
+                    <li key={item} className="flex items-start gap-3">
+                      <span
+                        aria-hidden="true"
+                        className="mt-[0.55em] h-1.5 w-1.5 shrink-0 rounded-full bg-white/60"
+                      />
+                      <span className="t-body text-white/90">« {item} »</span>
+                    </li>
+                  ))}
+                </ul>
+              </figcaption>
+            </figure>
+          </Reveal>
+
+          {/* Flèche de transformation (desktop) */}
+          <div
+            aria-hidden="true"
+            className="hidden items-center justify-center lg:flex"
+          >
+            <svg width="44" height="24" viewBox="0 0 44 24" fill="none">
+              <path
+                d="M2 12 C 16 12, 28 12, 40 12 M34 5 C 36.5 8, 38.5 10, 40.5 12 C 38.5 14, 36.5 16, 34 19"
+                stroke="#000000"
+                strokeWidth={2}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </div>
+
+          {/* APRÈS */}
+          <Reveal delay={120}>
+            <figure className="relative h-full min-h-[26rem] overflow-hidden rounded-[12px]">
+              <ResponsiveImage
+                src="/assets/METHOD-01.webp"
+                alt="Apprenante épanouie en séance de coaching en ligne, tasse « Small Steps Big Progress » sur le bureau — l'anglais qu'on ose parler"
+                fill
+                sizes="(max-width: 1023px) 92vw, 44vw"
+                className="object-cover"
+              />
+              <div
+                aria-hidden="true"
+                className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/70 to-black/25"
+              />
+              <figcaption className="absolute inset-x-0 bottom-0 p-6 [text-shadow:0_1px_12px_rgba(0,0,0,0.5)] md:p-8">
+                <p className="font-display text-[1.375rem] font-medium text-white">
+                  APRÈS
+                </p>
+                <ul className="mt-4 space-y-2.5">
+                  {APRES.map((item) => (
+                    <li key={item} className="flex items-start gap-3">
+                      <svg
+                        className="mt-1 h-5 w-5 shrink-0 text-white"
+                        viewBox="0 0 20 20"
+                        fill="none"
+                        aria-hidden="true"
+                      >
+                        <path
+                          d="M4 10.5 C 6.5 13, 8.5 15, 9 15.5 C 11.5 12, 14 8.5, 16.5 5.5"
+                          stroke="currentColor"
+                          strokeWidth={1.8}
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                      <span className="t-body text-white">« {item} »</span>
+                    </li>
+                  ))}
+                </ul>
+              </figcaption>
+            </figure>
+          </Reveal>
+        </div>
+      </Container>
+    </Section>
+  );
+}
+
+/* — « CE QUE TU ACHÈTES VRAIMENT » (instruction propriétaire) : ne pas
+     présenter des cours, présenter la TRANSFORMATION. Les 10 axes du
+     programme en grille de checks. — */
+const AXES_PROGRAMME = [
+  "Pratique orale régulière",
+  "Conversations réelles",
+  "Corrections personnalisées",
+  "Prononciation",
+  "Vocabulaire utile",
+  "Compréhension orale",
+  "Construction des phrases",
+  "Confiance à l'oral",
+  "Accompagnement personnalisé",
+  "Exercices entre les séances",
+];
+
+function CeQueTuAchetes() {
+  return (
+    <Section className="bg-grey-soft">
+      <Container>
+        <Reveal>
+          <Prose className="mx-auto max-w-[46rem] text-center">
+            <Eyebrow>Ce que tu achètes vraiment</Eyebrow>
+            <h2 className="t-h2 mt-4 text-black">
+              Tu n&apos;achètes pas 03 mois de cours d&apos;anglais.
+            </h2>
+            <p className="t-body">
+              Tu investis dans ta capacité à communiquer en anglais avec
+              plus de confiance — une compétence qui reste avec toi bien
+              après le programme, dans ton travail, tes études, tes voyages
+              et ta vie personnelle.
+            </p>
+          </Prose>
+        </Reveal>
+
+        <div className="mx-auto mt-10 grid max-w-[52rem] gap-x-10 gap-y-4 sm:grid-cols-2 lg:mt-14">
+          {AXES_PROGRAMME.map((axe, i) => (
+            <Reveal key={axe} delay={(i % 2) * 80}>
+              <div className="flex items-start gap-3 border-b border-grey-line pb-4">
+                <svg
+                  className="mt-1 h-5 w-5 shrink-0 text-black"
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M4 10.5 C 6.5 13, 8.5 15, 9 15.5 C 11.5 12, 14 8.5, 16.5 5.5"
+                    stroke="currentColor"
+                    strokeWidth={1.8}
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+                <span className="t-body text-black">{axe}</span>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+      </Container>
+    </Section>
+  );
+}
+
+/* — « CE QUI EST INCLUS » (instruction propriétaire) : le programme
+     présenté comme un package à forte valeur perçue — 6 blocs numérotés. — */
+const INCLUS = [
+  {
+    num: "01",
+    titre: "Coaching personnalisé",
+    corps: "Des séances adaptées à ton niveau, tes difficultés et ton objectif.",
+  },
+  {
+    num: "02",
+    titre: "Speaking Practice",
+    corps: "Une pratique centrée sur la prise de parole réelle.",
+  },
+  {
+    num: "03",
+    titre: "Prononciation",
+    corps: "Identification et correction de tes erreurs de prononciation.",
+  },
+  {
+    num: "04",
+    titre: "Conversation",
+    corps: "Des situations inspirées de la vie réelle.",
+  },
+  {
+    num: "05",
+    titre: "Exercices personnalisés",
+    corps: "Du travail entre les séances pour accélérer ta progression.",
+  },
+  {
+    num: "06",
+    titre: "Suivi",
+    corps: "Une progression structurée pendant les trois mois.",
+  },
+];
+
+function CeQuiEstInclus() {
+  return (
+    <Section>
+      <Container>
+        <Reveal>
+          <Prose className="mx-auto max-w-[46rem] text-center">
+            <Eyebrow>Ce qui est inclus</Eyebrow>
+            <h2 className="t-h2 mt-4 text-black">
+              Mon accompagnement de 03 mois comprend :
+            </h2>
+          </Prose>
+        </Reveal>
+
+        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:mt-14 lg:grid-cols-3 lg:gap-8">
+          {INCLUS.map((item, i) => (
+            <Reveal key={item.num} delay={(i % 3) * 100}>
+              <div className="card-base card-hover flex h-full flex-col p-6 lg:p-8">
+                <p className="font-display text-[2rem] font-medium leading-none text-grey-line lg:text-[2.25rem]">
+                  {item.num}
+                </p>
+                <h3 className="t-h3 mt-5 text-black">{item.titre}</h3>
+                <p className="t-body mt-3">{item.corps}</p>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+      </Container>
+    </Section>
+  );
+}
+
+/* — « POURQUOI MOI ? » (instruction propriétaire) : développer Stevens
+     comme marque personnelle — répond à la question silencieuse « pourquoi
+     toi plutôt qu'une application ou un autre professeur ? ». Portrait à
+     gauche, arguments à droite, bouton vers la page À propos. — */
+const POURQUOI_MOI = [
+  "Une expérience réelle du coaching, terrain et en ligne",
+  "Une approche personnalisée — chaque séance est calée sur toi",
+  "Une habitude des débutants et des intermédiaires",
+  "Une maîtrise de l'anglais forgée par la formation et la pratique",
+  "La compréhension des difficultés spécifiques des francophones",
+  "Un coaching 100 % en ligne, où que tu sois",
+  "Une approche centrée sur la pratique orale — pas sur la théorie",
+];
+
+function PourquoiMoi() {
+  return (
+    <Section className="bg-grey-soft">
+      <Container>
+        <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,24rem)_minmax(0,40rem)] lg:gap-16">
+          {/* Portrait Stevens */}
+          <Reveal>
+            <div className="relative mx-auto aspect-[2/3] w-full max-w-[22rem] overflow-hidden rounded-[12px] shadow-[0_4px_20px_rgba(0,0,0,0.10)] lg:mx-0">
+              <ResponsiveImage
+                src="/assets/APROPOS-PORTRAIT.webp"
+                alt="Portrait professionnel de Stevens Akpovi, coach d'anglais, en costume noir et lunettes, dans un intérieur moderne"
+                fill
+                sizes="(max-width: 1023px) 92vw, 352px"
+                className="object-cover"
+              />
+            </div>
+          </Reveal>
+
+          <Reveal delay={120}>
+            <Prose>
+              <Eyebrow>Pourquoi moi ?</Eyebrow>
+              <h2 className="t-h2 mt-4 text-black">
+                Pourquoi apprendre avec moi, plutôt qu&apos;avec une
+                application ou un autre professeur ?
               </h2>
               <p className="t-body">
-                C&apos;est normal. Une application ne corrige pas ta
-                prononciation. Un cours collectif de 20 personnes ne te fait pas
-                parler assez. Et la grammaire seule ne prépare à aucune
-                conversation réelle. Ici, chaque séance est calée sur toi — ton
-                niveau, ton objectif, ton rythme. C&apos;est la différence entre
-                suivre un programme et être suivi.
+                Parce qu&apos;une application ne t&apos;entend pas. Parce
+                qu&apos;un programme figé ne s&apos;adapte pas. Et parce que
+                ce blocage spécifique — comprendre sans oser parler — est
+                exactement celui que je traite, séance après séance.
               </p>
+              <ul className="mt-6 space-y-3">
+                {POURQUOI_MOI.map((item) => (
+                  <li key={item} className="flex items-start gap-3">
+                    <svg
+                      className="mt-1 h-5 w-5 shrink-0 text-black"
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="M4 10.5 C 6.5 13, 8.5 15, 9 15.5 C 11.5 12, 14 8.5, 16.5 5.5"
+                        stroke="currentColor"
+                        strokeWidth={1.8}
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                    <span className="t-body">{item}</span>
+                  </li>
+                ))}
+              </ul>
+              <div className="mt-10">
+                <SecondaryLink href="#/a-propos">
+                  {CTA_LABELS.pourquoiMoi}
+                </SecondaryLink>
+              </div>
             </Prose>
           </Reveal>
-          <Reveal className="mt-10 flex justify-center">
-            {/* btn-invert-hover (instruction propriétaire) : au survol,
-                fond noir pur #000000 + texte blanc. */}
-            <SecondaryLink
-              href="#/resultats"
-              className="btn-invert-hover"
-            >
-              {CTA_LABELS.voirMethode}
-            </SecondaryLink>
-          </Reveal>
-        </Container>
-      </Section>
+        </div>
+      </Container>
+    </Section>
+  );
+}
 
-      {/* — Garantie de résultat (instruction propriétaire : stratégie
-            marketing confiance / renversement du risque) — si l&apos;élève
-            applique rigoureusement la méthode pendant deux mois et ne
-            parle pas, il est remboursé intégralement. Carte « contrat »
-            encadrée sur fond noir, en clôture de narration avant le
-            footer. — */}
-      <Section className="on-dark bg-black text-white">
-        <Container>
+/* — « POUR QUI ? » (instruction propriétaire) : qualification du
+     prospect — deux cartes face à face, ce qui qualifie / ce qui
+     disqualifie (croix rouges, le rouge restant réservé aux accents
+     hors CTA dans cet usage sémantique d'exclusion). — */
+const POUR_TOI = [
+  "tu comprends déjà un peu ou assez bien l'anglais mais tu as du mal à le parler ;",
+  "tu es débutant ou intermédiaire ;",
+  "tu veux améliorer ton anglais pour le travail, les études, les voyages ou ta vie personnelle ;",
+  "tu veux pratiquer régulièrement ;",
+  "tu veux être accompagné plutôt qu'apprendre seul ;",
+  "tu es prêt à pratiquer entre les séances.",
+];
+
+const PAS_POUR_TOI = [
+  "tu cherches une solution magique sans pratiquer ;",
+  "tu veux uniquement apprendre de la grammaire ;",
+  "tu ne comptes pas participer régulièrement.",
+];
+
+function PourQui() {
+  return (
+    <Section>
+      <Container>
+        <Reveal>
+          <Prose className="mx-auto max-w-[46rem] text-center">
+            <Eyebrow>Pour qui ?</Eyebrow>
+            <h2 className="t-h2 mt-4 text-black">
+              Ce programme est-il fait pour toi ?
+            </h2>
+            <p className="t-body">
+              Je préfère te le dire franchement avant que tu t&apos;engages.
+            </p>
+          </Prose>
+        </Reveal>
+
+        <div className="mt-10 grid gap-6 lg:mt-14 lg:grid-cols-2 lg:gap-8">
+          {/* POUR TOI */}
           <Reveal>
-            <div className="mx-auto max-w-[46rem] rounded-[12px] border border-white/20 bg-white/[0.04] p-6 md:p-10">
-              <Eyebrow className="text-white/75">
-                Garantie de résultat
-              </Eyebrow>
-              <h2 className="t-h2 mt-4 text-white">
-                Si tu appliques, tu parles. Sinon, je te rembourse.
-              </h2>
-              <p className="t-body mt-6 text-white/85">
-                Je ne te demande pas de me croire sur parole. Je te demande
-                de faire ta part : les séances, les exercices entre deux,
-                les corrections intégrées. Si tu appliques rigoureusement
-                ce qu&apos;on travaille ensemble, parler devient une
-                conséquence — pas une question de chance, ni de talent.
+            <div className="card-base h-full p-6 md:p-8 lg:p-10">
+              <h3 className="t-h3 text-black">Ce programme est pour toi si :</h3>
+              <ul className="mt-6 space-y-3.5">
+                {POUR_TOI.map((item) => (
+                  <li key={item} className="flex items-start gap-3">
+                    <svg
+                      className="mt-1 h-5 w-5 shrink-0 text-black"
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="M4 10.5 C 6.5 13, 8.5 15, 9 15.5 C 11.5 12, 14 8.5, 16.5 5.5"
+                        stroke="currentColor"
+                        strokeWidth={1.8}
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                    <span className="t-body">{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </Reveal>
+
+          {/* PAS POUR TOI */}
+          <Reveal delay={120}>
+            <div className="card-base h-full p-6 md:p-8 lg:p-10">
+              <h3 className="t-h3 text-black">
+                Ce programme n&apos;est PAS pour toi si :
+              </h3>
+              <ul className="mt-6 space-y-3.5">
+                {PAS_POUR_TOI.map((item) => (
+                  <li key={item} className="flex items-start gap-3">
+                    <svg
+                      className="mt-1 h-5 w-5 shrink-0"
+                      style={{ color: "#ff0000" }}
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="M5 5 C 8.5 8.5, 13.5 13.5, 17 17 M17 5 C 13.5 8.5, 8.5 13.5, 5 17"
+                        stroke="currentColor"
+                        strokeWidth={1.8}
+                        strokeLinecap="round"
+                      />
+                    </svg>
+                    <span className="t-body">{item}</span>
+                  </li>
+                ))}
+              </ul>
+              <p className="t-body mt-8 text-grey-mid">
+                Dans ces cas, aucune méthode honnête ne te fera parler — et
+                je préfère ne pas te vendre un programme qui ne te convient
+                pas.
               </p>
-              <p className="t-body mt-4 text-white/85">
-                Et si, après deux mois d&apos;application rigoureuse, tu
-                n&apos;arrives toujours pas à t&apos;exprimer, je te rembourse
-                la totalité de ton accompagnement. Pas de justification
-                interminable : tu me montres que tu as fait le travail, et
-                je te rends ton argent.
+            </div>
+          </Reveal>
+        </div>
+      </Container>
+    </Section>
+  );
+}
+
+/* — SECTION PRIX (instruction propriétaire) : le contenu de l'ancienne
+     page Offres, RENFORCÉ, devient le bloc central de conversion de
+     l'accueil — offre unique, value stack complet à côté du prix, CTA
+     dédié. Fond noir : moment le plus fort du funnel. — */
+function SectionPrix() {
+  return (
+    <Section className="on-dark relative overflow-hidden bg-black text-white">
+      <Container>
+        <Reveal>
+          <Prose className="mx-auto max-w-[46rem] text-center">
+            <Eyebrow className="text-white/75">L&apos;offre</Eyebrow>
+            <h2 className="t-h2 mt-4 text-white">
+              03 mois pour passer de la compréhension à la parole.
+            </h2>
+            <p className="t-body text-white/85">
+              Programme « De « Comprendre » à « Parler » » — 03 mois de
+              coaching d&apos;anglais personnalisé, en ligne.
+            </p>
+          </Prose>
+        </Reveal>
+
+        <div className="mx-auto mt-10 grid max-w-[60rem] gap-6 lg:mt-14 lg:grid-cols-[minmax(0,26rem)_minmax(0,30rem)] lg:gap-8">
+          {/* Bloc prix */}
+          <Reveal>
+            <div className="flex h-full flex-col rounded-[12px] border border-white/20 bg-white/[0.06] p-6 md:p-10">
+              <p className="t-caption font-medium uppercase tracking-[0.14em] text-white/75">
+                Paiement unique
+              </p>
+              <p className="mt-6 flex flex-wrap items-baseline gap-x-4">
+                <span className="t-stat text-white">{OFFRE.prix}</span>
+                <span className="t-stat-unit text-white">{OFFRE.devise}</span>
+              </p>
+              <p className="t-body mt-6 text-white/85">
+                Pas d&apos;abonnement. Pas de paiement mensuel. Pas de frais
+                cachés.
+              </p>
+              <p className="t-body mt-4 font-medium text-white">
+                Un seul paiement. Trois mois d&apos;accompagnement.
               </p>
 
-              {/* Les trois engagements — ce qui active la garantie */}
-              <ul className="mt-8 space-y-3 border-t border-white/15 pt-6">
+              {/* Durée mise en scène : le programme est un accompagnement
+                  de 03 mois, pas des séances isolées (instruction
+                  propriétaire : valeur perçue). */}
+              <div className="mt-8 border-t border-white/15 pt-6" aria-hidden="true">
+                <div className="flex items-center">
+                  <span className="h-3 w-3 shrink-0 rounded-full bg-white" />
+                  <span className="h-[2px] flex-1 bg-white/40" />
+                  <span className="h-3 w-3 shrink-0 rounded-full bg-white" />
+                  <span className="h-[2px] flex-1 bg-white/40" />
+                  <span className="h-3 w-3 shrink-0 rounded-full bg-white" />
+                </div>
+                <div className="mt-3 flex items-baseline justify-between text-[0.9375rem] font-medium text-white">
+                  <span>Mois 1</span>
+                  <span>Mois 2</span>
+                  <span>Mois 3</span>
+                </div>
+              </div>
+
+              <div className="mt-auto pt-10">
+                <span data-wa-cta className="inline-flex w-full">
+                  <CtaButton href="#/contact" className="w-full">
+                    {CTA_LABELS.rejoindre}
+                  </CtaButton>
+                </span>
+                <p className="t-caption mt-4 text-center text-white/70">
+                  {OFFRE.sousCtaPrix}
+                </p>
+              </div>
+            </div>
+          </Reveal>
+
+          {/* Value stack — tout ce que tu reçois (instruction
+              propriétaire : ne jamais écrire juste « 70 000 FCFA ») */}
+          <Reveal delay={120}>
+            <div className="h-full rounded-[12px] border border-white/15 bg-white/[0.03] p-6 md:p-10">
+              <h3 className="t-h3 text-white">
+                Voici tout ce que tu reçois pour {OFFRE.prix}{" "}
+                {OFFRE.devise} :
+              </h3>
+              <ul className="mt-6 space-y-3.5">
                 {[
-                  "Tu suis le rythme de séances qu'on définit ensemble.",
-                  "Tu pratiques entre les séances, comme convenu.",
-                  "Tu appliques les corrections travaillées en séance.",
+                  ...AXES_PROGRAMME.map((a) => a[0].toUpperCase() + a.slice(1)),
                 ].map((item) => (
                   <li key={item} className="flex items-start gap-3">
                     <svg
@@ -691,25 +1115,230 @@ function Methode() {
                         strokeLinejoin="round"
                       />
                     </svg>
-                    <span className="t-body text-white/85">{item}</span>
+                    <span className="t-body text-white/90">{item}</span>
                   </li>
                 ))}
               </ul>
-
-              <p className="t-body mt-8 text-white/85">
-                Le risque, c&apos;est moi qui le prends. Le seul qui te
-                reste : être exactement au même point dans six mois.
+              <p className="t-body mt-8 border-t border-white/15 pt-6 text-white/85">
+                Soit un accompagnement complet sur trois mois — pas des
+                séances isolées, mais un parcours structuré, du premier
+                déclic jusqu&apos;à une parole qui tient debout.
               </p>
-              <div className="mt-10">
-                <span data-wa-cta className="inline-flex">
-                  <CtaButton href="#/contact">{CTA_LABELS.hero}</CtaButton>
-                </span>
-              </div>
             </div>
           </Reveal>
-        </Container>
-      </Section>
-    </div>
+        </div>
+      </Container>
+    </Section>
+  );
+}
+
+/* — GARANTIE (instruction propriétaire) : basée sur l'ENGAGEMENT, jamais
+     une promesse absolue de résultat sans conditions. Conditions
+     affichées explicitement ; à 02 mois sans expression malgré des
+     conditions respectées → 100 % remboursé. Carte « contrat » sur fond
+     clair, bordure noire épaisse (héritage DA de l'encart Offres). — */
+function Garantie() {
+  return (
+    <Section>
+      <Container>
+        <Reveal>
+          <div className="mx-auto max-w-[46rem] rounded-[12px] border-2 border-black p-6 md:p-10">
+            <Eyebrow>Garantie</Eyebrow>
+            <h2 className="t-h2 mt-4 text-black">
+              Une garantie basée sur ton engagement.
+            </h2>
+            <p className="t-body mt-6">
+              Je ne te promets pas un résultat sans conditions — personne ne
+              peut honnêtement contrôler à ta place si tu parles. Ce que je
+              peux t&apos;engager, c&apos;est ceci : si tu remplis les
+              conditions ci-dessous et qu&apos;à deux mois tu ne t&apos;exprimes
+              toujours pas en anglais, je te rembourse 100 % de ton argent,
+              en entièreté.
+            </p>
+
+            {/* Les conditions — ce que la garantie exige */}
+            <ul className="mt-8 space-y-3 border-t border-grey-line pt-6">
+              {[
+                "Tu participes régulièrement aux séances du programme.",
+                "Tu fais les exercices personnalisés entre les séances.",
+                "Tu appliques les corrections travaillées ensemble.",
+              ].map((item) => (
+                <li key={item} className="flex items-start gap-3">
+                  <svg
+                    className="mt-1 h-5 w-5 shrink-0 text-black"
+                    viewBox="0 0 20 20"
+                    fill="none"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="M4 10.5 C 6.5 13, 8.5 15, 9 15.5 C 11.5 12, 14 8.5, 16.5 5.5"
+                      stroke="currentColor"
+                      strokeWidth={1.8}
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                  <span className="t-body">{item}</span>
+                </li>
+              ))}
+            </ul>
+
+            <p className="t-body mt-6 text-grey-mid">
+              Ce que je ne promets pas : que l&apos;anglais arrive tout seul.
+              Ce que je promets : si tu fais ta part et que ça ne suffit pas,
+              tu ne perds pas ton argent.
+            </p>
+          </div>
+        </Reveal>
+      </Container>
+    </Section>
+  );
+}
+
+/* — PREUVE : le cas réel (expatriation professionnelle) + 98 % —
+    renvoi vers la page Résultats. — */
+function Preuve() {
+  return (
+    <Section className="bg-grey-soft">
+      <Container>
+        <div className="mx-auto max-w-[46rem]">
+          <Reveal>
+            <Prose>
+              <Eyebrow>Preuve</Eyebrow>
+              <h2 className="t-h2 mt-4 text-black">
+                Un parcours réel : de la compréhension au poste
+                international.
+              </h2>
+              <p className="t-body">
+                Un professionnel d&apos;une quarantaine d&apos;années
+                comprenait l&apos;anglais depuis des années — et bloquait
+                complètement à l&apos;oral. Trois mois de coaching centré sur
+                la pratique orale de son domaine, et il s&apos;exprimait avec
+                l&apos;aisance nécessaire pour prendre son poste à
+                l&apos;international.
+              </p>
+              <p className="t-body">
+                Ce n&apos;est pas un cas isolé : 98 % de mes débutants
+                absolus s&apos;expriment librement après un mois de coaching.
+              </p>
+            </Prose>
+          </Reveal>
+          <Reveal className="mt-10">
+            <SecondaryLink href="#/resultats">
+              {CTA_LABELS.voirResultats}
+            </SecondaryLink>
+          </Reveal>
+        </div>
+      </Container>
+    </Section>
+  );
+}
+
+/* — FAQ (instruction propriétaire) : le contenu de la page FAQ, renforcé,
+     intégré à l'accueil pour traiter les objections avant le CTA final. — */
+export const FAQ_OBJECTIONS = [
+  {
+    question: "Et si je suis débutant ?",
+    answer:
+      "Ce programme est fait pour toi : débutants et intermédiaires sont exactement les apprenants que j'accompagne. 98 % de mes débutants absolus s'expriment librement dès le premier mois — chaque séance part de ton niveau réel, pas d'un programme figé.",
+  },
+  {
+    question:
+      "Et si je comprends l'anglais mais que je n'arrive vraiment pas à parler ?",
+    answer:
+      "C'est précisément pour ce blocage que le programme existe. Comprendre sans parler n'est pas un problème de connaissances : c'est un manque de pratique orale. Ici, tu parles dès la première séance, avec quelqu'un qui corrige au bon moment.",
+  },
+  {
+    question: "Et si je fais beaucoup d'erreurs ?",
+    answer:
+      "Les erreurs font partie de l'apprentissage — les figer, c'est ce qui te bloque aujourd'hui. Je les corrige au bon moment, sans te couper, pour que chaque erreur devienne un progrès au lieu d'une peur.",
+  },
+  {
+    question: "Combien de temps dois-je consacrer au programme ?",
+    answer:
+      "Trois séances de 1h30 par semaine, plus de courts exercices personnalisés entre les séances. C'est un rythme volontairement régulier : c'est lui qui installe l'anglais dans ton quotidien.",
+  },
+  {
+    question: "Les séances sont-elles en ligne ?",
+    answer:
+      "Oui, à 100 %. En visioconférence, avec un lien envoyé avant chaque séance. Aucun déplacement, aucun matériel à acheter — où que tu sois.",
+  },
+  {
+    question: "Comment fonctionne le paiement ?",
+    answer:
+      "Un paiement unique de 70 000 FCFA au moment de l'inscription. Après le formulaire, tu es dirigé automatiquement vers le paiement sécurisé. Trois jours après confirmation, ton coaching démarre réellement.",
+  },
+  {
+    question: "Pourquoi un paiement unique ?",
+    answer:
+      "Parce que le programme est un accompagnement complet de 03 mois, pas un abonnement. Pas de paiement mensuel, pas de reconduction, pas de frais cachés — tu sais exactement ce que tu paies, une fois.",
+  },
+  {
+    question: "Est-ce que 03 mois suffisent ?",
+    answer:
+      "Le premier déclic — oser parler sans blocage — arrive généralement dès le premier mois. Trois mois, c'est le temps nécessaire pour que la pratique s'installe durablement, et le format a déjà mené un apprenant jusqu'à un poste international. La garantie basée sur ton engagement couvre exactement ce point.",
+  },
+  {
+    question: "Que se passe-t-il après les 03 mois ?",
+    answer:
+      "Tu repars avec une pratique installée : tu prends la parole plus facilement, tu construis tes phrases plus naturellement, tu as moins besoin de traduire mentalement. Si tu souhaites continuer, on en parle ensemble — sans engagement.",
+  },
+];
+
+function FaqSection() {
+  return (
+    <Section>
+      <Container>
+        <Reveal>
+          <Prose className="mx-auto max-w-[46rem] text-center">
+            <Eyebrow>Questions fréquentes</Eyebrow>
+            <h2 className="t-h2 mt-4 text-black">
+              Ce que tu te demandes peut-être.
+            </h2>
+          </Prose>
+        </Reveal>
+        <Reveal className="mt-10 lg:mt-14">
+          <FaqAccordion
+            className="mx-auto max-w-[52rem]"
+            items={FAQ_OBJECTIONS}
+          />
+        </Reveal>
+      </Container>
+    </Section>
+  );
+}
+
+/* — CTA FINAL : urgence éthique (instruction propriétaire — jamais
+     d'artifice) + CTA principal répété. Centré : clôture du funnel. — */
+function CtaFinal() {
+  return (
+    <Section className="on-dark bg-black text-white">
+      <Container>
+        <Reveal>
+          <Prose className="mx-auto max-w-[42rem] text-center">
+            <p className="font-display text-[1.375rem] leading-snug text-white md:text-[1.625rem] lg:text-[1.75rem]">
+              Chaque mois où tu repousses ta pratique est un mois
+              supplémentaire pendant lequel tu restes dans la même situation.
+            </p>
+            <p className="t-body mt-6 text-white/85">
+              Ta prochaine opportunité ne commencera pas quand tu te sentiras
+              parfaitement prêt. Commence maintenant.
+            </p>
+          </Prose>
+        </Reveal>
+        <Reveal className="mt-10">
+          <div className="flex flex-col items-center gap-5">
+            <span data-wa-cta className="inline-flex">
+              <CtaButton href="#/contact">{CTA_LABELS.hero}</CtaButton>
+            </span>
+            <p className="t-caption text-white/70">{OFFRE.resumeSousCta}</p>
+            <SecondaryLink href="#/programme" className="btn-secondary-dark">
+              {CTA_LABELS.decouvrir}
+            </SecondaryLink>
+          </div>
+        </Reveal>
+      </Container>
+    </Section>
   );
 }
 

@@ -2,14 +2,19 @@
 
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
+import { useScrolled } from "@/lib/motion";
 import { useHashRoute, useHashSection, type RouteId } from "@/lib/router";
 import { Container } from "./layout-primitives";
 
 /**
- * Navigation (instruction propriétaire) : fixe, fond noir pur #000000,
- * logo texte « Stevens AKPOVI » à gauche (blanc), liens à droite + CTA
- * rouge vers le formulaire de contact. Mobile : logo + bouton menu
- * (hamburger) — panneau déroulant noir.
+ * Navigation (instruction propriétaire) : fixe. AU SOMMET de la page la
+ * barre est SANS FOND — elle prend pour arrière-plan le haut de la page
+ * (l'image sombre du hero sur l'accueil, le noir de la page Inscription ;
+ * texte noir au-dessus des pages claires). Dès le scroll (ou menu ouvert),
+ * elle devient noir pur #000000 + bordure white/10 (esthétique Task 13).
+ * Logo « Stevens AKPOVI » à gauche, liens à droite + CTA rouge
+ * « Découvrir le programme » vers la page Programme. Mobile : logo +
+ * bouton menu (hamburger) — panneau déroulant noir.
  * Le lien « Méthode » mène à la section Méthode intégrée à l'accueil
  * (#/?section=methode) — instruction propriétaire.
  */
@@ -18,9 +23,9 @@ const NAV_LINKS: { id: RouteId | "methode-section"; label: string; hash: string 
   { id: "methode-section", label: "Méthode", hash: "#/?section=methode" },
   { id: "a-propos", label: "À propos", hash: "#/a-propos" },
   { id: "resultats", label: "Résultats", hash: "#/resultats" },
-  { id: "offres", label: "Offres", hash: "#/offres" },
+  { id: "programme", label: "Programme", hash: "#/programme" },
   { id: "faq", label: "FAQ", hash: "#/faq" },
-  { id: "contact", label: "Contact", hash: "#/contact" },
+  { id: "contact", label: "Inscription", hash: "#/contact" },
 ];
 
 /** Liens du menu mobile — Accueil inclus. */
@@ -32,7 +37,21 @@ const MOBILE_LINKS: { id: RouteId | "methode-section"; label: string; hash: stri
 export function Header() {
   const route = useHashRoute();
   const section = useHashSection();
+  const scrolled = useScrolled(8);
   const [menuOpen, setMenuOpen] = useState(false);
+
+  // Pages dont le haut est sombre (hero image / fond noir) : texte blanc
+  // quand la barre flotte sans fond. Les autres pages ont un haut clair :
+  // texte noir, toujours lisible sans fond.
+  const topIsDark = route === "accueil" || route === "contact";
+
+  // Au sommet de la page, la barre est transparente (instruction
+  // propriétaire) SAUF menu mobile ouvert (le panneau a besoin du fond).
+  const floating = !scrolled && !menuOpen;
+
+  // Texte blanc : barre solide (noire) OU sommet sombre. Texte noir :
+  // barre flottante au-dessus d'une page claire.
+  const light = !floating || topIsDark;
 
   // Le lien « Méthode » est actif quand on visualise sa section sur l'accueil
   const methodeActive = route === "accueil" && section === "methode";
@@ -48,7 +67,14 @@ export function Header() {
   }, [menuOpen]);
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-[#000000]">
+    <header
+      className={cn(
+        "fixed inset-x-0 top-0 z-50 transition-[background-color,border-color] duration-[240ms] [transition-timing-function:cubic-bezier(0.22,1,0.36,1)]",
+        floating
+          ? "border-b border-transparent bg-transparent"
+          : "border-b border-white/10 bg-[#000000]",
+      )}
+    >
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-3 focus:z-10 focus:rounded-[8px] focus:px-4 focus:py-2 focus:bg-white focus:text-black"
@@ -57,10 +83,14 @@ export function Header() {
       </a>
       <Container>
         <div className="flex h-16 items-center justify-between gap-3 lg:h-[72px]">
-          {/* Logo texte (gauche) — blanc sur fond noir */}
+          {/* Logo texte (gauche) — blanc sur sommet sombre / barre noire,
+              noir sur sommet clair */}
           <a
             href="#/"
-            className="font-display text-[1.25rem] leading-none font-medium tracking-tight text-white transition-colors duration-[240ms] lg:text-[1.375rem]"
+            className={cn(
+              "font-display text-[1.25rem] leading-none font-medium tracking-tight transition-colors duration-[240ms] lg:text-[1.375rem]",
+              light ? "text-white" : "text-black",
+            )}
             aria-label="Stevens AKPOVI — retour à l'accueil"
           >
             Stevens AKPOVI
@@ -80,9 +110,13 @@ export function Header() {
                       aria-current={active ? "page" : undefined}
                       className={cn(
                         "flex min-h-[44px] items-center rounded-[8px] px-2.5 text-[0.9375rem] font-medium transition-colors duration-[240ms] lg:px-3",
-                        active
-                          ? "text-white"
-                          : "text-white/70 hover:text-white",
+                        light
+                          ? active
+                            ? "text-white"
+                            : "text-white/70 hover:text-white"
+                          : active
+                            ? "text-black"
+                            : "text-grey-mid hover:text-black",
                       )}
                     >
                       {link.label}
@@ -93,13 +127,13 @@ export function Header() {
             </ul>
           </nav>
 
-          {/* Droite : CTA formulaire + bouton menu (mobile) */}
+          {/* Droite : CTA programme + bouton menu (mobile) */}
           <div className="flex items-center gap-2 lg:gap-4">
             <a
-              href="#/contact"
+              href="#/programme"
               className="btn btn-primary t-btn min-h-[44px] px-4 py-[11px] text-[0.9375rem] lg:px-5 lg:text-[1.125rem]"
             >
-              Parlons-en
+              Découvrir le programme
             </a>
             <button
               type="button"
@@ -109,7 +143,9 @@ export function Header() {
               aria-label={menuOpen ? "Fermer le menu" : "Ouvrir le menu de navigation"}
               className={cn(
                 "flex h-[44px] w-[44px] items-center justify-center rounded-[8px] transition-colors md:hidden",
-                "text-white hover:bg-white/15",
+                light
+                  ? "text-white hover:bg-white/15"
+                  : "text-black hover:bg-grey-soft",
               )}
             >
               {menuOpen ? (
@@ -138,7 +174,8 @@ export function Header() {
         </div>
       </Container>
 
-      {/* Panneau de navigation mobile — même noir pur que la barre */}
+      {/* Panneau de navigation mobile — noir pur (l'ouverture rend la
+          barre solide, donc le panneau s'enchaîne sans couture) */}
       <div
         id="mobile-nav"
         hidden={!menuOpen}

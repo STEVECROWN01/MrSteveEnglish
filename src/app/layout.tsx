@@ -29,14 +29,14 @@ export const metadata: Metadata = {
   ),
   title: "Stevens AKPOVI — Coach d'anglais",
   description:
-    "Stevens AKPOVI t'accompagne pour parler anglais avec aisance en 2 à 3 mois — pas en révisant des règles, mais en t'exprimant, vraiment, dès la première séance.",
+    "Programme « De « Comprendre » à « Parler » » — 03 mois de coaching d'anglais personnalisé, 70 000 FCFA, paiement unique. Parle anglais avec confiance, en t'exprimant vraiment, dès la première séance.",
   icons: {
     icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
   },
   openGraph: {
     title: "Stevens AKPOVI — Coach d'anglais",
     description:
-      "Parler anglais avec aisance. Pas dans 2 ans. Dans 2 à 3 mois.",
+      "03 mois pour transformer ton anglais que tu comprends en anglais que tu oses vraiment parler.",
     type: "website",
     locale: "fr_FR",
     siteName: "Stevens AKPOVI",
@@ -45,7 +45,8 @@ export const metadata: Metadata = {
         url: "/assets/OG-SOCIAL.png",
         width: 1200,
         height: 630,
-        alt: "Parler anglais avec aisance. Pas dans 2 ans. Dans 2 à 3 mois.",
+        alt:
+          "03 mois pour transformer ton anglais que tu comprends en anglais que tu oses vraiment parler.",
       },
     ],
   },
@@ -53,7 +54,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Stevens AKPOVI — Coach d'anglais",
     description:
-      "Parler anglais avec aisance. Pas dans 2 ans. Dans 2 à 3 mois.",
+      "03 mois pour transformer ton anglais que tu comprends en anglais que tu oses vraiment parler.",
   },
 };
 

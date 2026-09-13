@@ -121,7 +121,7 @@ export function ResultatsPage() {
 
           <Reveal className="mt-10">
             <span data-wa-cta className="inline-flex">
-              <CtaButton href="#/contact">{CTA_LABELS.cas}</CtaButton>
+              <CtaButton href="#/contact">{CTA_LABELS.hero}</CtaButton>
             </span>
           </Reveal>
         </Container>
@@ -191,14 +191,14 @@ export function ResultatsPage() {
           <Reveal>
             <Prose>
               <h2 className="t-h2 text-black">
-                Un mois pour oser parler. Deux à trois mois pour parler avec
-                aisance.
+                Un mois pour oser parler. Trois mois pour parler avec
+                confiance.
               </h2>
               <p className="t-body">
                 Chaque parcours est différent, mais la trajectoire reste la
                 même : les tout premiers débutants qui suivent ma méthode
                 s&apos;expriment librement dès le premier mois, dans neuf cas
-                sur dix. Avec deux à trois mois de coaching régulier,
+                sur dix. Avec trois mois de coaching régulier,
                 l&apos;objectif visé — entretien, examen, expatriation, voyage,
                 ou simplement parler sans stress au quotidien — devient
                 atteignable.
@@ -206,7 +206,9 @@ export function ResultatsPage() {
             </Prose>
           </Reveal>
           <Reveal className="mt-10">
-            <SecondaryLink href="#/offres">{CTA_LABELS.voirObjectif}</SecondaryLink>
+            <SecondaryLink href="#/programme">
+              {CTA_LABELS.decouvrir}
+            </SecondaryLink>
           </Reveal>
         </Container>
       </Section>
