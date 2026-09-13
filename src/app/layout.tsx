@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Fraunces, Public_Sans } from "next/font/google";
 import "./globals.css";
-import { Toaster } from "@/components/ui/toaster";
 
 /**
  * Polices verrouillées (DA §6) : Fraunces (display, variable, italiques
@@ -73,7 +72,6 @@ export default function RootLayout({
         className={`${fraunces.variable} ${publicSans.variable} antialiased bg-background text-foreground`}
       >
         {children}
-        <Toaster />
       </body>
     </html>
   );

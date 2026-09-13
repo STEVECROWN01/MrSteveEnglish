@@ -337,19 +337,17 @@
     .hero-d5 { animation-delay: 450ms; }
   }
 
-  /* — Rotation de la fin du titre hero (instruction propriétaire) :
+  /* — Machine à écrire du titre hero (instruction propriétaire) :
      « ta gorge se noue. » → « ta gorge se serre. » → « tu te bloques. »
-     → « tu perds tes mots. » — chaque variante tenue 3 s, permutation
-     par fondu 450 ms, boucle continue (logique JS : HeroRotatingPhrase
-     dans home-page.tsx). */
-  .hero-phrase {
-    transition:
-      opacity 450ms var(--ease-std),
-      transform 450ms var(--ease-std);
-  }
-  .hero-phrase-hidden {
-    opacity: 0;
-    transform: translateY(0.08em);
+     → « tu perds tes mots. » — chaque phrase est frappée lettre par
+     lettre, tenue 3 s APRÈS la fin de la frappe, puis effacée lettre
+     par lettre ; la suivante est frappée immédiatement, en boucle
+     infinie (logique JS : HeroTypewriter dans home-page.tsx). Le texte
+     frappé est posé sur un réservoir invisible qui garantit une boîte
+     fixe — zéro mouvement du texte environnant. Rouge verrouillé DA §19
+     (même rouge que les CTA, --red-button). — */
+  .hero-phrase-type {
+    color: var(--red-button);
   }
 
   /* — Fade noir → blanc à l'entrée de la section Solution — */
@@ -493,11 +491,8 @@
     opacity: 1;
     animation: none;
   }
-  .hero-phrase,
-  .hero-phrase-hidden {
-    transition: none;
-    opacity: 1;
-    transform: none;
+  .hero-phrase-type {
+    color: var(--red-button);
   }
   .dark-fade {
     animation: none;

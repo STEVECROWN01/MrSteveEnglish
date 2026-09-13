@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { useInViewOnce, usePrefersReducedMotion } from "@/lib/motion";
 import { CTA_LABELS } from "@/lib/site";
@@ -42,14 +42,20 @@ export function HomePage() {
   );
 }
 
-/** Fin du titre hero rotative (instruction propriétaire) : la phrase
- *  clé change en boucle — « ta gorge se noue. » → « ta gorge se serre. »
- *  → « tu te bloques. » → « tu perds tes mots. » puis retour à la
- *  première. Chaque variante reste affichée 3 s (la première attend
- *  la fin de la révélation de la ligne hero-d2), permutation par fondu
- *  450 ms (classes .hero-phrase). Rendu initial identique au serveur
- *  (index 0) : aucun décalage d'hydratation. Reduced motion : texte
- *  statique sur la première variante. */
+/** Fin du titre hero — machine à écrire rotative (instruction
+ *  propriétaire) : « ta gorge se noue. » → « ta gorge se serre. » →
+ *  « tu te bloques. » → « tu perds tes mots. » puis retour à la première,
+ *  en boucle infinie. La phrase est FRAPPÉE lettre par lettre (~75 ms),
+ *  tenue 3 s APRÈS la fin de la frappe (le chrono démarre une fois la
+ *  phrase complète — pas au début de la frappe), puis EFFACÉE lettre par
+ *  lettre (~40 ms, retour arrière) — la suivante est frappée immédiatement
+ *  après l'effacement complet.
+ *  Zéro déplacement du texte environnant : un réservoir invisible (la
+ *  variante la plus large) occupe la boîte finale dès le premier rendu et
+ *  le texte frappé s'y superpose — la boîte ne change jamais de hauteur.
+ *  Rendu serveur identique au client (aucun décalage d'hydratation) ;
+ *  SEO/lecteurs d'écran : copie sr-only de la première variante dans le
+ *  h1. Reduced motion : texte statique sur la première variante. */
 const HERO_PHRASES = [
   "ta gorge se noue.",
   "ta gorge se serre.",
@@ -57,40 +63,79 @@ const HERO_PHRASES = [
   "tu perds tes mots.",
 ] as const;
 
-function HeroRotatingPhrase() {
+/* Réservoir = la plus large des variantes : garantit la hauteur maximale
+   que la frappe peut occuper, quel que soit le viewport. */
+const HERO_RESERVE = "tu perds tes mots.";
+
+const TYPE_MS = 75; // frappe : ~1,3 s pour la phrase la plus longue
+const DELETE_MS = 40; // effacement : retour arrière plus rapide
+const HOLD_MS = 3000; // tenue APRÈS la fin de la frappe (instruction)
+const FIRST_TYPE_DELAY_MS = 700; // laisse la ligne hero-d2 se révéler
+
+function HeroTypewriter() {
   const [index, setIndex] = useState(0);
-  const [hidden, setHidden] = useState(false);
-  const firstCycle = useRef(true);
+  const [text, setText] = useState("");
+  const [phase, setPhase] = useState<"waiting" | "typing" | "deleting">(
+    "waiting",
+  );
   const reduced = usePrefersReducedMotion();
 
   useEffect(() => {
     if (reduced) return;
-    // Premier cycle : 3 s après l'affichage complet de la ligne
-    // (hero-d2 : délai 230 ms + animation 600 ms ≈ 830 ms). Ensuite :
-    // 3 s pleines après chaque permutation.
-    const initial = firstCycle.current;
-    firstCycle.current = false;
-    let swap: ReturnType<typeof setTimeout> | undefined;
-    const hold = setTimeout(
-      () => {
-        setHidden(true);
-        // Fondu de sortie terminé (450 ms + marge) : permutation.
-        swap = setTimeout(() => {
-          setIndex((i) => (i + 1) % HERO_PHRASES.length);
-          setHidden(false);
-        }, 480);
-      },
-      initial ? 3800 : 3000,
-    );
+    const current = HERO_PHRASES[index];
+    let t: ReturnType<typeof setTimeout> | undefined;
+
+    if (phase === "waiting") {
+      // Première frappe : après la révélation de la ligne hero-d2
+      // (délai 230 ms + animation 600 ms).
+      t = setTimeout(() => setPhase("typing"), FIRST_TYPE_DELAY_MS);
+    } else if (phase === "typing") {
+      if (text.length < current.length) {
+        t = setTimeout(
+          () => setText(current.slice(0, text.length + 1)),
+          TYPE_MS,
+        );
+      } else {
+        // Phrase complète : le chrono de 3 s démarre ICI.
+        t = setTimeout(() => setPhase("deleting"), HOLD_MS);
+      }
+    } else if (text.length > 0) {
+      t = setTimeout(
+        () => setText(current.slice(0, text.length - 1)),
+        DELETE_MS,
+      );
+    } else {
+      // Effacement complet : phrase suivante, frappe immédiate.
+      setIndex((i) => (i + 1) % HERO_PHRASES.length);
+      setPhase("typing");
+    }
+
     return () => {
-      clearTimeout(hold);
-      if (swap) clearTimeout(swap);
+      if (t) clearTimeout(t);
     };
-  }, [index, reduced]);
+  }, [text, phase, index, reduced]);
+
+  if (reduced) {
+    return (
+      <span className="hero-line hero-d2 block hero-phrase-type">
+        {HERO_PHRASES[0]}
+      </span>
+    );
+  }
 
   return (
-    <span className={cn("hero-phrase", hidden && "hero-phrase-hidden")}>
-      {HERO_PHRASES[index]}
+    <span className="hero-line hero-d2 block relative">
+      {/* Réservoir invisible : réserve exactement la boîte finale dès le
+          premier rendu — aucun mouvement du texte environnant pendant la
+          frappe ou l’effacement. */}
+      <span aria-hidden="true" className="invisible">
+        {HERO_RESERVE}
+      </span>
+      {/* Texte frappé, superposé au réservoir — rouge verrouillé DA §19
+          (même rouge que les CTA). */}
+      <span aria-hidden="true" className="hero-phrase-type absolute inset-0">
+        {text}
+      </span>
     </span>
   );
 }
@@ -138,9 +183,10 @@ function Hero() {
               Tu comprends l&apos;anglais depuis des années.
             </span>
             <span className="hero-line hero-d2 block">
-              Mais dès qu&apos;il faut parler,{" "}
-              <HeroRotatingPhrase />
+              Mais dès qu&apos;il faut parler,
+              <span className="sr-only"> ta gorge se noue.</span>
             </span>
+            <HeroTypewriter />
           </h1>
           <p className="hero-line hero-d3 t-body mt-6 text-white/85">
             Je t&apos;accompagne pour parler anglais avec aisance en 2 à 3
