@@ -332,13 +332,6 @@ function ProblemeAgitation() {
                 même jamais passer. Et chaque mois qui passe éloigne un peu
                 plus les prochaines.
               </p>
-              <p className="t-body text-white/85">
-                Tu as peut-être déjà essayé. Des applications. Des cours en groupe
-                où tu parles trois minutes sur soixante. Des heures à bûcher la
-                grammaire, seul, le soir. Et le jour où il a fallu parler pour de
-                vrai, rien n&apos;est sorti. Parce que l&apos;anglais ne se bûche
-                pas. Il se pratique.
-              </p>
             </Prose>
           </div>
         </Reveal>
