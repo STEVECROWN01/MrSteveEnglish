@@ -1,21 +1,33 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { CHECKOUT_URL, CTA_LABELS, waLink } from "@/lib/site";
+import { sendContactEmail, type ContactFormData } from "@/lib/contact-email";
 import { Container, PageHero } from "../layout-primitives";
 import { Reveal } from "../reveal";
 import { StickyCTA } from "../sticky-cta";
 
 /**
- * PAGE 7 — CONTACT / INSCRIPTION (instruction propriétaire)
+ * PAGE 7 — CONTACT / INSCRIPTION (instructions propriétaire)
  * Fonction : conversion finale — le formulaire qualifie le prospect
  * pour L'OFFRE UNIQUE (Programme « De Comprendre à Parler » —
  * 03 mois — 70 000 FCFA — paiement unique), puis — à la soumission —
- * envoie automatiquement une fiche professionnelle sur le WhatsApp du
- * coach ET dirige le prospect vers la page de paiement.
- * Composition : fond noir, message d'accueil chaleureux sous le titre,
- * rappel du programme au-dessus du formulaire, formulaire en une
- * colonne lisible, bouton d'envoi rouge pleine largeur.
+ * les données sont envoyées DIRECTEMENT PAR EMAIL à
+ * stevensakpovi@gmail.com (fiche professionnelle structurée, avec le
+ * texte original du prospect) et le prospect est dirigé vers la page
+ * de paiement. Si l'email échoue, un lien de secours WhatsApp
+ * contenant la même fiche est proposé — aucune donnée n'est perdue.
+ *
+ * TASK 27 — ÉVALUATION AUTOMATIQUE DU NIVEAU D'ANGLAIS :
+ * Plus de QCM ni de niveau auto-déclaré. Une rédaction libre en
+ * anglais (« tell me about yourself… »), TAPÉE À LA MAIN (coller est
+ * bloqué), évaluée côté serveur (vocabulaire / construction /
+ * grammaire / développement des idées / cohérence — 5 × 20 = 100) :
+ * 0-49 BEGINNER, 50-100 INTERMEDIATE — de façon non mécanique : le
+ * cœur est la capacité à communiquer et développer des idées de façon
+ * autonome. Le coach reçoit le niveau estimé, le score, la confiance,
+ * le texte ORIGINAL et une explication de 1-3 phrases.
+ *
  * Le numéro WhatsApp n'est JAMAIS affiché (instruction propriétaire).
  */
 
@@ -25,14 +37,14 @@ import { StickyCTA } from "../sticky-cta";
 const PROGRAMME_LABEL =
   "Programme « De Comprendre à Parler » — 03 mois — 70 000 FCFA — paiement unique";
 
-/* — Question test : détecte débutant ou intermédiaire — */
-const NIVEAU_QUESTION = "She ___ English every day.";
-const NIVEAU_OPTIONS = [
-  { value: "speak", label: "speak" },
-  { value: "speaks", label: "speaks" },
-  { value: "speaking", label: "speaking" },
-  { value: "to speak", label: "to speak" },
-];
+/* — Question d'évaluation (instruction propriétaire Task 27,
+     libellé exact). — */
+const ANGLAIS_QUESTION =
+  "🇬🇧 In English, tell me about yourself, what you currently do, and why you want to improve your English.";
+const ANGLAIS_HINT =
+  "Please answer as naturally as you can. Don't use a translator.";
+const ANGLAIS_PASTE_NOTICE =
+  "Please type your answer yourself — paste is disabled.";
 
 type FormState = {
   nom: string;
@@ -41,8 +53,7 @@ type FormState = {
   email: string;
   pays: string;
   ville: string;
-  motivation: string;
-  niveau: string;
+  anglais: string;
 };
 
 type FormErrors = Partial<Record<keyof FormState, string>>;
@@ -54,8 +65,7 @@ const INITIAL_FORM: FormState = {
   email: "",
   pays: "",
   ville: "",
-  motivation: "",
-  niveau: "",
+  anglais: "",
 };
 
 const FIELD_ORDER: (keyof FormState)[] = [
@@ -65,8 +75,7 @@ const FIELD_ORDER: (keyof FormState)[] = [
   "email",
   "pays",
   "ville",
-  "motivation",
-  "niveau",
+  "anglais",
 ];
 
 function validate(f: FormState): FormErrors {
@@ -90,68 +99,79 @@ function validate(f: FormState): FormErrors {
   if (f.ville.trim().length < 2) {
     e.ville = "Indique ta ville.";
   }
-  if (f.motivation.trim().length < 8) {
-    e.motivation =
-      "Explique pourquoi tu veux apprendre l'anglais (au moins quelques mots).";
-  }
-  if (!f.niveau) {
-    e.niveau = "Choisis la réponse qui te semble correcte.";
+  if (f.anglais.trim().length < 15) {
+    e.anglais =
+      "Please write your answer in English — a few sentences, typed by yourself.";
   }
   return e;
 }
 
-/** Fiche professionnelle envoyée sur le WhatsApp du coach. */
-function buildMessage(f: FormState): string {
-  const niveauDetecte =
-    f.niveau === "speaks"
-      ? "Intermédiaire (réponse correcte au test)"
-      : "Débutant (réponse incorrecte au test)";
+/** Fiche de secours (WhatsApp) si l'email échoue — mêmes informations
+ *  + le niveau estimé, pour que le coach ne perde rien. */
+function buildFallbackMessage(
+  f: ContactFormData,
+  level: string,
+  total: number,
+): string {
   return [
-    "🎯 NOUVEAU PROSPECT — MR STEVE ENGLISH",
+    "NOUVEAU PROSPECT — MR STEVE ENGLISH",
+    "(envoi de secours : l'email n'est pas passé)",
     "",
-    "👤 IDENTITÉ",
+    "IDENTITÉ",
     `• Nom complet : ${f.nom.trim()}`,
     `• Âge : ${f.age} ans`,
     `• Profession : ${f.profession.trim()}`,
     "",
-    "📍 LOCALISATION",
+    "LOCALISATION",
     `• Pays : ${f.pays.trim()}`,
     `• Ville : ${f.ville.trim()}`,
     "",
-    "📧 EMAIL",
+    "EMAIL",
     `• ${f.email.trim()}`,
     "",
-    "🧪 TEST DE NIVEAU RAPIDE",
-    `• Question : « ${NIVEAU_QUESTION} »`,
-    `• Réponse du prospect : « ${f.niveau} »`,
-    `• Niveau détecté : ${niveauDetecte}`,
+    "ENGLISH LEVEL ASSESSMENT",
+    `• Niveau estimé : ${level} (${total}/100)`,
     "",
-    "🎯 MOTIVATION",
-    `• ${f.motivation.trim()}`,
+    "ÉCHANTILLON D'ANGLAIS (texte original)",
+    `• ${f.anglais.trim()}`,
     "",
-    "📦 PROGRAMME (offre unique)",
+    "PROGRAMME (offre unique)",
     `• ${PROGRAMME_LABEL}`,
     "",
-    "— Message envoyé automatiquement depuis le formulaire du site Stevens AKPOVI",
+    "— Message envoyé depuis le formulaire du site Stevens AKPOVI",
   ].join("\n");
 }
 
 export function ContactPage() {
   const [form, setForm] = useState<FormState>(INITIAL_FORM);
   const [errors, setErrors] = useState<FormErrors>({});
-  const [sent, setSent] = useState(false);
-  const [lastMessage, setLastMessage] = useState("");
+  const [sending, setSending] = useState(false);
+  /** null = pas envoyé ; "ok" = email parti ; "fail" = email en échec. */
+  const [result, setResult] = useState<"ok" | "fail" | null>(null);
+  const [fallbackMessage, setFallbackMessage] = useState("");
+  const [pasteNotice, setPasteNotice] = useState(false);
+  const noticeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const set = (key: keyof FormState) => (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     setForm((f) => ({ ...f, [key]: e.target.value }));
     // L'erreur disparaît dès que le champ redevient valide en saisie
     setErrors((prev) => (prev[key] ? { ...prev, [key]: undefined } : prev));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  /* Instruction propriétaire : échantillon TAPÉ À LA MAIN — coller
+     (et glisser) est bloqué, un avis explique pourquoi. */
+  const blockPaste = (e: React.ClipboardEvent | React.DragEvent) => {
     e.preventDefault();
+    setPasteNotice(true);
+    if (noticeTimer.current) clearTimeout(noticeTimer.current);
+    noticeTimer.current = setTimeout(() => setPasteNotice(false), 3200);
+  };
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (sending) return;
     const errs = validate(form);
     if (Object.keys(errs).length > 0) {
       setErrors(errs);
@@ -162,18 +182,33 @@ export function ContactPage() {
       return;
     }
     setErrors({});
-    const message = buildMessage(form);
-    setLastMessage(message);
-
-    // 1) Envoi de la fiche sur le WhatsApp du coach (nouvel onglet)
-    window.open(waLink(message), "_blank", "noopener,noreferrer");
-    setSent(true);
-
-    // 2) Redirection automatique vers le paiement
-    window.setTimeout(() => {
-      window.location.href = CHECKOUT_URL;
-    }, 900);
-  };
+    setSending(true);
+    // Envoi direct par email (FormSubmit AJAX depuis le navigateur) avec
+    // évaluation automatique du niveau d'anglais côté client (moteur TS
+    // pur — mêmes règles que la lib partagée src/lib/english-assessment).
+    const { ok, assessment } = await sendContactEmail({
+      nom: form.nom.trim(),
+      age: form.age,
+      profession: form.profession.trim(),
+      email: form.email.trim(),
+      pays: form.pays.trim(),
+      ville: form.ville.trim(),
+      anglais: form.anglais.trim(),
+    });
+    if (ok) {
+      setResult("ok");
+      // Redirection automatique vers le paiement
+      window.setTimeout(() => {
+        window.location.href = CHECKOUT_URL;
+      }, 1800);
+    } else {
+      setFallbackMessage(
+        buildFallbackMessage(form, assessment.level, assessment.total),
+      );
+      setResult("fail");
+    }
+    setSending(false);
+  }
 
   return (
     <div className="on-dark min-h-[calc(100svh-72px)] bg-black pb-20 text-white md:pb-0">
@@ -201,8 +236,8 @@ export function ContactPage() {
                   Pour rejoindre le programme, remplis l&apos;intégralité du
                   formulaire ci-dessous avec tes informations exactes — toutes
                   les informations sont obligatoires. Dès que tu envoies, ta
-                  demande arrive directement sur mon WhatsApp, avec ton niveau
-                  réel et ton objectif. Je te réponds personnellement.
+                  demande arrive directement dans ma boîte mail, avec ton
+                  niveau réel et ton objectif. Je te réponds personnellement.
                 </p>
                 {/* Rappel du programme (offre unique — instruction
                     propriétaire) au moment exact de la décision.
@@ -359,76 +394,66 @@ export function ContactPage() {
                   </div>
                 </div>
 
-                {/* Motivation : pourquoi veut-il exactement apprendre l'anglais */}
-                <div className="mt-6">
-                  <label htmlFor="f-motivation" className="form-label">
-                    Pourquoi veux-tu exactement apprendre l&apos;anglais ?{" "}
-                    <span aria-hidden="true">*</span>
+                {/* Évaluation du niveau d'anglais — rédaction libre,
+                    obligatoire, TAPÉE À LA MAIN (coller bloqué). Le
+                    niveau n'est plus auto-déclaré : il est estimé
+                    automatiquement (5 critères × 20) et remis au coach
+                    avec le texte original (instruction Task 27). */}
+                <div className="mt-8">
+                  <label htmlFor="f-anglais" className="form-label">
+                    {ANGLAIS_QUESTION} <span aria-hidden="true">*</span>
                   </label>
+                  <p className="t-caption mt-1.5 text-white/65">
+                    {ANGLAIS_HINT}{" "}
+                    <span className="text-white/50">
+                      (Le copier-coller est désactivé.)
+                    </span>
+                  </p>
                   <textarea
-                    id="f-motivation"
-                    rows={3}
-                    value={form.motivation}
-                    onChange={set("motivation")}
-                    aria-invalid={Boolean(errors.motivation)}
+                    id="f-anglais"
+                    rows={6}
+                    autoComplete="off"
+                    spellCheck={false}
+                    value={form.anglais}
+                    onChange={set("anglais")}
+                    onPaste={blockPaste}
+                    onDrop={blockPaste}
+                    aria-invalid={Boolean(errors.anglais)}
                     aria-describedby={
-                      errors.motivation ? "err-motivation" : undefined
+                      errors.anglais ? "err-anglais" : undefined
                     }
-                    placeholder="Ex. : je veux passer un entretien d'embauche en anglais, parler avec mes clients, réussir un examen…"
-                    className="form-input mt-2 resize-y"
+                    placeholder="Ex. : My name is… I am 27 years old. I work as… I want to improve my English because…"
+                    className="form-input mt-2 resize-y font-[450]"
                   />
-                  {errors.motivation ? (
-                    <p id="err-motivation" role="alert" className="form-error">
-                      {errors.motivation}
+                  <p
+                    aria-live="polite"
+                    className={
+                      pasteNotice
+                        ? "t-caption mt-2 text-red-button transition-opacity duration-200"
+                        : "t-caption mt-2 text-transparent transition-opacity duration-200"
+                    }
+                  >
+                    {ANGLAIS_PASTE_NOTICE}
+                  </p>
+                  {errors.anglais ? (
+                    <p id="err-anglais" role="alert" className="form-error">
+                      {errors.anglais}
                     </p>
                   ) : null}
                 </div>
 
-                {/* Question test de niveau — débutant ou intermédiaire */}
-                <fieldset className="mt-8">
-                  <legend className="form-label">
-                    Petit test express — complète la phrase :{" "}
-                    <span className="font-display italic text-white">
-                      « {NIVEAU_QUESTION} »
-                    </span>{" "}
-                    <span aria-hidden="true">*</span>
-                  </legend>
-                  <div className="mt-3 grid gap-2 sm:grid-cols-2">
-                    {NIVEAU_OPTIONS.map((o) => (
-                      <label
-                        key={o.value}
-                        className="form-choice flex min-h-[52px] cursor-pointer items-center gap-3 rounded-[8px] border border-white/25 bg-white/[0.04] px-4 py-3 transition-colors duration-[240ms] hover:border-white/50"
-                      >
-                        <input
-                          type="radio"
-                          name="niveau"
-                          value={o.value}
-                          checked={form.niveau === o.value}
-                          onChange={set("niveau")}
-                          className="h-[18px] w-[18px] shrink-0 accent-white"
-                        />
-                        <span className="t-body text-white">{o.label}</span>
-                      </label>
-                    ))}
-                  </div>
-                  {errors.niveau ? (
-                    <p id="err-niveau" role="alert" className="form-error">
-                      {errors.niveau}
-                    </p>
-                  ) : null}
-                </fieldset>
-
-                {/* Soumission : WhatsApp + redirection paiement */}
+                {/* Soumission : email direct + redirection paiement */}
                 <div className="mt-10" data-wa-cta>
                   <button
                     type="submit"
-                    className="btn btn-primary t-btn w-full text-[1.0625rem] lg:text-[1.125rem]"
+                    disabled={sending}
+                    className="btn btn-primary t-btn w-full text-[1.0625rem] lg:text-[1.125rem] disabled:cursor-not-allowed disabled:opacity-70"
                   >
-                    {CTA_LABELS.contact}
+                    {sending ? "Envoi en cours…" : CTA_LABELS.contact}
                   </button>
                   <p className="t-caption mt-4 text-center text-white/70">
-                    En soumettant, tes informations arrivent directement sur
-                    mon WhatsApp et tu es dirigé automatiquement vers le
+                    En soumettant, tes informations m&apos;arrivent directement
+                    par email et tu es dirigé automatiquement vers le
                     paiement sécurisé du programme (70 000 FCFA — paiement
                     unique).
                   </p>
@@ -442,29 +467,55 @@ export function ContactPage() {
                 </div>
 
                 {/* Confirmation après envoi (pendant la redirection) */}
-                {sent ? (
+                {result === "ok" ? (
                   <div
                     role="status"
                     className="mt-6 rounded-[12px] border border-white/25 bg-white/[0.06] p-6 text-center"
                   >
                     <p className="t-body text-white">
-                      Merci ! Ta demande part sur mon WhatsApp. Redirection
-                      vers le paiement en cours…
+                      Merci ! Ta demande m&apos;a été envoyée par email. Je
+                      découvre ton niveau réel et ton objectif, et je te
+                      réponds personnellement. Redirection vers le paiement
+                      sécurisé en cours…
                     </p>
-                    {lastMessage ? (
-                      <p className="t-caption mt-3 text-white/70">
-                        Si WhatsApp ne s&apos;est pas ouvert,{" "}
-                        <a
-                          href={waLink(lastMessage)}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="underline underline-offset-4 hover:text-white"
-                        >
-                          clique ici pour l&apos;envoyer
-                        </a>
-                        .
-                      </p>
+                  </div>
+                ) : null}
+
+                {/* Échec de l'email : aucune donnée perdue — lien de
+                    secours WhatsApp avec la même fiche + paiement
+                    manuel */}
+                {result === "fail" ? (
+                  <div
+                    role="alert"
+                    className="mt-6 rounded-[12px] border border-white/25 bg-white/[0.06] p-6 text-center"
+                  >
+                    <p className="t-body text-white">
+                      L&apos;envoi par email n&apos;a pas abouti. Pour que ta
+                      demande ne se perde pas, envoie-la via WhatsApp en un
+                      clic :
+                    </p>
+                    {fallbackMessage ? (
+                      <a
+                        href={waLink(fallbackMessage)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="btn btn-primary t-btn mt-5 inline-flex"
+                      >
+                        Envoyer ma demande via WhatsApp →
+                      </a>
                     ) : null}
+                    <p className="t-caption mt-4 text-white/70">
+                      Ou continue directement vers le{" "}
+                      <a
+                        href={CHECKOUT_URL}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="underline underline-offset-4 hover:text-white"
+                      >
+                        paiement sécurisé du programme
+                      </a>
+                      .
+                    </p>
                   </div>
                 ) : null}
               </form>

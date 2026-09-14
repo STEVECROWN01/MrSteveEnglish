@@ -137,8 +137,8 @@
   },
   "/assets/METHODE-02-applications.webp": {
     "natural": [
-      864,
-      1152
+      1448,
+      1086
     ],
     "variants": [
       480,
@@ -149,14 +149,36 @@
   },
   "/assets/METHODE-02-traditionnel.webp": {
     "natural": [
-      864,
-      1152
+      1448,
+      1086
     ],
     "variants": [
       480,
       768,
       1080,
       1728
+    ]
+  },
+  "/assets/POURQUOI-MOI.webp": {
+    "natural": [
+      1024,
+      1536
+    ],
+    "variants": [
+      480,
+      768,
+      1024
+    ]
+  },
+  "/assets/APROPOS-AMBIANCE-02.webp": {
+    "natural": [
+      1122,
+      1402
+    ],
+    "variants": [
+      480,
+      768,
+      1122
     ]
   }
 }

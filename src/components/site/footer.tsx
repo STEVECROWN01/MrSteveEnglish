@@ -1,5 +1,6 @@
 import { CTA_LABELS, SOCIAL_LINKS } from "@/lib/site";
 import { Container } from "./layout-primitives";
+import { CarteUrgenceEthique } from "./carte-inaction";
 
 /**
  * Footer (instruction propriétaire) : fond noir, texte blanc, nom
@@ -50,11 +51,17 @@ function SocialLink({
   href,
   label,
   external,
+  internalAnchor,
   children,
 }: {
   href: string;
   label: string;
   external?: boolean;
+  /** Navigation interne : si le hash est déjà la cible, AUCUN hashchange
+   *  ne se déclenche → remontée manuelle douce en haut de page (même règle
+   *  que le logo du header — instruction propriétaire Task 27 : l'icône
+   *  WhatsApp doit diriger vers la page contact ET remonter en haut). */
+  internalAnchor?: boolean;
   children: React.ReactNode;
 }) {
   return (
@@ -62,6 +69,17 @@ function SocialLink({
       href={href}
       {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
       aria-label={label}
+      onClick={
+        internalAnchor
+          ? (e) => {
+              const h = window.location.hash;
+              if (h === "" || h === "#" || h === href) {
+                e.preventDefault();
+                window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+              }
+            }
+          : undefined
+      }
       className="flex h-[44px] w-[44px] items-center justify-center rounded-[8px] text-white/80 transition-colors duration-[240ms] hover:bg-white hover:text-black"
     >
       {children}
@@ -72,6 +90,14 @@ function SocialLink({
 export function Footer() {
   return (
     <footer className="on-dark mt-auto bg-black text-white">
+      {/* Carte « Le coût de l'inaction » (instruction propriétaire
+          Task 27) : vit désormais dans le footer — visible sur TOUTES
+          les pages, au lieu d'être dupliquée page par page. Sur
+          l'accueil, la carte n'est plus répétée dans la section CTA
+          finale (le footer la prend en relais immédiatement après). */}
+      <Container className="pb-0 pt-12 lg:pt-16">
+        <CarteUrgenceEthique className="mx-auto max-w-[46rem]" />
+      </Container>
       <Container className="py-12 lg:py-16">
         <div className="flex flex-col gap-10 lg:flex-row lg:items-start lg:justify-between">
           <div className="max-w-[26rem]">
@@ -98,6 +124,7 @@ export function Footer() {
               <SocialLink
                 href="#/contact"
                 label="WhatsApp — contacter Stevens AKPOVI via le formulaire"
+                internalAnchor
               >
                 <WhatsAppIcon />
               </SocialLink>

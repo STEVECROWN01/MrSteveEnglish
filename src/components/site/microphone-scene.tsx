@@ -15,14 +15,26 @@ import { cn } from "@/lib/utils";
  * propre — le micro flotte sur le fond studio étendu à toute la section.
  * prefers-reduced-motion : scène rendue en statique (une frame).
  *
+ * PERF (instruction propriétaire Task 27 : « le micro 3D met du temps
+ * à s'afficher — accélère ») : deux leviers combinés —
+ *   1. PRÉCHAUFFAGE IDLE : dès que le navigateur respire (requestIdle-
+ *      Callback, fallback timeout 2,5 s), le chunk three.js est mis en
+ *      cache — le montage ultérieur est INSTANTANÉ (webpack sert le
+ *      module déjà résolu, plus aucun téléchargement à l'approche).
+ *   2. MONTAGE ANTICIPÉ : rootMargin 500px → 1200px — la scène se
+ *      construit bien avant d'arriver à l'écran, le temps d'init WebGL
+ *      est absorbé pendant le scroll (jamais vu par l'utilisateur).
+ *
  * PERF (instruction propriétaire : réactivité) : le frameloop est COUPÉ
  * dès que la scène sort du viewport (useInView persistant) — le GPU ne
  * rend plus rien quand le micro n'est pas visible, puis reprend
  * automatiquement à son retour. Un seul node observé par deux hooks
- * (montage à 500px d'approche, pause à la sortie réelle).
+ * (montage à 1200px d'approche, pause à la sortie réelle).
  */
 
-const MicrophoneCanvas = dynamic(() => import("./microphone-canvas"), {
+const loadMicrophoneCanvas = () => import("./microphone-canvas");
+
+const MicrophoneCanvas = dynamic(loadMicrophoneCanvas, {
   ssr: false,
   loading: () => <ScenePlaceholder />,
 });
@@ -36,9 +48,28 @@ function ScenePlaceholder() {
 }
 
 export function MicrophoneScene({ className }: { className?: string }) {
-  const [mountRef, shouldMount] = useInViewOnce<HTMLDivElement>({ rootMargin: "500px" });
+  const [mountRef, shouldMount] = useInViewOnce<HTMLDivElement>({ rootMargin: "1200px" });
   const [activeRef, active] = useInView<HTMLDivElement>();
   const reduced = usePrefersReducedMotion();
+
+  // Préchauffage idle du chunk three.js (une seule fois par page) :
+  // lancé après le rendu initial pour ne pas concurrencer le LCP,
+  // le téléchargement est déjà fait quand le scroll approche la scène.
+  useEffect(() => {
+    const w = window as Window & {
+      requestIdleCallback?: (cb: () => void, o?: { timeout: number }) => number;
+      cancelIdleCallback?: (id: number) => void;
+    };
+    const warm = () => {
+      void loadMicrophoneCanvas();
+    };
+    if (typeof w.requestIdleCallback === "function") {
+      const id = w.requestIdleCallback(warm, { timeout: 4000 });
+      return () => w.cancelIdleCallback?.(id);
+    }
+    const t = window.setTimeout(warm, 2500);
+    return () => window.clearTimeout(t);
+  }, []);
 
   // Un seul node observé par les deux hooks (montage différé + pause).
   const setRef = useCallback(

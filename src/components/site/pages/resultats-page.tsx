@@ -7,6 +7,7 @@ import { Reveal } from "../reveal";
 import { CountUp } from "../count-up";
 import { BeforeAfter } from "../before-after";
 import { ResponsiveImage } from "../responsive-image";
+import { AirplaneScene } from "../airplane-scene";
 
 /**
  * PAGE 4 — RÉSULTATS / TÉMOIGNAGES (COPYWRITING.md)
@@ -15,6 +16,15 @@ import { ResponsiveImage } from "../responsive-image";
  * portrait du cas 40 ans. Trois témoignages en cards identiques
  * (radius 12px, bordure 1px), avatar à gauche de la citation, chiffre
  * clé en Bleu Profond en gros dans un angle de la card.
+ *
+ * TASK 27 (instructions propriétaire) :
+ * - « Un parcours réel » : scène 3D avion stylisé (référence Spline
+ *   3D Airplane) posée À DROITE du texte sur desktop, légèrement
+ *   oblique montante (bas-gauche → haut-droite, intégrée à la scène).
+ * - Avatars David/Michael : fichiers échangés (le propriétaire les
+ *   avait intervertis lors de l'upload) — chaque card affiche
+ *   désormais le bon visage.
+ * - Bloc « Un mois pour oser parler » : CONTENU CENTRÉ.
  */
 
 const TEMOIGNAGES = [
@@ -89,34 +99,42 @@ export function ResultatsPage() {
           </Reveal>
 
           <Reveal className="mt-10 lg:mt-14">
-            <Prose>
-              <p className="t-body italic text-grey-mid">
-                Chaque apprenant vient avec un objectif différent — en voici un
-                parmi d&apos;autres.
-              </p>
-              <Eyebrow className="mt-6">Un parcours réel</Eyebrow>
-              <h2 className="t-h2 mt-4 text-black">
-                Un poste à l&apos;international. Une seule vraie exigence :
-                parler anglais couramment.
-              </h2>
-              <p className="t-body mt-6">
-                Un professionnel d&apos;une quarantaine d&apos;années
-                s&apos;apprêtait à évoluer vers un poste à l&apos;international.
-                Le poste l&apos;imposait : travailler entièrement en anglais, à
-                l&apos;étranger. Sa frustration ? Il comprenait l&apos;anglais
-                depuis des années, mais bloquait complètement à l&apos;oral. Il
-                avait déjà essayé de bûcher seul les leçons de grammaire — sans
-                résultat, parce que l&apos;anglais ne s&apos;apprend pas ainsi.
-              </p>
-              <p className="t-body">
-                Il a suivi le format que je recommande : trois mois de
-                coaching, trois séances de 1h30 par semaine, entièrement
-                orientées vers la pratique orale de son domaine professionnel.
-                À la fin des trois mois, il s&apos;exprimait avec l&apos;aisance
-                nécessaire pour prendre son nouveau poste à l&apos;international
-                — avec succès.
-              </p>
-            </Prose>
+            <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
+              {/* Texte « Un parcours réel » — colonne gauche (desktop) */}
+              <Prose>
+                <p className="t-body italic text-grey-mid">
+                  Chaque apprenant vient avec un objectif différent — en voici
+                  un parmi d&apos;autres.
+                </p>
+                <Eyebrow className="mt-6">Un parcours réel</Eyebrow>
+                <h2 className="t-h2 mt-4 text-black">
+                  Un poste à l&apos;international. Une seule vraie exigence :
+                  parler anglais couramment.
+                </h2>
+                <p className="t-body mt-6">
+                  Un professionnel d&apos;une quarantaine d&apos;années
+                  s&apos;apprêtait à évoluer vers un poste à l&apos;international.
+                  Le poste l&apos;imposait : travailler entièrement en anglais, à
+                  l&apos;étranger. Sa frustration ? Il comprenait l&apos;anglais
+                  depuis des années, mais bloquait complètement à l&apos;oral. Il
+                  avait déjà essayé de bûcher seul les leçons de grammaire —
+                  sans résultat, parce que l&apos;anglais ne s&apos;apprend pas ainsi.
+                </p>
+                <p className="t-body">
+                  Il a suivi le format que je recommande : trois mois de
+                  coaching, trois séances de 1h30 par semaine, entièrement
+                  orientées vers la pratique orale de son domaine professionnel.
+                  À la fin des trois mois, il s&apos;exprimait avec l&apos;aisance
+                  nécessaire pour prendre son nouveau poste à l&apos;international
+                  — avec succès.
+                </p>
+              </Prose>
+
+              {/* Avion 3D (référence Spline « 3D Airplane ») — colonne
+                  droite (desktop), oblique montant bas-gauche → haut-
+                  droite ; empilé SOUS le texte sur mobile/tablette. */}
+              <AirplaneScene className="mx-auto w-full max-w-[30rem] lg:max-w-none" />
+            </div>
           </Reveal>
 
           <Reveal className="mt-10">
@@ -185,11 +203,11 @@ export function ResultatsPage() {
         </Container>
       </Section>
 
-      {/* — Ce que tu peux viser — */}
+      {/* — Ce que tu peux viser (bloc centré — instruction Task 27) — */}
       <Section>
         <Container>
           <Reveal>
-            <Prose>
+            <Prose className="mx-auto max-w-[46rem] text-center">
               <h2 className="t-h2 text-black">
                 Un mois pour oser parler. Trois mois pour parler avec
                 confiance.
@@ -205,7 +223,7 @@ export function ResultatsPage() {
               </p>
             </Prose>
           </Reveal>
-          <Reveal className="mt-10">
+          <Reveal className="mt-10 flex justify-center">
             <SecondaryLink
               href="#/programme"
               className="btn-invert-hover"

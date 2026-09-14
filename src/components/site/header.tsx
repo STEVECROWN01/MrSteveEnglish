@@ -45,7 +45,13 @@ export function Header() {
   // Pages dont le haut est sombre (hero image / fond noir) : texte blanc
   // quand la barre flotte sans fond. Les autres pages ont un haut clair :
   // texte noir, toujours lisible sans fond.
-  const topIsDark = route === "accueil" || route === "contact";
+  // Task 27 : « a-propos » (hero noir) et « programme » (hero noir)
+  // rejoignent l'accueil et le contact.
+  const topIsDark =
+    route === "accueil" ||
+    route === "contact" ||
+    route === "a-propos" ||
+    route === "programme";
 
   // Au sommet de la page, la barre est transparente (instruction
   // propriétaire) SAUF menu mobile ouvert (le panneau a besoin du fond).

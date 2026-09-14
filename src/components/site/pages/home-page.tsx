@@ -13,6 +13,7 @@ import { StickyCTA } from "../sticky-cta";
 import { MicrophoneScene } from "../microphone-scene";
 import { ResponsiveImage } from "../responsive-image";
 import { FaqAccordion } from "../faq-accordion";
+import { CarteUrgenceEthique } from "../carte-inaction";
 
 /**
  * PAGE 1 — ACCUEIL — FUNNEL DE CONVERSION AUTOUR DE L'OFFRE UNIQUE
@@ -242,27 +243,8 @@ function Hero() {
             l'urgence vient de la situation du prospect, jamais d'un
             artifice). En CARTE sombre encadrée (instruction propriétaire :
             même langage que l'ancienne carte « quelqu'un d'autre postule »).
-            Composant réutilisé par le CTA final. — */
-function CarteUrgenceEthique({ className }: { className?: string }) {
-  return (
-    <div
-      className={cn(
-        "rounded-[12px] border border-white/15 bg-white/[0.06] p-6 md:p-8 lg:p-10",
-        className,
-      )}
-    >
-      <Eyebrow className="text-white/75">Le coût de l&apos;inaction</Eyebrow>
-      <p className="font-display mt-4 text-[1.375rem] leading-snug text-white md:text-[1.625rem] lg:text-[1.75rem]">
-        Chaque mois où tu repousses ta pratique est un mois supplémentaire
-        pendant lequel tu restes dans la même situation.
-      </p>
-      <p className="t-body mt-4 text-white/85">
-        Ta prochaine opportunité ne commencera pas quand tu te sentiras
-        parfaitement prêt. Commence maintenant.
-      </p>
-    </div>
-  );
-}
+            Composant partagé (voir carte-inaction.tsx) : également rendu
+            dans le footer de TOUTES les pages (Task 27). — */
 
 function ProblemeAgitation() {
   return (
@@ -788,11 +770,22 @@ function CeQueTuAchetes() {
   );
 }
 
-/* — « CE QUI EST INCLUS » (instruction propriétaire) : le programme
-     présenté comme un package à forte valeur perçue — blocs numérotés.
-     PODCASTS inclus (instruction propriétaire) : ressource de pratique
-     pure mise à disposition de l'apprenant. — */
-const INCLUS = [
+/* — « CE QUI EST INCLUS » (instruction propriétaire Task 27) : le
+     programme présenté comme un SYSTÈME d'accompagnement complet —
+     exactement 8 cartes, chacune couvrant un élément réellement
+     différent (plus aucune répétition). La carte 02 « Speaking &
+     Conversation » FUSIONNE les anciennes cartes « Speaking Practice »
+     et « Conversation » (supprimées). La carte 08 porte un badge
+     BONUS : ressource complémentaire, non équivalente aux séances.
+     Hiérarchie : accompagnement → pratique orale → correction →
+     outils → travail entre séances → mesure → transformation →
+     bonus. — */
+const INCLUS: {
+  num: string;
+  titre: string;
+  corps: string;
+  bonus?: boolean;
+}[] = [
   {
     num: "01",
     titre: "Coaching personnalisé",
@@ -800,34 +793,46 @@ const INCLUS = [
   },
   {
     num: "02",
-    titre: "Speaking Practice",
-    corps: "Une pratique centrée sur la prise de parole réelle.",
+    titre: "Speaking & Conversation",
+    corps:
+      "Une pratique intensive centrée sur la prise de parole et les situations de la vie réelle.",
   },
   {
     num: "03",
     titre: "Prononciation",
-    corps: "Identification et correction de tes erreurs de prononciation.",
+    corps:
+      "Identification et correction de tes erreurs de prononciation pour parler plus clairement.",
   },
   {
     num: "04",
-    titre: "Conversation",
-    corps: "Des situations inspirées de la vie réelle.",
+    titre: "Vocabulaire & Expressions",
+    corps:
+      "Le vocabulaire et les expressions dont tu as réellement besoin pour t'exprimer dans des situations concrètes.",
   },
   {
     num: "05",
     titre: "Exercices personnalisés",
-    corps: "Du travail entre les séances pour accélérer ta progression.",
+    corps:
+      "Des exercices ciblés entre les séances pour renforcer tes acquis et accélérer ta progression.",
   },
   {
     num: "06",
-    titre: "Suivi",
-    corps: "Une progression structurée pendant les trois mois.",
+    titre: "Suivi de progression",
+    corps:
+      "Un accompagnement structuré pour mesurer tes progrès et ajuster le coaching au fil des trois mois.",
   },
   {
     num: "07",
-    titre: "Podcasts",
+    titre: "Confiance & Fluidité",
     corps:
-      "Des podcasts à ta disposition pour la pratique pure : de l'anglais réel à écouter, entre les séances, à ton rythme.",
+      "Un travail ciblé pour t'aider à parler avec plus d'aisance, sans constamment chercher tes mots ni avoir peur de faire des erreurs.",
+  },
+  {
+    num: "08",
+    titre: "Podcasts & Ressources",
+    corps:
+      "Des podcasts et ressources sélectionnés pour continuer à pratiquer ton anglais entre les séances, à ton rythme.",
+    bonus: true,
   },
 ];
 
@@ -844,13 +849,29 @@ function CeQuiEstInclus() {
           </Prose>
         </Reveal>
 
+        {/* Grille 8 cartes : 4×2 desktop (instruction propriétaire),
+            2 colonnes tablette, 1 colonne mobile — cartes jamais trop
+            petites, hauteurs uniformes par ligne. */}
         <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:mt-14 lg:grid-cols-4 lg:gap-x-6 lg:gap-y-8">
           {INCLUS.map((item, i) => (
             <Reveal key={item.num} delay={(i % 4) * 100}>
-              <div className="card-base card-hover flex h-full flex-col p-6">
-                <p className="font-display text-[2rem] font-medium leading-none text-grey-line">
-                  {item.num}
-                </p>
+              <div className="card-base card-hover relative flex h-full flex-col p-6">
+                <div className="flex items-start justify-between gap-3">
+                  <p className="font-display text-[2rem] font-medium leading-none text-grey-line">
+                    {item.num}
+                  </p>
+                  {/* Badge BONUS (carte 08 uniquement) — discret mais
+                      visible : pastille contour rouge, sans surcharger
+                      la carte (instruction propriétaire). */}
+                  {item.bonus ? (
+                    <span
+                      className="mt-1.5 inline-flex items-center rounded-full border-[1.5px] border-red-button px-2.5 py-[3px] text-[0.6875rem] font-bold uppercase tracking-[0.14em] text-red-button"
+                      title="Avantage supplémentaire offert dans le programme"
+                    >
+                      Bonus
+                    </span>
+                  ) : null}
+                </div>
                 <h3 className="t-h3 mt-5 text-black">{item.titre}</h3>
                 <p className="t-body mt-3">{item.corps}</p>
               </div>
@@ -880,15 +901,21 @@ function PourquoiMoi() {
   return (
     <Section className="on-dark bg-black text-white">
       <Container>
-        <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,24rem)_minmax(0,40rem)] lg:gap-16">
-          {/* Portrait Stevens */}
-          <Reveal>
-            <div className="relative mx-auto aspect-[2/3] w-full max-w-[22rem] overflow-hidden rounded-[12px] shadow-[0_4px_20px_rgba(0,0,0,0.10)] lg:mx-0">
+        {/* Task 27 (instruction propriétaire) : la hauteur de l'image
+            correspond aux bords HAUT et BAS du contenu de droite (titre +
+            sous-titre + description + liste + bouton) — sur desktop la
+            colonne image s'étire (items-stretch + lg:h-full) au lieu
+            d'être centrée à ratio fixe. Mobile : ratio 2:3 inchangé. */}
+        <div className="grid gap-10 lg:grid-cols-[minmax(0,24rem)_minmax(0,40rem)] lg:items-stretch lg:gap-16">
+          {/* Portrait Stevens — nouvelle image POURQUOI-Moi (upload
+              propriétaire Task 27) */}
+          <Reveal className="flex">
+            <div className="relative mx-auto aspect-[2/3] w-full max-w-[22rem] overflow-hidden rounded-[12px] shadow-[0_4px_20px_rgba(0,0,0,0.10)] lg:mx-0 lg:aspect-auto lg:h-full lg:max-w-none">
               <ResponsiveImage
-                src="/assets/APROPOS-PORTRAIT.webp"
-                alt="Portrait professionnel de Stevens Akpovi, coach d'anglais, en costume noir et lunettes, dans un intérieur moderne"
+                src="/assets/POURQUOI-MOI.webp"
+                alt="Stevens Akpovi, coach d'anglais, en costume noir et lunettes rondes, dans un intérieur élégant aux tons chauds"
                 fill
-                sizes="352px"
+                sizes="(max-width: 1023px) 352px, 384px"
                 className="object-cover"
               />
             </div>
@@ -955,8 +982,22 @@ const PAS_POUR_TOI = [
 
 function PourQui() {
   return (
-    <Section>
-      <Container>
+    <Section className="relative overflow-hidden">
+      {/* Task 27 (instruction propriétaire) : cartes POUR QUI ? en
+          apparence de VERRE TRANSPARENT (glassmorphism) au lieu du fond
+          blanc plein. Pour que l'effet de verre soit BIEN LISIBLE, la
+          section accueille des nappes de couleur franches (rouge site +
+          gris profond) POSITIONNÉES DERRIÈRE LES CARTES — c'est leur
+          traversée translucide qui signale le verre, pas le voile seul. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -left-40 top-[24rem] h-[34rem] w-[34rem] rounded-full bg-[radial-gradient(circle,rgba(255,26,26,0.22)_0%,transparent_65%)] blur-2xl"
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -right-40 top-[16rem] h-[38rem] w-[38rem] rounded-full bg-[radial-gradient(circle,rgba(24,24,48,0.22)_0%,transparent_65%)] blur-2xl"
+      />
+      <Container className="relative">
         <Reveal>
           <Prose className="mx-auto max-w-[46rem] text-center">
             <Eyebrow>Pour qui ?</Eyebrow>
@@ -970,9 +1011,9 @@ function PourQui() {
         </Reveal>
 
         <div className="mt-10 grid gap-6 lg:mt-14 lg:grid-cols-2 lg:gap-8">
-          {/* POUR TOI */}
+          {/* POUR TOI — carte verre */}
           <Reveal>
-            <div className="card-base h-full p-6 md:p-8 lg:p-10">
+            <div className="glass-card h-full p-6 md:p-8 lg:p-10">
               <h3 className="t-h3 text-black">Ce programme est pour toi si :</h3>
               <ul className="mt-6 space-y-3.5">
                 {POUR_TOI.map((item) => (
@@ -985,9 +1026,9 @@ function PourQui() {
             </div>
           </Reveal>
 
-          {/* PAS POUR TOI */}
+          {/* PAS POUR TOI — carte verre */}
           <Reveal delay={120}>
-            <div className="card-base h-full p-6 md:p-8 lg:p-10">
+            <div className="glass-card h-full p-6 md:p-8 lg:p-10">
               <h3 className="t-h3 text-black">
                 Ce programme n&apos;est PAS pour toi si :
               </h3>
@@ -1050,7 +1091,10 @@ function SectionPrix() {
           </Prose>
         </Reveal>
 
-        <div className="mx-auto mt-10 grid max-w-[64rem] gap-6 lg:mt-14 lg:grid-cols-[minmax(0,28rem)_minmax(0,32rem)] lg:justify-center lg:gap-8">
+        {/* Task 27 (instruction propriétaire) : les DEUX cartes de
+            l'offre ont strictement la MÊME LARGEUR — grille 2 colonnes
+            égales (plus de colonnes asymétriques 28rem/32rem). */}
+        <div className="mx-auto mt-10 grid max-w-[64rem] gap-6 lg:mt-14 lg:grid-cols-2 lg:gap-8">
           {/* Bloc prix */}
           <Reveal>
             <div className="flex h-full flex-col rounded-[12px] border border-white/20 bg-white/[0.06] p-6 md:p-10">
@@ -1296,25 +1340,21 @@ function FaqSection() {
   );
 }
 
-/* — CTA FINAL : urgence éthique (instruction propriétaire — jamais
-     d'artifice) en CARTE (même langage que la carte « quelqu'un d'autre
-     postule ») + CTA principal répété. Centré : clôture du funnel. — */
+/* — CTA FINAL : clôture du funnel (instruction propriétaire Task 27 :
+      plus de bouton « Découvrir le programme » ici, et la carte « coût
+      de l'inaction » vit désormais dans le FOOTER — visible sur toutes
+      les pages, immédiatement après cette section sur l'accueil : pas
+      de double affichage consécutif). — */
 function CtaFinal() {
   return (
     <Section className="on-dark bg-black text-white">
       <Container>
         <Reveal>
-          <CarteUrgenceEthique className="mx-auto max-w-[46rem]" />
-        </Reveal>
-        <Reveal className="mt-10">
-          <div className="flex flex-col items-center gap-5">
+          <div className="flex flex-col items-center gap-5 text-center">
             <span data-wa-cta className="inline-flex">
               <CtaButton href="#/contact">{CTA_LABELS.hero}</CtaButton>
             </span>
             <p className="t-caption text-white/70">{OFFRE.resumeSousCta}</p>
-            <SecondaryLink href="#/programme" className="btn-secondary-dark">
-              {CTA_LABELS.decouvrir}
-            </SecondaryLink>
           </div>
         </Reveal>
       </Container>

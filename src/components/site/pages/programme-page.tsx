@@ -53,7 +53,13 @@ const PROGRAMME_INCLUS = [
 export function ProgrammePage() {
   return (
     <>
+      {/* Task 27 (instruction propriétaire) : le hero « De Comprendre
+          à Parler » passe sur fond NOIR #000000, avec une vraie
+          respiration sous le sous-titre (pb-12/lg:pb-20) — il n'est plus
+          collé à la limite de la section texture qui suit. */}
       <PageHero
+        dark
+        className="on-dark bg-black pb-12 lg:pb-20"
         title={
           <>
             De <span className="text-red-button">Comprendre</span> à{" "}
@@ -63,9 +69,15 @@ export function ProgrammePage() {
         subtitle="Le programme d'accompagnement de 03 mois — un seul objectif : que tu parles anglais avec confiance."
       />
 
-      {/* — L'offre unique — bloc central de conversion — */}
-      <Section className="relative overflow-hidden">
-        {/* OFFRES-TEXTURE — fond très discret (DA §10 prompt #9) */}
+      {/* — L'offre unique — bloc central de conversion — Task 27 :
+          la section devient SOMBRE (continuité du hero noir) — les
+          textes « Voici tout ce que comprend le programme : » et la
+          partie « Garantie » passent en BLANC #FFFFFF (instruction
+          propriétaire). La carte « Le programme » reste blanche :
+          contraste premium sur le fond noir. — */}
+      <Section className="on-dark relative overflow-hidden bg-black pt-0 text-white">
+        {/* OFFRES-TEXTURE — fond discret sur noir : opacité réduite +
+            voile sombre pour la lisibilité du texte blanc */}
         <div
           aria-hidden="true"
           className="pointer-events-none absolute inset-0 select-none"
@@ -75,8 +87,9 @@ export function ProgrammePage() {
             alt=""
             fill
             sizes="100vw"
-            className="object-cover opacity-60"
+            className="object-cover opacity-40"
           />
+          <div className="absolute inset-0 bg-black/55" />
         </div>
 
         <Container className="relative">
@@ -133,24 +146,25 @@ export function ProgrammePage() {
           </Reveal>
 
           {/* Tout ce que le programme comprend (instruction
-              propriétaire : valeur perçue) */}
+              propriétaire : valeur perçue) — Task 27 : textes BLANCS
+              sur le fond sombre */}
           <Reveal className="mt-10 lg:mt-14">
             <div className="mx-auto max-w-[52rem]">
-              <h3 className="t-h3 text-black">
+              <h3 className="t-h3 text-white">
                 Voici tout ce que comprend le programme :
               </h3>
               <div className="mt-6 grid gap-x-10 gap-y-4 sm:grid-cols-2">
                 {PROGRAMME_INCLUS.map((item) => (
                   <div
                     key={item}
-                    className="flex items-start gap-3 border-b border-grey-line pb-4"
+                    className="flex items-start gap-3 border-b border-white/20 pb-4"
                   >
-                    <IconCheck className="mt-0.5 text-black" />
-                    <span className="t-body">{item}</span>
+                    <IconCheck className="mt-0.5 text-white" fg="#000000" />
+                    <span className="t-body text-white">{item}</span>
                   </div>
                 ))}
               </div>
-              <p className="t-body mt-8">
+              <p className="t-body mt-8 text-white/85">
                 Soit un accompagnement complet sur trois mois — pas des
                 séances isolées, mais un parcours structuré, du premier
                 déclic jusqu&apos;à une parole qui tient debout.
@@ -159,11 +173,12 @@ export function ProgrammePage() {
           </Reveal>
 
           {/* Garantie basée sur l'engagement (instruction propriétaire :
-              jamais de garantie absolue sans conditions) */}
+              jamais de garantie absolue sans conditions) — Task 27 :
+              textes BLANCS, bordure blanche */}
           <Reveal className="mt-12 lg:mt-16">
-            <div className="mx-auto max-w-[52rem] rounded-[12px] border-2 border-black p-6 md:p-8">
-              <Eyebrow>Garantie</Eyebrow>
-              <p className="t-body mt-3">
+            <div className="mx-auto max-w-[52rem] rounded-[12px] border-2 border-white p-6 md:p-8">
+              <Eyebrow className="text-white/75">Garantie</Eyebrow>
+              <p className="t-body mt-3 text-white/85">
                 Une garantie basée sur ton engagement : si tu participes
                 régulièrement aux séances, fais les exercices entre les
                 séances et appliques les corrections — et qu&apos;à deux mois

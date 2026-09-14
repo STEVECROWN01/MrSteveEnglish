@@ -64,21 +64,25 @@ export function Prose({
  * Hero des pages intérieures : H1 + sous-titre, centré (le centrage est
  * réservé aux moments d'affirmation courte — DA §7). Le padding supérieur
  * intègre la hauteur de la navigation fixe (64px mobile / 72px desktop)
- * en plus du rythme de section 48/96px.
+ * en plus du rythme de section 48/96px. `className` permet les variantes
+ * par page (Task 27 : Programme — fond noir + respiration sous le
+ * sous-titre).
  */
 export function PageHero({
   title,
   subtitle,
   dark = false,
   id,
+  className,
 }: {
   title: ReactNode;
   subtitle?: ReactNode;
   dark?: boolean;
   id?: string;
+  className?: string;
 }) {
   return (
-    <section id={id} className="pt-[112px] lg:pt-[168px]">
+    <section id={id} className={cn("pt-[112px] lg:pt-[168px]", className)}>
       <Container className="text-center">
         <h1 className={cn("t-h1", dark ? "text-white" : "text-black")}>
           {title}
