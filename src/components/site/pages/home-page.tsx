@@ -904,8 +904,9 @@ function PourquoiMoi() {
               <p className="t-body text-white/85">
                 Parce qu&apos;une application ne t&apos;entend pas. Parce
                 qu&apos;un programme figé ne s&apos;adapte pas. Et parce que
-                ce blocage spécifique — comprendre sans oser parler — est
-                exactement celui que je traite, séance après séance.
+                ce blocage spécifique — <strong>comprendre sans oser
+                parler</strong> — est exactement celui que je traite, séance
+                après séance.
               </p>
               <ul className="mt-6 space-y-3">
                 {POURQUOI_MOI.map((item) => (
@@ -941,13 +942,15 @@ const POUR_TOI = [
   "tu veux améliorer ton anglais pour le travail, les études, les voyages ou ta vie personnelle ;",
   "tu veux pratiquer régulièrement ;",
   "tu veux être accompagné plutôt qu'apprendre seul ;",
-  "tu es prêt à pratiquer entre les séances.",
+  "tu es prêt à pratiquer entre les séances ;",
+  "tu es prêt à mettre en application mes conseils.",
 ];
 
 const PAS_POUR_TOI = [
   "tu cherches une solution magique sans pratiquer ;",
   "tu veux uniquement apprendre de la grammaire ;",
-  "tu ne comptes pas participer régulièrement.",
+  "tu ne comptes pas participer régulièrement ;",
+  "tu n'es pas réellement engagé à garder la discipline jusqu'au bout.",
 ];
 
 function PourQui() {
@@ -1161,6 +1164,7 @@ function Garantie() {
                   "Tu participes régulièrement aux séances du programme.",
                   "Tu fais les exercices personnalisés entre les séances.",
                   "Tu appliques les corrections travaillées ensemble.",
+                  "Tu mets vraiment en application mes conseils.",
                 ].map((item) => (
                   <li key={item} className="flex items-start gap-3">
                     <IconCheck className="mt-0.5 text-black" />
@@ -1171,8 +1175,9 @@ function Garantie() {
 
               <p className="t-body mt-6 text-grey-mid">
                 Ce que je ne promets pas : que l&apos;anglais arrive tout seul.
-                Ce que je promets : si tu fais ta part et que ça ne suffit pas,
-                tu ne perds pas ton argent.
+                <br />
+                Ce que je promets : si tu fais ta part et que ça ne suffit
+                pas, tu ne perds pas ton argent.
               </p>
             </div>
           </Reveal>
@@ -1192,10 +1197,11 @@ function Garantie() {
                 complètement à l&apos;oral. Trois mois de coaching centré sur
                 la pratique orale de son domaine, et il s&apos;exprimait avec
                 l&apos;aisance nécessaire pour prendre son poste à
-                l&apos;international.
+                l&apos;international. Ce n&apos;est pas de la magie. C&apos;est
+                de la pure pratique.
               </p>
               <p className="t-body">
-                Ce n&apos;est pas un cas isolé : 98 % de mes débutants
+                Et ce n&apos;est pas un cas isolé : 98 % de mes débutants
                 absolus s&apos;expriment librement après un mois de coaching.
               </p>
               <div className="mt-8">

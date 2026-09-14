@@ -206,6 +206,8 @@
     border-radius: 8px;
     text-decoration: none;
     cursor: pointer;
+    position: relative;
+    overflow: hidden; /* contient le reflet périodique (instruction propriétaire) */
     transition:
       transform 180ms var(--ease-std),
       background-color 180ms var(--ease-std),
@@ -213,8 +215,6 @@
       border-color 180ms var(--ease-std);
   }
   .btn-primary {
-    position: relative;
-    overflow: hidden; /* contient le balayage lumineux (instruction propriétaire) */
     background: var(--red-button);
     color: #ffffff;
   }
@@ -225,13 +225,13 @@
   .btn-primary:active {
     transform: translateY(0);
   }
-  /* Balayage lumineux gauche → droite au survol (instruction
-     propriétaire : tous les boutons rouges). Un reflet incliné
-     traverse le bouton une fois, de la gauche vers la droite.
-     L'animation ne joue qu'au :hover ; en repartant, le pseudo-élément
-     saute hors-champ (clippé par overflow:hidden) — jamais de retour
-     arrière visible. */
-  .btn-primary::after {
+  /* Reflet périodique (instruction propriétaire) : un reflet blanc
+     oblique semi-transparent traverse TOUS les boutons de gauche à
+     droite toutes les 2 secondes — subtil, rapide, élégant, sans
+     jamais toucher à la couleur de fond. Le balayage occupe ~40 %
+     du cycle (≈ 0,8 s de traversée) puis se repose. */
+  .btn::after,
+  .btn-shine::after {
     content: "";
     position: absolute;
     inset: -2px;
@@ -239,25 +239,45 @@
     background: linear-gradient(
       110deg,
       transparent 32%,
-      rgba(255, 255, 255, 0.45) 50%,
+      rgba(255, 255, 255, 0.32) 50%,
       transparent 68%
     );
     transform: translateX(-140%) skewX(-14deg);
     pointer-events: none;
+    animation: btn-shine-loop 2s var(--ease-std) infinite;
   }
-  .btn-primary:hover::after {
-    animation: btn-shine 750ms var(--ease-std);
+  /* Boutons transparents posés sur des surfaces CLAIRES : un reflet
+     blanc serait invisible sur fond blanc → même geste en voile sombre
+     très léger, pour que CHAQUE bouton ait son reflet. */
+  .btn-secondary::after,
+  .btn-invert-hover:not(:hover)::after,
+  .btn-shine-dark::after {
+    background: linear-gradient(
+      110deg,
+      transparent 32%,
+      rgba(0, 0, 0, 0.09) 50%,
+      transparent 68%
+    );
   }
-  @keyframes btn-shine {
-    from {
+  /* Boutons icônes (réseaux sociaux du footer, bouton menu mobile) :
+     porteurs du même reflet périodique — la classe apporte le contexte
+     position/débordement que .btn fournit déjà aux CTA. */
+  .btn-shine {
+    position: relative;
+    overflow: hidden;
+  }
+  @keyframes btn-shine-loop {
+    0% {
       transform: translateX(-140%) skewX(-14deg);
     }
-    to {
+    40%,
+    100% {
       transform: translateX(140%) skewX(-14deg);
     }
   }
   @media (prefers-reduced-motion: reduce) {
-    .btn-primary::after {
+    .btn::after,
+    .btn-shine::after {
       display: none;
     }
   }
@@ -301,9 +321,13 @@
     color: #ffffff;
   }
   .btn-secondary-dark:hover {
-    background: rgba(255, 255, 255, 0.08);
+    /* Instruction propriétaire : sur fond noir, le bouton transparent
+       quitte l'état transparent au survol → blanc plein #FFFFFF
+       (texte noir pour la lisibilité). */
+    background: #ffffff;
     border-color: #ffffff;
-    color: #ffffff;
+    color: #000000;
+    transform: translateY(-2px);
   }
 
   /* — Cards (DA §7) : radius 12, ombre bleutée, bordure uniquement témoignages — */

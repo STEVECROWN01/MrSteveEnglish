@@ -3,9 +3,10 @@ import { Container } from "./layout-primitives";
 
 /**
  * Footer (instruction propriétaire) : fond noir, texte blanc, nom
- * « Stevens AKPOVI », icônes sociales — WhatsApp (qui dirige vers le
- * formulaire de contact, le numéro n'est jamais affiché sur le site),
- * YouTube et Facebook — navigation complète du site, mentions légales.
+ * « Stevens AKPOVI », icônes sociales dans l'ordre Facebook,
+ * WhatsApp (qui dirige vers le formulaire de contact, le numéro
+ * n'est jamais affiché sur le site), YouTube — navigation complète
+ * du site, mentions légales.
  */
 
 /** Icône WhatsApp officielle (simple-icons, CC0). */
@@ -61,7 +62,7 @@ function SocialLink({
       href={href}
       {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
       aria-label={label}
-      className="flex h-[44px] w-[44px] items-center justify-center rounded-[8px] text-white/80 transition-colors duration-[240ms] hover:bg-white/10 hover:text-white"
+      className="btn-shine flex h-[44px] w-[44px] items-center justify-center rounded-[8px] text-white/80 transition-colors duration-[240ms] hover:bg-white hover:text-black"
     >
       {children}
     </a>
@@ -82,8 +83,18 @@ export function Footer() {
               <span className="text-red-button">Parler</span>, en 03 mois.
             </p>
 
-            {/* Réseaux sociaux — WhatsApp (vers le formulaire), YouTube, Facebook */}
+            {/* Réseaux sociaux — ordre instruction propriétaire :
+                Facebook, WhatsApp (vers le formulaire), YouTube.
+                Icônes transparentes sur fond noir → blanc plein au
+                survol, avec le reflet périodique btn-shine. */}
             <div className="mt-6 flex items-center gap-1">
+              <SocialLink
+                href={SOCIAL_LINKS.facebook}
+                label="Page Facebook de Stevens AKPOVI (nouvel onglet)"
+                external
+              >
+                <FacebookIcon />
+              </SocialLink>
               <SocialLink
                 href="#/contact"
                 label="WhatsApp — contacter Stevens AKPOVI via le formulaire"
@@ -96,13 +107,6 @@ export function Footer() {
                 external
               >
                 <YouTubeIcon />
-              </SocialLink>
-              <SocialLink
-                href={SOCIAL_LINKS.facebook}
-                label="Page Facebook de Stevens AKPOVI (nouvel onglet)"
-                external
-              >
-                <FacebookIcon />
               </SocialLink>
             </div>
           </div>
