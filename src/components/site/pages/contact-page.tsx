@@ -44,10 +44,13 @@ const PROGRAMME_LABEL =
      plus grand, plus lisible). — */
 const ANGLAIS_QUESTION =
   "In English, tell me about yourself, what you currently do, and why you want to improve your English.";
+/* Task 29 (instruction propriétaire) : consigne ENTIÈREMENT EN
+   FRANÇAIS — même l'objectif de la question, pour que le prospect
+   comprenne pourquoi il doit écrire lui-même, sans traducteur ni IA. */
 const ANGLAIS_HINT =
-  "Please answer as naturally as you can. Don't use a translator.";
+  "Répondez aussi naturellement que possible. N'utilisez ni traducteur ni IA. (L'objectif est de connaître votre niveau réel pour savoir comment vous accompagner)";
 const ANGLAIS_PASTE_NOTICE =
-  "Please type your answer yourself — paste is disabled.";
+  "Tapez votre réponse vous-même — le copier-coller est désactivé.";
 
 /* Astérisque obligatoire — ROUGE dans tout le formulaire (instruction
    propriétaire Task 28). */
@@ -231,14 +234,29 @@ export function ContactPage() {
         subtitle="Un formulaire. Ma réponse personnelle. Et ton programme de 03 mois peut démarrer cette semaine."
       />
 
-      <section id="contact" className="scroll-mt-20 pb-12 pt-8 lg:pb-24 lg:pt-12">
-        <Container>
+      <section
+        id="contact"
+        className="relative scroll-mt-20 overflow-hidden pb-12 pt-8 lg:pb-24 lg:pt-12"
+      >
+        {/* Task 29 (instruction propriétaire) : la carte « Bienvenue à
+            toi. » passe en VERRE TRANSPARENT sombre — nappes de couleur
+            derrière elle pour rendre la translucidité lisible. */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute left-[8rem] top-[2rem] h-[32rem] w-[32rem] rounded-full bg-[radial-gradient(circle,rgba(255,26,26,0.30)_0%,transparent_62%)] blur-2xl"
+        />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute right-[8rem] top-[8rem] h-[34rem] w-[34rem] rounded-full bg-[radial-gradient(circle,rgba(96,110,190,0.30)_0%,transparent_62%)] blur-2xl"
+        />
+        <Container className="relative">
           <div className="mx-auto max-w-[42rem]">
             {/* — Message d'accueil chaleureux (instruction propriétaire :
-                    juste après le titre, « gravé » au-dessus du formulaire) — */}
+                    juste après le titre, « gravé » au-dessus du formulaire) —
+                    Task 29 : VERRE TRANSPARENT sombre (style Pour qui ?). — */}
             <Reveal>
               <div
-                className="rounded-[12px] border border-white/20 bg-white/[0.04] p-6 md:p-8"
+                className="glass-card glass-dark p-6 md:p-8"
                 role="note"
                 aria-label="Message d'accueil"
               >
@@ -421,14 +439,13 @@ export function ContactPage() {
                     htmlFor="f-anglais"
                     className="form-label text-[1.0625rem] leading-snug md:text-[1.1875rem]"
                   >
-                    <FlagUK className="mr-2.5 h-[1em] w-[2em] rounded-[2px] align-[-0.125em] shadow-[0_0_0_1px_rgba(255,255,255,0.25)]" />{" "}
+                    {/* Task 29 (instruction propriétaire) : drapeau CARRÉ
+                        (plus rectangulaire). */}
+                    <FlagUK className="mr-2.5 h-[1.15em] w-[1.15em] rounded-[3px] align-[-0.15em] shadow-[0_0_0_1px_rgba(255,255,255,0.25)]" />{" "}
                     {ANGLAIS_QUESTION} <Req />
                   </label>
                   <p className="t-caption mt-1.5 text-white/65">
-                    {ANGLAIS_HINT}{" "}
-                    <span className="text-white/50">
-                      (Le copier-coller est désactivé.)
-                    </span>
+                    {ANGLAIS_HINT}
                   </p>
                   {/* Task 28 : PAS de placeholder — le prospect ne peut
                       pas re-saisir l'exemple à sa place (instruction

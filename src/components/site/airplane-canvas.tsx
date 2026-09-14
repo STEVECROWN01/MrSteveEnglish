@@ -265,8 +265,13 @@ function Airplane({ reduced }: { reduced: boolean }) {
         </group>
       </group>
 
-      {/* — Ombre de contact douce (disque dégradé sous l'avion) — */}
-      <sprite position={[0, -1.55, 0.35]} scale={[3.6, 1.15, 1]} center={[0.5, 0.5]}>
+      {/* — Ombre de contact douce (disque dégradé sous l'avion) —
+          Task 29 (instruction propriétaire) : l'ombre était COUPÉE en
+          bas du cadre (son bas dépassait NDC −1) — remontée (y −1.55 →
+          −1.35), légèrement resserrée (échelle y 1.15 → 1.05) et le
+          regard de la caméra descend d'un cran (lookAt y 0.1 → −0.1)
+          pour que l'OMBRE ENTIÈRE respire dans le cadre. — */}
+      <sprite position={[0, -1.35, 0.3]} scale={[3.6, 1.05, 1]} center={[0.5, 0.5]}>
         <spriteMaterial
           map={glow}
           transparent
@@ -310,7 +315,7 @@ export default function AirplaneCanvas({
       frameloop={reduced ? "demand" : active ? "always" : "never"}
       gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
       camera={{ position: [2.6, 0.9, 6.4], fov: 32, near: 0.1, far: 40 }}
-      onCreated={({ camera }) => camera.lookAt(0, 0.1, 0)}
+      onCreated={({ camera }) => camera.lookAt(0, -0.1, 0)}
       style={{ position: "absolute", inset: 0 }}
       aria-hidden="true"
     >

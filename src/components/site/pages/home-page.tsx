@@ -249,6 +249,23 @@ function Hero() {
 function ProblemeAgitation() {
   return (
     <section className="on-dark relative overflow-hidden bg-black text-white">
+      {/* Task 29 (instruction propriétaire) : la carte « Le coût de
+          l'inaction » (bas de section, pleine largeur) passe en VERRE
+          TRANSPARENT — nappes franches posées derrière elle (leçon
+          Task 27 : leur traversée translucide signale le verre). Le
+          CENTRE de chaque nappe doit siéger DANS la carte : un
+          radial-gradient CSS est déjà transparent à ~62 % du rayon
+          farthest-corner (~210 px) — bottom négatif pour descendre
+          les cœurs de lueur au niveau de la carte. Sur fond noir, le
+          bleu est PLUS CLAIR (96,110,190) pour transparaître. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute bottom-[-2rem] left-[6rem] h-[30rem] w-[30rem] rounded-full bg-[radial-gradient(circle,rgba(255,26,26,0.32)_0%,transparent_62%)] blur-2xl"
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute bottom-[-2rem] right-[6rem] h-[32rem] w-[32rem] rounded-full bg-[radial-gradient(circle,rgba(96,110,190,0.30)_0%,transparent_62%)] blur-2xl"
+      />
       <Container className="relative py-12 lg:py-24">
         {/* Section Problème */}
         <Reveal>
@@ -351,11 +368,24 @@ function Solution() {
       >
         <polygon points="0,0 100,0 0,100" fill="#000000" />
       </svg>
+      {/* Task 29 (instruction propriétaire) : la carte qui enveloppe le
+          contenu texte « Ma méthode » passe en VERRE TRANSPARENT — les
+          nappes de couleur doivent TRAVERSER LE CŒUR de la carte large
+          (leçon Task 27 : c'est leur traversée translucide qui signale
+          le verre, pas le voile seul). */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -left-20 top-[6rem] h-[38rem] w-[38rem] rounded-full bg-[radial-gradient(circle,rgba(255,26,26,0.32)_0%,transparent_62%)] blur-2xl"
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute bottom-[-10rem] right-4 h-[32rem] w-[32rem] rounded-full bg-[radial-gradient(circle,rgba(28,28,64,0.28)_0%,transparent_62%)] blur-2xl lg:right-[22rem]"
+      />
       <Container className="relative py-12 lg:py-24">
         <div className="grid gap-10 lg:grid-cols-[minmax(0,46rem)_minmax(0,22rem)] lg:items-stretch lg:justify-center lg:gap-12">
           {/* Bloc contenu (à gauche de l'image) */}
           <Reveal>
-            <div className="card-base card-hover p-6 md:p-10 lg:p-12">
+            <div className="glass-card card-hover p-6 md:p-10 lg:p-12">
               <Eyebrow>Ma méthode</Eyebrow>
               <h2 className="t-h2 mt-4 text-black">
                 Une méthode que j&apos;adapte à toi, séance après séance.
@@ -838,8 +868,19 @@ const INCLUS: {
 
 function CeQuiEstInclus() {
   return (
-    <Section>
-      <Container>
+    <Section className="relative overflow-hidden">
+      {/* Task 29 (instruction propriétaire) : les 8 cartes passent en
+          VERRE TRANSPARENT (style Pour qui ?) — nappes de couleur
+          derrière la grille pour que la translucidité soit lisible. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -left-24 top-[6rem] h-[32rem] w-[32rem] rounded-full bg-[radial-gradient(circle,rgba(255,26,26,0.30)_0%,transparent_62%)] blur-2xl"
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -right-24 top-[22rem] h-[36rem] w-[36rem] rounded-full bg-[radial-gradient(circle,rgba(28,28,64,0.30)_0%,transparent_62%)] blur-2xl"
+      />
+      <Container className="relative">
         <Reveal>
           <Prose className="mx-auto max-w-[46rem] text-center">
             <Eyebrow>Ce qui est inclus</Eyebrow>
@@ -855,7 +896,7 @@ function CeQuiEstInclus() {
         <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:mt-14 lg:grid-cols-4 lg:gap-x-6 lg:gap-y-8">
           {INCLUS.map((item, i) => (
             <Reveal key={item.num} delay={(i % 4) * 100}>
-              <div className="card-base card-hover relative flex h-full flex-col p-6">
+              <div className="glass-card card-hover relative flex h-full flex-col p-6">
                 <div className="flex items-start justify-between gap-3">
                   <p className="font-display text-[2rem] font-medium leading-none text-grey-line">
                     {item.num}
@@ -1076,7 +1117,18 @@ const VALUE_STACK = [
 function SectionPrix() {
   return (
     <Section className="on-dark relative overflow-hidden bg-black text-white">
-      <Container>
+      {/* Task 29 (instruction propriétaire) : les DEUX cartes de
+          l'offre passent en VERRE TRANSPARENT sombre (style Pour
+          qui ?) — nappes derrière chaque carte. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -left-24 top-[14rem] h-[36rem] w-[36rem] rounded-full bg-[radial-gradient(circle,rgba(255,26,26,0.26)_0%,transparent_62%)] blur-2xl"
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -right-24 top-[10rem] h-[40rem] w-[40rem] rounded-full bg-[radial-gradient(circle,rgba(28,28,64,0.26)_0%,transparent_62%)] blur-2xl"
+      />
+      <Container className="relative">
         <Reveal>
           <Prose className="mx-auto max-w-[46rem] text-center">
             <Eyebrow className="text-white/75">L&apos;offre</Eyebrow>
@@ -1098,7 +1150,7 @@ function SectionPrix() {
         <div className="mx-auto mt-10 grid max-w-[64rem] gap-6 lg:mt-14 lg:grid-cols-2 lg:gap-8">
           {/* Bloc prix */}
           <Reveal>
-            <div className="flex h-full flex-col rounded-[12px] border border-white/20 bg-white/[0.06] p-6 md:p-10">
+            <div className="glass-card glass-dark flex h-full flex-col p-6 md:p-10">
               <p className="t-caption font-medium uppercase tracking-[0.14em] text-white/75">
                 Paiement unique
               </p>
@@ -1150,7 +1202,7 @@ function SectionPrix() {
               Liste longue → DEUX colonnes de cinq dans la même carte
               (instruction propriétaire). */}
           <Reveal delay={120}>
-            <div className="h-full rounded-[12px] border border-white/15 bg-white/[0.03] p-6 md:p-10">
+            <div className="glass-card glass-dark h-full p-6 md:p-10">
               <h3 className="t-h3 text-white">
                 Voici tout ce que tu reçois pour {OFFRE.prix}{" "}
                 {OFFRE.devise} :
@@ -1349,8 +1401,21 @@ function FaqSection() {
       autres pages conservent la carte en tête de footer). — */
 function CtaFinal() {
   return (
-    <Section className="on-dark bg-black text-white">
-      <Container>
+    <Section className="on-dark relative overflow-hidden bg-black text-white">
+      {/* Task 29 : la carte verre « coût de l'inaction » a besoin de
+          matière derrière elle pour que la translucidité se lise —
+          nappes franches TRAVERSANT la carte (leçon Task 27). Sur fond
+          NOIR, le bleu-gris doit être PLUS CLAIR (96,110,190) pour
+          transparaître à travers le voile du verre. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute left-[8rem] top-[2rem] h-[36rem] w-[36rem] rounded-full bg-[radial-gradient(circle,rgba(255,26,26,0.32)_0%,transparent_62%)] blur-2xl"
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute right-[8rem] top-[4rem] h-[38rem] w-[38rem] rounded-full bg-[radial-gradient(circle,rgba(96,110,190,0.30)_0%,transparent_62%)] blur-2xl"
+      />
+      <Container className="relative">
         <Reveal>
           <CarteUrgenceEthique className="mx-auto max-w-[46rem]" />
         </Reveal>

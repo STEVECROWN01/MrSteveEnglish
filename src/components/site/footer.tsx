@@ -98,14 +98,27 @@ export function Footer({
   hideCarte?: boolean;
 }) {
   return (
-    <footer className="on-dark mt-auto bg-black text-white">
+    <footer className="on-dark mt-auto overflow-hidden bg-black text-white">
       {/* Carte « Le coût de l'inaction » (instruction propriétaire
           Task 27) : vit désormais dans le footer — visible sur TOUTES
           les pages, au lieu d'être dupliquée page par page. Sur
           l'accueil, la carte n'est plus répétée dans la section CTA
           finale (le footer la prend en relais immédiatement après). */}
       {hideCarte ? null : (
-        <Container className="pb-0 pt-12 lg:pt-16">
+        <Container className="relative pb-0 pt-12 lg:pt-16">
+          {/* Task 29 (instruction propriétaire) : la carte passe en VERRE
+              TRANSPARENT — les nappes de couleur derrière elle rendent la
+              translucidité lisible (même mécanisme que la section Pour
+              qui ?). Container positionné APRÈS les nappes dans le DOM :
+              le contenu reste au-dessus. */}
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute left-[8rem] top-0 h-[32rem] w-[32rem] rounded-full bg-[radial-gradient(circle,rgba(255,26,26,0.32)_0%,transparent_62%)] blur-2xl"
+          />
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute right-[8rem] top-4 h-[34rem] w-[34rem] rounded-full bg-[radial-gradient(circle,rgba(96,110,190,0.30)_0%,transparent_62%)] blur-2xl"
+          />
           <CarteUrgenceEthique className="mx-auto max-w-[46rem]" />
         </Container>
       )}

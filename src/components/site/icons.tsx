@@ -68,11 +68,15 @@ export function IconCross({
  *  Les emojis drapeaux ne s'affichent PAS sur tous les appareils
  *  (Windows affiche les lettres « GB ») — ce SVG s'affiche partout, à
  *  l'identique. Construction officielle 60×30 (Union Jack contrecarré).
+ *  Task 29 (instruction propriétaire) : rendu CARRÉ — le drapeau est
+ *  rogné sur sa largeur (preserveAspectRatio « slice ») pour remplir
+ *  un cadre 1:1 ; la croix de saint Georges reste parfaitement centrée.
  *  La taille (h/w) et l'alignement sont fixés par le consommateur. */
 export function FlagUK({ className }: { className?: string }) {
   return (
     <svg
       viewBox="0 0 60 30"
+      preserveAspectRatio="xMidYMid slice"
       aria-hidden="true"
       className={cn("inline-block shrink-0", className)}
     >

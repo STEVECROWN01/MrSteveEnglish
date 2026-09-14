@@ -339,6 +339,18 @@
     .glass-card {
       background: rgba(255, 255, 255, 0.88);
     }
+    /* Task 29 — variante sombre : sur fond noir, le repli blanc 0.88
+       rendrait le texte blanc illisible → panneau sombre opaque. */
+    .glass-card.glass-dark {
+      background: rgba(22, 22, 25, 0.94);
+    }
+  }
+  /* Task 29 — variante sombre (instruction propriétaire : le style
+     verre s'étend aux cartes des sections NOIRES) : compagnon de
+     .glass-card, texte blanc par défaut. À technologie égale, le
+     rendu du verre est identique — seule la valeur de repli change. */
+  .glass-dark {
+    color: #ffffff;
   }
   .card-bordered {
     border: 1px solid var(--grey-border);

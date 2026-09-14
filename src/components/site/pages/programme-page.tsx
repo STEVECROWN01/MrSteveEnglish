@@ -98,43 +98,44 @@ export function ProgrammePage() {
         <Container className="relative">
           <Reveal>
             <div className="mx-auto max-w-[52rem]">
-              <div className="card-base card-hover p-6 md:p-10 lg:p-12">
-                <Eyebrow>Le programme</Eyebrow>
-                <h2 className="t-h2 mt-4 text-black">
+              {/* Task 29 (instruction propriétaire) : la carte d'offre
+                  passe en VERRE TRANSPARENT sombre — la texture
+                  OFFRES-TEXTURE derrière elle est floutée par le
+                  backdrop-filter : vrai effet glassmorphism. Textes
+                  BLANCS (lisible sur verre sombre). */}
+              <div className="glass-card glass-dark card-hover p-6 md:p-10 lg:p-12">
+                <Eyebrow className="text-white/75">Le programme</Eyebrow>
+                <h2 className="t-h2 mt-4 text-white">
                   03 mois de coaching d&apos;anglais personnalisé.
                 </h2>
-                <p className="t-body mt-6 text-black">
+                <p className="t-body mt-6 text-white/85">
                   Trois séances de 1h30 par semaine, pendant trois mois.
                   C&apos;est le format suivi par l&apos;apprenant qui a réussi
                   son passage à un poste international — le rythme qui laisse
                   à l&apos;anglais le temps de s&apos;installer durablement
                   dans ton quotidien.
                 </p>
-                {/* Task 28 (instruction propriétaire) : ces textes vivent
-                    dans la carte BLANCHE — ils doivent être NOIRS (la
-                    section sombre leur faisait hériter du blanc : texte
-                    invisible). */}
-                <p className="t-body mt-4 text-black">
+                <p className="t-body mt-4 text-white/85">
                   Chaque séance est une vraie prise de parole : conversations
                   réelles, corrections personnalisées, prononciation — et des
                   exercices courts entre les séances pour accélérer la
                   progression.
                 </p>
 
-                {/* Prix — noir pur sur fond blanc (instruction propriétaire) */}
-                <div className="mt-10 flex flex-wrap items-baseline gap-x-4 border-t border-grey-line pt-8">
+                {/* Prix — blanc sur verre sombre (Task 29) */}
+                <div className="mt-10 flex flex-wrap items-baseline gap-x-4 border-t border-white/20 pt-8">
                   <p className="flex flex-wrap items-baseline gap-x-3">
-                    <span className="t-stat text-black">{OFFRE.prix}</span>
-                    <span className="t-stat-unit text-black">
+                    <span className="t-stat text-white">{OFFRE.prix}</span>
+                    <span className="t-stat-unit text-white">
                       {OFFRE.devise}
                     </span>
                   </p>
-                  <p className="text-[0.9375rem] font-medium text-grey-mid">
+                  <p className="text-[0.9375rem] font-medium text-white/70">
                     {OFFRE.paiement} — pas d&apos;abonnement, pas de paiement
                     mensuel, pas de frais cachés.
                   </p>
                 </div>
-                <p className="t-body mt-4 font-medium text-black">
+                <p className="t-body mt-4 font-medium text-white">
                   Un seul paiement. Trois mois d&apos;accompagnement.
                 </p>
 
@@ -144,7 +145,7 @@ export function ProgrammePage() {
                       {CTA_LABELS.rejoindre}
                     </CtaButton>
                   </span>
-                  <p className="t-caption mt-4 text-grey-mid">
+                  <p className="t-caption mt-4 text-white/70">
                     {OFFRE.sousCtaPrix}
                   </p>
                 </div>
@@ -211,11 +212,21 @@ export function ProgrammePage() {
         </Container>
       </Section>
 
-      {/* — Après le paiement — */}
-      <Section className="pt-0">
-        <Container>
+      {/* — Après le paiement — Task 29 : carte en VERRE TRANSPARENT
+          (style Pour qui ?) — nappes de couleur derrière elle pour
+          rendre la translucidité lisible sur fond blanc. — */}
+      <Section className="relative overflow-hidden pt-0">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute left-[2rem] top-[2rem] h-[32rem] w-[32rem] rounded-full bg-[radial-gradient(circle,rgba(255,26,26,0.32)_0%,transparent_62%)] blur-2xl"
+        />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute right-[2rem] top-[6rem] h-[34rem] w-[34rem] rounded-full bg-[radial-gradient(circle,rgba(28,28,64,0.32)_0%,transparent_62%)] blur-2xl"
+        />
+        <Container className="relative">
           <Reveal>
-            <div className="mx-auto max-w-[46rem] rounded-[12px] bg-grey-soft p-6 md:p-10">
+            <div className="glass-card mx-auto max-w-[46rem] p-6 md:p-10">
               <p className="t-body">
                 Trois jours après ton paiement, ton coaching démarre
                 réellement : suivi personnalisé et toutes les ressources
