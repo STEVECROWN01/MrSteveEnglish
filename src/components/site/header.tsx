@@ -150,10 +150,10 @@ export function Header() {
               aria-controls="mobile-nav"
               aria-label={menuOpen ? "Fermer le menu" : "Ouvrir le menu de navigation"}
               className={cn(
-                "btn-shine flex h-[44px] w-[44px] items-center justify-center rounded-[8px] transition-colors md:hidden",
+                "flex h-[44px] w-[44px] items-center justify-center rounded-[8px] transition-colors md:hidden",
                 light
                   ? "text-white hover:bg-white/15"
-                  : "btn-shine-dark text-black hover:bg-grey-soft",
+                  : "text-black hover:bg-grey-soft",
               )}
             >
               {menuOpen ? (

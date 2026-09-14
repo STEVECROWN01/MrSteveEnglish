@@ -62,7 +62,7 @@ function SocialLink({
       href={href}
       {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
       aria-label={label}
-      className="btn-shine flex h-[44px] w-[44px] items-center justify-center rounded-[8px] text-white/80 transition-colors duration-[240ms] hover:bg-white hover:text-black"
+      className="flex h-[44px] w-[44px] items-center justify-center rounded-[8px] text-white/80 transition-colors duration-[240ms] hover:bg-white hover:text-black"
     >
       {children}
     </a>
@@ -86,7 +86,7 @@ export function Footer() {
             {/* Réseaux sociaux — ordre instruction propriétaire :
                 Facebook, WhatsApp (vers le formulaire), YouTube.
                 Icônes transparentes sur fond noir → blanc plein au
-                survol, avec le reflet périodique btn-shine. */}
+                survol (pas de reflet : réservé aux CTA, Task 25). */}
             <div className="mt-6 flex items-center gap-1">
               <SocialLink
                 href={SOCIAL_LINKS.facebook}

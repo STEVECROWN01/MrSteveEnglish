@@ -206,8 +206,6 @@
     border-radius: 8px;
     text-decoration: none;
     cursor: pointer;
-    position: relative;
-    overflow: hidden; /* contient le reflet périodique (instruction propriétaire) */
     transition:
       transform 180ms var(--ease-std),
       background-color 180ms var(--ease-std),
@@ -215,6 +213,8 @@
       border-color 180ms var(--ease-std);
   }
   .btn-primary {
+    position: relative;
+    overflow: hidden; /* contient le reflet périodique — CTA uniquement */
     background: var(--red-button);
     color: #ffffff;
   }
@@ -225,59 +225,41 @@
   .btn-primary:active {
     transform: translateY(0);
   }
-  /* Reflet périodique (instruction propriétaire) : un reflet blanc
-     oblique semi-transparent traverse TOUS les boutons de gauche à
-     droite toutes les 2 secondes — subtil, rapide, élégant, sans
-     jamais toucher à la couleur de fond. Le balayage occupe ~40 %
-     du cycle (≈ 0,8 s de traversée) puis se repose. */
-  .btn::after,
-  .btn-shine::after {
+  /* Reflet périodique (instruction propriétaire, Task 25) : réservé
+     UNIQUEMENT aux boutons CTA (rouges .btn-primary). Un reflet blanc
+     oblique bien visible traverse le bouton de gauche à droite, LENTEMENT,
+     puis se repose. Le balayage occupe ~55 % d'un cycle de 3,2 s (≈ 1,8 s
+     de traversée, ~2,2× plus lent qu'avant) puis repos ≈ 1,4 s. Les
+     secondaires, icônes sociales, hamburger et liens inversés n'ont
+     PLUS AUCUN reflet. */
+  .btn-primary::after {
     content: "";
     position: absolute;
     inset: -2px;
     z-index: 1;
     background: linear-gradient(
       110deg,
-      transparent 32%,
-      rgba(255, 255, 255, 0.32) 50%,
-      transparent 68%
+      transparent 15%,
+      rgba(255, 255, 255, 0.28) 34%,
+      rgba(255, 255, 255, 0.85) 50%,
+      rgba(255, 255, 255, 0.28) 66%,
+      transparent 85%
     );
-    transform: translateX(-140%) skewX(-14deg);
+    transform: translateX(-150%) skewX(-14deg);
     pointer-events: none;
-    animation: btn-shine-loop 2s var(--ease-std) infinite;
-  }
-  /* Boutons transparents posés sur des surfaces CLAIRES : un reflet
-     blanc serait invisible sur fond blanc → même geste en voile sombre
-     très léger, pour que CHAQUE bouton ait son reflet. */
-  .btn-secondary::after,
-  .btn-invert-hover:not(:hover)::after,
-  .btn-shine-dark::after {
-    background: linear-gradient(
-      110deg,
-      transparent 32%,
-      rgba(0, 0, 0, 0.09) 50%,
-      transparent 68%
-    );
-  }
-  /* Boutons icônes (réseaux sociaux du footer, bouton menu mobile) :
-     porteurs du même reflet périodique — la classe apporte le contexte
-     position/débordement que .btn fournit déjà aux CTA. */
-  .btn-shine {
-    position: relative;
-    overflow: hidden;
+    animation: btn-shine-loop 3.2s cubic-bezier(0.45, 0, 0.55, 1) infinite;
   }
   @keyframes btn-shine-loop {
     0% {
-      transform: translateX(-140%) skewX(-14deg);
+      transform: translateX(-150%) skewX(-14deg);
     }
-    40%,
+    55%,
     100% {
-      transform: translateX(140%) skewX(-14deg);
+      transform: translateX(150%) skewX(-14deg);
     }
   }
   @media (prefers-reduced-motion: reduce) {
-    .btn::after,
-    .btn-shine::after {
+    .btn-primary::after {
       display: none;
     }
   }
