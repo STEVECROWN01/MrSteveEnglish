@@ -987,15 +987,16 @@ function PourQui() {
           apparence de VERRE TRANSPARENT (glassmorphism) au lieu du fond
           blanc plein. Pour que l'effet de verre soit BIEN LISIBLE, la
           section accueille des nappes de couleur franches (rouge site +
-          gris profond) POSITIONNÉES DERRIÈRE LES CARTES — c'est leur
-          traversée translucide qui signale le verre, pas le voile seul. */}
+          bleu-gris profond) POSITIONNÉES DERRIÈRE LE CŒUR DE CHAQUE
+          CARTE — c'est leur traversée translucide qui signale le verre,
+          pas le voile seul. */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -left-40 top-[24rem] h-[34rem] w-[34rem] rounded-full bg-[radial-gradient(circle,rgba(255,26,26,0.22)_0%,transparent_65%)] blur-2xl"
+        className="pointer-events-none absolute -left-24 top-[26rem] h-[36rem] w-[36rem] rounded-full bg-[radial-gradient(circle,rgba(255,26,26,0.30)_0%,transparent_62%)] blur-2xl"
       />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -right-40 top-[16rem] h-[38rem] w-[38rem] rounded-full bg-[radial-gradient(circle,rgba(24,24,48,0.22)_0%,transparent_65%)] blur-2xl"
+        className="pointer-events-none absolute -right-24 top-[22rem] h-[40rem] w-[40rem] rounded-full bg-[radial-gradient(circle,rgba(28,28,64,0.30)_0%,transparent_62%)] blur-2xl"
       />
       <Container className="relative">
         <Reveal>

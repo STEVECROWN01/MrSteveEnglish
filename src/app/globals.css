@@ -324,15 +324,15 @@
      « brasse » les nappes de couleur douces posées sur la section.
      Bordure claire haute + ombre douce = épaisseur de verre. */
   .glass-card {
-    background: rgba(255, 255, 255, 0.28);
-    -webkit-backdrop-filter: blur(18px) saturate(1.2);
-    backdrop-filter: blur(18px) saturate(1.2);
-    border: 1px solid rgba(255, 255, 255, 0.75);
+    background: rgba(255, 255, 255, 0.24);
+    -webkit-backdrop-filter: blur(16px) saturate(1.35);
+    backdrop-filter: blur(16px) saturate(1.35);
+    border: 1px solid rgba(255, 255, 255, 0.8);
     border-radius: 12px;
     box-shadow:
       0 2px 6px rgba(0, 0, 0, 0.03),
       0 12px 36px rgba(0, 0, 0, 0.08),
-      inset 0 1px 0 rgba(255, 255, 255, 0.85);
+      inset 0 1px 0 rgba(255, 255, 255, 0.9);
   }
   @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
     /* Fallback sans backdrop-filter : voile blanc opaque doux */
