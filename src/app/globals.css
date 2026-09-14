@@ -334,6 +334,23 @@
       0 12px 36px rgba(0, 0, 0, 0.08),
       inset 0 1px 0 rgba(255, 255, 255, 0.9);
   }
+  /* Task 30 (retour propriétaire) : sur fond NOIR, le voile blanc
+     0.24 + la bordure presque pleine et le reflet haut éclatant
+     rendaient les cartes LAITEUSES — elles semblaient blanches.
+     La variante sombre devient un VRAI VERRE FUMÉ : voile quasi
+     nul (le noir de la section et les nappes de couleur TRAVERSENT
+     la carte), bordure discrète, reflet haut doux, ombre profonde.
+     Le texte blanc gagne au passage en contraste.
+     NB : placée AVANT le bloc @supports not ci-dessous pour que le
+     repli opaque garde la main sur les navigateurs sans blur. */
+  .glass-card.glass-dark {
+    background: rgba(255, 255, 255, 0.07);
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow:
+      0 2px 6px rgba(0, 0, 0, 0.28),
+      0 16px 40px rgba(0, 0, 0, 0.45),
+      inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  }
   @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
     /* Fallback sans backdrop-filter : voile blanc opaque doux */
     .glass-card {
@@ -347,8 +364,7 @@
   }
   /* Task 29 — variante sombre (instruction propriétaire : le style
      verre s'étend aux cartes des sections NOIRES) : compagnon de
-     .glass-card, texte blanc par défaut. À technologie égale, le
-     rendu du verre est identique — seule la valeur de repli change. */
+     .glass-card, texte blanc par défaut. */
   .glass-dark {
     color: #ffffff;
   }
