@@ -94,6 +94,19 @@ export function Header() {
               noir sur sommet clair */}
           <a
             href="#/"
+            onClick={(e) => {
+              /* Instruction propriétaire : le logo ramène TOUJOURS en haut
+                 de l'accueil. Depuis une autre page ou une section
+                 (?section=…), la navigation hash déclenche déjà la
+                 remontée (useRouteEffects / useSectionScroll). Mais si le
+                 hash est déjà « #/ » (ou absent), AUCUN hashchange ne se
+                 déclenche → remontée manuelle douce. */
+              const h = window.location.hash;
+              if (h === "" || h === "#" || h === "#/") {
+                e.preventDefault();
+                window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+              }
+            }}
             className={cn(
               "font-display text-[1.25rem] leading-none font-medium tracking-tight transition-colors duration-[240ms] lg:text-[1.375rem]",
               light ? "text-white" : "text-black",
@@ -201,7 +214,18 @@ export function Header() {
                   <li key={link.id}>
                     <a
                       href={link.hash}
-                      onClick={() => setMenuOpen(false)}
+                      onClick={() => {
+                        setMenuOpen(false);
+                        /* Même règle que le logo : « Accueil » remonte en
+                           haut de page si on y est déjà (aucun hashchange
+                           ne se déclencherait dans ce cas). */
+                        if (link.hash === "#/") {
+                          const h = window.location.hash;
+                          if (h === "" || h === "#" || h === "#/") {
+                            window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+                          }
+                        }
+                      }}
                       aria-current={active ? "page" : undefined}
                       className={cn(
                         "flex min-h-[48px] items-center rounded-[8px] px-3 text-[1rem] font-medium transition-colors",
