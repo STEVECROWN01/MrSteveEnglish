@@ -74,12 +74,15 @@ export function PageHero({
   dark = false,
   id,
   className,
+  subtitleClassName,
 }: {
   title: ReactNode;
   subtitle?: ReactNode;
   dark?: boolean;
   id?: string;
   className?: string;
+  /** Surcharge du sous-titre (Task 28 : Programme — sous-titre gris). */
+  subtitleClassName?: string;
 }) {
   return (
     <section id={id} className={cn("pt-[112px] lg:pt-[168px]", className)}>
@@ -92,6 +95,7 @@ export function PageHero({
             className={cn(
               "t-body mx-auto mt-6 max-w-[38rem]",
               dark ? "text-white/80" : "text-grey-mid",
+              subtitleClassName,
             )}
           >
             {subtitle}

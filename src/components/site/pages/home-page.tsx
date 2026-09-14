@@ -1341,16 +1341,20 @@ function FaqSection() {
   );
 }
 
-/* — CTA FINAL : clôture du funnel (instruction propriétaire Task 27 :
-      plus de bouton « Découvrir le programme » ici, et la carte « coût
-      de l'inaction » vit désormais dans le FOOTER — visible sur toutes
-      les pages, immédiatement après cette section sur l'accueil : pas
-      de double affichage consécutif). — */
+/* — CTA FINAL : clôture du funnel. Task 28 (instruction propriétaire) :
+      la carte « Le coût de l'inaction » doit venir AVANT le bouton
+      « Je veux parler anglais avec confiance » — elle vit désormais dans
+      cette section finale de l'accueil (le footer la masque sur
+      l'accueil via hideCarte : pas de double affichage ; toutes les
+      autres pages conservent la carte en tête de footer). — */
 function CtaFinal() {
   return (
     <Section className="on-dark bg-black text-white">
       <Container>
         <Reveal>
+          <CarteUrgenceEthique className="mx-auto max-w-[46rem]" />
+        </Reveal>
+        <Reveal className="mt-10 lg:mt-14">
           <div className="flex flex-col items-center gap-5 text-center">
             <span data-wa-cta className="inline-flex">
               <CtaButton href="#/contact">{CTA_LABELS.hero}</CtaButton>

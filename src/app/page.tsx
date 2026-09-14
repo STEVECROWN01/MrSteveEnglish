@@ -47,6 +47,10 @@ const ContactPage = dynamic(
   () => import("@/components/site/pages/contact-page").then((m) => m.ContactPage),
   { ssr: false, loading: PageLoading },
 );
+const BienvenuePage = dynamic(
+  () => import("@/components/site/pages/bienvenue-page").then((m) => m.BienvenuePage),
+  { ssr: false, loading: PageLoading },
+);
 
 function renderPage(route: RouteId) {
   switch (route) {
@@ -61,6 +65,8 @@ function renderPage(route: RouteId) {
       return <HomePage />;
     case "contact":
       return <ContactPage />;
+    case "bienvenue": // page post-paiement (Task 28) — tunnel focalisé
+      return <BienvenuePage />;
     default:
       return <HomePage />;
   }
@@ -85,6 +91,26 @@ export default function Page() {
     return () => window.clearTimeout(t);
   }, [route]);
 
+  /* Rechargement → HAUT de la page courante (instruction propriétaire
+     Task 28) : quoi qu'il arrive, recharger la page ramène toujours en
+     haut de LA PAGE OÙ L'ON ÉTAIT — le navigateur ne restaure plus
+     l'ancienne position de scroll (history.scrollRestoration = manual,
+     posé une fois au montage). Les deep-links ?section= (Méthode, FAQ)
+     et l'alias #/faq conservent leur défilement automatique vers la
+     section demandée — pas de flash du haut de page inutile. */
+  useEffect(() => {
+    if ("scrollRestoration" in window.history) {
+      window.history.scrollRestoration = "manual";
+    }
+    const q = window.location.hash.split("?")[1];
+    const section = q ? new URLSearchParams(q).get("section") : null;
+    if (!section && route !== "faq") {
+      window.scrollTo({ top: 0, left: 0, behavior: "instant" as ScrollBehavior });
+    }
+    // Exécuté UNE seule fois au montage (rechargement inclus) — la
+    // valeur de route au montage est celle de la page rechargée.
+  }, []);
+
   /* Préchauffage à l'inactivité (idle) : les pages secondaires (~30 Ko
      gz au total) sont chargées pendant le repos du navigateur — la
      navigation reste instantanée, y compris à la première interaction,
@@ -107,9 +133,17 @@ export default function Page() {
     return () => window.clearTimeout(t);
   }, []);
 
+  /* Page BIENVENUE (Task 28 — instruction propriétaire) : tunnel
+     post-paiement très focalisé — ni header ni footer global (aucun
+     lien ni CTA secondaire : un seul parcours, compréhension →
+     WhatsApp). Sur l'accueil, la carte « Le coût de l'inaction » vit
+     dans la section finale AVANT le bouton « Je veux parler anglais
+     avec confiance » — le footer la masque pour éviter le doublon. */
+  const focused = route === "bienvenue";
+
   return (
     <div className="flex min-h-screen flex-col bg-white">
-      <Header />
+      {focused ? null : <Header />}
       <main
         id="main-content"
         tabIndex={-1}
@@ -120,7 +154,11 @@ export default function Page() {
           {renderPage(route)}
         </div>
       </main>
-      <Footer />
+      {focused ? (
+        null
+      ) : (
+        <Footer hideCarte={route === "accueil"} />
+      )}
     </div>
   );
 }

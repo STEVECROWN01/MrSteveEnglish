@@ -552,6 +552,59 @@
     border-color: #ffffff;
     background: rgba(255, 255, 255, 0.12);
   }
+
+  /* — Séparateur « lumière circulante » (instruction propriétaire
+     Task 28) : sépare le formulaire de contact du footer — une
+     lumière blanche bien visible traverse la ligne horizontalement,
+     de la GAUCHE vers la DROITE, en continu. Ligne de base discrète
+     (1px blanc 16 %) + comète lumineuse (cœur blanc, halo doux) qui
+     balaie la largeur en boucle. — */
+  .beam-separator {
+    position: relative;
+    height: 14px;
+    overflow: hidden;
+  }
+  .beam-separator::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 1px;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.16);
+  }
+  .beam-separator::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 26%;
+    height: 2px;
+    border-radius: 2px;
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.9) 45%,
+      #ffffff 50%,
+      rgba(255, 255, 255, 0.9) 55%,
+      rgba(255, 255, 255, 0) 100%
+    );
+    box-shadow:
+      0 0 14px 3px rgba(255, 255, 255, 0.65),
+      0 0 38px 9px rgba(255, 255, 255, 0.3);
+    transform: translateY(-50%) translateX(-110%);
+    animation: beam-flow 3.4s linear infinite;
+    will-change: transform;
+  }
+  @keyframes beam-flow {
+    from {
+      transform: translateY(-50%) translateX(-110%);
+    }
+    to {
+      transform: translateY(-50%) translateX(430%);
+    }
+  }
 }
 
 /* — Reduced motion (DA §13/§16) : chaque animation a sa version coupée — */
@@ -590,6 +643,12 @@
   }
   .faq-icon-vertical {
     transition: none;
+  }
+  /* Lumière circulante formulaire/footer : coupée — la comète se
+     pose au centre (l'état de repos reste lisible). */
+  .beam-separator::after {
+    animation: none;
+    transform: translateY(-50%) translateX(137%);
   }
   .btn,
   .card-hover,

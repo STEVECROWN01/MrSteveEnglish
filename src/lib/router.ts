@@ -17,7 +17,8 @@ export type RouteId =
   | "programme"
   | "offres"
   | "faq"
-  | "contact";
+  | "contact"
+  | "bienvenue";
 
 export const ROUTES: Record<RouteId, { hash: string; title: string }> = {
   accueil: { hash: "#/", title: "Stevens AKPOVI — Coach d'anglais" },
@@ -27,6 +28,7 @@ export const ROUTES: Record<RouteId, { hash: string; title: string }> = {
   offres: { hash: "#/programme", title: "Programme — Stevens AKPOVI" },
   faq: { hash: "#/faq", title: "Questions fréquentes — Stevens AKPOVI" },
   contact: { hash: "#/contact", title: "Inscription — Stevens AKPOVI" },
+  bienvenue: { hash: "#/bienvenue", title: "Bienvenue — Stevens AKPOVI" },
 };
 
 /**

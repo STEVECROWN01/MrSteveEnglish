@@ -67,6 +67,9 @@ export function ProgrammePage() {
           </>
         }
         subtitle="Le programme d'accompagnement de 03 mois — un seul objectif : que tu parles anglais avec confiance."
+        /* Task 28 (instruction propriétaire) : le sous-titre passe en
+            GRIS — plus sobre sous le titre blanc du hero noir. */
+        subtitleClassName="text-white/60"
       />
 
       {/* — L'offre unique — bloc central de conversion — Task 27 :
@@ -100,14 +103,18 @@ export function ProgrammePage() {
                 <h2 className="t-h2 mt-4 text-black">
                   03 mois de coaching d&apos;anglais personnalisé.
                 </h2>
-                <p className="t-body mt-6">
+                <p className="t-body mt-6 text-black">
                   Trois séances de 1h30 par semaine, pendant trois mois.
                   C&apos;est le format suivi par l&apos;apprenant qui a réussi
                   son passage à un poste international — le rythme qui laisse
                   à l&apos;anglais le temps de s&apos;installer durablement
                   dans ton quotidien.
                 </p>
-                <p className="t-body mt-4">
+                {/* Task 28 (instruction propriétaire) : ces textes vivent
+                    dans la carte BLANCHE — ils doivent être NOIRS (la
+                    section sombre leur faisait hériter du blanc : texte
+                    invisible). */}
+                <p className="t-body mt-4 text-black">
                   Chaque séance est une vraie prise de parole : conversations
                   réelles, corrections personnalisées, prononciation — et des
                   exercices courts entre les séances pour accélérer la
@@ -127,7 +134,7 @@ export function ProgrammePage() {
                     mensuel, pas de frais cachés.
                   </p>
                 </div>
-                <p className="t-body mt-4 font-medium">
+                <p className="t-body mt-4 font-medium text-black">
                   Un seul paiement. Trois mois d&apos;accompagnement.
                 </p>
 

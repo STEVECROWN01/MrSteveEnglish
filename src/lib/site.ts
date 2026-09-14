@@ -14,10 +14,11 @@ export const WHATSAPP_NUMBER = "2290159173098";
 
 /**
  * Page de paiement vers laquelle le prospect est dirigé automatiquement
- * après l'envoi du formulaire (instruction propriétaire).
+ * après l'envoi du formulaire (instruction propriétaire Task 28 — VRAI
+ * lien du programme, fourni par le propriétaire).
  */
 export const CHECKOUT_URL =
-  "https://shefapro.mymaketou.shop/products/cv-premium-optimisation-linkedin-profil-qui-attire-les-recruteurs/checkout";
+  "https://mrsteveenglish.mymaketou.shop/products/coaching-danglais-de-comprendre-a-parler-en-03-mois/checkout";
 
 /** Réseaux sociaux officiels (instruction propriétaire). */
 export const SOCIAL_LINKS = {
@@ -61,13 +62,20 @@ export const CTA_LABELS = {
   pourquoiMoi: "Découvrir mon parcours →",
   voirResultats: "Voir les résultats obtenus avec cette méthode →",
   faq: "Pose-moi ta question →",
-  contact: "Envoie-moi tes informations →",
+  /** Task 28 (instruction propriétaire) : libellé exact demandé pour le
+   * bouton de soumission du formulaire d'inscription. */
+  contact: "Rejoindre le Programme",
 } as const;
 
-/** Pages internes (navigation hash) — cible des CTA. */
+/** Pages internes (navigation hash) — cible des CTA. La page
+ * « bienvenue » (post-paiement) n'apparaît volontairement dans AUCUNE
+ * navigation : elle reçoit les clients après leur paiement (URL de
+ * redirection configurée par le propriétaire dans son système de
+ * paiement). */
 export const PAGES = {
   contact: "#/contact",
   programme: "#/programme",
   aPropos: "#/a-propos",
   resultats: "#/resultats",
+  bienvenue: "#/bienvenue",
 } as const;

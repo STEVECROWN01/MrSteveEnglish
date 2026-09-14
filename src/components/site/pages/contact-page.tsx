@@ -6,6 +6,7 @@ import { sendContactEmail, type ContactFormData } from "@/lib/contact-email";
 import { Container, PageHero } from "../layout-primitives";
 import { Reveal } from "../reveal";
 import { StickyCTA } from "../sticky-cta";
+import { FlagUK } from "../icons";
 
 /**
  * PAGE 7 — CONTACT / INSCRIPTION (instructions propriétaire)
@@ -37,14 +38,26 @@ import { StickyCTA } from "../sticky-cta";
 const PROGRAMME_LABEL =
   "Programme « De Comprendre à Parler » — 03 mois — 70 000 FCFA — paiement unique";
 
-/* — Question d'évaluation (instruction propriétaire Task 27,
-     libellé exact). — */
+/* — Question d'évaluation (instruction propriétaire Task 27, libellé
+     exact — Task 28 : le drapeau 🇬🇧 emoji est remplacé par un SVG qui
+     s'affiche sur TOUS les appareils, et la question passe en corps
+     plus grand, plus lisible). — */
 const ANGLAIS_QUESTION =
-  "🇬🇧 In English, tell me about yourself, what you currently do, and why you want to improve your English.";
+  "In English, tell me about yourself, what you currently do, and why you want to improve your English.";
 const ANGLAIS_HINT =
   "Please answer as naturally as you can. Don't use a translator.";
 const ANGLAIS_PASTE_NOTICE =
   "Please type your answer yourself — paste is disabled.";
+
+/* Astérisque obligatoire — ROUGE dans tout le formulaire (instruction
+   propriétaire Task 28). */
+function Req() {
+  return (
+    <span aria-hidden="true" className="font-semibold text-red-button">
+      *
+    </span>
+  );
+}
 
 type FormState = {
   nom: string;
@@ -211,7 +224,7 @@ export function ContactPage() {
   }
 
   return (
-    <div className="on-dark min-h-[calc(100svh-72px)] bg-black pb-20 text-white md:pb-0">
+    <div className="on-dark min-h-[calc(100svh-72px)] bg-black text-white">
       <PageHero
         dark
         title="Prêt à parler anglais avec confiance ?"
@@ -257,7 +270,7 @@ export function ContactPage() {
               <form onSubmit={handleSubmit} noValidate className="mt-10">
                 <div>
                   <label htmlFor="f-nom" className="form-label">
-                    Nom complet <span aria-hidden="true">*</span>
+                    Nom complet <Req />
                   </label>
                   <input
                     id="f-nom"
@@ -280,7 +293,7 @@ export function ContactPage() {
                 <div className="mt-6 grid gap-6 sm:grid-cols-2">
                   <div>
                     <label htmlFor="f-age" className="form-label">
-                      Âge <span aria-hidden="true">*</span>
+                      Âge <Req />
                     </label>
                     <input
                       id="f-age"
@@ -304,7 +317,7 @@ export function ContactPage() {
                   </div>
                   <div>
                     <label htmlFor="f-profession" className="form-label">
-                      Profession <span aria-hidden="true">*</span>
+                      Profession <Req />
                     </label>
                     <input
                       id="f-profession"
@@ -329,7 +342,7 @@ export function ContactPage() {
 
                 <div className="mt-6">
                   <label htmlFor="f-email" className="form-label">
-                    Adresse email <span aria-hidden="true">*</span>
+                    Adresse email <Req />
                   </label>
                   <input
                     id="f-email"
@@ -352,7 +365,7 @@ export function ContactPage() {
                 <div className="mt-6 grid gap-6 sm:grid-cols-2">
                   <div>
                     <label htmlFor="f-pays" className="form-label">
-                      Pays <span aria-hidden="true">*</span>
+                      Pays <Req />
                     </label>
                     <input
                       id="f-pays"
@@ -373,7 +386,7 @@ export function ContactPage() {
                   </div>
                   <div>
                     <label htmlFor="f-ville" className="form-label">
-                      Ville <span aria-hidden="true">*</span>
+                      Ville <Req />
                     </label>
                     <input
                       id="f-ville"
@@ -400,8 +413,16 @@ export function ContactPage() {
                     automatiquement (5 critères × 20) et remis au coach
                     avec le texte original (instruction Task 27). */}
                 <div className="mt-8">
-                  <label htmlFor="f-anglais" className="form-label">
-                    {ANGLAIS_QUESTION} <span aria-hidden="true">*</span>
+                  {/* Task 28 (instruction propriétaire) : question en
+                      police PLUS GRANDE que les autres libellés, et
+                      drapeau UK en SVG (l'emoji 🇬🇧 ne s'affiche pas sur
+                      tous les appareils — Windows affiche « GB »). */}
+                  <label
+                    htmlFor="f-anglais"
+                    className="form-label text-[1.0625rem] leading-snug md:text-[1.1875rem]"
+                  >
+                    <FlagUK className="mr-2.5 h-[1em] w-[2em] rounded-[2px] align-[-0.125em] shadow-[0_0_0_1px_rgba(255,255,255,0.25)]" />{" "}
+                    {ANGLAIS_QUESTION} <Req />
                   </label>
                   <p className="t-caption mt-1.5 text-white/65">
                     {ANGLAIS_HINT}{" "}
@@ -409,6 +430,9 @@ export function ContactPage() {
                       (Le copier-coller est désactivé.)
                     </span>
                   </p>
+                  {/* Task 28 : PAS de placeholder — le prospect ne peut
+                      pas re-saisir l'exemple à sa place (instruction
+                      propriétaire). */}
                   <textarea
                     id="f-anglais"
                     rows={6}
@@ -422,7 +446,6 @@ export function ContactPage() {
                     aria-describedby={
                       errors.anglais ? "err-anglais" : undefined
                     }
-                    placeholder="Ex. : My name is… I am 27 years old. I work as… I want to improve my English because…"
                     className="form-input mt-2 resize-y font-[450]"
                   />
                   <p
@@ -533,6 +556,12 @@ export function ContactPage() {
 
       {/* CTA sticky mobile — scrolle vers le formulaire (ancre #contact) */}
       <StickyCTA href="#contact" label="Remplir le formulaire →" />
+
+      {/* Séparateur formulaire / footer (instruction propriétaire
+          Task 28) : lumière blanche bien visible qui circule
+          horizontalement, de la gauche vers la droite, en continu —
+          la ligne sépare le formulaire du footer. */}
+      <div className="beam-separator" aria-hidden="true" />
     </div>
   );
 }

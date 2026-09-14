@@ -87,7 +87,16 @@ function SocialLink({
   );
 }
 
-export function Footer() {
+export function Footer({
+  /** Task 28 (instruction propriétaire) : sur l'accueil, la carte
+   * « Le coût de l'inaction » vit dans la section finale (AVANT le
+   * bouton « Je veux parler anglais avec confiance ») — le footer la
+   * masque alors pour éviter le doublon. Sur toutes les autres pages,
+   * la carte reste en tête de footer. */
+  hideCarte = false,
+}: {
+  hideCarte?: boolean;
+}) {
   return (
     <footer className="on-dark mt-auto bg-black text-white">
       {/* Carte « Le coût de l'inaction » (instruction propriétaire
@@ -95,9 +104,11 @@ export function Footer() {
           les pages, au lieu d'être dupliquée page par page. Sur
           l'accueil, la carte n'est plus répétée dans la section CTA
           finale (le footer la prend en relais immédiatement après). */}
-      <Container className="pb-0 pt-12 lg:pt-16">
-        <CarteUrgenceEthique className="mx-auto max-w-[46rem]" />
-      </Container>
+      {hideCarte ? null : (
+        <Container className="pb-0 pt-12 lg:pt-16">
+          <CarteUrgenceEthique className="mx-auto max-w-[46rem]" />
+        </Container>
+      )}
       <Container className="py-12 lg:py-16">
         <div className="flex flex-col gap-10 lg:flex-row lg:items-start lg:justify-between">
           <div className="max-w-[26rem]">
