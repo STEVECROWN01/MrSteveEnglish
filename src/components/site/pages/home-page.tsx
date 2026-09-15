@@ -1104,7 +1104,7 @@ function BandeMotsCles() {
               aria-hidden={i >= MOTS_CLES.length || undefined}
               className="flex items-center gap-8 pr-8"
             >
-              <span className="whitespace-nowrap text-[0.8125rem] font-semibold uppercase tracking-[0.16em] text-white/90 md:text-sm">
+              <span className="whitespace-nowrap text-[0.8125rem] font-bold uppercase tracking-[0.16em] text-white/90 md:text-sm">
                 {mot}
               </span>
               <span
