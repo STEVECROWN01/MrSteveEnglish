@@ -4,10 +4,11 @@ import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { waLink } from "@/lib/site";
 import {
-  downloadReceipt,
+  buildReceiptPdf,
   readInscription,
   receiptNumberFor,
-  sendReceiptCopyEmail,
+  saveReceiptBlob,
+  sendReceiptPdfCopy,
   type InscriptionData,
 } from "@/lib/receipt";
 import { Container, Eyebrow, Prose } from "../layout-primitives";
@@ -66,16 +67,19 @@ import { FireworksSnow } from "../fireworks-snow";
  * — BOUTON DE REÇU : téléchargement d'un reçu PDF élégant,
  *   personnalisé avec les données du client (persistées par le
  *   formulaire d'inscription), cachet « PAYÉ » oblique vert pur — et
- *   AU MÊME INSTANT, copie automatique envoyée à stevensakpovi@gmail.com.
+ *   AU MÊME INSTANT, copie envoyée à stevensakpovi@gmail.com : LE
+ *   MÊME PDF en pièce jointe + un simple message d'envoi (Task 43).
  * — Le message WhatsApp est PRÉ-REMPLI mais jamais envoyé
  *   automatiquement : le client peut le modifier avant l'envoi.
  */
 
-/** Message WhatsApp pré-rempli — libellé EXACT du propriétaire (Task 39) :
- *  « Bonjour Coach Stevens » (avant : « Bonjour Stevens ») et
- *  « 03 mois » (avant : « 3 mois »). */
+/** Message WhatsApp pré-rempli — libellé EXACT du propriétaire (Task 43) :
+ *  mêmes mots que la Task 39 (« Bonjour Coach Stevens », « 03 mois »)
+ *  mais AVEC RETOURS À LA LIGNE — salutation, corps du message et
+ *  remerciement en paragraphes séparés (\n\n → %0A%0A dans le lien
+ *  wa.me), et non plus un bloc compact d'une seule ligne. */
 const WHATSAPP_MESSAGE =
-  "Bonjour Coach Stevens, je viens de finaliser mon inscription au programme d'accompagnement de 03 mois. Mon paiement a bien été effectué et je vous contacte pour connaître la prochaine étape. Merci !";
+  "Bonjour Coach Stevens,\n\nJe viens de finaliser mon inscription au programme d'accompagnement de 03 mois. Mon paiement a bien été effectué et je vous contacte pour connaître la prochaine étape.\n\nMerci !";
 
 /* Résumé élégant du programme (instruction propriétaire). */
 const PROGRAMME_RECAP = [
@@ -193,7 +197,10 @@ export function BienvenuePage() {
 
   /** Téléchargement du reçu + copie email au coach AU MÊME INSTANT
    *  (instruction propriétaire Task 34 : « exactement au même instant
-   *  où il le télécharge »). */
+   *  où il le télécharge » ; revue Task 43 : la copie est LE REÇU PDF
+   *  LUI-MÊME en pièce jointe — le même blob que le téléchargement,
+   *  identique octet pour octet — simplement accompagné d'un court
+   *  message d'envoi). */
   async function handleDownloadReceipt() {
     const now = Date.now();
     if (receiptState === "preparing" || now - lastClickRef.current < 4000) {
@@ -202,12 +209,13 @@ export function BienvenuePage() {
     lastClickRef.current = now;
     const data = inscription ?? FALLBACK_INSCRIPTION;
     const receiptNo = receiptNumberFor(data);
-    // Copie au coach — lancée AVANT/PENDANT la construction du PDF :
-    // les deux actions partent au même instant.
-    sendReceiptCopyEmail(data, receiptNo);
     setReceiptState("preparing");
     try {
-      await downloadReceipt(data);
+      // UN SEUL PDF construit, utilisé pour les DEUX destinations :
+      // téléchargement client + copie coach (pièce jointe identique).
+      const { blob, filename } = await buildReceiptPdf(data);
+      sendReceiptPdfCopy(blob, filename, data, receiptNo);
+      saveReceiptBlob(blob, filename);
       setReceiptState("done");
     } catch {
       setReceiptState("error");

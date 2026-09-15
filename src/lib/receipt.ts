@@ -15,6 +15,10 @@ import { CONTACT_EMAIL, FORMSUBMIT_AJAX } from "./contact-email";
  * la DATE ne bouge pas d'un point) pour que l'accent du É ne frôle
  * plus le bord du cadre — dégagement accent/bord interne 3,0 → ~5,3 pt
  * (cadre recentré de +2,75 pt, bloc d'encre toujours centré).
+ * Task 43 : la copie email au coach n'est plus un tableau de
+ * métadonnées — c'est LE REÇU PDF LUI-MÊME, en PIÈCE JOINTE (le même
+ * blob que celui téléchargé par le client, donc identique octet pour
+ * octet), simplement accompagné d'un court message d'envoi.
  *
  * Le client qui arrive sur #/bienvenue après son paiement peut
  * télécharger un reçu PDF TRÈS haute qualité : A4 vectoriel,
@@ -23,10 +27,11 @@ import { CONTACT_EMAIL, FORMSUBMIT_AJAX } from "./contact-email";
  * personnalisé avec ses données (nom, email, profession, ville, pays,
  * date d'inscription, n° de reçu déterministe).
  *
- * AU MÊME INSTANT que le téléchargement, une COPIE du reçu est envoyée
- * automatiquement à stevensakpovi@gmail.com (FormSubmit AJAX — même
- * mécanisme éprouvé que le formulaire de contact, fire-and-forget avec
- * keepalive pour survivre au dialogue de téléchargement).
+ * AU MÊME INSTANT que le téléchargement, la COPIE EXACTE du reçu
+ * (pièce jointe PDF) est envoyée automatiquement à
+ * stevensakpovi@gmail.com (FormSubmit AJAX en multipart FormData —
+ * même endpoint éprouvé que le formulaire de contact ; le champ
+ * « file » devient la pièce jointe de l'email).
  *
  * PERF : jsPDF (~120 Ko gz) est importé DYNAMIQUEMENT au clic — le
  * bundle initial du site n'est pas alourdi (leçon Task 33).
@@ -115,7 +120,8 @@ function dash(v: string): string {
 
 /**
  * Construit le PDF du reçu (jsPDF vectoriel). Exportée pour les tests
- * Node (rendu/QA) — le navigateur passe par downloadReceipt().
+ * Node (rendu/QA) — la page Bienvenue l'appelle une seule fois puis
+ * télécharge ET envoie le MÊME blob (téléchargement + copie coach).
  */
 export async function buildReceiptPdf(
   data: InscriptionData,
@@ -503,9 +509,9 @@ export async function buildReceiptPdf(
   return { blob: doc.output("blob"), filename };
 }
 
-/** Télécharge le reçu PDF dans le navigateur. */
-export async function downloadReceipt(data: InscriptionData): Promise<string> {
-  const { blob, filename } = await buildReceiptPdf(data);
+/** Enregistre dans le navigateur du client un blob PDF déjà construit
+ *  (le même blob peut être envoyé au coach — Task 43). */
+export function saveReceiptBlob(blob: Blob, filename: string): void {
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
@@ -514,16 +520,25 @@ export async function downloadReceipt(data: InscriptionData): Promise<string> {
   a.click();
   a.remove();
   window.setTimeout(() => URL.revokeObjectURL(url), 30_000);
-  return filename;
 }
 
 /**
- * Copie automatique envoyée au coach AU MÊME INSTANT que le
- * téléchargement (instruction propriétaire Task 34) — fire-and-forget
- * avec keepalive : la requête survit même si le dialogue
- * d'enregistrement interrompt la page.
+ * Copie envoyée au coach AU MÊME INSTANT que le téléchargement
+ * (instruction propriétaire Task 34, revue Task 43) : LE REÇU PDF
+ * LUI-MÊME en PIÈCE JOINTE — le MÊME blob que celui téléchargé par
+ * le client, donc strictement identique octet pour octet — simplement
+ * accompagné d'un court message d'envoi (plus de tableau de
+ * métadonnées).
+ *
+ * FormSubmit accepte le multipart (FormData) sur l'endpoint AJAX : le
+ * champ « file » devient la pièce jointe de l'email. Pas de keepalive
+ * (vérifié Task 43) : la limite keepalive de 64 Ko serait fragile face
+ * à la taille du PDF, et le téléchargement par blob ne quitte jamais
+ * la page — la requête a le temps de partir.
  */
-export function sendReceiptCopyEmail(
+export function sendReceiptPdfCopy(
+  blob: Blob,
+  filename: string,
   data: InscriptionData,
   receiptNo: string,
 ): void {
@@ -531,37 +546,19 @@ export function sendReceiptCopyEmail(
     dateStyle: "long",
     timeStyle: "short",
   }).format(new Date());
-  const fields: Record<string, string> = {
-    _subject: `Reçu PDF téléchargé — ${data.nom || "Client"} — ${receiptNo}`,
-    _template: "table",
-    _captcha: "false",
-    "REÇU · Numéro": receiptNo,
-    "CLIENT · Nom complet": dash(data.nom),
-    "CLIENT · Email": dash(data.email),
-    "CLIENT · Identité": dash(
-      [data.profession, data.age ? `${data.age} ans` : ""]
-        .filter(Boolean)
-        .join(" · "),
-    ),
-    "CLIENT · Localisation": dash(
-      [data.ville, data.pays].filter(Boolean).join(", "),
-    ),
-    "PROGRAMME · Offre": "« De Comprendre à Parler » — 03 mois",
-    "MONTANT": "70 000 FCFA — paiement unique",
-    "TÉLÉCHARGEMENT · Date et heure": now,
-    "PROVENANCE":
-      "Page post-paiement (bienvenue) — le client vient de télécharger son reçu PDF",
-  };
+  const nom = data.nom?.trim() || "Client";
+  const fd = new FormData();
+  fd.set("_subject", `Reçu PDF — ${nom} — ${receiptNo}`);
+  fd.set("_captcha", "false");
+  if (data.email?.trim()) fd.set("_replyto", data.email.trim());
+  fd.set(
+    "MESSAGE",
+    `Bonjour Stevens, ${nom} vient de confirmer son inscription et de télécharger son reçu PDF. ` +
+      `La copie exacte du même reçu est jointe à cet email (pièce jointe « ${filename} », N° ${receiptNo}, émis le ${now}).`,
+  );
+  fd.set("file", new File([blob], filename, { type: "application/pdf" }));
   try {
-    void fetch(FORMSUBMIT_AJAX, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify(fields),
-      keepalive: true,
-    }).catch(() => {
+    void fetch(FORMSUBMIT_AJAX, { method: "POST", body: fd }).catch(() => {
       /* fire-and-forget : silencieux côté client */
     });
   } catch {
