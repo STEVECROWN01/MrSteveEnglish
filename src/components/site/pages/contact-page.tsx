@@ -202,7 +202,7 @@ export function ContactPage() {
     setSending(true);
     // Task 34 (reçu post-paiement) : persister les données
     // d'inscription dans le navigateur — la page #/bienvenue s'en sert
-    // pour PERSONNALISER le reçu/facture PDF du client (nom, email,
+    // pour PERSONNALISER le reçu PDF du client (nom, email,
     // profession, ville, pays, date). Repli silencieux si localStorage
     // indisponible (le reçu affichera « Non renseigné »).
     try {

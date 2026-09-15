@@ -61,7 +61,7 @@ import { FireworksSnow } from "../fireworks-snow";
  *   statique (accueil) n'est plus visible ~1 s — masqué avant le
  *   premier rendu (script inline layout.tsx + CSS globals.css),
  *   révélé par page.tsx dès que la page demandée est rendue.
- * — BOUTON DE REÇU : téléchargement d'un reçu/facture PDF élégant,
+ * — BOUTON DE REÇU : téléchargement d'un reçu PDF élégant,
  *   personnalisé avec les données du client (persistées par le
  *   formulaire d'inscription), cachet « PAYÉ » oblique vert pur — et
  *   AU MÊME INSTANT, copie automatique envoyée à stevensakpovi@gmail.com.
@@ -245,7 +245,7 @@ export function BienvenuePage() {
             parler.
           </p>
 
-          {/* Task 34 : reçu/facture PDF officiel — cachet PAYÉ vert
+          {/* Task 34 : reçu PDF officiel — cachet PAYÉ vert
               oblique, personnalisé, copie automatique au coach. */}
           <div className="hero-line hero-d5 mt-10">
             <button

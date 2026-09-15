@@ -1103,8 +1103,12 @@ function SectionPrix() {
 
               {/* Durée mise en scène : le programme est un accompagnement
                   de 03 mois, pas des séances isolées (instruction
-                  propriétaire : valeur perçue). */}
-              <div className="mt-8 border-t border-white/15 pt-6" aria-hidden="true">
+                  propriétaire : valeur perçue).
+                  Task 37 (retour propriétaire) : le trait Mois 1/2/3 est
+                  désormais CENTRÉ VERTICALEMENT dans l'espace libre de
+                  la carte — flex-1 absorbe l'espace et justify-center
+                  centre les points/étiquettes entre le filet et le CTA. */}
+              <div className="mt-8 flex flex-1 flex-col justify-center border-t border-white/15 pt-6 pb-6" aria-hidden="true">
                 <div className="flex items-center">
                   <span className="h-3 w-3 shrink-0 rounded-full bg-white" />
                   <span className="h-[2px] flex-1 bg-white/40" />
@@ -1119,7 +1123,7 @@ function SectionPrix() {
                 </div>
               </div>
 
-              <div className="mt-auto pt-10">
+              <div>
                 <span data-wa-cta className="inline-flex w-full">
                   <CtaButton href="#/contact" className="w-full">
                     {CTA_LABELS.rejoindre}

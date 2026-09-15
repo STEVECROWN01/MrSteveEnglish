@@ -1,12 +1,16 @@
 import { CONTACT_EMAIL, FORMSUBMIT_AJAX } from "./contact-email";
 
 /**
- * REÇU / FACTURE PDF POST-PAIEMENT (Task 34 — instruction propriétaire).
+ * REÇU PDF POST-PAIEMENT (Task 34 — instruction propriétaire ;
+ * Task 37 : terminologie « Reçu » uniquement — plus jamais « Facture » —
+ * identité STEVENS AKPOVI — plus aucune mention « Mr Steve English » —
+ * bandes haute/basse NOIRES #000000, cachet dont le texte PENDE dans
+ * le MÊME sens que son cadre).
  *
  * Le client qui arrive sur #/bienvenue après son paiement peut
- * télécharger un reçu/facture PDF TRÈS haute qualité : A4 vectoriel,
- * typographie soignée (Times + Helvetica), palette du site (encre,
- * rouge #FF1A1A), cachet « PAYÉ » OBLIQUE en VERT PUR (rgb(0,128,0)),
+ * télécharger un reçu PDF TRÈS haute qualité : A4 vectoriel,
+ * typographie soignée (Times + Helvetica), palette sobre (encre,
+ * bandes noires), cachet « PAYÉ » OBLIQUE en VERT PUR (rgb(0,128,0)),
  * personnalisé avec ses données (nom, email, profession, ville, pays,
  * date d'inscription, n° de reçu déterministe).
  *
@@ -84,7 +88,7 @@ const MONTANT_LETTRES = "Soixante-dix mille (70 000) francs CFA";
 const INK: [number, number, number] = [26, 26, 30];
 const GRAY: [number, number, number] = [107, 107, 115];
 const LIGHT: [number, number, number] = [222, 222, 228];
-const RED: [number, number, number] = [255, 26, 26];
+const BLACK: [number, number, number] = [0, 0, 0]; // bandes haute/basse (Task 37 : noir demandé)
 const GREEN: [number, number, number] = [0, 128, 0]; // vert pur (cachet)
 const BAND: [number, number, number] = [245, 245, 247];
 
@@ -114,40 +118,35 @@ export async function buildReceiptPdf(
   const emisLe = dateLong("");
   const emisLeCourt = dateShort("");
 
-  /* — Bande rouge haute (identité de marque) — */
-  doc.setFillColor(...RED);
+  /* — Bande noire haute (Task 37 : rouge → noir #000000) — */
+  doc.setFillColor(...BLACK);
   doc.rect(0, 0, PAGE_W, 7, "F");
 
   /* — En-tête — */
   doc.setFont("times", "bold");
   doc.setFontSize(20);
   doc.setTextColor(...INK);
-  doc.text("MR STEVE ENGLISH", M, 56, { charSpace: 2.2 });
+  doc.text("STEVENS AKPOVI", M, 56, { charSpace: 2.2 });
 
   doc.setFont("helvetica", "normal");
   doc.setFontSize(9.5);
   doc.setTextColor(...GRAY);
-  doc.text("Stevens AKPOVI — Coach d'anglais professionnel", M, 76);
+  doc.text("Coach d'anglais professionnel", M, 76);
   doc.setFontSize(8);
   doc.text("stevensakpovi@gmail.com  ·  mrsteveenglish.vercel.app", M, 90);
-  doc.text("Facebook & YouTube : Mr Steve English", M, 102);
 
   doc.setFont("times", "bold");
   doc.setFontSize(15);
   doc.setTextColor(...INK);
   doc.text("REÇU DE PAIEMENT", X_END, 56, { align: "right" });
-  doc.setFont("helvetica", "italic");
-  doc.setFontSize(9.5);
-  doc.setTextColor(...GRAY);
-  doc.text("Facture acquittée", X_END, 72, { align: "right" });
   doc.setFont("helvetica", "bold");
   doc.setFontSize(10);
   doc.setTextColor(...INK);
-  doc.text(`Reçu N° ${noRecu}`, X_END, 88, { align: "right" });
+  doc.text(`Reçu N° ${noRecu}`, X_END, 74, { align: "right" });
   doc.setFont("helvetica", "normal");
   doc.setFontSize(9);
   doc.setTextColor(...GRAY);
-  doc.text(`Émis le ${emisLe}`, X_END, 102, { align: "right" });
+  doc.text(`Émis le ${emisLe}`, X_END, 90, { align: "right" });
 
   /* — Filet séparateur — */
   doc.setDrawColor(...INK);
@@ -165,12 +164,21 @@ export async function buildReceiptPdf(
     { align: "right" },
   );
 
-  /* — FACTURÉ À / méta — */
+  /* — REÇU DE / méta — Task 37 : « FACTURÉ À » devient « REÇU DE ».
+     La colonne droite est réalignée — jsPDF N'INCLUT PAS charSpace
+     dans le calcul de align:"right" (les étiquettes débordaient de
+     ~20 pt dans la marge droite) — et espacée régulièrement :
+     label→valeur 15 pt, valeur→label suivant 18 pt (avant : 9 pt
+     seulement, d'où l'impression de chevauchement). — */
+  const labelRight = (t: string, y: number) => {
+    // compense le charSpace que jsPDF n'ajoute pas à la largeur d'alignement
+    doc.text(t, X_END - (t.length - 1) * 1.2, y, { align: "right", charSpace: 1.2 });
+  };
   doc.setFont("helvetica", "bold");
   doc.setFontSize(8);
   doc.setTextColor(...GRAY);
-  doc.text("FACTURÉ À", M, 160, { charSpace: 1.2 });
-  doc.text("DATE D'INSCRIPTION", X_END, 160, { align: "right", charSpace: 1.2 });
+  doc.text("REÇU DE", M, 160, { charSpace: 1.2 });
+  labelRight("DATE D'INSCRIPTION", 160);
 
   doc.setFont("times", "bold");
   doc.setFontSize(13);
@@ -197,18 +205,18 @@ export async function buildReceiptPdf(
   doc.setFont("helvetica", "normal");
   doc.setFontSize(9.5);
   doc.setTextColor(...INK);
-  doc.text(dateShort(data.dateInscription), X_END, 178, { align: "right" });
+  doc.text(dateShort(data.dateInscription), X_END, 175, { align: "right" });
 
   doc.setFont("helvetica", "bold");
   doc.setFontSize(8);
   doc.setTextColor(...GRAY);
-  doc.text("MODE DE PAIEMENT", X_END, 196, { align: "right", charSpace: 1.2 });
-  doc.text("DURÉE DU PROGRAMME", X_END, 219, { align: "right", charSpace: 1.2 });
+  labelRight("MODE DE PAIEMENT", 193);
+  labelRight("DURÉE DU PROGRAMME", 226);
   doc.setFont("helvetica", "normal");
   doc.setFontSize(9.5);
   doc.setTextColor(...INK);
-  doc.text("Paiement en ligne sécurisé", X_END, 210, { align: "right" });
-  doc.text("03 mois", X_END, 233, { align: "right" });
+  doc.text("Paiement en ligne sécurisé", X_END, 208, { align: "right" });
+  doc.text("03 mois", X_END, 241, { align: "right" });
 
   /* — Tableau : bandeau d'en-têtes — */
   doc.setFillColor(...BAND);
@@ -217,7 +225,7 @@ export async function buildReceiptPdf(
   doc.setFontSize(8);
   doc.setTextColor(...GRAY);
   doc.text("DÉSIGNATION", M + 10, 264, { charSpace: 1 });
-  doc.text("MONTANT", X_END - 10, 264, { align: "right", charSpace: 1 });
+  doc.text("MONTANT", X_END - 10 - 6, 264, { align: "right", charSpace: 1 }); // -6 : compensation charSpace (alignement droit)
 
   /* — Ligne principale — */
   doc.setFont("times", "bold");
@@ -329,7 +337,7 @@ export async function buildReceiptPdf(
   const stampCy = 570;
   const stampW = 150;
   const stampH = 58;
-  const angle = 17; // degrés, sens antihoraire
+  const angle = 17; // degrés — cadre : sens HORAIRE visuel ; texte jsPDF : convention INVERSÉE → passer -angle
   const rad = (angle * Math.PI) / 180;
   const cos = Math.cos(rad);
   const sin = Math.sin(rad);
@@ -363,12 +371,16 @@ export async function buildReceiptPdf(
   doc.setFont("times", "bold");
   doc.setFontSize(38);
   doc.setTextColor(...GREEN);
-  doc.text("PAYÉ", stampCx, stampCy + 4, { align: "center", angle });
+  /* Task 37 : l'option angle de jsPDF tourne le texte dans le sens
+     ANTihoraire visuel alors que corner() (cadre) le tourne dans le
+     sens horaire — d'où un texte qui penchait à l'envers du cadre.
+     On passe donc -angle pour pencher pareil que le cadre. */
+  doc.text("PAYÉ", stampCx, stampCy + 4, { align: "center", angle: -angle });
   doc.setFont("helvetica", "bold");
   doc.setFontSize(9);
   doc.text(`le ${emisLeCourt}`, stampCx, stampCy + 20, {
     align: "center",
-    angle,
+    angle: -angle,
   });
   doc.restoreGraphicsState();
 
@@ -397,28 +409,10 @@ export async function buildReceiptPdf(
     doc.text(line, M + 16, y);
   });
 
-  /* — Signature — */
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(8.5);
-  doc.setTextColor(...GRAY);
-  doc.text("Pour Mr Steve English", M, 748);
-
-  doc.setDrawColor(...INK);
-  doc.setLineWidth(0.8);
-  doc.line(409, 748, X_END, 748);
-  doc.setFont("times", "bold");
-  doc.setFontSize(12);
-  doc.setTextColor(...INK);
-  doc.text("Coach Stevens", X_END, 764, { align: "right" });
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(8);
-  doc.setTextColor(...GRAY);
-  doc.text(
-    "Stevens AKPOVI — Fondateur, Mr Steve English",
-    X_END,
-    775,
-    { align: "right" },
-  );
+  /* — Task 37 : bloc signature SUPPRIMÉ à la demande du propriétaire
+     (« Pour Mr Steve English », le trait, « Coach Stevens »,
+     « Stevens AKPOVI — Fondateur, Mr Steve English ») — le pied de
+     page électronique ci-dessous suffit. — */
 
   /* — Pied de page — */
   doc.setDrawColor(...LIGHT);
@@ -438,14 +432,14 @@ export async function buildReceiptPdf(
     { align: "center" },
   );
   doc.text(
-    `© ${new Date().getFullYear()} Stevens AKPOVI — Mr Steve English · mrsteveenglish.vercel.app · ${CONTACT_EMAIL}`,
+    `© ${new Date().getFullYear()} Stevens AKPOVI · mrsteveenglish.vercel.app · ${CONTACT_EMAIL}`,
     PAGE_W / 2,
     809,
     { align: "center" },
   );
 
-  /* — Bande rouge basse (symétrie) — */
-  doc.setFillColor(...RED);
+  /* — Bande noire basse (symétrie) — */
+  doc.setFillColor(...BLACK);
   doc.rect(0, PAGE_H - 6, PAGE_W, 6, "F");
 
   /* — Nom de fichier propre — */
@@ -456,7 +450,7 @@ export async function buildReceiptPdf(
       .replace(/[^a-zA-Z0-9]+/g, "-")
       .replace(/^-+|-+$/g, "")
       .slice(0, 40) || "Client";
-  const filename = `Recu-Inscription-MrSteveEnglish-${slug}.pdf`;
+  const filename = `Recu-Inscription-${slug}.pdf`;
 
   return { blob: doc.output("blob"), filename };
 }
@@ -508,7 +502,7 @@ export function sendReceiptCopyEmail(
     "MONTANT": "70 000 FCFA — paiement unique",
     "TÉLÉCHARGEMENT · Date et heure": now,
     "PROVENANCE":
-      "Page post-paiement (bienvenue) — le client vient de télécharger son reçu/facture PDF",
+      "Page post-paiement (bienvenue) — le client vient de télécharger son reçu PDF",
   };
   try {
     void fetch(FORMSUBMIT_AJAX, {
