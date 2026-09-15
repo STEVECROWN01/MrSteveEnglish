@@ -587,21 +587,24 @@ function Accompagnement() {
               </Prose>
             </Reveal>
 
-            {/* Timeline — DA §12, déclinée en blanc sur le fond sombre */}
+            {/* Timeline — DA §12, déclinée en blanc sur le fond sombre.
+                Task 32 (instruction propriétaire) : trait EXACTEMENT
+                comme celui de la carte « Paiement unique » (L'offre) —
+                3 points reliés par 2 segments white/40, étiquettes
+                Mois 1 / Mois 2 / Mois 3. */}
             <Reveal className="mt-12">
               <div className="max-w-[34rem]">
                 <div className="flex items-center" aria-hidden="true">
-                  <span className="h-3.5 w-3.5 shrink-0 rounded-full bg-white" />
-                  <span className="h-[2px] flex-1 bg-white" />
-                  <span className="h-3.5 w-3.5 shrink-0 rounded-full bg-white" />
+                  <span className="h-3 w-3 shrink-0 rounded-full bg-white" />
+                  <span className="h-[2px] flex-1 bg-white/40" />
+                  <span className="h-3 w-3 shrink-0 rounded-full bg-white" />
+                  <span className="h-[2px] flex-1 bg-white/40" />
+                  <span className="h-3 w-3 shrink-0 rounded-full bg-white" />
                 </div>
-                <div className="mt-3 flex items-baseline justify-between">
-                  <span className="text-[0.9375rem] font-medium text-white">
-                    Mois 1
-                  </span>
-                  <span className="text-[0.9375rem] font-medium text-white">
-                    Mois 2-3
-                  </span>
+                <div className="mt-3 flex items-baseline justify-between text-[0.9375rem] font-medium text-white">
+                  <span>Mois 1</span>
+                  <span>Mois 2</span>
+                  <span>Mois 3</span>
                 </div>
               </div>
             </Reveal>
@@ -1102,21 +1105,11 @@ function PourQui() {
 /* — SECTION PRIX (instruction propriétaire) : le contenu de l'ancienne
      page Offres, RENFORCÉ, devient le bloc central de conversion de
      l'accueil — offre unique, value stack complet à côté du prix, CTA
-     dédié. Fond noir : moment le plus fort du funnel. Value stack en
-     DEUX COLONNES de cinq (instruction propriétaire) avec les PODCASTS
-     (pratique pure) inclus. — */
-const VALUE_STACK = [
-  "Pratique orale régulière",
-  "Conversations réelles",
-  "Corrections personnalisées",
-  "Prononciation",
-  "Vocabulaire utile",
-  "Construction des phrases",
-  "Confiance à l'oral",
-  "Accompagnement personnalisé",
-  "Exercices entre les séances",
-  "Des podcasts pour la pratique pure",
-];
+     dédié. Fond noir : moment le plus fort du funnel. Task 32
+     (instruction propriétaire) : le value stack reprend EXACTEMENT
+     les 8 choses de la section « Ce qui est inclus » (mêmes intitulés
+     que les cartes 01-08) en UNE SEULE colonne. — */
+const VALUE_STACK = INCLUS.map((item) => item.titre);
 
 function SectionPrix() {
   return (
@@ -1203,15 +1196,16 @@ function SectionPrix() {
 
           {/* Value stack — tout ce que tu reçois (instruction
               propriétaire : ne jamais écrire juste « 70 000 FCFA »).
-              Liste longue → DEUX colonnes de cinq dans la même carte
-              (instruction propriétaire). */}
+              Task 32 (instruction propriétaire) : les 8 choses de la
+              section « Ce qui est inclus » (cartes 01-08), en UNE
+              SEULE colonne dans la même carte. */}
           <Reveal delay={120}>
             <div className="glass-card glass-dark h-full p-6 md:p-10">
               <h3 className="t-h3 text-white">
                 Voici tout ce que tu reçois pour {OFFRE.prix}{" "}
                 {OFFRE.devise} :
               </h3>
-              <ul className="mt-6 grid gap-x-8 gap-y-4 sm:grid-cols-2 sm:grid-rows-5 sm:grid-flow-col">
+              <ul className="mt-6 grid gap-y-4">
                 {VALUE_STACK.map((item) => (
                   <li key={item} className="flex items-start gap-3">
                     <IconCheck className="mt-0.5 text-white" fg="#000000" />

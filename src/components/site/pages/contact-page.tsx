@@ -50,7 +50,7 @@ const ANGLAIS_QUESTION =
 const ANGLAIS_HINT =
   "Répondez aussi naturellement que possible. N'utilisez ni traducteur ni IA. (L'objectif est de connaître votre niveau réel pour savoir comment vous accompagner)";
 const ANGLAIS_PASTE_NOTICE =
-  "Tapez votre réponse vous-même — le copier-coller est désactivé.";
+  "Veuillez saisir votre propre réponse vous-même.";
 
 /* Astérisque obligatoire — ROUGE dans tout le formulaire (instruction
    propriétaire Task 28). */
@@ -117,7 +117,7 @@ function validate(f: FormState): FormErrors {
   }
   if (f.anglais.trim().length < 15) {
     e.anglais =
-      "Please write your answer in English — a few sentences, typed by yourself.";
+      "Écris ta réponse en anglais — quelques phrases, tapées par toi-même.";
   }
   return e;
 }
@@ -439,9 +439,10 @@ export function ContactPage() {
                     htmlFor="f-anglais"
                     className="form-label text-[1.0625rem] leading-snug md:text-[1.1875rem]"
                   >
-                    {/* Task 29 (instruction propriétaire) : drapeau CARRÉ
-                        (plus rectangulaire). */}
-                    <FlagUK className="mr-2.5 h-[1.15em] w-[1.15em] rounded-[3px] align-[-0.15em] shadow-[0_0_0_1px_rgba(255,255,255,0.25)]" />{" "}
+                    {/* Task 32 (retour propriétaire) : drapeau de
+                        retour à son état RECTANGULAIRE précédent
+                        (Task 28 — 2:1, comme le vrai Union Jack). */}
+                    <FlagUK className="mr-2.5 h-[1em] w-[2em] rounded-[2px] align-[-0.125em] shadow-[0_0_0_1px_rgba(255,255,255,0.25)]" />{" "}
                     {ANGLAIS_QUESTION} <Req />
                   </label>
                   <p className="t-caption mt-1.5 text-white/65">
@@ -449,10 +450,13 @@ export function ContactPage() {
                   </p>
                   {/* Task 28 : PAS de placeholder — le prospect ne peut
                       pas re-saisir l'exemple à sa place (instruction
-                      propriétaire). */}
+                      propriétaire).
+                      Task 32 (retour propriétaire) : hauteur LÉGÈREMENT
+                      réduite (rows 6→5) — la saisie reste illimitée et
+                      le champ reste redimensionnable. */}
                   <textarea
                     id="f-anglais"
-                    rows={6}
+                    rows={5}
                     autoComplete="off"
                     spellCheck={false}
                     value={form.anglais}

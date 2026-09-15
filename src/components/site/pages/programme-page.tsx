@@ -105,8 +105,11 @@ export function ProgrammePage() {
                   BLANCS (lisible sur verre sombre). */}
               <div className="glass-card glass-dark card-hover p-6 md:p-10 lg:p-12">
                 <Eyebrow className="text-white/75">Le programme</Eyebrow>
+                {/* Task 32 (instruction propriétaire) : « 03 mois » en
+                    ROUGE dans le titre de la carte. */}
                 <h2 className="t-h2 mt-4 text-white">
-                  03 mois de coaching d&apos;anglais personnalisé.
+                  <span className="text-red-button">03 mois</span> de
+                  coaching d&apos;anglais personnalisé.
                 </h2>
                 <p className="t-body mt-6 text-white/85">
                   Trois séances de 1h30 par semaine, pendant trois mois.
