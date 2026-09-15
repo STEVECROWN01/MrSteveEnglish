@@ -898,7 +898,11 @@ function CeQuiEstInclus() {
             <Reveal key={item.num} delay={(i % 4) * 100}>
               <div className="glass-card card-hover relative flex h-full flex-col p-6">
                 <div className="flex items-start justify-between gap-3">
-                  <p className="font-display text-[2rem] font-medium leading-none text-grey-line">
+                  {/* Task 31 (retour propriétaire) : numéros assombris
+                      text-grey-line (#e5e5ea, invisible sur le verre) →
+                      black/50 — visibles et lisibles, tout en restant
+                      plus doux que le titre noir de la carte. */}
+                  <p className="font-display text-[2rem] font-medium leading-none text-black/50">
                     {item.num}
                   </p>
                   {/* Badge BONUS (carte 08 uniquement) — discret mais
