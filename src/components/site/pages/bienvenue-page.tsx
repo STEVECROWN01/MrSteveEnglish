@@ -35,7 +35,9 @@ import { FireworksSnow } from "../fireworks-snow";
  *   CTA secondaire) — un seul parcours : compréhension → WhatsApp.
  *
  * TASK 34 (retour propriétaire) :
- * — icône de confirmation + « Inscription confirmée » en ROUGE ;
+ * — icône de confirmation + « Inscription confirmée » en ROUGE
+ *   (Task 38 : devenus VERT PUR #008000, comme les coches du
+ *   récapitulatif et le cachet du reçu) ;
  * — particules de feu d'artifice tombant du haut vers le bas comme
  *   une neige de fête (FireworksSnow — canvas plein viewport) ;
  * — TOUTES les cartes de la page en VERRE TRANSPARENT exactement
@@ -217,17 +219,21 @@ export function BienvenuePage() {
           fête — canvas fixe, aucun blocage d'interaction. */}
       <FireworksSnow />
 
-      {/* — HERO : icône de confirmation ROUGE (Task 34) + label ROUGE
+      {/* — HERO : icône de confirmation + label « Inscription
+          confirmée » en VERT PUR #008000 (Task 38 — ex-rouge Task 34)
           + titre + bouton de reçu PDF — */}
       <section className="pb-8 pt-16 lg:pb-12 lg:pt-24">
         <Container className="text-center">
           <div className="hero-line hero-d1 flex justify-center">
+            {/* Task 38 : pastille + label en VERT PUR #008000
+                (confirmation = succès) — coche blanche conservée
+                pour le contraste sur la pastille verte. */}
             <IconCheck
-              className="h-12 w-12 text-red-button lg:h-14 lg:w-14"
+              className="h-12 w-12 text-[#008000] lg:h-14 lg:w-14"
               fg="#ffffff"
             />
           </div>
-          <p className="hero-line hero-d2 mt-6 text-[0.75rem] font-medium uppercase tracking-[0.18em] text-red-button">
+          <p className="hero-line hero-d2 mt-6 text-[0.75rem] font-medium uppercase tracking-[0.18em] text-[#008000]">
             Inscription confirmée
           </p>
           {/* Task 34 (fix responsive) : « accompagnement. » en Fraunces

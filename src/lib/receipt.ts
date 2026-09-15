@@ -5,7 +5,12 @@ import { CONTACT_EMAIL, FORMSUBMIT_AJAX } from "./contact-email";
  * Task 37 : terminologie « Reçu » uniquement — plus jamais « Facture » —
  * identité STEVENS AKPOVI — plus aucune mention « Mr Steve English » —
  * bandes haute/basse NOIRES #000000, cachet dont le texte PENDE dans
- * le MÊME sens que son cadre).
+ * le MÊME sens que son cadre ;
+ * Task 38 : nom de fichier « Reçu {nom du client}.pdf » — cachet
+ * MONTANT (gauche-bas → droite-haut « / ») avec PAYÉ + date centrés
+ * au point près dans le cadre — en-tête « STEVENS AKPOVI » à la MÊME
+ * taille que « REÇU DE PAIEMENT » (15 pt) — ligne de statut verte
+ * supprimée — badge vert « Paiement unique » (ex-« Inclus »)).
  *
  * Le client qui arrive sur #/bienvenue après son paiement peut
  * télécharger un reçu PDF TRÈS haute qualité : A4 vectoriel,
@@ -123,8 +128,10 @@ export async function buildReceiptPdf(
   doc.rect(0, 0, PAGE_W, 7, "F");
 
   /* — En-tête — */
+  /* Task 38 : « STEVENS AKPOVI » à la MÊME taille que « REÇU DE
+     PAIEMENT » (15 pt) — avant 20 pt. */
   doc.setFont("times", "bold");
-  doc.setFontSize(20);
+  doc.setFontSize(15);
   doc.setTextColor(...INK);
   doc.text("STEVENS AKPOVI", M, 56, { charSpace: 2.2 });
 
@@ -153,16 +160,9 @@ export async function buildReceiptPdf(
   doc.setLineWidth(1.1);
   doc.line(M, 118, X_END, 118);
 
-  /* — Statut (vert pur) — */
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(9.5);
-  doc.setTextColor(...GREEN);
-  doc.text(
-    "PAYÉ — paiement reçu en totalité · Paiement unique",
-    X_END,
-    136,
-    { align: "right" },
-  );
+  /* Task 38 : la ligne verte « PAYÉ — paiement reçu en totalité ·
+     Paiement unique » est SUPPRIMÉE (demande propriétaire) — le
+     cachet vert plus bas et le badge « Paiement unique » suffisent. */
 
   /* — REÇU DE / méta — Task 37 : « FACTURÉ À » devient « REÇU DE ».
      La colonne droite est réalignée — jsPDF N'INCLUT PAS charSpace
@@ -293,7 +293,10 @@ export async function buildReceiptPdf(
   doc.setFont("helvetica", "bold");
   doc.setFontSize(9.5);
   doc.setTextColor(...GREEN);
-  doc.text("Inclus", X_END - 10, 444, { align: "right" });
+  /* Task 38 : « Inclus » devient « Paiement unique » (toujours vert
+     pur) — rappelle le régime de paiement au même niveau que la
+     mention « aucun autre frais ». */
+  doc.text("Paiement unique", X_END - 10, 444, { align: "right" });
   doc.setDrawColor(...LIGHT);
   doc.line(M + 10, 456, X_END - 10, 456);
 
@@ -333,11 +336,22 @@ export async function buildReceiptPdf(
      légère transparence d'encre. Bande dédiée centrée sous les
      totaux : il ne masque AUCUNE ligne (leçon QA Task 34 : chevaucher
      les totaux « coupe » visuellement la phrase des frais). — */
+  /* Task 38 : cachet décalé de 570 → 580 pt — avec l'inclinaison
+     MONTANTE, le coin supérieur droit du cadre remonte désormais à
+     y≈530 pt ; à 570 il frôlait le texte « TOTAL PAYÉ » (≈8 pt) alors
+     qu'avant (Task 37, descendant) le coin haut était côté gauche,
+     dans une zone vide. À 580 : ≥10 pt sous « TOTAL PAYÉ », ≥16 pt
+     au-dessus du titre « CE QUE CE REÇU CONFIRME », et le cachet
+     reste centré dans sa bande dédiée sous les totaux. */
   const stampCx = PAGE_W / 2;
-  const stampCy = 570;
+  const stampCy = 580;
   const stampW = 150;
   const stampH = 58;
-  const angle = 17; // degrés — cadre : sens HORAIRE visuel ; texte jsPDF : convention INVERSÉE → passer -angle
+  /* Task 38 : angle NÉGATIF — le cachet monte désormais de la gauche
+     (bas) vers la droite (haut) « / » (avant : descendant « \ »).
+     Conventions opposées cadre/texte conservées (cf. Task 37) :
+     corner() lit l'angle tel quel, jsPDF text() reçoit -angle. */
+  const angle = -17;
   const rad = (angle * Math.PI) / 180;
   const cos = Math.cos(rad);
   const sin = Math.sin(rad);
@@ -371,14 +385,31 @@ export async function buildReceiptPdf(
   doc.setFont("times", "bold");
   doc.setFontSize(38);
   doc.setTextColor(...GREEN);
-  /* Task 37 : l'option angle de jsPDF tourne le texte dans le sens
-     ANTihoraire visuel alors que corner() (cadre) le tourne dans le
-     sens horaire — d'où un texte qui penchait à l'envers du cadre.
-     On passe donc -angle pour pencher pareil que le cadre. */
-  doc.text("PAYÉ", stampCx, stampCy + 4, { align: "center", angle: -angle });
+  /* Task 38 — CENTRAGE RÉEL (bug jsPDF compensé) : l'option
+     align:"center" + angle applique le décalage de centrage sur x
+     SEULEMENT, dans l'espace NON tourné — le texte incliné atterrit
+     donc (w/2)·sin(17°) TROP HAUT (≈16 pt pour PAYÉ, ≈8 pt pour la
+     date ; dans la version Task 37 le sens inversé le poussait vers
+     le BAS, la date chevauchait le trait inférieur). Preuve : matrices
+     Tm du PDF (origine = ancre x − w/2 à la MÊME hauteur y) + mesure
+     pixel. On calcule donc l'ancre pour que le CENTRE de chaque texte
+     atterrisse exactement au point (u=0, v=cible) du repère du cadre :
+     baselines v=+6 (PAYÉ) et v=+21,5 (date) → bloc d'encre
+     [−21,9 ; +21,5] centré à −0,2 pt, marges internes ≈2,6/3 pt,
+     écart PAYÉ→date 9 pt. */
+  const tilt = (-angle * Math.PI) / 180; // +17° : pente VISUELLE montante « / »
+  const stampAnchor = (vt: number, w: number): [number, number] => [
+    stampCx + vt * Math.sin(tilt) + (w / 2) * (1 - Math.cos(tilt)),
+    stampCy + vt * Math.cos(tilt) + (w / 2) * Math.sin(tilt),
+  ];
+  const textePaye = "PAYÉ";
+  const [axPaye, ayPaye] = stampAnchor(6, doc.getTextWidth(textePaye));
+  doc.text(textePaye, axPaye, ayPaye, { align: "center", angle: -angle });
   doc.setFont("helvetica", "bold");
   doc.setFontSize(9);
-  doc.text(`le ${emisLeCourt}`, stampCx, stampCy + 20, {
+  const texteDate = `le ${emisLeCourt}`;
+  const [axDate, ayDate] = stampAnchor(21.5, doc.getTextWidth(texteDate));
+  doc.text(texteDate, axDate, ayDate, {
     align: "center",
     angle: -angle,
   });
@@ -442,15 +473,18 @@ export async function buildReceiptPdf(
   doc.setFillColor(...BLACK);
   doc.rect(0, PAGE_H - 6, PAGE_W, 6, "F");
 
-  /* — Nom de fichier propre — */
-  const slug =
+  /* — Nom de fichier (Task 38) : doit contenir « Reçu » et le nom du
+     client — ex. « Reçu Jean-Baptiste Nkemba.pdf ». Les accents sont
+     CONSERVÉS (noms de fichiers UTF-8 gérés par tous les navigateurs
+     et OS modernes) ; seuls les caractères interdits sur les systèmes
+     de fichiers ( / \ : * ? " < > | et contrôles ) sont retirés. — */
+  const nomFichier =
     data.nom
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .replace(/[^a-zA-Z0-9]+/g, "-")
-      .replace(/^-+|-+$/g, "")
-      .slice(0, 40) || "Client";
-  const filename = `Recu-Inscription-${slug}.pdf`;
+      .replace(/[\u0000-\u001f\\/:*?"<>|]+/g, " ")
+      .replace(/\s+/g, " ")
+      .trim()
+      .slice(0, 60) || "Client";
+  const filename = `Reçu ${nomFichier}.pdf`;
 
   return { blob: doc.output("blob"), filename };
 }
