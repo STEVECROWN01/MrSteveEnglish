@@ -52,23 +52,48 @@ export function MicrophoneScene({ className }: { className?: string }) {
   const [activeRef, active] = useInView<HTMLDivElement>();
   const reduced = usePrefersReducedMotion();
 
-  // Préchauffage idle du chunk three.js (une seule fois par page) :
-  // lancé après le rendu initial pour ne pas concurrencer le LCP,
-  // le téléchargement est déjà fait quand le scroll approche la scène.
+  // Préchauffage du chunk three.js AU PREMIER SIGNAL D'INTENTION
+  // (Task 33 — perf) : scroll, toucher, clic ou clavier — plus jamais
+  // au simple idle de la page. Un visiteur qui rebondit sans interagir
+  // ne télécharge JAMAIS three.js (237 Ko gz de donnée mobile
+  // économisés) ; dès la première interaction, le chunk se met en
+  // cache pendant l'inactivité qui suit — prêt bien avant l'arrivée
+  // à 1200px de la section (qu'on ne peut atteindre qu'en scrollant).
+  // Data Saver actif → aucun préchauffage (respect du forfait).
   useEffect(() => {
-    const w = window as Window & {
-      requestIdleCallback?: (cb: () => void, o?: { timeout: number }) => number;
-      cancelIdleCallback?: (id: number) => void;
-    };
+    const conn = (
+      navigator as Navigator & { connection?: { saveData?: boolean } }
+    ).connection;
+    if (conn?.saveData) return;
+    let done = false;
     const warm = () => {
-      void loadMicrophoneCanvas();
+      if (done) return;
+      done = true;
+      remove();
+      const w = window as Window & {
+        requestIdleCallback?: (cb: () => void, o?: { timeout: number }) => number;
+      };
+      if (typeof w.requestIdleCallback === "function") {
+        w.requestIdleCallback(() => {
+          void loadMicrophoneCanvas();
+        }, { timeout: 3000 });
+      } else {
+        window.setTimeout(() => {
+          void loadMicrophoneCanvas();
+        }, 400);
+      }
     };
-    if (typeof w.requestIdleCallback === "function") {
-      const id = w.requestIdleCallback(warm, { timeout: 4000 });
-      return () => w.cancelIdleCallback?.(id);
-    }
-    const t = window.setTimeout(warm, 2500);
-    return () => window.clearTimeout(t);
+    const events: (keyof WindowEventMap)[] = [
+      "scroll",
+      "pointerdown",
+      "keydown",
+      "touchstart",
+    ];
+    const opts: AddEventListenerOptions = { passive: true };
+    const remove = () =>
+      events.forEach((e) => window.removeEventListener(e, warm, opts));
+    events.forEach((e) => window.addEventListener(e, warm, opts));
+    return remove;
   }, []);
 
   // Un seul node observé par les deux hooks (montage différé + pause).
