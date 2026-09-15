@@ -74,7 +74,11 @@ export function ProgrammePage() {
           contraste premium sur le fond noir. — */}
       <Section className="on-dark relative overflow-hidden bg-black pt-0 text-white">
         {/* OFFRES-TEXTURE — fond discret sur noir : opacité réduite +
-            voile sombre pour la lisibilité du texte blanc */}
+            voile sombre pour la lisibilité du texte blanc.
+            Task 36 (retour propriétaire) : « le fond image est trop
+            sombre » — le voile passe de bg-black/55 à bg-black/40
+            (l'image reste perceptiblement plus claire, le texte blanc
+            reste lisible). */}
         <div
           aria-hidden="true"
           className="pointer-events-none absolute inset-0 select-none"
@@ -86,7 +90,7 @@ export function ProgrammePage() {
             sizes="100vw"
             className="object-cover opacity-40"
           />
-          <div className="absolute inset-0 bg-black/55" />
+          <div className="absolute inset-0 bg-black/40" />
         </div>
 
         <Container className="relative">

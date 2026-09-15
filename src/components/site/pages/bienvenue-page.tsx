@@ -42,12 +42,25 @@ import { FireworksSnow } from "../fireworks-snow";
  *   comme celles du site (glass-card / glass-dark) ;
  * — section « Tu viens de choisir de passer à l'action. » sur fond
  *   GRIS (au lieu de noir) ;
- * — titres des cartes « Voici ce qui se passe maintenant. » en rouge ;
  * — « Maintenant, on va transformer cette décision en progression
  *   réelle. » en rouge ;
  * — « Tu es au bon endroit… » présenté comme un PAQUET DE CARTES
  *   (cartes-fantômes décalées derrière la carte principale) ;
  * — signature « — Coach Stevens » ;
+ *
+ * TASK 36 (retour propriétaire) :
+ * — bouton du reçu renommé « Télécharger mon Reçu (PDF) » et texte
+ *   d'accompagnement sous le bouton SUPPRIMÉ ;
+ * — titres des cartes « Voici ce qui se passe maintenant. » RAMENÉS
+ *   AU BLANC #FFFFFF (ils étaient passés au rouge en Task 34) ;
+ * — CTA « Prêt(e) à commencer ? » renommé « Contacter sur
+ *   WhatsApp » ;
+ * — Récapitulatif : durée « 3 mois » → « 03 mois » ;
+ * — coches du statut en VERT PUR #008000 (comme le cachet PAYÉ) ;
+ * — FIX anti-flash : au rechargement de #/bienvenue, le shell
+ *   statique (accueil) n'est plus visible ~1 s — masqué avant le
+ *   premier rendu (script inline layout.tsx + CSS globals.css),
+ *   révélé par page.tsx dès que la page demandée est rendue.
  * — BOUTON DE REÇU : téléchargement d'un reçu/facture PDF élégant,
  *   personnalisé avec les données du client (persistées par le
  *   formulaire d'inscription), cachet « PAYÉ » oblique vert pur — et
@@ -152,10 +165,10 @@ function ReceiptLinkButton({
       {state === "preparing"
         ? "Préparation du reçu…"
         : state === "done"
-          ? "Télécharger à nouveau mon reçu (PDF)"
+          ? "Télécharger à nouveau mon Reçu (PDF)"
           : state === "error"
             ? "Le téléchargement a échoué — réessayer"
-            : "Télécharger mon reçu / facture (PDF)"}
+            : "Télécharger mon Reçu (PDF)"}
     </button>
   );
 }
@@ -259,13 +272,11 @@ export function BienvenuePage() {
                 ? "Préparation de ton reçu…"
                 : receiptState === "error"
                   ? "Réessayer le téléchargement"
-                  : "Télécharger mon reçu / facture (PDF)"}
+                  : "Télécharger mon Reçu (PDF)"}
             </button>
-            <p className="t-caption mx-auto mt-4 max-w-[34rem] text-white/60">
-              Reçu officiel personnalisé — cachet PAYÉ. Au moment du
-              téléchargement, une copie est transmise automatiquement à
-              ton coach.
-            </p>
+            {/* Task 36 (retour propriétaire) : le texte « Reçu officiel
+                personnalisé — cachet PAYÉ… » sous le bouton est
+                SUPPRIMÉ. */}
           </div>
         </Container>
       </section>
@@ -362,7 +373,8 @@ export function BienvenuePage() {
       </section>
 
       {/* — ET MAINTENANT ? — 3 étapes — Task 34 : cartes en VERRE
-          sombre + titres ROUGES (retour propriétaire). — */}
+          sombre. Task 36 (retour propriétaire) : les titres des cartes
+          RAMENÉS AU BLANC #FFFFFF (couleur précédente). — */}
       <section className="relative overflow-hidden py-12 lg:py-16">
         <div
           aria-hidden="true"
@@ -385,7 +397,7 @@ export function BienvenuePage() {
                   <p className="font-display text-[2rem] font-medium leading-none text-white/30">
                     {e.num}
                   </p>
-                  <h3 className="t-h3 mt-5 text-red-button">{e.titre}</h3>
+                  <h3 className="t-h3 mt-5 text-white">{e.titre}</h3>
                   <p className="t-body mt-3 text-white/75">{e.texte}</p>
                 </div>
               </Reveal>
@@ -408,8 +420,10 @@ export function BienvenuePage() {
           </Reveal>
           <Reveal className="mt-8 lg:mt-10">
             <div className="flex justify-center">
+              {/* Task 36 (retour propriétaire) : « Contacter mon coach
+                  sur WhatsApp » → « Contacter sur WhatsApp ». */}
               <WhatsAppCta
-                label="Contacter mon coach sur WhatsApp"
+                label="Contacter sur WhatsApp"
                 className="w-full sm:w-auto"
               />
             </div>
@@ -524,7 +538,9 @@ export function BienvenuePage() {
                 </div>
                 <div className="flex flex-col gap-1 py-4 sm:flex-row sm:items-baseline sm:justify-between sm:gap-6">
                   <dt className="t-caption text-white/55">Durée</dt>
-                  <dd className="t-body font-medium text-white">3 mois</dd>
+                  {/* Task 36 (retour propriétaire) : « 3 mois » →
+                      « 03 mois ». */}
+                  <dd className="t-body font-medium text-white">03 mois</dd>
                 </div>
                 <div className="flex flex-col gap-1 py-4 sm:flex-row sm:items-baseline sm:justify-between sm:gap-6">
                   <dt className="t-caption text-white/55">Format</dt>
@@ -545,7 +561,12 @@ export function BienvenuePage() {
                 <ul className="mt-3 space-y-2.5">
                   {STATUTS.map((s) => (
                     <li key={s} className="flex items-center gap-3">
-                      <IconCheck className="h-5 w-5 text-success" fg="#ffffff" />
+                      {/* Task 36 (retour propriétaire) : coches en VERT
+                          PUR #008000 (comme le cachet PAYÉ du reçu). */}
+                      <IconCheck
+                        className="h-5 w-5 text-[#008000]"
+                        fg="#ffffff"
+                      />
                       <span className="t-body text-white">{s}</span>
                     </li>
                   ))}

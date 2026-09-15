@@ -122,6 +122,22 @@ export default function RootLayout({
       <body
         className={`${fraunces.variable} ${publicSans.variable} antialiased bg-background text-foreground`}
       >
+        {/* Task 36 (anti-flash deep-link) : script inline PARSEUR-BLOQUANT,
+            exécuté AVANT le premier rendu. Le shell statique rend toujours
+            l'accueil ; si le hash vise une page secondaire connue
+            (rechargement direct de …/#/bienvenue, #/contact…), on pose
+            data-deeplink sur <html> : la règle CSS de globals.css masque
+            le shell accueil et page.tsx le révèle dès que la bonne page
+            est rendue. Repli : le script retire lui-même l'attribut après
+            4 s si l'hydratation n'a pas abouti (le site n'est jamais
+            laissé masqué). NB : « faq » rend l'accueil → pas de masquage ;
+            les hashs inconnus ne masquent rien non plus. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "(function(){try{var h=(location.hash||'').replace(/^#\\/?/,'').split('?')[0].replace(/\\/+$/,'');var k={'a-propos':1,'resultats':1,'programme':1,'offres':1,'contact':1,'bienvenue':1};if(!k[h])return;document.documentElement.setAttribute('data-deeplink',h);setTimeout(function(){document.documentElement.removeAttribute('data-deeplink')},4000)}catch(e){}})();",
+          }}
+        />
         {children}
         <script
           type="application/ld+json"

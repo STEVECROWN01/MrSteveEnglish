@@ -31,6 +31,14 @@ import { HomePage } from "@/components/site/pages/home-page";
 
 const PageLoading = () => <div className="min-h-[60svh]" aria-hidden="true" />;
 
+/* Task 36 (anti-flash) : placeholder NOIR pour la page bienvenue —
+   pendant le chargement de son chunk, l'écran reste noir (fond réel
+   de la page) : aucune transition blanc→noir au rechargement direct
+   de …/#/bienvenue. */
+const PageLoadingDark = () => (
+  <div className="min-h-screen bg-black" aria-hidden="true" />
+);
+
 const AProposPage = dynamic(
   () => import("@/components/site/pages/a-propos-page").then((m) => m.AProposPage),
   { ssr: false, loading: PageLoading },
@@ -49,7 +57,7 @@ const ContactPage = dynamic(
 );
 const BienvenuePage = dynamic(
   () => import("@/components/site/pages/bienvenue-page").then((m) => m.BienvenuePage),
-  { ssr: false, loading: PageLoading },
+  { ssr: false, loading: PageLoadingDark },
 );
 
 function renderPage(route: RouteId) {
@@ -111,6 +119,33 @@ export default function Page() {
     // valeur de route au montage est celle de la page rechargée.
   }, []);
 
+  /* Task 36 (anti-flash deep-link) : le shell statique rend toujours
+     l'ACCUEIL (getServerSnapshot). Au rechargement direct d'une page
+     secondaire (…/#/bienvenue, #/contact…), il restait visible
+     ~1 s avant que React n'hydrate et ne bascule sur la bonne page.
+     Le script inline de layout.tsx pose data-deeplink sur <html>
+     AVANT le premier rendu quand le hash vise une page secondaire
+     connue : le shell accueil est alors masqué (règle CSS
+     html[data-deeplink] .app-shell). Ici, on le RÉVÈLE dès que la
+     route rendue correspond à la cible du deep-link — jamais avant,
+     pour ne pas laisser paraître l'accueil une seule frame. Filet de
+     sécurité 300 ms (navigation avant hydratation complète) + 4 s
+     dans le script inline lui-même (JS qui ne chargerait pas). */
+  useEffect(() => {
+    const dl = document.documentElement.getAttribute("data-deeplink");
+    if (!dl) return;
+    const target: RouteId = dl === "offres" ? "programme" : (dl as RouteId);
+    if (route === target) {
+      document.documentElement.removeAttribute("data-deeplink");
+      return;
+    }
+    const t = window.setTimeout(
+      () => document.documentElement.removeAttribute("data-deeplink"),
+      300,
+    );
+    return () => window.clearTimeout(t);
+  }, [route]);
+
   /* Préchauffage à l'inactivité (idle) : les pages secondaires (~30 Ko
      gz au total) sont chargées pendant le repos du navigateur — la
      navigation reste instantanée, y compris à la première interaction,
@@ -142,7 +177,7 @@ export default function Page() {
   const focused = route === "bienvenue";
 
   return (
-    <div className="flex min-h-screen flex-col bg-white">
+    <div className="app-shell flex min-h-screen flex-col bg-white">
       {focused ? null : <Header />}
       <main
         id="main-content"

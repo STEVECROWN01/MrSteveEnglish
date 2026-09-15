@@ -25,7 +25,14 @@ import { AirplaneScene } from "../airplane-scene";
  *   avait intervertis lors de l'upload) — chaque card affiche
  *   désormais le bon visage.
  * - Bloc « Un mois pour oser parler » : CONTENU CENTRÉ.
- */
+ *
+ * TASK 36 (retour propriétaire) :
+ * - Les 3 cartes témoignages passent en VERRE TRANSPARENT
+ *   (glass-card, comme les cartes verre du site) avec des nappes de
+ *   couleur derrière elles pour rendre la translucidité lisible.
+ * - Titre « Un mois pour oser parler. Trois mois… » : « Trois mois »
+ *   en ROUGE.
+*/
 
 const TEMOIGNAGES = [
   {
@@ -145,9 +152,22 @@ export function ResultatsPage() {
         </Container>
       </Section>
 
-      {/* — Témoignages de mes apprenants — */}
-      <Section className="bg-white">
-        <Container>
+      {/* — Témoignages de mes apprenants — Task 36 (retour
+          propriétaire) : les 3 cartes passent en VERRE TRANSPARENT
+          (glass-card) comme les cartes verre du site — des nappes de
+          couleur traversent leur cœur pour rendre la translucidité
+          lisible (leçon Task 27). — */}
+      <Section className="relative overflow-hidden bg-white">
+        {/* Nappes de couleur derrière les cartes verre (Task 36). */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -left-24 top-[10rem] h-[34rem] w-[34rem] rounded-full bg-[radial-gradient(circle,rgba(255,26,26,0.30)_0%,transparent_62%)] blur-2xl"
+        />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -right-24 top-[30rem] h-[36rem] w-[36rem] rounded-full bg-[radial-gradient(circle,rgba(28,28,64,0.30)_0%,transparent_62%)] blur-2xl"
+        />
+        <Container className="relative">
           <Reveal>
             <h2 className="t-h2 text-black">Témoignages de mes apprenants</h2>
           </Reveal>
@@ -155,7 +175,7 @@ export function ResultatsPage() {
           <div className="mt-10 grid gap-6 md:grid-cols-2 lg:mt-14 lg:grid-cols-3">
             {TEMOIGNAGES.map((t, i) => (
               <Reveal key={t.name} delay={i * 120} as="article">
-                <div className="card-base card-bordered card-hover flex h-full flex-col p-6 lg:p-7">
+                <div className="glass-card card-hover flex h-full flex-col p-6 lg:p-7">
                   {/* Avatar à gauche de la citation (DA §12) */}
                   <div className="flex items-start gap-4">
                     <span className="mt-1 h-14 w-14 shrink-0 overflow-hidden rounded-full lg:h-16 lg:w-16">
@@ -208,9 +228,12 @@ export function ResultatsPage() {
         <Container>
           <Reveal>
             <Prose className="mx-auto max-w-[46rem] text-center">
+              {/* Task 36 (retour propriétaire) : « Trois mois » en
+                  ROUGE. */}
               <h2 className="t-h2 text-black">
-                Un mois pour oser parler. Trois mois pour parler avec
-                confiance.
+                Un mois pour oser parler.{" "}
+                <span className="text-red-button">Trois mois</span> pour
+                parler avec confiance.
               </h2>
               <p className="t-body">
                 Chaque parcours est différent, mais la trajectoire reste la

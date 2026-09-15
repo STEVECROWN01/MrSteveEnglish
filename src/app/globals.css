@@ -710,3 +710,25 @@
     transform: scale(1.15);
   }
 }
+
+/* — Anti-flash deep-link (Task 36 — HORS @layer pour battre les
+     utilitaires Tailwind, ex. bg-background/bg-white) —
+     Le HTML statique rend toujours l'ACCUEIL (getServerSnapshot de
+     useSyncExternalStore). Au rechargement direct d'une page
+     secondaire (…/#/bienvenue, #/contact…), cet accueil restait
+     visible ~1 s avant que React n'hydrate et ne bascule sur la page
+     demandée. Le script inline de layout.tsx pose data-deeplink sur
+     <html> AVANT le premier rendu (uniquement pour les routes
+     secondaires connues) : le shell accueil est alors masqué, et
+     page.tsx retire l'attribut dès que la bonne page est rendue
+     (repli 4 s dans le script lui-même). Pour bienvenue, le fond
+     passe au NOIR pendant le masquage → transition noire continue
+     jusqu'à la page (placeholder noir pendant le chargement du
+     chunk), aucun écran blanc. — */
+html[data-deeplink] .app-shell {
+  visibility: hidden;
+}
+html[data-deeplink="bienvenue"],
+html[data-deeplink="bienvenue"] body {
+  background: #000000;
+}

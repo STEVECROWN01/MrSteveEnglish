@@ -373,14 +373,13 @@ function Solution() {
           contenu texte « Ma méthode » passe en VERRE TRANSPARENT — les
           nappes de couleur doivent TRAVERSER LE CŒUR de la carte large
           (leçon Task 27 : c'est leur traversée translucide qui signale
-          le verre, pas le voile seul). */}
+          le verre, pas le voile seul).
+          Task 36 (retour propriétaire) : la nappe NAVY du bas (tache
+          grise perceptible au bottom center de la section) est
+          RETIRÉE — ne reste que la nappe rouge du haut-gauche. */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute -left-20 top-[6rem] h-[38rem] w-[38rem] rounded-full bg-[radial-gradient(circle,rgba(255,26,26,0.32)_0%,transparent_62%)] blur-2xl"
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute bottom-[-10rem] right-4 h-[32rem] w-[32rem] rounded-full bg-[radial-gradient(circle,rgba(28,28,64,0.28)_0%,transparent_62%)] blur-2xl lg:right-[22rem]"
       />
       <Container className="relative py-12 lg:py-24">
         <div className="grid gap-10 lg:grid-cols-[minmax(0,46rem)_minmax(0,22rem)] lg:items-stretch lg:justify-center lg:gap-12">
