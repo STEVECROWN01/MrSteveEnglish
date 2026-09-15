@@ -71,9 +71,11 @@ import { FireworksSnow } from "../fireworks-snow";
  *   automatiquement : le client peut le modifier avant l'envoi.
  */
 
-/** Message WhatsApp pré-rempli (libellé exact propriétaire Task 28). */
+/** Message WhatsApp pré-rempli — libellé EXACT du propriétaire (Task 39) :
+ *  « Bonjour Coach Stevens » (avant : « Bonjour Stevens ») et
+ *  « 03 mois » (avant : « 3 mois »). */
 const WHATSAPP_MESSAGE =
-  "Bonjour Stevens, je viens de finaliser mon inscription au programme d'accompagnement de 3 mois. Mon paiement a bien été effectué et je vous contacte pour connaître la prochaine étape. Merci !";
+  "Bonjour Coach Stevens, je viens de finaliser mon inscription au programme d'accompagnement de 03 mois. Mon paiement a bien été effectué et je vous contacte pour connaître la prochaine étape. Merci !";
 
 /* Résumé élégant du programme (instruction propriétaire). */
 const PROGRAMME_RECAP = [

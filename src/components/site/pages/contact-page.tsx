@@ -8,6 +8,7 @@ import { Container, PageHero } from "../layout-primitives";
 import { Reveal } from "../reveal";
 import { StickyCTA } from "../sticky-cta";
 import { FlagUK } from "../icons";
+import { SelectPaysField, SelectVilleField } from "../pays-ville-fields";
 
 /**
  * PAGE 7 — CONTACT / INSCRIPTION (instructions propriétaire)
@@ -111,10 +112,10 @@ function validate(f: FormState): FormErrors {
     e.email = "Indique une adresse email valide.";
   }
   if (f.pays.trim().length < 2) {
-    e.pays = "Indique ton pays de résidence.";
+    e.pays = "Sélectionne ton pays de résidence.";
   }
   if (f.ville.trim().length < 2) {
-    e.ville = "Indique ta ville.";
+    e.ville = "Sélectionne ta ville (choisis d'abord ton pays).";
   }
   if (f.anglais.trim().length < 15) {
     e.anglais =
@@ -402,49 +403,40 @@ export function ContactPage() {
                   ) : null}
                 </div>
 
+                {/* Task 39 (instruction propriétaire) : « Pays » est
+                    désormais un DROPLISTE de TOUS les pays (avec
+                    drapeaux + recherche) et « Ville » un dropliste qui
+                    ne propose QUE les villes du pays choisi — il faut
+                    donc sélectionner le pays AVANT la ville. Changer de
+                    pays réinitialise la ville. Les valeurs restent des
+                    chaînes simples : email au coach, localStorage et
+                    reçu PDF reçoivent les mêmes données qu’avant. */}
                 <div className="mt-6 grid gap-6 sm:grid-cols-2">
-                  <div>
-                    <label htmlFor="f-pays" className="form-label">
-                      Pays <Req />
-                    </label>
-                    <input
-                      id="f-pays"
-                      type="text"
-                      autoComplete="country-name"
-                      value={form.pays}
-                      onChange={set("pays")}
-                      aria-invalid={Boolean(errors.pays)}
-                      aria-describedby={errors.pays ? "err-pays" : undefined}
-                      placeholder="Ex. : Bénin"
-                      className="form-input mt-2"
-                    />
-                    {errors.pays ? (
-                      <p id="err-pays" role="alert" className="form-error">
-                        {errors.pays}
-                      </p>
-                    ) : null}
-                  </div>
-                  <div>
-                    <label htmlFor="f-ville" className="form-label">
-                      Ville <Req />
-                    </label>
-                    <input
-                      id="f-ville"
-                      type="text"
-                      autoComplete="address-level2"
-                      value={form.ville}
-                      onChange={set("ville")}
-                      aria-invalid={Boolean(errors.ville)}
-                      aria-describedby={errors.ville ? "err-ville" : undefined}
-                      placeholder="Ex. : Cotonou"
-                      className="form-input mt-2"
-                    />
-                    {errors.ville ? (
-                      <p id="err-ville" role="alert" className="form-error">
-                        {errors.ville}
-                      </p>
-                    ) : null}
-                  </div>
+                  <SelectPaysField
+                    id="f-pays"
+                    value={form.pays}
+                    onChange={(pays) => {
+                      setForm((f) => ({ ...f, pays, ville: "" }));
+                      setErrors((prev) => ({
+                        ...prev,
+                        pays: undefined,
+                        ville: undefined,
+                      }));
+                    }}
+                    error={errors.pays}
+                  />
+                  <SelectVilleField
+                    id="f-ville"
+                    pays={form.pays}
+                    value={form.ville}
+                    onChange={(ville) => {
+                      setForm((f) => ({ ...f, ville }));
+                      setErrors((prev) =>
+                        prev.ville ? { ...prev, ville: undefined } : prev,
+                      );
+                    }}
+                    error={errors.ville}
+                  />
                 </div>
 
                 {/* Évaluation du niveau d'anglais — rédaction libre,

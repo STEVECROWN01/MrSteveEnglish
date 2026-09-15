@@ -10,7 +10,11 @@ import { CONTACT_EMAIL, FORMSUBMIT_AJAX } from "./contact-email";
  * MONTANT (gauche-bas → droite-haut « / ») avec PAYÉ + date centrés
  * au point près dans le cadre — en-tête « STEVENS AKPOVI » à la MÊME
  * taille que « REÇU DE PAIEMENT » (15 pt) — ligne de statut verte
- * supprimée — badge vert « Paiement unique » (ex-« Inclus »)).
+ * supprimée — badge vert « Paiement unique » (ex-« Inclus ») ;
+ * Task 39 : PAYÉ RAPPROCHÉ de la date (écart d'encre 9,9 → ~4,9 pt,
+ * la DATE ne bouge pas d'un point) pour que l'accent du É ne frôle
+ * plus le bord du cadre — dégagement accent/bord interne 3,0 → ~5,3 pt
+ * (cadre recentré de +2,75 pt, bloc d'encre toujours centré).
  *
  * Le client qui arrive sur #/bienvenue après son paiement peut
  * télécharger un reçu PDF TRÈS haute qualité : A4 vectoriel,
@@ -344,7 +348,15 @@ export async function buildReceiptPdf(
      au-dessus du titre « CE QUE CE REÇU CONFIRME », et le cachet
      reste centré dans sa bande dédiée sous les totaux. */
   const stampCx = PAGE_W / 2;
+  /* Task 39 : DEUX centres distincts —
+     • stampCy (580) : l'AXE D'ANCRAGE DU TEXTE. La date y reste
+       EXACTEMENT au même point qu'avant (baseline v=+21,5) : « ne pas
+       toucher à la date » (instruction propriétaire) ;
+     • stampFrameCy (582,75 = 580+2,75) : le centre du CADRE, descendu
+       de δ=Δ/2+0,25 (Δ=5) pour que le bloc d'encre PAYÉ+date reste
+       centré dans le cadre après le rapprochement de PAYÉ. */
   const stampCy = 580;
+  const stampFrameCy = 582.75;
   const stampW = 150;
   const stampH = 58;
   /* Task 38 : angle NÉGATIF — le cachet monte désormais de la gauche
@@ -364,7 +376,7 @@ export async function buildReceiptPdf(
   }
   const corner = (dx: number, dy: number): [number, number] => [
     stampCx + dx * cos - dy * sin,
-    stampCy + dx * sin + dy * cos,
+    stampFrameCy + dx * sin + dy * cos,
   ];
   const drawRotRect = (w: number, h: number, lw: number) => {
     const hw = w / 2;
@@ -393,17 +405,19 @@ export async function buildReceiptPdf(
      le BAS, la date chevauchait le trait inférieur). Preuve : matrices
      Tm du PDF (origine = ancre x − w/2 à la MÊME hauteur y) + mesure
      pixel. On calcule donc l'ancre pour que le CENTRE de chaque texte
-     atterrisse exactement au point (u=0, v=cible) du repère du cadre :
-     baselines v=+6 (PAYÉ) et v=+21,5 (date) → bloc d'encre
-     [−21,9 ; +21,5] centré à −0,2 pt, marges internes ≈2,6/3 pt,
-     écart PAYÉ→date 9 pt. */
+     atterrisse exactement au point (u=0, v=cible) du repère du cadre.
+     Task 39 — RAPPROCHEMENT : baseline PAYÉ v=+6 → v=+11 (Δ=5 pt vers
+     le bas) : écart d'encre PAYÉ→date 9,9 → 4,9 pt et l'accent du É
+     cesse de frôler le bord haut (dégagement interne 3,0 → 5,3 pt).
+     La date reste à v=+21,5 SUR L'AXE stampCy=580 — INCHANGÉE au
+     pixel près ; seul le CADRE descend (stampFrameCy). */
   const tilt = (-angle * Math.PI) / 180; // +17° : pente VISUELLE montante « / »
   const stampAnchor = (vt: number, w: number): [number, number] => [
     stampCx + vt * Math.sin(tilt) + (w / 2) * (1 - Math.cos(tilt)),
     stampCy + vt * Math.cos(tilt) + (w / 2) * Math.sin(tilt),
   ];
   const textePaye = "PAYÉ";
-  const [axPaye, ayPaye] = stampAnchor(6, doc.getTextWidth(textePaye));
+  const [axPaye, ayPaye] = stampAnchor(11, doc.getTextWidth(textePaye));
   doc.text(textePaye, axPaye, ayPaye, { align: "center", angle: -angle });
   doc.setFont("helvetica", "bold");
   doc.setFontSize(9);

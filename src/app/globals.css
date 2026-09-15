@@ -633,6 +633,58 @@
       transform: translateY(-50%) translateX(430%);
     }
   }
+
+  /* — BANDE DÉFILANTE DES MOTS-CLÉS (instruction propriétaire
+     Task 39) : à la limite entre « Pour qui ? » (fond clair) et
+     « L'offre » (fond noir) — tous les mots-clés du site défilent de
+     la DROITE vers la GAUCHE, en continu, séparés par des points
+     rouges. La piste porte DEUX copies identiques de la liste et
+     translateX(-50 %) avance d'exactement une copie → boucle
+     parfaite, sans saut (chaque item porte son espacement de fin
+     pour que la « couture » garde le même rythme). Le fondu latéral
+     (masque sur le conteneur STATIQUE, pas sur la piste animée)
+     évite la coupe brutale aux bords de l'écran. — */
+  .marquee-band {
+    overflow: hidden;
+  }
+  .marquee-viewport {
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      black 6%,
+      black 94%,
+      transparent 100%
+    );
+    mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      black 6%,
+      black 94%,
+      transparent 100%
+    );
+  }
+  .marquee-track {
+    display: flex;
+    width: max-content;
+    animation: marquee-scroll 80s linear infinite;
+    will-change: transform;
+  }
+  @keyframes marquee-scroll {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+}
+
+/* — Dropdowns Pays/Ville (Task 39) : quand une listbox est ouverte,
+   la barre CTA sticky mobile se range sous l'écran pour ne jamais
+   recouvrir le panneau (règle HORS layer : priorité maximale). — */
+body[data-listbox-open] .sticky-cta {
+  transform: translateY(110%);
 }
 
 /* — Reduced motion (DA §13/§16) : chaque animation a sa version coupée — */
@@ -677,6 +729,10 @@
   .beam-separator::after {
     animation: none;
     transform: translateY(-50%) translateX(137%);
+  }
+  /* Bande défilante mots-clés : figée — une rangée reste lisible. */
+  .marquee-track {
+    animation: none;
   }
   .btn,
   .card-hover,
