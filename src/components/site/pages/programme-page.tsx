@@ -1,6 +1,7 @@
 "use client";
 
 import { CTA_LABELS, OFFRE } from "@/lib/site";
+import { VALUE_STACK } from "@/lib/inclusions";
 import { Container, Eyebrow, PageHero, Section } from "../layout-primitives";
 import { CtaButton } from "../buttons";
 import { IconCheck } from "../icons";
@@ -35,20 +36,13 @@ const OBJECTIONS = [
   },
 ];
 
-/* Tout ce que comprend le programme — podcasts inclus (instruction
-   propriétaire : ressource de pratique pure). */
-const PROGRAMME_INCLUS = [
-  "Pratique orale régulière",
-  "Conversations réelles",
-  "Corrections personnalisées",
-  "Prononciation",
-  "Vocabulaire utile",
-  "Construction des phrases",
-  "Confiance à l'oral",
-  "Accompagnement personnalisé",
-  "Exercices entre les séances",
-  "Des podcasts pour la pratique pure",
-];
+/* Tout ce que comprend le programme — Task 34 (instruction
+   propriétaire) : la liste est EXACTEMENT CONFORME à celle de la
+   carte « Voici tout ce que tu reçois pour 70 000 FCFA : » de la
+   section « L'offre » de l'accueil : les 8 choses de « Ce qui est
+   inclus » (source unique src/lib/inclusions.ts — les deux listes
+   dérivent de la MÊME donnée, conformité auto-synchronisée). */
+const PROGRAMME_INCLUS = VALUE_STACK;
 
 export function ProgrammePage() {
   return (

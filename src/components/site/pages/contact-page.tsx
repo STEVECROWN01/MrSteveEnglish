@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import { CHECKOUT_URL, CTA_LABELS, waLink } from "@/lib/site";
 import { sendContactEmail, type ContactFormData } from "@/lib/contact-email";
+import { INSCRIPTION_KEY } from "@/lib/receipt";
 import { Container, PageHero } from "../layout-primitives";
 import { Reveal } from "../reveal";
 import { StickyCTA } from "../sticky-cta";
@@ -199,6 +200,27 @@ export function ContactPage() {
     }
     setErrors({});
     setSending(true);
+    // Task 34 (reçu post-paiement) : persister les données
+    // d'inscription dans le navigateur — la page #/bienvenue s'en sert
+    // pour PERSONNALISER le reçu/facture PDF du client (nom, email,
+    // profession, ville, pays, date). Repli silencieux si localStorage
+    // indisponible (le reçu affichera « Non renseigné »).
+    try {
+      window.localStorage.setItem(
+        INSCRIPTION_KEY,
+        JSON.stringify({
+          nom: form.nom.trim(),
+          age: form.age,
+          profession: form.profession.trim(),
+          email: form.email.trim(),
+          pays: form.pays.trim(),
+          ville: form.ville.trim(),
+          dateInscription: new Date().toISOString(),
+        }),
+      );
+    } catch {
+      /* localStorage indisponible — ignoré */
+    }
     // Envoi direct par email (FormSubmit AJAX depuis le navigateur) avec
     // évaluation automatique du niveau d'anglais côté client (moteur TS
     // pur — mêmes règles que la lib partagée src/lib/english-assessment).

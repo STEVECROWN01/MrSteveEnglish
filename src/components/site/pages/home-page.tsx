@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { useInViewOnce, usePrefersReducedMotion } from "@/lib/motion";
 import { CTA_LABELS, OFFRE } from "@/lib/site";
+import { INCLUS, VALUE_STACK } from "@/lib/inclusions";
 import { Container, Eyebrow, Prose, Section } from "../layout-primitives";
 import { CtaButton, SecondaryLink } from "../buttons";
 import { IconCheck, IconCross } from "../icons";
@@ -803,71 +804,11 @@ function CeQueTuAchetes() {
   );
 }
 
-/* — « CE QUI EST INCLUS » (instruction propriétaire Task 27) : le
-     programme présenté comme un SYSTÈME d'accompagnement complet —
-     exactement 8 cartes, chacune couvrant un élément réellement
-     différent (plus aucune répétition). La carte 02 « Speaking &
-     Conversation » FUSIONNE les anciennes cartes « Speaking Practice »
-     et « Conversation » (supprimées). La carte 08 porte un badge
-     BONUS : ressource complémentaire, non équivalente aux séances.
-     Hiérarchie : accompagnement → pratique orale → correction →
-     outils → travail entre séances → mesure → transformation →
-     bonus. — */
-const INCLUS: {
-  num: string;
-  titre: string;
-  corps: string;
-  bonus?: boolean;
-}[] = [
-  {
-    num: "01",
-    titre: "Coaching personnalisé",
-    corps: "Des séances adaptées à ton niveau, tes difficultés et ton objectif.",
-  },
-  {
-    num: "02",
-    titre: "Speaking & Conversation",
-    corps:
-      "Une pratique intensive centrée sur la prise de parole et les situations de la vie réelle.",
-  },
-  {
-    num: "03",
-    titre: "Prononciation",
-    corps:
-      "Identification et correction de tes erreurs de prononciation pour parler plus clairement.",
-  },
-  {
-    num: "04",
-    titre: "Vocabulaire & Expressions",
-    corps:
-      "Le vocabulaire et les expressions dont tu as réellement besoin pour t'exprimer dans des situations concrètes.",
-  },
-  {
-    num: "05",
-    titre: "Exercices personnalisés",
-    corps:
-      "Des exercices ciblés entre les séances pour renforcer tes acquis et accélérer ta progression.",
-  },
-  {
-    num: "06",
-    titre: "Suivi de progression",
-    corps:
-      "Un accompagnement structuré pour mesurer tes progrès et ajuster le coaching au fil des trois mois.",
-  },
-  {
-    num: "07",
-    titre: "Confiance & Fluidité",
-    corps:
-      "Un travail ciblé pour t'aider à parler avec plus d'aisance, sans constamment chercher tes mots ni avoir peur de faire des erreurs.",
-  },
-  {
-    num: "08",
-    titre: "Podcasts & Ressources",
-    corps:
-      "Des podcasts et ressources sélectionnés pour continuer à pratiquer ton anglais entre les séances, à ton rythme.",
-    bonus: true,
-  },
-];
+/* — « CE QUI EST INCLUS » (instruction propriétaire Task 27) : les 8
+     cartes sont définies dans src/lib/inclusions.ts (source unique
+     partagée — Task 34 : la page Programme et la value stack de la
+     carte « Paiement unique » dérivent des MÊMES données, conformité
+     garantie et auto-synchronisée). — */
 
 function CeQuiEstInclus() {
   return (
@@ -1109,8 +1050,6 @@ function PourQui() {
      (instruction propriétaire) : le value stack reprend EXACTEMENT
      les 8 choses de la section « Ce qui est inclus » (mêmes intitulés
      que les cartes 01-08) en UNE SEULE colonne. — */
-const VALUE_STACK = INCLUS.map((item) => item.titre);
-
 function SectionPrix() {
   return (
     <Section className="on-dark relative overflow-hidden bg-black text-white">

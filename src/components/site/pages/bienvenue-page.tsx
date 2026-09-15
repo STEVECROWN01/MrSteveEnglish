@@ -1,10 +1,19 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { waLink } from "@/lib/site";
+import {
+  downloadReceipt,
+  readInscription,
+  receiptNumberFor,
+  sendReceiptCopyEmail,
+  type InscriptionData,
+} from "@/lib/receipt";
 import { Container, Eyebrow, Prose } from "../layout-primitives";
 import { Reveal } from "../reveal";
 import { IconCheck, WhatsAppGlyph } from "../icons";
+import { FireworksSnow } from "../fireworks-snow";
 
 /**
  * PAGE 8 — BIENVENUE (post-paiement) — instruction propriétaire Task 28.
@@ -24,13 +33,27 @@ import { IconCheck, WhatsAppGlyph } from "../icons";
  *   après paiement réussi dans son système de paiement.
  * — Page très FOCALISÉE : ni header ni footer global (aucun lien ou
  *   CTA secondaire) — un seul parcours : compréhension → WhatsApp.
- * — Design premium, élégant, minimaliste, cohérent avec le site
- *   (noir / blanc / rouge, Fraunces, animations légères Reveal —
- *   pas de confettis, pas d'animation excessive).
+ *
+ * TASK 34 (retour propriétaire) :
+ * — icône de confirmation + « Inscription confirmée » en ROUGE ;
+ * — particules de feu d'artifice tombant du haut vers le bas comme
+ *   une neige de fête (FireworksSnow — canvas plein viewport) ;
+ * — TOUTES les cartes de la page en VERRE TRANSPARENT exactement
+ *   comme celles du site (glass-card / glass-dark) ;
+ * — section « Tu viens de choisir de passer à l'action. » sur fond
+ *   GRIS (au lieu de noir) ;
+ * — titres des cartes « Voici ce qui se passe maintenant. » en rouge ;
+ * — « Maintenant, on va transformer cette décision en progression
+ *   réelle. » en rouge ;
+ * — « Tu es au bon endroit… » présenté comme un PAQUET DE CARTES
+ *   (cartes-fantômes décalées derrière la carte principale) ;
+ * — signature « — Coach Stevens » ;
+ * — BOUTON DE REÇU : téléchargement d'un reçu/facture PDF élégant,
+ *   personnalisé avec les données du client (persistées par le
+ *   formulaire d'inscription), cachet « PAYÉ » oblique vert pur — et
+ *   AU MÊME INSTANT, copie automatique envoyée à stevensakpovi@gmail.com.
  * — Le message WhatsApp est PRÉ-REMPLI mais jamais envoyé
  *   automatiquement : le client peut le modifier avant l'envoi.
- * — Aucune information privée n'est affichée (ni numéro de téléphone
- *   en clair, ni données de paiement, ni données client).
  */
 
 /** Message WhatsApp pré-rempli (libellé exact propriétaire Task 28). */
@@ -74,6 +97,20 @@ const STATUTS = [
   "Prochaine étape : contacter le coach",
 ];
 
+/** Données de repli si les données d'inscription ne sont plus dans le
+ *  navigateur (localStorage vidé, autre appareil…) — le reste reste
+ *  correct, les champs absents affichent « Non renseigné » sur le
+ *  PDF. */
+const FALLBACK_INSCRIPTION: InscriptionData = {
+  nom: "",
+  age: "",
+  profession: "",
+  email: "",
+  pays: "",
+  ville: "",
+  dateInscription: "",
+};
+
 /** Bouton WhatsApp principal / final — même lien, même message
  *  pré-rempli, modifiable par le client avant l'envoi. */
 function WhatsAppCta({
@@ -96,19 +133,97 @@ function WhatsAppCta({
   );
 }
 
+/** Petit bouton de téléchargement du reçu (version lien discret dans
+ *  la carte Récapitulatif). */
+function ReceiptLinkButton({
+  onClick,
+  state,
+}: {
+  onClick: () => void;
+  state: "idle" | "preparing" | "done" | "error";
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={state === "preparing"}
+      className="t-body mt-6 inline-flex items-center gap-2 font-medium text-red-button underline underline-offset-4 transition-opacity hover:opacity-80 disabled:opacity-60"
+    >
+      {state === "preparing"
+        ? "Préparation du reçu…"
+        : state === "done"
+          ? "Télécharger à nouveau mon reçu (PDF)"
+          : state === "error"
+            ? "Le téléchargement a échoué — réessayer"
+            : "Télécharger mon reçu / facture (PDF)"}
+    </button>
+  );
+}
+
 export function BienvenuePage() {
+  /* Données d'inscription persistées par le formulaire (client-only :
+     lecture au montage pour éviter tout écart d'hydratation). */
+  const [inscription, setInscription] = useState<InscriptionData | null>(null);
+  const [receiptState, setReceiptState] = useState<
+    "idle" | "preparing" | "done" | "error"
+  >("idle");
+  /** Garde-fou anti double-clic : un seul envoi email par 4 s. */
+  const lastClickRef = useRef(0);
+
+  useEffect(() => {
+    setInscription(readInscription());
+  }, []);
+
+  /** Téléchargement du reçu + copie email au coach AU MÊME INSTANT
+   *  (instruction propriétaire Task 34 : « exactement au même instant
+   *  où il le télécharge »). */
+  async function handleDownloadReceipt() {
+    const now = Date.now();
+    if (receiptState === "preparing" || now - lastClickRef.current < 4000) {
+      return;
+    }
+    lastClickRef.current = now;
+    const data = inscription ?? FALLBACK_INSCRIPTION;
+    const receiptNo = receiptNumberFor(data);
+    // Copie au coach — lancée AVANT/PENDANT la construction du PDF :
+    // les deux actions partent au même instant.
+    sendReceiptCopyEmail(data, receiptNo);
+    setReceiptState("preparing");
+    try {
+      await downloadReceipt(data);
+      setReceiptState("done");
+    } catch {
+      setReceiptState("error");
+    }
+  }
+
   return (
     <div className="on-dark flex min-h-screen flex-col bg-black text-white">
-      {/* — HERO : icône de confirmation élégante + label + titre — */}
+      {/* Task 34 (retour propriétaire) : particules de feu d'artifice
+          tombant du haut de la page vers le bas, comme une neige de
+          fête — canvas fixe, aucun blocage d'interaction. */}
+      <FireworksSnow />
+
+      {/* — HERO : icône de confirmation ROUGE (Task 34) + label ROUGE
+          + titre + bouton de reçu PDF — */}
       <section className="pb-8 pt-16 lg:pb-12 lg:pt-24">
         <Container className="text-center">
           <div className="hero-line hero-d1 flex justify-center">
-            <IconCheck className="h-12 w-12 text-white lg:h-14 lg:w-14" fg="#000000" />
+            <IconCheck
+              className="h-12 w-12 text-red-button lg:h-14 lg:w-14"
+              fg="#ffffff"
+            />
           </div>
-          <p className="hero-line hero-d2 mt-6 text-[0.75rem] font-medium uppercase tracking-[0.18em] text-white/70">
+          <p className="hero-line hero-d2 mt-6 text-[0.75rem] font-medium uppercase tracking-[0.18em] text-red-button">
             Inscription confirmée
           </p>
-          <h1 className="hero-line hero-d3 t-h1 mt-4 text-white">
+          {/* Task 34 (fix responsive) : « accompagnement. » en Fraunces
+              mesure ~310px à 36px — un seul mot plus large que le
+              conteneur (280px) sous ~360px de viewport → 10px de
+              débordement. Taille légèrement réduite sur très petits
+              écrans uniquement (au-dessus de 390px, le clamp t-h1
+              reprend et le mot tient). */}
+          <h1 className="hero-line hero-d3 t-h1 mt-4 text-white max-[389px]:text-[1.9rem]">
             Bienvenue dans ton accompagnement.
           </h1>
           <p className="hero-line hero-d4 t-body mx-auto mt-6 max-w-[38rem] text-white/75">
@@ -116,14 +231,59 @@ export function BienvenuePage() {
             contentes plus de comprendre — mais que tu oses réellement
             parler.
           </p>
+
+          {/* Task 34 : reçu/facture PDF officiel — cachet PAYÉ vert
+              oblique, personnalisé, copie automatique au coach. */}
+          <div className="hero-line hero-d5 mt-10">
+            <button
+              type="button"
+              onClick={handleDownloadReceipt}
+              disabled={receiptState === "preparing"}
+              className="btn btn-primary t-btn inline-flex items-center gap-3 text-[1.0625rem] disabled:cursor-not-allowed disabled:opacity-70"
+            >
+              <svg
+                aria-hidden="true"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="h-5 w-5"
+              >
+                <path d="M12 3v12" />
+                <path d="m7 11 5 5 5-5" />
+                <path d="M5 21h14" />
+              </svg>
+              {receiptState === "preparing"
+                ? "Préparation de ton reçu…"
+                : receiptState === "error"
+                  ? "Réessayer le téléchargement"
+                  : "Télécharger mon reçu / facture (PDF)"}
+            </button>
+            <p className="t-caption mx-auto mt-4 max-w-[34rem] text-white/60">
+              Reçu officiel personnalisé — cachet PAYÉ. Au moment du
+              téléchargement, une copie est transmise automatiquement à
+              ton coach.
+            </p>
+          </div>
         </Container>
       </section>
 
-      {/* — CONFIRMATION — */}
-      <section className="py-8 lg:py-10">
-        <Container>
+      {/* — CONFIRMATION — carte VERRE (Task 34 : toutes les cartes de
+          la page en verre transparent comme sur le site) — */}
+      <section className="relative overflow-hidden py-8 lg:py-10">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute left-[10%] top-[-2rem] h-[26rem] w-[26rem] rounded-full bg-[radial-gradient(circle,rgba(255,26,26,0.28)_0%,transparent_62%)] blur-2xl"
+        />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute right-[10%] top-[2rem] h-[28rem] w-[28rem] rounded-full bg-[radial-gradient(circle,rgba(96,110,190,0.28)_0%,transparent_62%)] blur-2xl"
+        />
+        <Container className="relative">
           <Reveal>
-            <div className="mx-auto max-w-[42rem] rounded-[12px] border border-white/20 bg-white/[0.05] p-6 text-center md:p-8">
+            <div className="glass-card glass-dark mx-auto max-w-[42rem] p-6 text-center md:p-8">
               <p className="t-body text-white/90">
                 Ton paiement a bien été effectué. Ta place dans le programme
                 d&apos;accompagnement de 3 mois est maintenant confirmée.
@@ -138,20 +298,31 @@ export function BienvenuePage() {
         </Container>
       </section>
 
-      {/* — RAPPEL DU PROGRAMME — */}
-      <section className="py-10 lg:py-14">
-        <Container>
+      {/* — RAPPEL DU PROGRAMME — Task 34 (retour propriétaire) : la
+          section passe sur fond GRIS (au lieu de noir) ; les cartes du
+          récapitulatif sont en VERRE TRANSPARENT blanc, exactement
+          comme les cartes verre du site sur fond clair. — */}
+      <section className="relative overflow-hidden bg-[#F4F4F6] py-12 text-black lg:py-16">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -left-24 top-[4rem] h-[32rem] w-[32rem] rounded-full bg-[radial-gradient(circle,rgba(255,26,26,0.30)_0%,transparent_62%)] blur-2xl"
+        />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -right-24 top-[16rem] h-[36rem] w-[36rem] rounded-full bg-[radial-gradient(circle,rgba(28,28,64,0.30)_0%,transparent_62%)] blur-2xl"
+        />
+        <Container className="relative">
           <Reveal>
             <Prose className="mx-auto max-w-[42rem] text-center">
-              <h2 className="t-h2 text-white">
+              <h2 className="t-h2 text-black">
                 Tu viens de choisir de passer à l&apos;action.
               </h2>
-              <p className="t-body mt-6 text-white/80">
+              <p className="t-body mt-6 text-black/70">
                 Pendant ces trois mois, nous allons travailler ton anglais
                 de manière progressive, pratique et adaptée à ton niveau,
                 tes difficultés et tes objectifs.
               </p>
-              <p className="t-body text-white/80">
+              <p className="t-body text-black/70">
                 L&apos;objectif n&apos;est pas simplement de connaître
                 davantage de règles. L&apos;objectif est de te permettre de
                 mieux comprendre, de mieux t&apos;exprimer et surtout de
@@ -162,11 +333,11 @@ export function BienvenuePage() {
           <div className="mx-auto mt-10 grid max-w-[46rem] gap-4 sm:grid-cols-2 lg:mt-12">
             {PROGRAMME_RECAP.map((item, i) => (
               <Reveal key={item.titre} delay={i * 100}>
-                <div className="h-full rounded-[12px] border border-white/15 bg-white/[0.04] p-6">
-                  <p className="font-display text-[1.25rem] font-medium leading-snug text-white md:text-[1.375rem]">
+                <div className="glass-card card-hover h-full p-6">
+                  <p className="font-display text-[1.25rem] font-medium leading-snug text-black md:text-[1.375rem]">
                     {item.titre}
                   </p>
-                  <p className="t-caption mt-2 text-white/70">{item.texte}</p>
+                  <p className="t-caption mt-2 text-black/60">{item.texte}</p>
                 </div>
               </Reveal>
             ))}
@@ -174,9 +345,18 @@ export function BienvenuePage() {
         </Container>
       </section>
 
-      {/* — ET MAINTENANT ? — 3 étapes — */}
-      <section className="py-10 lg:py-14">
-        <Container>
+      {/* — ET MAINTENANT ? — 3 étapes — Task 34 : cartes en VERRE
+          sombre + titres ROUGES (retour propriétaire). — */}
+      <section className="relative overflow-hidden py-12 lg:py-16">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute left-[14%] top-[2rem] h-[30rem] w-[30rem] rounded-full bg-[radial-gradient(circle,rgba(255,26,26,0.24)_0%,transparent_62%)] blur-2xl"
+        />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute right-[14%] bottom-[2rem] h-[32rem] w-[32rem] rounded-full bg-[radial-gradient(circle,rgba(96,110,190,0.24)_0%,transparent_62%)] blur-2xl"
+        />
+        <Container className="relative">
           <Reveal>
             <h2 className="t-h2 text-center text-white">
               Voici ce qui se passe maintenant.
@@ -185,11 +365,11 @@ export function BienvenuePage() {
           <div className="mx-auto mt-10 grid max-w-[60rem] gap-6 md:grid-cols-3 lg:mt-14">
             {ETAPES.map((e, i) => (
               <Reveal key={e.num} delay={i * 120}>
-                <div className="h-full rounded-[12px] border border-white/15 bg-white/[0.04] p-6 lg:p-7">
+                <div className="glass-card glass-dark card-hover h-full p-6 lg:p-7">
                   <p className="font-display text-[2rem] font-medium leading-none text-white/30">
                     {e.num}
                   </p>
-                  <h3 className="t-h3 mt-5 text-white">{e.titre}</h3>
+                  <h3 className="t-h3 mt-5 text-red-button">{e.titre}</h3>
                   <p className="t-body mt-3 text-white/75">{e.texte}</p>
                 </div>
               </Reveal>
@@ -221,39 +401,63 @@ export function BienvenuePage() {
         </Container>
       </section>
 
-      {/* — RASSURANCE — */}
-      <section className="py-10 lg:py-14">
-        <Container>
+      {/* — RASSURANCE — Task 34 (retour propriétaire) : la partie
+          « Tu es au bon endroit… » est présentée comme un PAQUET DE
+          CARTES : deux cartes-fantômes décalées et inclinées derrière
+          la carte de verre principale qui porte tout le message. — */}
+      <section className="relative overflow-hidden py-12 lg:py-16">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute left-[8%] bottom-[-4rem] h-[30rem] w-[30rem] rounded-full bg-[radial-gradient(circle,rgba(255,26,26,0.26)_0%,transparent_62%)] blur-2xl"
+        />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute right-[8%] top-[1rem] h-[32rem] w-[32rem] rounded-full bg-[radial-gradient(circle,rgba(28,28,64,0.30)_0%,transparent_62%)] blur-2xl"
+        />
+        <Container className="relative">
           <Reveal>
-            <div className="mx-auto max-w-[42rem] text-center">
-              <h2 className="t-h2 text-white">Tu es au bon endroit.</h2>
-              <div className="mt-8 space-y-3">
-                <p className="t-quote text-white/85">
-                  Tu n&apos;as pas besoin d&apos;avoir un anglais parfait
-                  pour commencer.
+            <div className="relative mx-auto max-w-[42rem]">
+              {/* cartes-fantômes du paquet (purement décoratives) */}
+              <div
+                aria-hidden="true"
+                className="absolute inset-0 translate-x-4 translate-y-4 rotate-[1.6deg] rounded-[12px] border border-white/15 bg-white/[0.03]"
+              />
+              <div
+                aria-hidden="true"
+                className="absolute inset-0 -translate-x-2.5 translate-y-2.5 -rotate-[1.2deg] rounded-[12px] border border-white/20 bg-white/[0.05]"
+              />
+              {/* carte du dessus — le message complet */}
+              <div className="glass-card glass-dark relative p-8 text-center md:p-12">
+                <h2 className="t-h2 text-white">Tu es au bon endroit.</h2>
+                <div className="mt-8 space-y-3">
+                  <p className="t-quote text-white/85">
+                    Tu n&apos;as pas besoin d&apos;avoir un anglais parfait
+                    pour commencer.
+                  </p>
+                  <p className="t-quote text-white/85">
+                    Tu n&apos;as pas besoin d&apos;avoir confiance avant de
+                    commencer.
+                  </p>
+                  <p className="t-quote text-white/85">
+                    Et tu n&apos;as pas besoin de tout savoir.
+                  </p>
+                </div>
+                <p className="t-body mt-8 font-medium text-white">
+                  C&apos;est précisément pour cela que tu es ici.
                 </p>
-                <p className="t-quote text-white/85">
-                  Tu n&apos;as pas besoin d&apos;avoir confiance avant de
-                  commencer.
-                </p>
-                <p className="t-quote text-white/85">
-                  Et tu n&apos;as pas besoin de tout savoir.
+                <p className="t-body mt-4 text-white/75">
+                  Nous allons partir de ton niveau actuel et avancer
+                  progressivement, avec une méthode adaptée à tes besoins et
+                  à tes objectifs.
                 </p>
               </div>
-              <p className="t-body mt-8 font-medium text-white">
-                C&apos;est précisément pour cela que tu es ici.
-              </p>
-              <p className="t-body mt-4 text-white/75">
-                Nous allons partir de ton niveau actuel et avancer
-                progressivement, avec une méthode adaptée à tes besoins et
-                à tes objectifs.
-              </p>
             </div>
           </Reveal>
         </Container>
       </section>
 
-      {/* — VALORISER LA DÉCISION — */}
+      {/* — VALORISER LA DÉCISION — Task 34 : la phrase clé en ROUGE
+          (retour propriétaire). — */}
       <section className="py-10 lg:py-14">
         <Container>
           <Reveal>
@@ -268,7 +472,7 @@ export function BienvenuePage() {
               <p className="t-body text-white/80">
                 Toi, tu viens de décider de faire quelque chose à ce sujet.
               </p>
-              <p className="t-body font-medium text-white">
+              <p className="t-body mt-6 font-medium text-red-button">
                 Maintenant, on va transformer cette décision en progression
                 réelle.
               </p>
@@ -277,50 +481,65 @@ export function BienvenuePage() {
         </Container>
       </section>
 
-      {/* — RÉCAPITULATIF : carte élégante blanche (écho de la carte
-          offre du site — contraste premium sur fond noir) — */}
-      <section className="py-10 lg:py-14">
-        <Container>
+      {/* — RÉCAPITULATIF — Task 34 : carte en VERRE TRANSPARENT sombre
+          (retour propriétaire : toutes les cartes de la page en verre,
+          exactement comme les cartes verre du site). — */}
+      <section className="relative overflow-hidden py-12 lg:py-16">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute left-[16%] top-[1rem] h-[28rem] w-[28rem] rounded-full bg-[radial-gradient(circle,rgba(255,26,26,0.24)_0%,transparent_62%)] blur-2xl"
+        />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute right-[16%] bottom-[1rem] h-[30rem] w-[30rem] rounded-full bg-[radial-gradient(circle,rgba(96,110,190,0.24)_0%,transparent_62%)] blur-2xl"
+        />
+        <Container className="relative">
           <Reveal>
-            <div className="card-base mx-auto max-w-[36rem] p-6 md:p-10">
-              <Eyebrow>Récapitulatif</Eyebrow>
-              <h2 className="t-h3 mt-3 text-black">Ton accompagnement</h2>
-              <dl className="mt-6 divide-y divide-grey-line">
+            <div className="glass-card glass-dark mx-auto max-w-[36rem] p-6 md:p-10">
+              <Eyebrow className="text-white/75">Récapitulatif</Eyebrow>
+              <h2 className="t-h3 mt-3 text-white">Ton accompagnement</h2>
+              <dl className="mt-6 divide-y divide-white/15">
                 <div className="flex flex-col gap-1 py-4 sm:flex-row sm:items-baseline sm:justify-between sm:gap-6">
-                  <dt className="t-caption text-grey-mid">Programme</dt>
-                  <dd className="t-body font-medium text-black">
+                  <dt className="t-caption text-white/55">Programme</dt>
+                  <dd className="t-body font-medium text-white">
                     De <span className="text-red-button">Comprendre</span> à{" "}
                     <span className="text-red-button">Parler</span>
                   </dd>
                 </div>
                 <div className="flex flex-col gap-1 py-4 sm:flex-row sm:items-baseline sm:justify-between sm:gap-6">
-                  <dt className="t-caption text-grey-mid">Durée</dt>
-                  <dd className="t-body font-medium text-black">3 mois</dd>
+                  <dt className="t-caption text-white/55">Durée</dt>
+                  <dd className="t-body font-medium text-white">3 mois</dd>
                 </div>
                 <div className="flex flex-col gap-1 py-4 sm:flex-row sm:items-baseline sm:justify-between sm:gap-6">
-                  <dt className="t-caption text-grey-mid">Format</dt>
-                  <dd className="t-body font-medium text-black">
+                  <dt className="t-caption text-white/55">Format</dt>
+                  <dd className="t-body font-medium text-white">
                     Coaching en ligne personnalisé
                   </dd>
                 </div>
                 <div className="flex flex-col gap-1 py-4 sm:flex-row sm:items-baseline sm:justify-between sm:gap-6">
-                  <dt className="t-caption text-grey-mid">Objectif</dt>
-                  <dd className="t-body font-medium text-black">
+                  <dt className="t-caption text-white/55">Objectif</dt>
+                  <dd className="t-body font-medium text-white">
                     Développer ton expression orale et gagner en aisance en
                     anglais
                   </dd>
                 </div>
               </dl>
-              <div className="mt-6 border-t border-grey-line pt-6">
-                <p className="t-caption text-grey-mid">Statut</p>
+              <div className="mt-6 border-t border-white/15 pt-6">
+                <p className="t-caption text-white/55">Statut</p>
                 <ul className="mt-3 space-y-2.5">
                   {STATUTS.map((s) => (
                     <li key={s} className="flex items-center gap-3">
                       <IconCheck className="h-5 w-5 text-success" fg="#ffffff" />
-                      <span className="t-body text-black">{s}</span>
+                      <span className="t-body text-white">{s}</span>
                     </li>
                   ))}
                 </ul>
+              </div>
+              <div className="mt-6 border-t border-white/15 pt-6 text-center">
+                <ReceiptLinkButton
+                  onClick={handleDownloadReceipt}
+                  state={receiptState}
+                />
               </div>
             </div>
           </Reveal>
@@ -341,8 +560,10 @@ export function BienvenuePage() {
               <p className="t-body text-white/80">
                 À très bientôt pour la suite.
               </p>
+              {/* Task 34 (retour propriétaire) : « Stevens » →
+                  « Coach Stevens ». */}
               <p className="font-display mt-6 text-[1.125rem] italic text-white/85">
-                — Stevens
+                — Coach Stevens
               </p>
             </div>
           </Reveal>
