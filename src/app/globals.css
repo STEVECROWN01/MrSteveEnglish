@@ -635,15 +635,17 @@
   }
 
   /* — BANDE DÉFILANTE DES MOTS-CLÉS (instruction propriétaire
-     Task 39) : à la limite entre « Pour qui ? » (fond clair) et
-     « L'offre » (fond noir) — tous les mots-clés du site défilent de
-     la DROITE vers la GAUCHE, en continu, séparés par des points
-     rouges. La piste porte DEUX copies identiques de la liste et
-     translateX(-50 %) avance d'exactement une copie → boucle
-     parfaite, sans saut (chaque item porte son espacement de fin
-     pour que la « couture » garde le même rythme). Le fondu latéral
-     (masque sur le conteneur STATIQUE, pas sur la piste animée)
-     évite la coupe brutale aux bords de l'écran. — */
+     Task 39, couleurs revues Task 41) : à la limite entre « Pour
+     qui ? » (fond clair) et « L'offre » (fond noir) — tous les
+     mots-clés du site défilent de la DROITE vers la GAUCHE, en
+     continu, séparés par des points NOIRS sur fond ROUGE (les
+     couleurs sont portées par les utilitaires Tailwind du composant
+     BandeMotsCles). La piste porte DEUX copies identiques de la
+     liste et translateX(-50 %) avance d'exactement une copie →
+     boucle parfaite, sans saut (chaque item porte son espacement
+     de fin pour que la « couture » garde le même rythme). Le fondu
+     latéral (masque sur le conteneur STATIQUE, pas sur la piste
+     animée) évite la coupe brutale aux bords de l'écran. — */
   .marquee-band {
     overflow: hidden;
   }

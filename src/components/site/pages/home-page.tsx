@@ -1050,17 +1050,18 @@ function PourQui() {
      (instruction propriétaire) : le value stack reprend EXACTEMENT
      les 8 choses de la section « Ce qui est inclus » (mêmes intitulés
      que les cartes 01-08) en UNE SEULE colonne. — */
-/* — BANDE DÉFILANTE DES MOTS-CLÉS (instruction propriétaire Task 39) :
-     TOUS les mots-clés / termes du site — pas juste quelques-uns —
-     défilent de la DROITE vers la GAUCHE en continu, séparés par des
-     POINTS ROUGES, dans une bande posée exactement à la limite entre
-     la section « Pour qui ? » (fond clair) et la section « L'offre »
-     (fond noir). Le vocabulaire est celui du site lui-même : nom du
-     programme, rythme, prix, paiement unique, les 8 inclusions,
-     garanties, promesse du hero. La piste porte deux copies de la
+/* — BANDE DÉFILANTE DES MOTS-CLÉS (instruction propriétaire Task 39,
+     couleurs revues Task 41) : TOUS les mots-clés / termes du site —
+     pas juste quelques-uns — défilent de la DROITE vers la GAUCHE en
+     continu, séparés par des POINTS NOIRS, dans une bande ROUGE
+     (--red-button) posée exactement à la limite entre la section
+     « Pour qui ? » (fond clair) et la section « L'offre » (fond noir).
+     Le vocabulaire est celui du site lui-même : nom du programme,
+     rythme, prix, paiement unique, les 8 inclusions, garanties,
+     promesse du hero. La piste porte deux copies de la
      liste ; l'animation CSS (globals.css .marquee-track) translate
      de −50 % = exactement une copie → boucle sans couture. Chaque
-     item finit par son point rouge + son espacement (pr-8) pour un
+     item finit par son point noir + son espacement (pr-8) pour un
      rythme uniforme y compris à la jonction des deux copies. — */
 const MOTS_CLES = [
   "De Comprendre à Parler",
@@ -1093,7 +1094,7 @@ function BandeMotsCles() {
   return (
     <section
       aria-label="Les mots-clés du programme"
-      className="marquee-band on-dark relative border-b border-white/10 bg-black py-4 text-white md:py-5"
+      className="marquee-band on-dark relative border-b border-black/20 bg-red-button py-4 text-white md:py-5"
     >
       <div className="marquee-viewport">
         <div className="marquee-track items-center">
@@ -1108,7 +1109,7 @@ function BandeMotsCles() {
               </span>
               <span
                 aria-hidden="true"
-                className="h-1.5 w-1.5 shrink-0 rounded-full bg-red-button"
+                className="h-1.5 w-1.5 shrink-0 rounded-full bg-black"
               />
             </span>
           ))}
