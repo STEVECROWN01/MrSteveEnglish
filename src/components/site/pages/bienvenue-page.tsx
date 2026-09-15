@@ -301,8 +301,24 @@ export function BienvenuePage() {
       {/* — RAPPEL DU PROGRAMME — Task 34 (retour propriétaire) : la
           section passe sur fond GRIS (au lieu de noir) ; les cartes du
           récapitulatif sont en VERRE TRANSPARENT blanc, exactement
-          comme les cartes verre du site sur fond clair. — */}
+          comme les cartes verre du site sur fond clair. —
+          Task 35 (retour propriétaire) : la limite entre la page noire
+          et cette section grise est OBLIQUE, exactement comme la
+          limite noir→blanc de la section « Ma méthode » de l'accueil
+          (même SVG, même 24 px mobile / 32 px desktop : le noir de la
+          section précédente pénètre le haut-gauche de la section
+          claire, bord montant bas-gauche → haut-droite). — */}
       <section className="relative overflow-hidden bg-[#F4F4F6] py-12 text-black lg:py-16">
+        {/* Limite de section oblique (identique à l'accueil —
+            home-page.tsx section Solution). */}
+        <svg
+          aria-hidden="true"
+          viewBox="0 0 100 100"
+          preserveAspectRatio="none"
+          className="absolute inset-x-0 top-0 block h-6 w-full lg:h-8"
+        >
+          <polygon points="0,0 100,0 0,100" fill="#000000" />
+        </svg>
         <div
           aria-hidden="true"
           className="pointer-events-none absolute -left-24 top-[4rem] h-[32rem] w-[32rem] rounded-full bg-[radial-gradient(circle,rgba(255,26,26,0.30)_0%,transparent_62%)] blur-2xl"
