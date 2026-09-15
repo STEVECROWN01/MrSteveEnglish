@@ -667,7 +667,7 @@
   .marquee-track {
     display: flex;
     width: max-content;
-    animation: marquee-scroll 80s linear infinite;
+    animation: marquee-scroll 96s linear infinite;
     will-change: transform;
   }
   @keyframes marquee-scroll {
