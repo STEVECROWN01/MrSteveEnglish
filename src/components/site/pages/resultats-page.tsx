@@ -146,7 +146,7 @@ export function ResultatsPage() {
 
           <Reveal className="mt-10">
             <span data-wa-cta className="inline-flex">
-              <CtaButton href="#/contact">{CTA_LABELS.hero}</CtaButton>
+              <CtaButton href="/contact">{CTA_LABELS.hero}</CtaButton>
             </span>
           </Reveal>
         </Container>
@@ -248,7 +248,7 @@ export function ResultatsPage() {
           </Reveal>
           <Reveal className="mt-10 flex justify-center">
             <SecondaryLink
-              href="#/programme"
+              href="/programme"
               className="btn-invert-hover"
             >
               {CTA_LABELS.decouvrir}

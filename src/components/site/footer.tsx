@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { CTA_LABELS, SOCIAL_LINKS } from "@/lib/site";
 import { Container } from "./layout-primitives";
 import { CarteUrgenceEthique } from "./carte-inaction";
@@ -8,6 +9,9 @@ import { CarteUrgenceEthique } from "./carte-inaction";
  * WhatsApp (qui dirige vers le formulaire de contact, le numéro
  * n'est jamais affiché sur le site), YouTube — navigation complète
  * du site, mentions légales.
+ * Task 48 (vraies pages Google) : liens internes en CHEMINS RÉELS
+ * (/a-propos, /programme…) rendus par <Link> — navigation douce +
+ * préchargement, et maillage interne indexable par Google.
  */
 
 /** Icône WhatsApp officielle (simple-icons, CC0). */
@@ -38,12 +42,12 @@ function FacebookIcon() {
 }
 
 const FOOTER_LINKS = [
-  { label: "Méthode", hash: "#/?section=methode" },
-  { label: "À propos", hash: "#/a-propos" },
-  { label: "Résultats", hash: "#/resultats" },
-  { label: "Programme", hash: "#/programme" },
-  { label: "FAQ", hash: "#/?section=faq" },
-  { label: "Inscription", hash: "#/contact" },
+  { label: "Méthode", href: "/?section=methode", section: true },
+  { label: "À propos", href: "/a-propos" },
+  { label: "Résultats", href: "/resultats" },
+  { label: "Programme", href: "/programme" },
+  { label: "FAQ", href: "/?section=faq", section: true },
+  { label: "Inscription", href: "/contact" },
 ];
 
 /** Lien social carré, accessible, target externe. */
@@ -57,33 +61,48 @@ function SocialLink({
   href: string;
   label: string;
   external?: boolean;
-  /** Navigation interne : si le hash est déjà la cible, AUCUN hashchange
-   *  ne se déclenche → remontée manuelle douce en haut de page (même règle
-   *  que le logo du header — instruction propriétaire Task 27 : l'icône
-   *  WhatsApp doit diriger vers la page contact ET remonter en haut). */
+  /** Navigation interne (icône WhatsApp → page contact) : si on y est
+   *  déjà, AUCUNE navigation ne se déclenche → remontée manuelle douce
+   *  en haut de page (même règle que le logo du header — instruction
+   *  propriétaire Task 27 : l'icône WhatsApp doit diriger vers la page
+   *  contact ET remonter en haut). */
   internalAnchor?: boolean;
   children: React.ReactNode;
 }) {
+  const inner = (
+    <span className="flex h-[44px] w-[44px] items-center justify-center rounded-[8px] text-white/80 transition-colors duration-[240ms] hover:bg-white hover:text-black">
+      {children}
+    </span>
+  );
+  if (external) {
+    return (
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label={label}
+      >
+        {inner}
+      </a>
+    );
+  }
   return (
-    <a
+    <Link
       href={href}
-      {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
       aria-label={label}
       onClick={
         internalAnchor
           ? (e) => {
-              const h = window.location.hash;
-              if (h === "" || h === "#" || h === href) {
+              if (window.location.pathname === href) {
                 e.preventDefault();
                 window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
               }
             }
           : undefined
       }
-      className="flex h-[44px] w-[44px] items-center justify-center rounded-[8px] text-white/80 transition-colors duration-[240ms] hover:bg-white hover:text-black"
     >
-      {children}
-    </a>
+      {inner}
+    </Link>
   );
 }
 
@@ -146,7 +165,7 @@ export function Footer({
                 <FacebookIcon />
               </SocialLink>
               <SocialLink
-                href="#/contact"
+                href="/contact"
                 label="WhatsApp — contacter Stevens AKPOVI via le formulaire"
                 internalAnchor
               >
@@ -166,20 +185,21 @@ export function Footer({
             <nav aria-label="Navigation pied de page">
               <ul className="grid grid-cols-2 gap-x-8 gap-y-3 sm:flex sm:flex-wrap sm:items-center sm:gap-6">
                 {FOOTER_LINKS.map((link) => (
-                  <li key={link.hash}>
-                    <a
-                      href={link.hash}
+                  <li key={link.href}>
+                    <Link
+                      href={link.href}
+                      scroll={link.section ? false : undefined}
                       className="t-caption text-white/70 underline-offset-4 transition-colors hover:text-white hover:underline"
                     >
                       {link.label}
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>
             </nav>
-            <a href="#/contact" data-wa-cta className="btn btn-primary t-btn">
+            <Link href="/contact" data-wa-cta className="btn btn-primary t-btn">
               {CTA_LABELS.decouvrirCourt}
-            </a>
+            </Link>
           </div>
         </div>
 

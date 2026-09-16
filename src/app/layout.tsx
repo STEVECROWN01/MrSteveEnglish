@@ -27,15 +27,16 @@ const publicSans = Public_Sans({
    mise en ligne. */
 const SITE_URL = "https://mrsteveenglish.vercel.app";
 
+/* (Task 48) Les métadonnées ICI ne servent plus que de VALEURS PAR
+   DÉFAUT : chaque page (app/<route>/page.tsx) exporte ses propres title /
+   description / canonical / openGraph — c'est la base du référencement
+   multi-pages. */
 export const metadata: Metadata = {
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_SITE_URL ?? SITE_URL,
   ),
-  // Page unique (SPA hash-routée) : canonical vers la racine (Task 33).
-  alternates: {
-    canonical: "/",
-  },
-  title: "Stevens AKPOVI — Coach d'anglais",
+  title:
+    "Coach d'anglais en ligne pour francophones — Stevens AKPOVI",
   description:
     "Programme « De Comprendre à Parler » — 03 mois de coaching d'anglais personnalisé, 70 000 FCFA, paiement unique. Parle anglais avec confiance, en t'exprimant vraiment, dès la première séance.",
   icons: {
@@ -70,10 +71,12 @@ export const viewport: Viewport = {
   themeColor: "#000000",
 };
 
-/* Données structurées JSON-LD (Task 33 — SEO) : Person (le coach) +
-   Service (le programme) avec Offer (prix réel, XOF = franc CFA).
-   Aide Google à comprendre QUI vend QUOI et à combien — rich snippets
-   potentiels sur les requêtes coach d'anglais. */
+/* Données structurées JSON-LD (Task 33 — SEO, enrichi Task 48) :
+   Person (le coach, avec sameAs vers ses réseaux officiels) +
+   Service (le programme) avec Offer (prix réel, XOF = franc CFA) et
+   areaServed = Afrique francophone (cible commerciale déclarée par le
+   propriétaire). Aide Google à comprendre QUI vend QUOI, À QUI et À
+   COMBIEN — rich snippets potentiels sur les requêtes coach d'anglais. */
 const jsonLd = {
   "@context": "https://schema.org",
   "@graph": [
@@ -88,6 +91,10 @@ const jsonLd = {
       description:
         "Coach d'anglais en ligne pour francophones — accompagne ceux qui comprennent l'anglais mais n'osent pas le parler.",
       knowsLanguage: ["fr", "en"],
+      sameAs: [
+        "https://www.facebook.com/Mr.SteveEnglish",
+        "https://www.youtube.com/@Mr.SteveEnglish",
+      ],
     },
     {
       "@type": "Service",
@@ -95,7 +102,26 @@ const jsonLd = {
       name: "Programme « De Comprendre à Parler »",
       serviceType: "Coaching d'anglais personnalisé en ligne",
       provider: { "@id": `${SITE_URL}/#person` },
-      areaServed: "Afrique francophone",
+      areaServed: [
+        "Togo",
+        "Bénin",
+        "Côte d'Ivoire",
+        "Sénégal",
+        "Burkina Faso",
+        "Mali",
+        "Niger",
+        "Guinée",
+        "Cameroun",
+        "Gabon",
+        "Congo",
+        "République démocratique du Congo",
+        "Tchad",
+        "Maroc",
+        "Algérie",
+        "Tunisie",
+        "Afrique francophone",
+      ].map((name) => ({ "@type": "Country", name })),
+      availableLanguage: ["fr", "en"],
       inLanguage: "fr",
       description:
         "03 mois de coaching d'anglais personnalisé en ligne — trois séances de 1h30 par semaine, pour passer de la compréhension à la parole.",
@@ -103,7 +129,7 @@ const jsonLd = {
         "@type": "Offer",
         price: "70000",
         priceCurrency: "XOF",
-        url: `${SITE_URL}/#/programme`,
+        url: `${SITE_URL}/programme`,
         description:
           "03 mois de coaching d'anglais personnalisé — paiement unique",
         availability: "https://schema.org/InStock",
@@ -122,20 +148,24 @@ export default function RootLayout({
       <body
         className={`${fraunces.variable} ${publicSans.variable} antialiased bg-background text-foreground`}
       >
-        {/* Task 36 (anti-flash deep-link) : script inline PARSEUR-BLOQUANT,
-            exécuté AVANT le premier rendu. Le shell statique rend toujours
-            l'accueil ; si le hash vise une page secondaire connue
-            (rechargement direct de …/#/bienvenue, #/contact…), on pose
-            data-deeplink sur <html> : la règle CSS de globals.css masque
-            le shell accueil et page.tsx le révèle dès que la bonne page
-            est rendue. Repli : le script retire lui-même l'attribut après
-            4 s si l'hydratation n'a pas abouti (le site n'est jamais
-            laissé masqué). NB : « faq » rend l'accueil → pas de masquage ;
-            les hashs inconnus ne masquent rien non plus. */}
+        {/* Task 48 — COMPATIBILITÉ ANCIENS LIENS #/ (critique) :
+            script inline PARSEUR-BLOQUANT, exécuté AVANT le premier
+            rendu sur chaque page. Des centaines de liens partagés
+            (WhatsApp, réseaux, URL de retour du système de paiement
+            configurée par le propriétaire) pointent vers l'ancien
+            routage hash : …/#/programme, …/#/bienvenue, …/#/faq,
+            …/#/?section=methode… Le site est désormais multi-pages
+            (/programme, /a-propos…) : ce script traduit le hash en
+            chemin réel via location.replace (sans polluer l'historique
+            — le bouton Retour reste fonctionnel). Si la page demandée
+            est déjà la bonne, le hash est simplement nettoyé sans
+            rechargement. Les ancres internes pures (#contact du sticky
+            sur la page Inscription, #main-content) ne sont PAS touchées
+            — elles ne commencent pas par "#/". */}
         <script
           dangerouslySetInnerHTML={{
             __html:
-              "(function(){try{var h=(location.hash||'').replace(/^#\\/?/,'').split('?')[0].replace(/\\/+$/,'');var k={'a-propos':1,'resultats':1,'programme':1,'offres':1,'contact':1,'bienvenue':1};if(!k[h])return;document.documentElement.setAttribute('data-deeplink',h);setTimeout(function(){document.documentElement.removeAttribute('data-deeplink')},4000)}catch(e){}})();",
+              "(function(){try{var h=location.hash||'';if(h.indexOf('#/')!==0)return;var key=h.slice(2).split('?')[0].replace(/\\/+$/,'');var q=h.split('?')[1]||'';var map={'a-propos':'/a-propos','resultats':'/resultats','programme':'/programme','offres':'/programme','contact':'/contact','bienvenue':'/bienvenue','faq':'/?section=faq'};var target;if(key===''){if(!q)return;var sp=new URLSearchParams(q);var s=sp.get('section');if(!s)return;target='/?section='+encodeURIComponent(s);}else{target=map[key];if(!target)return;if(q&&key!=='faq')target+=(target.indexOf('?')>=0?'&':'?')+q;}var tp=target.split('?')[0]||'/';if(location.pathname===tp){history.replaceState(history.state,'',target);return;}location.replace(target);}catch(e){}})();",
           }}
         />
         {children}

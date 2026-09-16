@@ -1,6 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
+import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 /**
@@ -10,6 +11,10 @@ import { cn } from "@/lib/utils";
  *   (formulaire) — jamais directement à WhatsApp.
  * — SecondaryLink : contour noir 1.5px, fond transparent, texte noir.
  *   Navigation interne entre les pages du site.
+ * Task 48 (vraies pages) : les href internes (commençant par « / »)
+ * sont rendus par <Link> Next.js — navigation douce + préchargement
+ * automatique ; les href externes (http…) restent des <a> classiques
+ * dans un nouvel onglet.
  */
 export function CtaButton({
   href,
@@ -22,11 +27,21 @@ export function CtaButton({
   className?: string;
   ariaLabel?: string;
 }) {
+  const cls = cn("btn btn-primary t-btn", className);
+  if (href.startsWith("/")) {
+    return (
+      <Link href={href} aria-label={ariaLabel} className={cls}>
+        {children}
+      </Link>
+    );
+  }
   return (
     <a
       href={href}
+      target="_blank"
+      rel="noopener noreferrer"
       aria-label={ariaLabel}
-      className={cn("btn btn-primary t-btn", className)}
+      className={cls}
     >
       {children}
     </a>
@@ -42,8 +57,21 @@ export function SecondaryLink({
   children: ReactNode;
   className?: string;
 }) {
+  const cls = cn("btn btn-secondary t-btn", className);
+  if (href.startsWith("/")) {
+    return (
+      <Link href={href} className={cls}>
+        {children}
+      </Link>
+    );
+  }
   return (
-    <a href={href} className={cn("btn btn-secondary t-btn", className)}>
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={cls}
+    >
       {children}
     </a>
   );

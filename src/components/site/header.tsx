@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { useScrolled } from "@/lib/motion";
-import { useHashRoute, useHashSection, type RouteId } from "@/lib/router";
+import { usePathRoute, useSectionParam, type RouteId } from "@/lib/router";
 import { Container } from "./layout-primitives";
 
 /**
@@ -15,30 +16,43 @@ import { Container } from "./layout-primitives";
  * Logo « Stevens AKPOVI » à gauche, liens à droite + CTA rouge
  * « Découvrir le programme » vers la page Programme. Mobile : logo +
  * bouton menu (hamburger) — panneau déroulant noir.
- * Le lien « Méthode » mène à la section Méthode intégrée à l'accueil
- * (#/?section=methode). Le lien « FAQ » mène désormais à la section
- * « Questions fréquentes » de l'accueil (#/?section=faq) — la page FAQ
- * autonome a été supprimée (instruction propriétaire).
+ *
+ * Task 48 (SEO, vraies pages) : les liens sont de vrais CHEMINS
+ * (/a-propos, /programme…) rendus par <Link> Next.js — navigation douce
+ * + préchargement automatique de la page cible. Les sections Méthode et
+ * FAQ vivent toujours sur l'accueil, via /?section=methode et
+ * /?section=faq (scroll={false} : le défilement vers la section est géré
+ * par useSectionScroll, sans rebond par le haut de page).
  */
 
-const NAV_LINKS: { id: RouteId | "methode-section" | "faq-section"; label: string; hash: string }[] = [
-  { id: "methode-section", label: "Méthode", hash: "#/?section=methode" },
-  { id: "a-propos", label: "À propos", hash: "#/a-propos" },
-  { id: "resultats", label: "Résultats", hash: "#/resultats" },
-  { id: "programme", label: "Programme", hash: "#/programme" },
-  { id: "faq-section", label: "FAQ", hash: "#/?section=faq" },
-  { id: "contact", label: "Inscription", hash: "#/contact" },
+const NAV_LINKS: {
+  id: RouteId | "methode-section" | "faq-section";
+  label: string;
+  href: string;
+  section?: boolean;
+}[] = [
+  { id: "methode-section", label: "Méthode", href: "/?section=methode", section: true },
+  { id: "a-propos", label: "À propos", href: "/a-propos" },
+  { id: "resultats", label: "Résultats", href: "/resultats" },
+  { id: "programme", label: "Programme", href: "/programme" },
+  { id: "faq-section", label: "FAQ", href: "/?section=faq", section: true },
+  { id: "contact", label: "Inscription", href: "/contact" },
 ];
 
 /** Liens du menu mobile — Accueil inclus. */
-const MOBILE_LINKS: { id: RouteId | "methode-section" | "faq-section"; label: string; hash: string }[] = [
-  { id: "accueil", label: "Accueil", hash: "#/" },
+const MOBILE_LINKS: {
+  id: RouteId | "methode-section" | "faq-section";
+  label: string;
+  href: string;
+  section?: boolean;
+}[] = [
+  { id: "accueil", label: "Accueil", href: "/" },
   ...NAV_LINKS,
 ];
 
 export function Header() {
-  const route = useHashRoute();
-  const section = useHashSection();
+  const route = usePathRoute();
+  const section = useSectionParam();
   const scrolled = useScrolled(8);
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -65,9 +79,8 @@ export function Header() {
   const methodeActive = route === "accueil" && section === "methode";
 
   // Le lien « FAQ » est actif sur la section Questions fréquentes de
-  // l'accueil (ou via un ancien lien #/faq — la page est supprimée)
-  const faqActive =
-    (route === "accueil" && section === "faq") || route === "faq";
+  // l'accueil
+  const faqActive = route === "accueil" && section === "faq";
 
   // Ferme le menu mobile à la touche Escape (accessibilité)
   useEffect(() => {
@@ -98,17 +111,19 @@ export function Header() {
         <div className="flex h-16 items-center justify-between gap-3 lg:h-[72px]">
           {/* Logo texte (gauche) — blanc sur sommet sombre / barre noire,
               noir sur sommet clair */}
-          <a
-            href="#/"
+          <Link
+            href="/"
             onClick={(e) => {
               /* Instruction propriétaire : le logo ramène TOUJOURS en haut
                  de l'accueil. Depuis une autre page ou une section
-                 (?section=…), la navigation hash déclenche déjà la
-                 remontée (useRouteEffects / useSectionScroll). Mais si le
-                 hash est déjà « #/ » (ou absent), AUCUN hashchange ne se
+                 (?section=…), la navigation déclenche déjà la remontée
+                 (usePageEffects / useSectionScroll). Mais si on est déjà
+                 sur l'accueil SANS section, AUCUN changement d'URL ne se
                  déclenche → remontée manuelle douce. */
-              const h = window.location.hash;
-              if (h === "" || h === "#" || h === "#/") {
+              const onHomeSansSection =
+                window.location.pathname === "/" &&
+                !new URLSearchParams(window.location.search).get("section");
+              if (onHomeSansSection) {
                 e.preventDefault();
                 window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
               }
@@ -120,7 +135,7 @@ export function Header() {
             aria-label="Stevens AKPOVI — retour à l'accueil"
           >
             Stevens AKPOVI
-          </a>
+          </Link>
 
           {/* Liens desktop — toutes les pages (instruction propriétaire) */}
           <nav aria-label="Navigation principale" className="hidden md:block">
@@ -132,8 +147,9 @@ export function Header() {
                   (link.id === "faq-section" && faqActive);
                 return (
                   <li key={link.id}>
-                    <a
-                      href={link.hash}
+                    <Link
+                      href={link.href}
+                      scroll={link.section ? false : undefined}
                       aria-current={active ? "page" : undefined}
                       className={cn(
                         "flex min-h-[44px] items-center rounded-[8px] px-2.5 text-[0.9375rem] font-medium transition-colors duration-[240ms] lg:px-3",
@@ -147,7 +163,7 @@ export function Header() {
                       )}
                     >
                       {link.label}
-                    </a>
+                    </Link>
                   </li>
                 );
               })}
@@ -156,12 +172,12 @@ export function Header() {
 
           {/* Droite : CTA programme + bouton menu (mobile) */}
           <div className="flex items-center gap-2 lg:gap-4">
-            <a
-              href="#/programme"
+            <Link
+              href="/programme"
               className="btn btn-primary t-btn min-h-[44px] px-4 py-[11px] text-[0.9375rem] lg:px-5 lg:text-[1.125rem]"
             >
               Découvrir le programme
-            </a>
+            </Link>
             <button
               type="button"
               onClick={() => setMenuOpen((v) => !v)}
@@ -218,16 +234,19 @@ export function Header() {
                   (link.id === "faq-section" && faqActive);
                 return (
                   <li key={link.id}>
-                    <a
-                      href={link.hash}
+                    <Link
+                      href={link.href}
+                      scroll={link.section ? false : undefined}
                       onClick={() => {
                         setMenuOpen(false);
                         /* Même règle que le logo : « Accueil » remonte en
-                           haut de page si on y est déjà (aucun hashchange
+                           haut de page si on y est déjà (aucune navigation
                            ne se déclencherait dans ce cas). */
-                        if (link.hash === "#/") {
-                          const h = window.location.hash;
-                          if (h === "" || h === "#" || h === "#/") {
+                        if (link.href === "/") {
+                          const onHomeSansSection =
+                            window.location.pathname === "/" &&
+                            !new URLSearchParams(window.location.search).get("section");
+                          if (onHomeSansSection) {
                             window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
                           }
                         }
@@ -241,7 +260,7 @@ export function Header() {
                       )}
                     >
                       {link.label}
-                    </a>
+                    </Link>
                   </li>
                 );
               })}

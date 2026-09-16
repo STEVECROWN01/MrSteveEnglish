@@ -1,199 +1,62 @@
-"use client";
-
-import dynamic from "next/dynamic";
-import { useEffect } from "react";
-import { useHashRoute, useRouteEffects, useSectionScroll, type RouteId } from "@/lib/router";
-import { Header } from "@/components/site/header";
-import { Footer } from "@/components/site/footer";
+import type { Metadata } from "next";
 import { HomePage } from "@/components/site/pages/home-page";
+import { PageShell } from "@/components/site/page-shell";
 
 /**
- * Site Stevens AKPOVI — pages routées par hash sur la route /. La méthode
- * et la FAQ vivent désormais SUR la page d'accueil (instruction
- * propriétaire) : les liens « Méthode » et « FAQ » y mènent via
- * #/?section=methode et #/?section=faq. La page FAQ autonome a été
- * SUPPRIMÉE : la clé de route « faq » est conservée comme alias de
- * l'accueil — les anciens liens partagés #/faq atterrissent sur
- * l'accueil, avec défilement automatique vers la section « Questions
- * fréquentes ». Tous les CTA mènent au formulaire de contact
- * (instruction propriétaire). Le footer reste collé en bas de viewport
- * quand le contenu est court.
+ * ACCUEIL (Task 48 — SEO, vraies pages Google) : le site était une SPA
+ * hash-routée (une seule URL pour tout le contenu) — Google n'indexait
+ * que cette page et ne voyait ni le programme, ni les résultats, ni le
+ * formulaire. Chaque page vit désormais à sa propre adresse
+ * (app/a-propos, app/programme, app/resultats, app/contact…) avec son
+ * HTML statique pré-rendu, son titre, sa description et ses balises
+ * Open Graph.
  *
- * PERF (instruction propriétaire : site lent, boutons lents à diriger) :
- * les pages secondaires sont code-split — le bundle initial n'embarque
- * que l'accueil, l'hydratation est plus rapide et TOUT le site répond
- * plus tôt (les <a href="#/…"> deviennent fonctionnels dès que React est
- * hydraté). Les chunks sont ensuite PRÉCHAUFFÉS pendant l'inactivité du
- * navigateur : la navigation reste instantanée, y compris à la première
- * interaction. La scène 3D (three.js, le chunk le plus lourd) est
- * préchauffée en dernier.
+ * L'accueil porte la section Méthode, la FAQ, les mots-clés et la
+ * conversion principale ; les anciens liens partagés …/#/… sont
+ * traduits par le script inline de layout.tsx.
+ *
+ * PERF (conservée) : chaque route est code-split automatiquement par
+ * Next.js — le bundle initial de l'accueil n'embarque plus les pages
+ * secondaires, l'hydratation reste rapide, et les <Link> de navigation
+ * préchargent la page cible (navigation douce instantanée).
  */
-
-const PageLoading = () => <div className="min-h-[60svh]" aria-hidden="true" />;
-
-/* Task 36 (anti-flash) : placeholder NOIR pour la page bienvenue —
-   pendant le chargement de son chunk, l'écran reste noir (fond réel
-   de la page) : aucune transition blanc→noir au rechargement direct
-   de …/#/bienvenue. */
-const PageLoadingDark = () => (
-  <div className="min-h-screen bg-black" aria-hidden="true" />
-);
-
-const AProposPage = dynamic(
-  () => import("@/components/site/pages/a-propos-page").then((m) => m.AProposPage),
-  { ssr: false, loading: PageLoading },
-);
-const ResultatsPage = dynamic(
-  () => import("@/components/site/pages/resultats-page").then((m) => m.ResultatsPage),
-  { ssr: false, loading: PageLoading },
-);
-const ProgrammePage = dynamic(
-  () => import("@/components/site/pages/programme-page").then((m) => m.ProgrammePage),
-  { ssr: false, loading: PageLoading },
-);
-const ContactPage = dynamic(
-  () => import("@/components/site/pages/contact-page").then((m) => m.ContactPage),
-  { ssr: false, loading: PageLoading },
-);
-const BienvenuePage = dynamic(
-  () => import("@/components/site/pages/bienvenue-page").then((m) => m.BienvenuePage),
-  { ssr: false, loading: PageLoadingDark },
-);
-
-function renderPage(route: RouteId) {
-  switch (route) {
-    case "a-propos":
-      return <AProposPage />;
-    case "resultats":
-      return <ResultatsPage />;
-    case "programme":
-    case "offres": // anciens liens partagés #/offres
-      return <ProgrammePage />;
-    case "faq": // anciens liens #/faq → FAQ vit désormais sur l'accueil
-      return <HomePage />;
-    case "contact":
-      return <ContactPage />;
-    case "bienvenue": // page post-paiement (Task 28) — tunnel focalisé
-      return <BienvenuePage />;
-    default:
-      return <HomePage />;
-  }
-}
+export const metadata: Metadata = {
+  title: "Coach d'anglais en ligne pour francophones — Stevens AKPOVI",
+  description:
+    "Programme « De Comprendre à Parler » : 03 mois de coaching d'anglais personnalisé en ligne pour les francophones d'Afrique et d'ailleurs. Speaking, prononciation, confiance — 70 000 FCFA, paiement unique.",
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    title: "Stevens AKPOVI — Coach d'anglais en ligne",
+    description:
+      "03 mois pour transformer ton anglais que tu comprends en anglais que tu oses vraiment parler. Coaching personnalisé en ligne, 70 000 FCFA, paiement unique.",
+    type: "website",
+    locale: "fr_FR",
+    siteName: "Stevens AKPOVI",
+    url: "/",
+    images: [
+      {
+        url: "/assets/OG-SOCIAL.png",
+        width: 1200,
+        height: 630,
+        alt:
+          "03 mois pour transformer ton anglais que tu comprends en anglais que tu oses vraiment parler.",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Stevens AKPOVI — Coach d'anglais en ligne",
+    description:
+      "03 mois pour transformer ton anglais que tu comprends en anglais que tu oses vraiment parler.",
+  },
+};
 
 export default function Page() {
-  const route = useHashRoute();
-  useRouteEffects(route);
-  useSectionScroll();
-
-  /* Anciens liens partagés #/faq : la page FAQ est supprimée, la route
-     « faq » rend l'accueil — on défile alors vers la section « Questions
-     fréquentes » (id="faq"). Le léger délai laisse le rendu se poser
-     après le reset de scroll du changement de page. */
-  useEffect(() => {
-    if (route !== "faq") return;
-    const t = window.setTimeout(() => {
-      document
-        .getElementById("faq")
-        ?.scrollIntoView({ behavior: "smooth", block: "start" });
-    }, 250);
-    return () => window.clearTimeout(t);
-  }, [route]);
-
-  /* Rechargement → HAUT de la page courante (instruction propriétaire
-     Task 28) : quoi qu'il arrive, recharger la page ramène toujours en
-     haut de LA PAGE OÙ L'ON ÉTAIT — le navigateur ne restaure plus
-     l'ancienne position de scroll (history.scrollRestoration = manual,
-     posé une fois au montage). Les deep-links ?section= (Méthode, FAQ)
-     et l'alias #/faq conservent leur défilement automatique vers la
-     section demandée — pas de flash du haut de page inutile. */
-  useEffect(() => {
-    if ("scrollRestoration" in window.history) {
-      window.history.scrollRestoration = "manual";
-    }
-    const q = window.location.hash.split("?")[1];
-    const section = q ? new URLSearchParams(q).get("section") : null;
-    if (!section && route !== "faq") {
-      window.scrollTo({ top: 0, left: 0, behavior: "instant" as ScrollBehavior });
-    }
-    // Exécuté UNE seule fois au montage (rechargement inclus) — la
-    // valeur de route au montage est celle de la page rechargée.
-  }, []);
-
-  /* Task 36 (anti-flash deep-link) : le shell statique rend toujours
-     l'ACCUEIL (getServerSnapshot). Au rechargement direct d'une page
-     secondaire (…/#/bienvenue, #/contact…), il restait visible
-     ~1 s avant que React n'hydrate et ne bascule sur la bonne page.
-     Le script inline de layout.tsx pose data-deeplink sur <html>
-     AVANT le premier rendu quand le hash vise une page secondaire
-     connue : le shell accueil est alors masqué (règle CSS
-     html[data-deeplink] .app-shell). Ici, on le RÉVÈLE dès que la
-     route rendue correspond à la cible du deep-link — jamais avant,
-     pour ne pas laisser paraître l'accueil une seule frame. Filet de
-     sécurité 300 ms (navigation avant hydratation complète) + 4 s
-     dans le script inline lui-même (JS qui ne chargerait pas). */
-  useEffect(() => {
-    const dl = document.documentElement.getAttribute("data-deeplink");
-    if (!dl) return;
-    const target: RouteId = dl === "offres" ? "programme" : (dl as RouteId);
-    if (route === target) {
-      document.documentElement.removeAttribute("data-deeplink");
-      return;
-    }
-    const t = window.setTimeout(
-      () => document.documentElement.removeAttribute("data-deeplink"),
-      300,
-    );
-    return () => window.clearTimeout(t);
-  }, [route]);
-
-  /* Préchauffage à l'inactivité (idle) : les pages secondaires (~30 Ko
-     gz au total) sont chargées pendant le repos du navigateur — la
-     navigation reste instantanée, y compris à la première interaction,
-     sans jamais retarder le chargement initial. La scène 3D (three.js,
-     ~210 Ko gz) n'est volontairement PAS préchauffée : elle ne se charge
-     qu'à l'approche réelle de sa section (données mobiles économisées).
-     requestIdleCallback absent (Safari) : repli setTimeout. */
-  useEffect(() => {
-    const warm = () => {
-      void import("@/components/site/pages/a-propos-page");
-      void import("@/components/site/pages/resultats-page");
-      void import("@/components/site/pages/programme-page");
-      void import("@/components/site/pages/contact-page");
-    };
-    if (typeof window.requestIdleCallback === "function") {
-      const id = window.requestIdleCallback(warm, { timeout: 4000 });
-      return () => window.cancelIdleCallback(id);
-    }
-    const t = window.setTimeout(warm, 2500);
-    return () => window.clearTimeout(t);
-  }, []);
-
-  /* Page BIENVENUE (Task 28 — instruction propriétaire) : tunnel
-     post-paiement très focalisé — ni header ni footer global (aucun
-     lien ni CTA secondaire : un seul parcours, compréhension →
-     WhatsApp). Sur l'accueil, la carte « Le coût de l'inaction » vit
-     dans la section finale AVANT le bouton « Je veux parler anglais
-     avec confiance » — le footer la masque pour éviter le doublon. */
-  const focused = route === "bienvenue";
-
   return (
-    <div className="app-shell flex min-h-screen flex-col bg-white">
-      {focused ? null : <Header />}
-      <main
-        id="main-content"
-        tabIndex={-1}
-        className="flex-1 focus:outline-none"
-      >
-        {/* Transition entre pages : fondu + montée 240ms (langage motion DA §13) */}
-        <div key={route} className="page-enter">
-          {renderPage(route)}
-        </div>
-      </main>
-      {focused ? (
-        null
-      ) : (
-        <Footer hideCarte={route === "accueil"} />
-      )}
-    </div>
+    <PageShell hideCarte>
+      <HomePage />
+    </PageShell>
   );
 }

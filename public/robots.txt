@@ -13,4 +13,7 @@ Allow: /
 User-agent: *
 Allow: /
 
+# Page post-paiement : privée, ne doit pas apparaître sur Google
+Disallow: /bienvenue
+
 Sitemap: https://mrsteveenglish.vercel.app/sitemap.xml

@@ -64,7 +64,7 @@ export function AProposPage() {
               </Reveal>
               <Reveal className="mt-10">
                 <span data-wa-cta className="inline-flex">
-                  <CtaButton href="#/contact">{CTA_LABELS.hero}</CtaButton>
+                  <CtaButton href="/contact">{CTA_LABELS.hero}</CtaButton>
                 </span>
               </Reveal>
             </div>
@@ -119,7 +119,7 @@ export function AProposPage() {
               </Prose>
               <Reveal className="mt-12">
                 <SecondaryLink
-                  href="#/resultats"
+                  href="/resultats"
                   className="btn-invert-hover"
                 >
                   {CTA_LABELS.voirResultats}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 /**
@@ -13,8 +14,13 @@ import { cn } from "@/lib/utils";
  * PERF (instruction propriétaire : réactivité) : visibilité pilotée par
  * IntersectionObserver — plus AUCUN getBoundingClientRect par événement
  * de scroll (l'ancienne version thrashait le layout à chaque frame).
- * Rescan à chaque changement de page hash (les CTA changent avec la page)
- * et après un court délai (CTA montés tardivement, ex. accordéon FAQ).
+ * Rescan après un court délai (CTA montés tardivement, ex. accordéon
+ * FAQ). Task 48 (vraies pages) : le composant est remonté à chaque
+ * navigation — le rescan initial suffit.
+ *
+ * Task 48 : href peut être un CHEMIN de page ("/contact" — navigation
+ * douce via <Link>) ou une ANCRE interne ("#contact" sur la page
+ * Inscription, défilement natif vers le formulaire).
  */
 export function StickyCTA({
   href,
@@ -83,8 +89,9 @@ export function StickyCTA({
     };
   }, []);
 
-  // Liens internes (formulaires, ancres) : pas de nouvel onglet.
-  const isInternal = href.startsWith("#");
+  // Liens internes (pages "/…" ou ancres "#…") : pas de nouvel onglet.
+  const isPath = href.startsWith("/");
+  const isAnchor = href.startsWith("#");
 
   return (
     <div
@@ -95,13 +102,19 @@ export function StickyCTA({
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >
       <div className="border-t border-grey-line bg-white/95 px-4 py-3 shadow-[0_-4px_20px_rgba(0,0,0,0.08)] backdrop-blur-[12px]">
-        <a
-          href={href}
-          {...(isInternal ? {} : { target: "_blank", rel: "noopener noreferrer" })}
-          className="btn btn-primary t-btn w-full"
-        >
-          {label}
-        </a>
+        {isPath ? (
+          <Link href={href} className="btn btn-primary t-btn w-full">
+            {label}
+          </Link>
+        ) : (
+          <a
+            href={href}
+            {...(isAnchor ? {} : { target: "_blank", rel: "noopener noreferrer" })}
+            className="btn btn-primary t-btn w-full"
+          >
+            {label}
+          </a>
+        )}
       </div>
     </div>
   );

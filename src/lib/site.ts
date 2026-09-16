@@ -67,15 +67,16 @@ export const CTA_LABELS = {
   contact: "Rejoindre le Programme",
 } as const;
 
-/** Pages internes (navigation hash) — cible des CTA. La page
- * « bienvenue » (post-paiement) n'apparaît volontairement dans AUCUNE
- * navigation : elle reçoit les clients après leur paiement (URL de
- * redirection configurée par le propriétaire dans son système de
- * paiement). */
+/** Pages internes (Task 48 — vraies pages SEO : chemins réels indexables)
+ * — cible des CTA. La page « bienvenue » (post-paiement) n'apparaît
+ * volontairement dans AUCUNE navigation : elle reçoit les clients après
+ * leur paiement (URL de redirection configurée par le propriétaire dans
+ * son système de paiement — l'ancienne URL …/#/bienvenue est traduite
+ * automatiquement vers /bienvenue par le script inline de layout.tsx). */
 export const PAGES = {
-  contact: "#/contact",
-  programme: "#/programme",
-  aPropos: "#/a-propos",
-  resultats: "#/resultats",
-  bienvenue: "#/bienvenue",
+  contact: "/contact",
+  programme: "/programme",
+  aPropos: "/a-propos",
+  resultats: "/resultats",
+  bienvenue: "/bienvenue",
 } as const;

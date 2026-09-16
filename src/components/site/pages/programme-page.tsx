@@ -142,7 +142,7 @@ export function ProgrammePage() {
 
                 <div className="mt-10">
                   <span data-wa-cta className="inline-flex w-full sm:w-auto">
-                    <CtaButton href="#/contact" className="w-full sm:w-auto">
+                    <CtaButton href="/contact" className="w-full sm:w-auto">
                       {CTA_LABELS.rejoindre}
                     </CtaButton>
                   </span>
@@ -235,7 +235,7 @@ export function ProgrammePage() {
               </p>
               <div className="mt-8">
                 <span data-wa-cta className="inline-flex">
-                  <CtaButton href="#/contact">{CTA_LABELS.rejoindre}</CtaButton>
+                  <CtaButton href="/contact">{CTA_LABELS.rejoindre}</CtaButton>
                 </span>
               </div>
             </div>
@@ -244,7 +244,7 @@ export function ProgrammePage() {
       </Section>
 
       {/* CTA sticky mobile (page Programme) */}
-      <StickyCTA href="#/contact" label={CTA_LABELS.decouvrirCourt} />
+      <StickyCTA href="/contact" label={CTA_LABELS.decouvrirCourt} />
     </>
   );
 }

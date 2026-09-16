@@ -1,15 +1,32 @@
 "use client";
 
 import { useEffect, useRef, useSyncExternalStore } from "react";
+import { usePathname } from "next/navigation";
 
-/** Les pages du site — routées par hash sur la route /. La méthode et
- * la FAQ vivent désormais SUR l'accueil (instruction propriétaire) : les
- * liens de navigation « Méthode » et « FAQ » pointent vers
- * #/?section=methode et #/?section=faq.
- * « offres » et « faq » restent des clés valides : les anciens liens
- * partagés #/offres atterrissent sur la page Programme, et #/faq sur
- * l'accueil (défilement automatique vers la section Questions
- * fréquentes — géré dans app/page.tsx). */
+/**
+ * ROUTAGE PAR CHEMINS RÉELS (Task 48 — SEO) : le site possédait une
+ * seule URL (SPA hash-routée #/a-propos, #/programme…), invisible pour
+ * Google — les fragments #/… ne sont JAMAIS envoyés au serveur et le
+ * crawler ne voyait qu'une page. Chaque page vit désormais à sa propre
+ * adresse : /a-propos, /resultats, /programme, /contact, /bienvenue —
+ * pré-rendues en HTML statique par Next.js, donc INDEXABLES, avec
+ * titre/description/openGraph propres à chaque route (fichiers
+ * app/<route>/page.tsx).
+ *
+ * COMPATIBILITÉ ANCRE ANCiens LIENS (critique) : des centaines de liens
+ * WhatsApp/partages pointent vers …/#/programme, …/#/bienvenue (URL de
+ * retour configurée dans le système de paiement du propriétaire !),
+ * …/#/faq… Un script inline dans layout.tsx, exécuté AVANT le premier
+ * rendu, traduit ces hashs en chemins réels (location.replace) — les
+ * anciens liens continuent de fonctionner, indéfiniment. Les alias
+ * historiques sont conservés : /offres → /programme (redirection
+ * serveur), /faq → /?section=faq (la FAQ vit sur l'accueil).
+ *
+ * Les sections de l'accueil (Méthode, FAQ) utilisent un vrai paramètre
+ * de requête : /?section=methode — lisible par useSectionParam() aussi
+ * bien au chargement qu'après une navigation douce (re-render App
+ * Router) ou un popstate.
+ */
 export type RouteId =
   | "accueil"
   | "a-propos"
@@ -20,110 +37,82 @@ export type RouteId =
   | "contact"
   | "bienvenue";
 
-export const ROUTES: Record<RouteId, { hash: string; title: string }> = {
-  accueil: { hash: "#/", title: "Stevens AKPOVI — Coach d'anglais" },
-  "a-propos": { hash: "#/a-propos", title: "À propos — Stevens AKPOVI" },
-  resultats: { hash: "#/resultats", title: "Résultats — Stevens AKPOVI" },
-  programme: { hash: "#/programme", title: "Programme — Stevens AKPOVI" },
-  offres: { hash: "#/programme", title: "Programme — Stevens AKPOVI" },
-  faq: { hash: "#/faq", title: "Questions fréquentes — Stevens AKPOVI" },
-  contact: { hash: "#/contact", title: "Inscription — Stevens AKPOVI" },
-  bienvenue: { hash: "#/bienvenue", title: "Bienvenue — Stevens AKPOVI" },
+/** Chemin réel de chaque route (title conservé pour référence — le
+ *  <title> vient désormais des métadonnées serveur de chaque page). */
+export const ROUTES: Record<RouteId, { path: string; title: string }> = {
+  accueil: { path: "/", title: "Coach d'anglais en ligne pour francophones — Stevens AKPOVI" },
+  "a-propos": { path: "/a-propos", title: "À propos de Stevens AKPOVI — Coach d'anglais" },
+  resultats: { path: "/resultats", title: "Résultats et témoignages — Coaching d'anglais" },
+  programme: { path: "/programme", title: "Programme de coaching d'anglais — 03 mois" },
+  offres: { path: "/programme", title: "Programme de coaching d'anglais — 03 mois" },
+  faq: { path: "/", title: "Questions fréquentes — Stevens AKPOVI" },
+  contact: { path: "/contact", title: "Inscription au programme de coaching d'anglais" },
+  bienvenue: { path: "/bienvenue", title: "Bienvenue — Stevens AKPOVI" },
 };
 
 /**
- * Normalise un hash ou une route en clé comparable : "#/a-propos" →
- * "a-propos", "#/" → "".
- * La query éventuelle (ex. "#/contact?offre=3mois") est ignorée pour la
- * résolution de la route mais reste disponible pour la page (lecture via
- * `hashQuery`).
+ * Normalise un chemin en clé de route : "/a-propos" → "a-propos",
+ * "/" → "accueil", "/offres" → "offres" (alias → programme au rendu).
+ * Les chemins inconnus retombent sur l'accueil (comportement 404 doux
+ * volontaire du site monopage d'origine).
  */
-function normalizeHash(hash: string): string {
-  return hash
-    .replace(/^#\/?/, "")
-    .split("?")[0]
-    .replace(/\/+$/, "");
-}
-
-/**
- * Lit la query du hash : "#/contact?offre=3mois" → "3mois".
- * Retourne null si le paramètre est absent.
- */
-export function hashQuery(name: string): string | null {
-  if (typeof window === "undefined") return null;
-  const q = window.location.hash.split("?")[1];
-  if (!q) return null;
-  const params = new URLSearchParams(q);
-  return params.get(name);
-}
-
-export function parseHash(hash: string): RouteId {
-  const key = normalizeHash(hash);
+export function parsePath(pathname: string): RouteId {
+  const key = (pathname || "/").split("?")[0].replace(/\/+$/, "") || "/";
   const found = (Object.keys(ROUTES) as RouteId[]).find(
-    (id) => normalizeHash(ROUTES[id].hash) === key,
+    (id) => ROUTES[id].path === key,
   );
-  return found ?? "accueil";
+  if (found) return found === "offres" ? "programme" : found;
+  return "accueil";
 }
 
-/** Abonnement au hash (useSyncExternalStore). */
-function subscribeToHash(callback: () => void) {
+/** Route courante — chemin réel via usePathname (navigation douce App
+ *  Router incluse). L'alias « offres » est résolu vers « programme ». */
+export function usePathRoute(): RouteId {
+  return parsePath(usePathname() ?? "/");
+}
+
+/* — Paramètre ?section= de l'accueil (Méthode, FAQ) — */
+
+function subscribeToUrl(callback: () => void) {
+  window.addEventListener("popstate", callback);
   window.addEventListener("hashchange", callback);
-  return () => window.removeEventListener("hashchange", callback);
+  return () => {
+    window.removeEventListener("popstate", callback);
+    window.removeEventListener("hashchange", callback);
+  };
+}
+
+function sectionSnapshot(): string {
+  return new URLSearchParams(window.location.search).get("section") || "";
 }
 
 /**
- * Route courante — via useSyncExternalStore : le serveur rend toujours
- * « accueil » (getServerSnapshot), le client se synchronise sur le hash
- * réel dès l'hydratation. Aucun mismatch d'hydratation, même en deep-link
- * direct (ex. partage du lien .../#/contact).
+ * Section demandée : "/?section=methode" → "methode" (null si absent).
+ * Lecture par useSyncExternalStore — la valeur est relue à chaque
+ * rendu (les navigations douces App Router re-rendent la page, y
+ * compris à changement de query sur la même route) et à chaque
+ * popstate/hashchange (bouton précédent).
  */
-export function useHashRoute(): RouteId {
-  return useSyncExternalStore(
-    subscribeToHash,
-    () => parseHash(window.location.hash),
-    () => "accueil" as RouteId,
-  );
+export function useSectionParam(): string | null {
+  const v = useSyncExternalStore(subscribeToUrl, sectionSnapshot, () => "");
+  return v || null;
 }
 
 /**
- * Section d'ancre demandée dans le hash : "#/?section=methode" →
- * "methode". Sert de cible intermédiaire aux liens de navigation qui
- * pointent vers une section d'une page (ici : la section Méthode
- * intégrée à l'accueil). Retourne null si absent.
- */
-export function useHashSection(): string | null {
-  const section = useSyncExternalStore(
-    subscribeToHash,
-    () => {
-      const q = window.location.hash.split("?")[1];
-      return q ? new URLSearchParams(q).get("section") : "";
-    },
-    () => "",
-  );
-  return section || null;
-}
-
-/**
- * Fait défiler la page vers la section demandée via ?section= dans le
- * hash (ex. "#/?section=methode"). Au premier chargement (deep-link),
+ * Fait défiler la page vers la section demandée via ?section= dans
+ * l'URL (ex. "/?section=methode"). Au premier chargement (deep-link),
  * un léger délai laisse le rendu et les polices se poser. Quand on
- * revient à l'accueil pur ("#/"), remonte en haut de page.
+ * revient à l'accueil pur ("/"), remonte en haut de page.
  */
 export function useSectionScroll() {
-  const hash = useSyncExternalStore(
-    subscribeToHash,
-    () => window.location.hash,
-    () => "",
-  );
-  const section = hash.split("?")[1]
-    ? (new URLSearchParams(hash.split("?")[1]).get("section") ?? "")
-    : "";
+  const section = useSectionParam();
+  const pathname = usePathname();
   const hadSection = useRef(false);
 
   useEffect(() => {
     if (!section) {
       // Retour « Accueil » pur depuis une section : remonter en haut
-      if (hadSection.current && normalizeHash(window.location.hash) === "") {
+      if (hadSection.current && pathname === "/") {
         window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
       }
       hadSection.current = false;
@@ -136,76 +125,50 @@ export function useSectionScroll() {
       target.scrollIntoView({ behavior: "smooth", block: "start" });
     }, 150);
     return () => window.clearTimeout(t);
-  }, [section]);
+  }, [section, pathname]);
 }
 
+/* — Effets de page (scroll + focus accessibilité) — */
+
+/** Compteur de montées de page (module) : la toute première (chargement
+ *  initial du site) ne déplace PAS le focus — seules les navigations
+ *  ultérieures (montée d'une nouvelle page) focalisent le contenu. */
+let pageMountCount = 0;
+
 /**
- * Effets de navigation, à appeler une seule fois au niveau de la page :
- * — titre du document synchronisé sur la route ;
- * — au CHANGEMENT de page uniquement : scroll remonté + focus déplacé
- *   sur le contenu (accessibilité navigation clavier).
- * Remarque : un changement de hash qui ne change PAS de page (ancre
- * interne « #contact » du sticky, query ?offre=…) ne remonte PAS en
- * haut — le navigateur gère le scroll vers l'ancre.
- * Note : aucune réécriture du hash ici — écraser l'URL pendant
- * l'hydratation (serveur « accueil » vs deep-link « #/contact »)
- * casserait le partage de liens directs.
+ * Effets communs à chaque page, à appeler une seule fois par page :
+ * — history.scrollRestoration = "manual" : un rechargement ramène
+ *   TOUJOURS en haut de la page courante (instruction propriétaire
+ *   Task 28 — le navigateur ne restaure plus l'ancienne position) ;
+ * — au montage : haut de page instantané SAUF si une ?section= est
+ *   demandée (le défilement vers la section est géré par
+ *   useSectionScroll) ;
+ * — navigations suivantes : focus clavier sur le contenu principal
+ *   (accessibilité navigation clavier, comme l'ancien useRouteEffects).
  */
-export function useRouteEffects(route: RouteId) {
-  const isFirstRun = useRef(true);
+export function usePageEffects() {
+  const pathname = usePathname();
+  const section = useSectionParam();
 
   useEffect(() => {
-    document.title = ROUTES[route].title;
-
-    // Garde-fou deep-link : pendant l'hydratation, React/Next peuvent
-    // restaurer le <title> SSR statique plusieurs ticks après le mount.
-    // Pendant une courte fenêtre, toute écrasement est immédiatement
-    // corrigé — ensuite l'observateur se retire.
-    const expected = ROUTES[route].title;
-    const titleEl = document.querySelector("title");
-    let observer: MutationObserver | null = null;
-    if (titleEl) {
-      observer = new MutationObserver(() => {
-        if (document.title !== expected) {
-          document.title = expected;
-        }
-      });
-      observer.observe(titleEl, {
-        childList: true,
-        characterData: true,
-        subtree: true,
-      });
+    if ("scrollRestoration" in window.history) {
+      window.history.scrollRestoration = "manual";
     }
-    const stop = window.setTimeout(() => observer?.disconnect(), 1500);
+  }, []);
 
-    if (isFirstRun.current) {
-      isFirstRun.current = false;
-      return () => {
-        observer?.disconnect();
-        window.clearTimeout(stop);
-      };
-    }
-
-    // Changement de page réel : reset du scroll + focus a11y — sauf si
-    // une section est demandée (?section=…) : le défilement vers la
-    // section est alors géré par useSectionScroll (pas de flash du haut
-    // de page avant la descente).
-    const q = window.location.hash.split("?")[1];
-    const sectionTarget = q
-      ? new URLSearchParams(q).get("section")
-      : null;
-    if (!sectionTarget) {
+  useEffect(() => {
+    if (!section) {
       window.scrollTo({ top: 0, left: 0, behavior: "instant" as ScrollBehavior });
     }
-    requestAnimationFrame(() => {
-      const main = document.getElementById("main-content");
-      if (main) {
-        main.focus({ preventScroll: true });
-      }
-    });
-    return () => {
-      observer?.disconnect();
-      window.clearTimeout(stop);
-    };
-  }, [route]);
+    if (pageMountCount >= 2) {
+      requestAnimationFrame(() => {
+        document
+          .getElementById("main-content")
+          ?.focus({ preventScroll: true });
+      });
+    }
+    pageMountCount += 1;
+    // Exécuté par montage de page (navigation douce incluse).
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname]);
 }
