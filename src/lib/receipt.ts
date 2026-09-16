@@ -26,6 +26,11 @@ import { CONTACT_EMAIL, FORMSUBMIT_ENDPOINT } from "./contact-email";
  * NOTIFICATION PROFESSIONNELLE du système au Coach : nouveau client,
  * ses coordonnées, les détails du paiement, reçu joint — rédigé avec
  * retours à la ligne, SANS tableau.
+ * Task 46 : nom de fichier « Reçu N° {n°} — {nom du client}.pdf »
+ * (retour propriétaire : le nom doit comporter « Reçu », le NUMÉRO
+ * de reçu et le nom du client). Le même nom sert aux trois usages :
+ * téléchargement du client, pièce jointe de l'email au coach, et
+ * mention du fichier dans le message.
  *
  * Le client qui arrive sur #/bienvenue après son paiement peut
  * télécharger un reçu PDF TRÈS haute qualité : A4 vectoriel,
@@ -501,18 +506,26 @@ export async function buildReceiptPdf(
   doc.setFillColor(...BLACK);
   doc.rect(0, PAGE_H - 6, PAGE_W, 6, "F");
 
-  /* — Nom de fichier (Task 38) : doit contenir « Reçu » et le nom du
-     client — ex. « Reçu Jean-Baptiste Nkemba.pdf ». Les accents sont
-     CONSERVÉS (noms de fichiers UTF-8 gérés par tous les navigateurs
-     et OS modernes) ; seuls les caractères interdits sur les systèmes
-     de fichiers ( / \ : * ? " < > | et contrôles ) sont retirés. — */
+  /* — Nom de fichier (Task 46 — retour propriétaire) : doit contenir
+     « Reçu », le NUMÉRO de reçu et le nom du client — ex.
+     « Reçu N° MSE-2609-Z3KP — Jean-Baptiste Nkemba.pdf », le même
+     libellé que l'en-tête du document (« Reçu N° MSE-… »). Les
+     accents sont CONSERVÉS (noms de fichiers UTF-8 gérés par tous
+     les navigateurs et OS modernes ; pièce jointe livrée avec ce
+     format par l'endpoint classique — TESTS D/E Task 44) ; seuls les
+     caractères interdits sur les systèmes de fichiers
+     ( / \ : * ? " < > | et contrôles ) sont retirés du nom du client.
+     Le n° de reçu (MSE-YYMM-XXXX, déterministe) ne contient que des
+     caractères sûrs (lettres, chiffres, tirets). Ce nom unique sert
+     aux TROIS usages : téléchargement client, pièce jointe de
+     l'email au coach, mention « (fichier « … ») » dans le message. — */
   const nomFichier =
     data.nom
       .replace(/[\u0000-\u001f\\/:*?"<>|]+/g, " ")
       .replace(/\s+/g, " ")
       .trim()
       .slice(0, 60) || "Client";
-  const filename = `Reçu ${nomFichier}.pdf`;
+  const filename = `Reçu N° ${noRecu} — ${nomFichier}.pdf`;
 
   return { blob: doc.output("blob"), filename };
 }
