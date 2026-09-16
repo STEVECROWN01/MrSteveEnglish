@@ -20,6 +20,22 @@ import { assessEnglish, type EnglishAssessment } from "./english-assessment";
 export const CONTACT_EMAIL = "stevensakpovi@gmail.com";
 export const FORMSUBMIT_AJAX = `https://formsubmit.co/ajax/${CONTACT_EMAIL}`;
 
+/**
+ * Endpoint CLASSIQUE de FormSubmit (non-AJAX) — LE SEUL qui délivre
+ * les PIÈCES JOINTES (Task 44) : la doc officielle documente l'upload
+ * de fichiers uniquement pour cet endpoint avec
+ * enctype="multipart/form-data" ; l'endpoint /ajax/ abandonne
+ * silencieusement le champ « file » (vérifié empiriquement : emails
+ * TEST B et flux réel → message seul, SANS pièce jointe ; TEST C
+ * endpoint classique → reçu PDF bien attaché).
+ *
+ * L'appel se fait en mode « no-cors » (requête simple multipart,
+ * sans preflight) : FormSubmit traite la soumission et envoie
+ * l'email, la réponse (page de remerciement) étant simplement
+ * illisible côté JS — fire-and-forget assumé.
+ */
+export const FORMSUBMIT_ENDPOINT = `https://formsubmit.co/${CONTACT_EMAIL}`;
+
 const PROGRAMME_LABEL =
   "Programme « De Comprendre à Parler » — 03 mois — 70 000 FCFA — paiement unique";
 

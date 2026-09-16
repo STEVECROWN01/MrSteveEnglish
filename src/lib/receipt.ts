@@ -1,4 +1,4 @@
-import { CONTACT_EMAIL, FORMSUBMIT_AJAX } from "./contact-email";
+import { CONTACT_EMAIL, FORMSUBMIT_ENDPOINT } from "./contact-email";
 
 /**
  * REÇU PDF POST-PAIEMENT (Task 34 — instruction propriétaire ;
@@ -18,7 +18,14 @@ import { CONTACT_EMAIL, FORMSUBMIT_AJAX } from "./contact-email";
  * Task 43 : la copie email au coach n'est plus un tableau de
  * métadonnées — c'est LE REÇU PDF LUI-MÊME, en PIÈCE JOINTE (le même
  * blob que celui téléchargé par le client, donc identique octet pour
- * octet), simplement accompagné d'un court message d'envoi.
+ * octet), accompagné d'un message d'envoi.
+ * Task 44 : (1) CORRECTIF — l'endpoint AJAX de FormSubmit abandonne
+ * les pièces jointes (vérifié : flux réel = message seul) → envoi sur
+ * l'endpoint CLASSIQUE multipart (le seul documenté pour les
+ * fichiers) en mode no-cors ; (2) le message devient une
+ * NOTIFICATION PROFESSIONNELLE du système au Coach : nouveau client,
+ * ses coordonnées, les détails du paiement, reçu joint — rédigé avec
+ * retours à la ligne, SANS tableau.
  *
  * Le client qui arrive sur #/bienvenue après son paiement peut
  * télécharger un reçu PDF TRÈS haute qualité : A4 vectoriel,
@@ -29,9 +36,10 @@ import { CONTACT_EMAIL, FORMSUBMIT_AJAX } from "./contact-email";
  *
  * AU MÊME INSTANT que le téléchargement, la COPIE EXACTE du reçu
  * (pièce jointe PDF) est envoyée automatiquement à
- * stevensakpovi@gmail.com (FormSubmit AJAX en multipart FormData —
- * même endpoint éprouvé que le formulaire de contact ; le champ
- * « file » devient la pièce jointe de l'email).
+ * stevensakpovi@gmail.com (FormSubmit endpoint CLASSIQUE en multipart
+ * FormData — le seul endpoint qui délivre les pièces jointes, cf.
+ * Task 44 ; le champ « file » devient la pièce jointe de l'email,
+ * accompagné d'une notification professionnelle système → Coach).
  *
  * PERF : jsPDF (~120 Ko gz) est importé DYNAMIQUEMENT au clic — le
  * bundle initial du site n'est pas alourdi (leçon Task 33).
@@ -524,17 +532,29 @@ export function saveReceiptBlob(blob: Blob, filename: string): void {
 
 /**
  * Copie envoyée au coach AU MÊME INSTANT que le téléchargement
- * (instruction propriétaire Task 34, revue Task 43) : LE REÇU PDF
- * LUI-MÊME en PIÈCE JOINTE — le MÊME blob que celui téléchargé par
- * le client, donc strictement identique octet pour octet — simplement
- * accompagné d'un court message d'envoi (plus de tableau de
- * métadonnées).
+ * (instruction propriétaire Task 34, revue Task 43 puis Task 44) :
+ * LE REÇU PDF LUI-MÊME en PIÈCE JOINTE — le MÊME blob que celui
+ * téléchargé par le client, donc strictement identique octet pour
+ * octet — accompagné d'un MESSAGE PROFESSIONNEL : le système
+ * s'adresse au Coach pour l'informer qu'un nouveau client vient de
+ * s'inscrire, lui transmet les informations du client (identité,
+ * localisation, e-mail) et les détails du paiement, et signale que
+ * le reçu de paiement est joint à l'e-mail. Message rédigé avec
+ * retours à la ligne et structure nette — SANS tableau (le champ
+ * unique « MESSAGE » est rendu par le modèle « basic » de
+ * FormSubmit, le plus sobre des trois).
  *
- * FormSubmit accepte le multipart (FormData) sur l'endpoint AJAX : le
- * champ « file » devient la pièce jointe de l'email. Pas de keepalive
- * (vérifié Task 43) : la limite keepalive de 64 Ko serait fragile face
- * à la taille du PDF, et le téléchargement par blob ne quitte jamais
- * la page — la requête a le temps de partir.
+ * Task 44 — CORRECTIF PIÈCE JOINTE : l'endpoint AJAX de FormSubmit
+ * ABANDONNE silencieusement les fichiers (doc officielle : l'upload
+ * n'est documenté que pour l'endpoint classique en
+ * multipart/form-data ; vérifié empiriquement — le flux réel ne
+ * livrait que le message, sans PDF). On poste donc sur l'endpoint
+ * CLASSIQUE https://formsubmit.co/{email} en mode « no-cors »
+ * (requête simple, sans preflight) : la soumission est traitée et
+ * l'email part AVEC la pièce jointe ; la réponse (page de
+ * remerciement) est simplement illisible côté JS — fire-and-forget
+ * assumé, le téléchargement par blob ne quitte jamais la page donc
+ * la requête a le temps de partir.
  */
 export function sendReceiptPdfCopy(
   blob: Blob,
@@ -542,23 +562,63 @@ export function sendReceiptPdfCopy(
   data: InscriptionData,
   receiptNo: string,
 ): void {
-  const now = new Intl.DateTimeFormat("fr-FR", {
+  const emisLe = new Intl.DateTimeFormat("fr-FR", {
     dateStyle: "long",
     timeStyle: "short",
   }).format(new Date());
   const nom = data.nom?.trim() || "Client";
+  const renseigne = (v: string, suffixe = "") =>
+    v && v.trim() ? `${v.trim()}${suffixe}` : "Non renseigné";
+
+  /* Message professionnel « système → Coach » : salutation,
+     annonce du nouveau client, coordonnées, détails du paiement,
+     pièce jointe signalée, prochaine étape, signature. Chaque
+     paragraphe est séparé par une ligne vide. */
+  const message = [
+    "Bonjour Coach Stevens,",
+    "",
+    "Un nouveau client vient de finaliser son inscription au programme d'accompagnement « De Comprendre à Parler » (03 mois). Son paiement a été effectué et validé.",
+    "",
+    "Voici les informations du client :",
+    "",
+    `Nom : ${nom}`,
+    `Profession : ${renseigne(data.profession)}`,
+    `Âge : ${renseigne(data.age, " ans")}`,
+    `Pays : ${renseigne(data.pays)}`,
+    `Ville : ${renseigne(data.ville)}`,
+    `Adresse e-mail : ${renseigne(data.email)}`,
+    "",
+    "Détails du paiement :",
+    "",
+    `Montant : 70${NBSP}000${NBSP}FCFA (paiement unique)`,
+    "Mode de paiement : Paiement en ligne sécurisé",
+    `Date d'inscription : ${dateLong(data.dateInscription)}`,
+    `Reçu N° ${receiptNo} — émis le ${emisLe}`,
+    "",
+    `Vous trouverez le reçu de paiement du client en pièce jointe de cet e-mail (fichier « ${filename} »).`,
+    "",
+    "Le client a été invité à vous contacter sur WhatsApp pour planifier le démarrage de son accompagnement.",
+    "",
+    "Cordialement,",
+    "Le système Mr Steve English",
+  ].join("\n");
+
   const fd = new FormData();
-  fd.set("_subject", `Reçu PDF — ${nom} — ${receiptNo}`);
+  fd.set(
+    "_subject",
+    `Nouveau client — ${nom} — Reçu ${receiptNo} en pièce jointe`,
+  );
+  fd.set("_template", "basic");
   fd.set("_captcha", "false");
   if (data.email?.trim()) fd.set("_replyto", data.email.trim());
-  fd.set(
-    "MESSAGE",
-    `Bonjour Stevens, ${nom} vient de confirmer son inscription et de télécharger son reçu PDF. ` +
-      `La copie exacte du même reçu est jointe à cet email (pièce jointe « ${filename} », N° ${receiptNo}, émis le ${now}).`,
-  );
+  fd.set("MESSAGE", message);
   fd.set("file", new File([blob], filename, { type: "application/pdf" }));
   try {
-    void fetch(FORMSUBMIT_AJAX, { method: "POST", body: fd }).catch(() => {
+    void fetch(FORMSUBMIT_ENDPOINT, {
+      method: "POST",
+      body: fd,
+      mode: "no-cors",
+    }).catch(() => {
       /* fire-and-forget : silencieux côté client */
     });
   } catch {
