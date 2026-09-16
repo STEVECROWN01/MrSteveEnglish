@@ -2,15 +2,26 @@ import { assessEnglish, type EnglishAssessment } from "./english-assessment";
 
 /**
  * CONSTRUCTION DE L'EMAIL « NOUVEAU PROSPECT » (Task 27 — instructions
- * propriétaire) : les données du formulaire sont envoyées directement
- * par email à stevensakpovi@gmail.com via FormSubmit (appel AJAX depuis
- * le NAVIGATEUR — l'endpoint est protégé Cloudflare côté serveur).
+ * propriétaire ; Task 45 — retour propriétaire) : les données du
+ * formulaire sont envoyées directement par email à
+ * stevensakpovi@gmail.com via FormSubmit (appel AJAX depuis le
+ * NAVIGATEUR — l'endpoint est protégé Cloudflare côté serveur).
  *
- * Structure professionnelle SANS emoji (instruction propriétaire) :
- * sections IDENTITÉ / LOCALISATION / EMAIL / ENGLISH LEVEL ASSESSMENT
- * (niveau estimé + score /100 + détail des 5 critères /20 + confiance
- * + explication) / ÉCHANTILLON D'ANGLAIS (texte ORIGINAL du prospect,
- * jamais modifié) / PROGRAMME / métadonnées.
+ * Task 45 : le corps de l'email n'est plus un TABLEAU de champs
+ * (_template « table ») mais un MESSAGE PROFESSIONNEL multi-lignes
+ * « système → Coach », dans le MÊME STYLE que la notification de
+ * reçu (Task 44, approuvée par le propriétaire) : salutation, annonce
+ * du prospect, coordonnées complètes, niveau d'anglais estimé
+ * (niveau + score /100 + détail des 5 critères /20 + fiabilité +
+ * explication), échantillon d'anglais ORIGINAL du prospect (jamais
+ * modifié), programme, invitation à répondre directement au prospect,
+ * date de soumission, signature « Le système Mr Steve English ».
+ * SANS emoji, SANS tableau.
+ *
+ * L'envoi se fait en multipart FormData (et plus en JSON) : comme la
+ * copie du reçu, les retours à la ligne du champ MESSAGE sont
+ * préservés dans l'email rendu. L'endpoint AJAX répond toujours en
+ * JSON (success) — l'UI garde sa logique succès / secours WhatsApp.
  *
  * _replyto = email du prospect → le coach répond directement.
  * _honey = pot de miel anti-bots (champ caché, jamais rempli par un
@@ -49,7 +60,14 @@ export type ContactFormData = {
   anglais: string;
 };
 
-/** Champs de l'email — ordre préservé, libellés professionnels. */
+/**
+ * Champs de l'email (Task 45) : l'intégralité de la fiche prospect
+ * tient dans UN SEUL champ MESSAGE, rédigé comme une notification
+ * professionnelle du système au Coach — paragraphes séparés par des
+ * lignes vides, coordonnées une par ligne, AUCUN tableau. Le template
+ * « basic » de FormSubmit (le plus sobre des trois) rend ce champ tel
+ * quel, retours à la ligne compris.
+ */
 export function buildEmailFields(
   p: ContactFormData,
   a: EnglishAssessment,
@@ -59,40 +77,50 @@ export function buildEmailFields(
     timeStyle: "short",
   }).format(new Date());
 
+  const message = [
+    "Bonjour Coach Stevens,",
+    "",
+    "Un nouveau prospect vient de soumettre le formulaire d'inscription sur le site Mr Steve English. Vous trouverez ci-dessous l'ensemble de ses informations.",
+    "",
+    "Informations du prospect :",
+    "",
+    `Nom : ${p.nom}`,
+    `Âge : ${p.age} ans`,
+    `Profession : ${p.profession}`,
+    `Pays : ${p.pays}`,
+    `Ville : ${p.ville}`,
+    `Adresse e-mail : ${p.email}`,
+    "",
+    "Niveau d'anglais estimé (English Level Assessment) :",
+    "",
+    `Niveau : ${a.level} — estimation automatique, pas un niveau CEFR officiel`,
+    `Score global : ${a.total}/100`,
+    `Détail des 5 critères : Vocabulaire ${a.scores.vocabulaire}/20 — Construction de phrases ${a.scores.construction}/20 — Grammaire ${a.scores.grammaire}/20 — Développement des idées ${a.scores.developpement}/20 — Cohérence ${a.scores.coherence}/20`,
+    `Fiabilité de l'évaluation : ${a.confidence}`,
+    `Explication : ${a.explanation}`,
+    "",
+    "Échantillon d'anglais — texte original du prospect (non modifié) :",
+    "",
+    `« ${p.anglais} »`,
+    "",
+    "Programme choisi :",
+    "",
+    PROGRAMME_LABEL,
+    "",
+    "Le champ « Répondre » de cet e-mail pointe directement vers l'adresse du prospect : vous pouvez lui répondre immédiatement.",
+    "",
+    `Soumis le ${date} — formulaire d'inscription du site Stevens AKPOVI (envoi automatique).`,
+    "",
+    "Cordialement,",
+    "Le système Mr Steve English",
+  ].join("\n");
+
   return {
     _subject: `Nouveau prospect — Mr Steve English — ${p.nom}`,
-    _template: "table",
+    _template: "basic",
     _captcha: "false",
     _replyto: p.email,
-
-    "IDENTITÉ · Nom complet": p.nom,
-    "IDENTITÉ · Âge": `${p.age} ans`,
-    "IDENTITÉ · Profession": p.profession,
-
-    "LOCALISATION · Pays": p.pays,
-    "LOCALISATION · Ville": p.ville,
-
-    "EMAIL · Adresse du prospect": p.email,
-
-    "ENGLISH LEVEL ASSESSMENT · Estimated English Level": a.level,
-    "ENGLISH LEVEL ASSESSMENT · Note":
-      "Niveau estimé automatiquement — pas un niveau CEFR officiel.",
-    "ENGLISH LEVEL ASSESSMENT · Score global": `${a.total}/100`,
-    "ENGLISH LEVEL ASSESSMENT · Détail des 5 critères":
-      `Vocabulaire ${a.scores.vocabulaire}/20 — Construction de phrases ${a.scores.construction}/20 — ` +
-      `Grammaire ${a.scores.grammaire}/20 — Développement des idées ${a.scores.developpement}/20 — ` +
-      `Cohérence ${a.scores.coherence}/20`,
-    "ENGLISH LEVEL ASSESSMENT · Assessment confidence": a.confidence,
-    "ENGLISH LEVEL ASSESSMENT · Explication": a.explanation,
-
-    "ÉCHANTILLON D'ANGLAIS · Texte original du prospect (non modifié)":
-      `« ${p.anglais} »`,
-
-    "PROGRAMME · Offre unique": PROGRAMME_LABEL,
-
-    "SOUMIS LE": date,
-    PROVENANCE:
-      "Formulaire d'inscription du site Stevens AKPOVI (envoi automatique)",
+    MESSAGE: message,
   };
 }
 
@@ -100,6 +128,14 @@ export function buildEmailFields(
  * Envoi de l'email depuis le navigateur (FormSubmit AJAX — usage
  * documenté côté client). Retourne true si parti, false sinon
  * (l'appelant propose alors le secours WhatsApp).
+ *
+ * Task 45 : le corps est envoyé en MULTIPART FormData (et plus en
+ * JSON) — même mécanisme que la copie du reçu (Task 44) — pour que
+ * les retours à la ligne du champ MESSAGE soient préservés dans
+ * l'email rendu. Sans Content-Type explicite, le navigateur pose
+ * lui-même multipart/form-data avec boundary (requête simple, sans
+ * preflight) ; l'endpoint /ajax/ répond en JSON (success) — la
+ * lecture de la réponse est inchangée.
  */
 export async function sendContactEmail(
   form: ContactFormData,
@@ -107,16 +143,16 @@ export async function sendContactEmail(
   const assessment = assessEnglish(form.anglais);
   const fields = buildEmailFields(form, assessment);
 
+  const fd = new FormData();
+  for (const [k, v] of Object.entries(fields)) fd.set(k, v);
+
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 12_000);
   try {
     const res = await fetch(FORMSUBMIT_AJAX, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify(fields),
+      headers: { Accept: "application/json" },
+      body: fd,
       signal: controller.signal,
     });
     const data = (await res.json().catch(() => null)) as
