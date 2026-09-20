@@ -18,6 +18,12 @@ import { assessEnglish, type EnglishAssessment } from "./english-assessment";
  * date de soumission, signature « Le système Mr Steve English ».
  * SANS emoji, SANS tableau.
  *
+ * Task 49 (instruction propriétaire) : le formulaire collecte
+ * désormais le NUMÉRO WHATSAPP DU PROSPECT (validé selon l'indicatif
+ * de son pays — src/lib/indicateurs-tel.ts) ; il est transmis dans le
+ * bloc des coordonnées, juste après la ville, au format lisible
+ * « +indicatif groupes de chiffres » (ex. +229 01 59 17 30 98).
+ *
  * L'envoi se fait en multipart FormData (et plus en JSON) : comme la
  * copie du reçu, les retours à la ligne du champ MESSAGE sont
  * préservés dans l'email rendu. L'endpoint AJAX répond toujours en
@@ -57,6 +63,8 @@ export type ContactFormData = {
   email: string;
   pays: string;
   ville: string;
+  /** numéro WhatsApp du prospect (format lisible, ex. "+229 01 59 17 30 98" — Task 49) */
+  whatsapp: string;
   anglais: string;
 };
 
@@ -89,6 +97,7 @@ export function buildEmailFields(
     `Profession : ${p.profession}`,
     `Pays : ${p.pays}`,
     `Ville : ${p.ville}`,
+    `Numéro WhatsApp : ${p.whatsapp}`,
     `Adresse e-mail : ${p.email}`,
     "",
     "Niveau d'anglais estimé (English Level Assessment) :",

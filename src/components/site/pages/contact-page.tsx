@@ -9,6 +9,8 @@ import { Reveal } from "../reveal";
 import { StickyCTA } from "../sticky-cta";
 import { FlagUK } from "../icons";
 import { SelectPaysField, SelectVilleField } from "../pays-ville-fields";
+import { WhatsAppField } from "../whatsapp-field";
+import { validerWhatsApp } from "@/lib/indicateurs-tel";
 
 /**
  * PAGE 7 — CONTACT / INSCRIPTION (instructions propriétaire)
@@ -31,7 +33,13 @@ import { SelectPaysField, SelectVilleField } from "../pays-ville-fields";
  * autonome. Le coach reçoit le niveau estimé, le score, la confiance,
  * le texte ORIGINAL et une explication de 1-3 phrases.
  *
- * Le numéro WhatsApp n'est JAMAIS affiché (instruction propriétaire).
+ * Le numéro WhatsApp du COACH n'est JAMAIS affiché (instruction
+ * propriétaire). TASK 49 (instruction propriétaire) : le formulaire
+ * demande en revanche le NUMÉRO WHATSAPP DU PROSPECT, juste après le
+ * pays et la ville — l'indicatif international est déduit du pays
+ * sélectionné et affiché comme préfixe du champ, et la saisie est
+ * validée selon les longueurs usuelles du pays (le coach pourra
+ * recontacter le prospect directement sur WhatsApp).
  */
 
 /* — Le programme (offre unique) — plus de choix de formule
@@ -71,6 +79,8 @@ type FormState = {
   email: string;
   pays: string;
   ville: string;
+  /** numéro WhatsApp LOCAL (sans indicatif) tel que saisi */
+  whatsapp: string;
   anglais: string;
 };
 
@@ -83,6 +93,7 @@ const INITIAL_FORM: FormState = {
   email: "",
   pays: "",
   ville: "",
+  whatsapp: "",
   anglais: "",
 };
 
@@ -93,6 +104,7 @@ const FIELD_ORDER: (keyof FormState)[] = [
   "email",
   "pays",
   "ville",
+  "whatsapp",
   "anglais",
 ];
 
@@ -117,6 +129,13 @@ function validate(f: FormState): FormErrors {
   if (f.ville.trim().length < 2) {
     e.ville = "Sélectionne ta ville (choisis d'abord ton pays).";
   }
+  // Task 49 : le numéro WhatsApp n'est validé QUE si le pays est
+  // déjà choisi (le champ est désactivé sinon — l'erreur « pays »
+  // est montrée en premier).
+  if (f.pays.trim().length >= 2) {
+    const wa = validerWhatsApp(f.pays, f.whatsapp);
+    if (!wa.ok) e.whatsapp = wa.erreur;
+  }
   if (f.anglais.trim().length < 15) {
     e.anglais =
       "Écris ta réponse en anglais — quelques phrases, tapées par toi-même.";
@@ -140,9 +159,10 @@ function buildFallbackMessage(
     `• Âge : ${f.age} ans`,
     `• Profession : ${f.profession.trim()}`,
     "",
-    "LOCALISATION",
+    "LOCALISATION & CONTACT",
     `• Pays : ${f.pays.trim()}`,
     `• Ville : ${f.ville.trim()}`,
+    `• Numéro WhatsApp : ${f.whatsapp}`,
     "",
     "EMAIL",
     `• ${f.email.trim()}`,
@@ -201,6 +221,13 @@ export function ContactPage() {
     }
     setErrors({});
     setSending(true);
+    // Task 49 : validation garantie OK ici (validate() a déjà passé) —
+    // on en déduit les deux formats du numéro WhatsApp du prospect :
+    // « pretty » pour l'email au coach / le secours WhatsApp, « e164 »
+    // (format machine) pour le localStorage.
+    const wa = validerWhatsApp(form.pays, form.whatsapp);
+    const whatsappPretty = wa.ok ? wa.pretty : "";
+    const whatsappE164 = wa.ok ? wa.e164 : "";
     // Task 34 (reçu post-paiement) : persister les données
     // d'inscription dans le navigateur — la page #/bienvenue s'en sert
     // pour PERSONNALISER le reçu PDF du client (nom, email,
@@ -216,6 +243,7 @@ export function ContactPage() {
           email: form.email.trim(),
           pays: form.pays.trim(),
           ville: form.ville.trim(),
+          whatsapp: whatsappE164,
           dateInscription: new Date().toISOString(),
         }),
       );
@@ -225,15 +253,17 @@ export function ContactPage() {
     // Envoi direct par email (FormSubmit AJAX depuis le navigateur) avec
     // évaluation automatique du niveau d'anglais côté client (moteur TS
     // pur — mêmes règles que la lib partagée src/lib/english-assessment).
-    const { ok, assessment } = await sendContactEmail({
+    const payload: ContactFormData = {
       nom: form.nom.trim(),
       age: form.age,
       profession: form.profession.trim(),
       email: form.email.trim(),
       pays: form.pays.trim(),
       ville: form.ville.trim(),
+      whatsapp: whatsappPretty,
       anglais: form.anglais.trim(),
-    });
+    };
+    const { ok, assessment } = await sendContactEmail(payload);
     if (ok) {
       setResult("ok");
       // Redirection automatique vers le paiement
@@ -242,7 +272,7 @@ export function ContactPage() {
       }, 1800);
     } else {
       setFallbackMessage(
-        buildFallbackMessage(form, assessment.level, assessment.total),
+        buildFallbackMessage(payload, assessment.level, assessment.total),
       );
       setResult("fail");
     }
@@ -416,11 +446,19 @@ export function ContactPage() {
                     id="f-pays"
                     value={form.pays}
                     onChange={(pays) => {
-                      setForm((f) => ({ ...f, pays, ville: "" }));
+                      // Changer de pays réinitialise la ville ET le
+                      // numéro WhatsApp (l'indicatif affiché change).
+                      setForm((f) => ({
+                        ...f,
+                        pays,
+                        ville: "",
+                        whatsapp: "",
+                      }));
                       setErrors((prev) => ({
                         ...prev,
                         pays: undefined,
                         ville: undefined,
+                        whatsapp: undefined,
                       }));
                     }}
                     error={errors.pays}
@@ -436,6 +474,29 @@ export function ContactPage() {
                       );
                     }}
                     error={errors.ville}
+                  />
+                </div>
+
+                {/* Task 49 (instruction propriétaire) : numéro WhatsApp
+                    du prospect, JUSTE APRÈS le pays et la ville —
+                    l'indicatif est déduit du pays sélectionné (préfixe
+                    affiché dans le champ, ex. +229 Bénin) et la saisie
+                    est validée selon les longueurs du pays. Changer de
+                    pays réinitialise la saisie (l'indicatif change). */}
+                <div className="mt-6">
+                  <WhatsAppField
+                    id="f-whatsapp"
+                    pays={form.pays}
+                    value={form.whatsapp}
+                    onChange={(whatsapp) => {
+                      setForm((f) => ({ ...f, whatsapp }));
+                      setErrors((prev) =>
+                        prev.whatsapp
+                          ? { ...prev, whatsapp: undefined }
+                          : prev,
+                      );
+                    }}
+                    error={errors.whatsapp}
                   />
                 </div>
 
