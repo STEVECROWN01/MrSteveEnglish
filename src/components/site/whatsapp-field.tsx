@@ -1,8 +1,11 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { flagUrl } from "@/lib/pays-villes";
-import { indicatifDuPays, sanitiserWhatsApp } from "@/lib/indicateurs-tel";
+import {
+  formaterLocal,
+  indicatifDuPays,
+  sanitiserWhatsApp,
+} from "@/lib/indicateurs-tel";
 import { WhatsAppGlyph } from "./icons";
 
 /**
@@ -10,19 +13,25 @@ import { WhatsAppGlyph } from "./icons";
  * propriétaire) : placé juste après les champs « Pays » et « Ville ».
  *
  * Le prospect ayant DÉJÀ sélectionné son pays, l'indicatif
- * international (ex. +229, +225, +237) et le drapeau du pays sont
- * déduits AUTOMATIQUEMENT et affichés comme préfixe dans le champ —
- * le prospect ne saisit que son numéro local, validé selon les
- * longueurs usuelles du pays (src/lib/indicateurs-tel.ts).
+ * international (ex. +229, +225, +237) est déduit AUTOMATIQUEMENT
+ * et affiché comme préfixe dans le champ — le prospect ne saisit que
+ * son numéro local, validé selon les longueurs usuelles du pays
+ * (src/lib/indicateurs-tel.ts).
  *
- * AJUSTEMENT PROPRIÉTAIRE (Task 49-bis) : le long texte d'aide
- * au-dessus du champ est remplacé par la seule mention « SANS
- * Indicatif » en italique SOUS le champ — et c'est le SYSTÈME qui
- * empêche la saisie d'un indicatif : à chaque frappe,
- * sanitiserWhatsApp() ne garde que les chiffres et retire
- * automatiquement un indicatif retapé (ex. « +229… », « 00229… »,
- * « 229… ») dès que la saisie ne peut plus être un numéro local
- * valide.
+ * AJUSTEMENTS PROPRIÉTAIRES :
+ * • Task 49-bis — le long texte d'aide est remplacé par la seule
+ *   mention « SANS Indicatif » en italique SOUS le champ, et c'est le
+ *   SYSTÈME qui empêche la saisie d'un indicatif (chiffres uniquement,
+ *   « + »/« 00 »/indicatif retapés retirés en direct par
+ *   sanitiserWhatsApp) ;
+ * • Task 49-ter — PLUS DE DRAPEAU dans le préfixe (le drapeau est
+ *   déjà visible dans le champ « Pays » juste au-dessus), et le
+ *   placeholder COMME le numéro affiché S'ADAPTENT AU FORMAT du pays
+ *   choisi : placeholder « Ex. : 01 96 12 34 56 » (Bénin), « Ex. :
+ *   690 12 34 56 » (Cameroun)… et espacement progressif du numéro
+ *   pendant la frappe (formaterLocal + FORMATS du pays). Le « 0 »
+ *   tronc initial est retiré pour les pays où il ne fait pas partie
+ *   du numéro E.164 (France, Nigeria, Maroc…).
  *
  * Tant qu'aucun pays n'est choisi, le champ reste DÉSACTIVÉ («
  * Sélectionne d'abord ton pays ») — même logique que le champ Ville.
@@ -40,6 +49,7 @@ export function WhatsAppField({
   id: string;
   /** nom du pays sélectionné ("" si aucun) — détermine le préfixe */
   pays: string;
+  /** numéro local SANITISÉ (chiffres uniquement) — l'affichage est formaté */
   value: string;
   onChange: (numero: string) => void;
   error?: string;
@@ -47,6 +57,10 @@ export function WhatsAppField({
   const info = indicatifDuPays(pays);
   const paysPret = pays.trim().length > 0;
   const errId = `err-${id}`;
+  // Affichage adapté au format du pays (Task 49-ter) : l'état reste
+  // au format machine (chiffres), le champ AFFICHE le numéro espacé.
+  const affiche =
+    paysPret && info ? formaterLocal(value, info.groupes) : "";
 
   return (
     <div>
@@ -57,32 +71,21 @@ export function WhatsAppField({
         </span>
       </label>
       <div className="relative mt-2">
-        {/* Préfixe indicatif + drapeau du pays sélectionné */}
+        {/* Préfixe indicatif — SANS drapeau (Task 49-ter : le drapeau
+            est déjà visible dans le champ « Pays » juste au-dessus) */}
         <span
           aria-hidden="true"
           className={cn(
-            "pointer-events-none absolute inset-y-0 left-0 flex items-center gap-2 border-r border-white/15 pl-3.5 pr-3",
+            "pointer-events-none absolute inset-y-0 left-0 flex items-center border-r border-white/15 pl-3.5 pr-3",
             !paysPret && "opacity-50",
           )}
         >
           {info ? (
-            <>
-              <img
-                src={flagUrl(info.code)}
-                srcSet={`${flagUrl(info.code, 80)} 2x`}
-                alt=""
-                loading="lazy"
-                decoding="async"
-                width={24}
-                height={16}
-                className="h-4 w-6 shrink-0 rounded-[2px] object-cover ring-1 ring-white/25"
-              />
-              <span className="font-[550] tabular-nums tracking-wide text-white/80">
-                {info.affiche}
-              </span>
-            </>
+            <span className="font-[550] tabular-nums tracking-wide text-white/80">
+              {info.affiche}
+            </span>
           ) : (
-            <span className="w-[4.5rem] text-white/40">…</span>
+            <span className="w-12 text-white/40">…</span>
           )}
         </span>
         <input
@@ -91,12 +94,13 @@ export function WhatsAppField({
           inputMode="tel"
           autoComplete="tel-national"
           disabled={!paysPret}
-          value={paysPret ? value : ""}
+          value={paysPret ? affiche : ""}
           onChange={(e) =>
             onChange(
-              // Task 49-bis : le SYSTÈME empêche la saisie de
-              // l'indicatif — nettoyage en direct (chiffres uniquement,
-              // indicatif retapé retiré automatiquement).
+              // Task 49-bis/ter : le SYSTÈME empêche la saisie de
+              // l'indicatif (chiffres uniquement, indicatif retapé et
+              // tronc « 0 » retirés automatiquement) — l'état reste
+              // au format machine, l'affichage est formaté par pays.
               info
                 ? sanitiserWhatsApp(info, e.target.value)
                 : e.target.value,
@@ -105,10 +109,14 @@ export function WhatsAppField({
           aria-invalid={Boolean(error)}
           aria-describedby={error ? errId : undefined}
           placeholder={
-            paysPret ? "Ex. : 01 96 12 34 56" : "Sélectionne d'abord ton pays"
+            // Task 49-ter : placeholder ADAPTÉ AU PAYS — exemple
+            // réaliste du format local attendu.
+            paysPret && info
+              ? `Ex. : ${info.exemple}`
+              : "Sélectionne d'abord ton pays"
           }
           className={cn(
-            "form-input pl-28 pr-12 disabled:cursor-not-allowed disabled:opacity-50",
+            "form-input pl-24 pr-12 disabled:cursor-not-allowed disabled:opacity-50",
             error && "border-red-button",
           )}
         />

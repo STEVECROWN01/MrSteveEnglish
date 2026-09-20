@@ -81,7 +81,7 @@ export const LONGUEURS: Record<string, [number, number]> = {
   dj: [8, 8], na: [9, 9], ao: [9, 9], zm: [9, 9], zw: [9, 9],
   mz: [9, 9], sd: [9, 9], ss: [9, 9],
   // Amériques (diaspora)
-  fr: [9, 10], be: [8, 9], ca: [10, 10], us: [10, 10], ht: [8, 8],
+  fr: [9, 9], be: [8, 9], ca: [10, 10], us: [10, 10], ht: [8, 8],
   // Grandes destinations internationales
   gb: [10, 10], es: [9, 9], it: [9, 10], pt: [9, 9], nl: [9, 9],
   ch: [9, 9], cn: [11, 11], in: [10, 10], ru: [10, 10],
@@ -95,6 +95,116 @@ export const LONGUEURS: Record<string, [number, number]> = {
 /** Longueur de repli quand le pays n'est pas dans LONGUEURS. */
 const REPLI: [number, number] = [6, 12];
 
+/**
+ * Pays dont le numéro NATIONAL commence par un « 0 » INTÉGRÉ (le « 0 »
+ * fait partie du numéro E.164) : Bénin et Côte d'Ivoire (passage à 10
+ * chiffres en 2021), Congo-Brazzaville, Gabon. Pour TOUS les autres
+ * pays, un « 0 » initial saisi est un préfixe tronc (numérotation
+ * nationale) à RETIRER : France « 06… » → « 6… », Nigeria « 0803… » →
+ * « 803… », Maroc « 0661… » → « 661… » (E.164 n'inclut jamais le tronc).
+ * (Task 49-ter)
+ */
+const ZERO_NATIONAL = new Set(["bj", "ci", "cg", "ga"]);
+
+/**
+ * FORMAT DU NUMÉRO PAR PAYS (Task 49-ter — instruction propriétaire :
+ * le placeholder ET le numéro affiché s'adaptent au format du pays).
+ * • groupes : découpage du numéro local pour l'affichage espacé,
+ *   progressif pendant la frappe (ex. Sénégal [2,3,2,2] →
+ *   « 77 123 45 67 », Bénin [2,2,2,2,2] → « 01 96 12 34 56 ») ;
+ * • exemple : numéro d'exemple RÉALISTE pour le placeholder du champ.
+ * Les pays non listés utilisent le repli par paires.
+ */
+export const FORMATS: Record<string, { groupes: number[]; exemple: string }> = {
+  // Afrique de l'Ouest (public principal)
+  bj: { groupes: [2, 2, 2, 2, 2], exemple: "01 96 12 34 56" },
+  tg: { groupes: [2, 2, 2, 2], exemple: "90 12 34 56" },
+  ci: { groupes: [2, 2, 2, 2, 2], exemple: "01 02 34 56 78" },
+  sn: { groupes: [2, 3, 2, 2], exemple: "77 123 45 67" },
+  bf: { groupes: [2, 2, 2, 2], exemple: "70 12 34 56" },
+  ml: { groupes: [2, 2, 2, 2], exemple: "76 12 34 56" },
+  ne: { groupes: [2, 2, 2, 2], exemple: "90 12 34 56" },
+  gn: { groupes: [3, 2, 2, 2], exemple: "620 12 34 56" },
+  gw: { groupes: [3, 2, 2], exemple: "955 12 34" },
+  gm: { groupes: [3, 2, 2], exemple: "776 12 34" },
+  sl: { groupes: [2, 2, 2, 2], exemple: "76 12 34 56" },
+  lr: { groupes: [3, 2, 2], exemple: "776 12 34" },
+  gh: { groupes: [2, 3, 4], exemple: "24 123 4567" },
+  ng: { groupes: [3, 3, 4], exemple: "803 123 4567" },
+  // Afrique centrale
+  cm: { groupes: [3, 2, 2, 2], exemple: "690 12 34 56" },
+  ga: { groupes: [2, 2, 2, 2], exemple: "06 12 34 56" },
+  cg: { groupes: [2, 3, 2, 2], exemple: "06 123 45 67" },
+  cd: { groupes: [2, 3, 4], exemple: "81 234 5678" },
+  td: { groupes: [2, 2, 2, 2], exemple: "66 12 34 56" },
+  cf: { groupes: [2, 2, 2, 2], exemple: "70 12 34 56" },
+  gq: { groupes: [3, 2, 2, 2], exemple: "222 12 34 56" },
+  st: { groupes: [3, 2, 2], exemple: "981 23 45" },
+  // Maghreb & Égypte
+  ma: { groupes: [3, 2, 2, 2], exemple: "661 12 34 56" },
+  dz: { groupes: [3, 2, 2, 2], exemple: "661 12 34 56" },
+  tn: { groupes: [2, 3, 3], exemple: "98 123 456" },
+  ly: { groupes: [2, 4, 4], exemple: "91 1234 5678" },
+  mr: { groupes: [2, 2, 2, 2], exemple: "22 12 34 56" },
+  eg: { groupes: [3, 3, 4], exemple: "100 123 4567" },
+  // Afrique de l'Est & australe (diaspora)
+  rw: { groupes: [3, 3, 3], exemple: "788 123 456" },
+  mu: { groupes: [4, 4], exemple: "5123 4567" },
+  mg: { groupes: [2, 3, 2, 2], exemple: "34 123 45 67" },
+  km: { groupes: [3, 2, 2], exemple: "321 23 45" },
+  sc: { groupes: [1, 3, 3], exemple: "4 123 456" },
+  dj: { groupes: [2, 2, 2, 2], exemple: "77 12 34 56" },
+  na: { groupes: [2, 3, 4], exemple: "81 123 4567" },
+  ao: { groupes: [3, 2, 2, 2], exemple: "923 12 34 56" },
+  zm: { groupes: [2, 3, 4], exemple: "97 123 4567" },
+  zw: { groupes: [2, 3, 4], exemple: "77 123 4567" },
+  mz: { groupes: [2, 3, 4], exemple: "84 123 4567" },
+  sd: { groupes: [2, 3, 4], exemple: "91 123 4567" },
+  ss: { groupes: [2, 3, 4], exemple: "97 123 4567" },
+  // France & Amériques (diaspora)
+  fr: { groupes: [1, 2, 2, 2, 2], exemple: "6 12 34 56 78" },
+  be: { groupes: [3, 2, 2, 2], exemple: "470 12 34 56" },
+  ca: { groupes: [3, 3, 4], exemple: "438 123 4567" },
+  us: { groupes: [3, 3, 4], exemple: "415 555 1234" },
+  ht: { groupes: [4, 4], exemple: "3491 1234" },
+  // Grandes destinations internationales
+  gb: { groupes: [4, 6], exemple: "7400 123456" },
+  es: { groupes: [3, 3, 3], exemple: "612 345 678" },
+  it: { groupes: [3, 3, 4], exemple: "345 123 4567" },
+  pt: { groupes: [3, 3, 3], exemple: "912 345 678" },
+  nl: { groupes: [1, 4, 4], exemple: "6 1234 5678" },
+  ch: { groupes: [2, 3, 2, 2], exemple: "79 123 45 67" },
+  cn: { groupes: [3, 4, 4], exemple: "139 1234 5678" },
+  in: { groupes: [5, 5], exemple: "98765 43210" },
+  ru: { groupes: [3, 3, 2, 2], exemple: "901 234 56 78" },
+  ua: { groupes: [2, 3, 2, 2], exemple: "50 123 45 67" },
+  tr: { groupes: [3, 3, 2, 2], exemple: "532 123 45 67" },
+  sa: { groupes: [2, 3, 4], exemple: "50 123 4567" },
+  ae: { groupes: [2, 3, 4], exemple: "50 123 4567" },
+  qa: { groupes: [4, 4], exemple: "3312 3456" },
+  kw: { groupes: [4, 4], exemple: "9123 4567" },
+  il: { groupes: [2, 3, 4], exemple: "50 123 4567" },
+  pk: { groupes: [3, 3, 4], exemple: "301 234 5678" },
+  bd: { groupes: [4, 3, 3], exemple: "1712 345 678" },
+  jp: { groupes: [2, 4, 4], exemple: "90 1234 5678" },
+  kr: { groupes: [2, 4, 4], exemple: "10 1234 5678" },
+  br: { groupes: [2, 5, 4], exemple: "11 91234 5678" },
+  mx: { groupes: [2, 4, 4], exemple: "55 1234 5678" },
+  ar: { groupes: [2, 4, 4], exemple: "11 2345 6789" },
+  co: { groupes: [3, 3, 4], exemple: "301 234 5678" },
+  pe: { groupes: [3, 3, 3], exemple: "987 654 321" },
+  ve: { groupes: [3, 3, 4], exemple: "412 123 4567" },
+  cl: { groupes: [1, 4, 4], exemple: "9 1234 5678" },
+  do: { groupes: [3, 3, 4], exemple: "809 123 4567" },
+  cu: { groupes: [4, 4], exemple: "5234 5678" },
+};
+
+/** Repli par paires pour les pays sans format dédié. */
+const FORMAT_DEFAUT: { groupes: number[]; exemple: string } = {
+  groupes: [2, 2, 2, 2, 2, 2],
+  exemple: "12 34 56 78",
+};
+
 /** Infos d'indicatif d'un pays (par son NOM français, comme dans le formulaire). */
 export type IndicatifInfo = {
   /** indicatif E.164 SANS le « + » — ex. "229" */
@@ -105,6 +215,10 @@ export type IndicatifInfo = {
   code: string;
   /** longueurs locales [min, max] */
   longueurs: [number, number];
+  /** découpage d'affichage du numéro local (ex. [2, 3, 2, 2]) */
+  groupes: number[];
+  /** numéro d'exemple réaliste (placeholder du champ) */
+  exemple: string;
 };
 
 /** Indicatif & longueurs d'un pays (null si pays inconnu/non sélectionné). */
@@ -113,11 +227,14 @@ export function indicatifDuPays(nomPays: string): IndicatifInfo | null {
   if (!p) return null;
   const indicatif = INDICATIFS[p.code];
   if (!indicatif) return null;
+  const fmt = FORMATS[p.code] ?? FORMAT_DEFAUT;
   return {
     indicatif,
     affiche: `+${indicatif}`,
     code: p.code,
     longueurs: LONGUEURS[p.code] ?? REPLI,
+    groupes: fmt.groupes,
+    exemple: fmt.exemple,
   };
 }
 
@@ -134,6 +251,29 @@ export type WhatsAppValidation =
       indicatif: string;
     }
   | { ok: false; erreur: string };
+
+/**
+ * Découpe les chiffres du numéro local selon les groupes du PAYS,
+ * progressivement pendant la frappe (Task 49-ter) : « 0159 » →
+ * « 01 59 » (Bénin), « 690123456 » → « 690 12 34 56 » (Cameroun),
+ * « 612345678 » → « 6 12 34 56 78 » (France). Les chiffres saisis
+ * au-delà du dernier groupe (saisie transitoire trop longue)
+ * restent visibles jusqu'au nettoyage.
+ */
+export function formaterLocal(
+  digits: string,
+  groupes: readonly number[],
+): string {
+  const parts: string[] = [];
+  let i = 0;
+  for (const g of groupes) {
+    if (i >= digits.length) break;
+    parts.push(digits.slice(i, i + g));
+    i += g;
+  }
+  if (i < digits.length) parts.push(digits.slice(i));
+  return parts.join(" ");
+}
 
 /**
  * NETTOYAGE EN DIRECT de la saisie (ajustement Task 49 — instruction
@@ -176,6 +316,16 @@ export function sanitiserWhatsApp(
     ) {
       digits = rest;
     }
+  }
+  // Préfixe tronc « 0 » (Task 49-ter) : dans la plupart des pays, le
+  // « 0 » initial ne fait PAS partie du numéro E.164 (France « 06… »,
+  // Nigeria « 0803… », Maroc « 0661… ») → retiré dès que le reste est
+  // un numéro local valide. Bénin, Côte d'Ivoire, Congo et Gabon
+  // (ZERO_NATIONAL) : le « 0 » fait partie du numéro → conservé.
+  if (!ZERO_NATIONAL.has(info.code) && digits.startsWith("0")) {
+    const sans0 = digits.slice(1);
+    const [min, max] = info.longueurs;
+    if (sans0.length >= min && sans0.length <= max) digits = sans0;
   }
   return digits;
 }
@@ -227,6 +377,12 @@ export function validerWhatsApp(
     const rest = digits.slice(info.indicatif.length);
     if (rest.length >= min && rest.length <= max) local = rest;
   }
+  // Préfixe tronc « 0 » (Task 49-ter) — même règle que
+  // sanitiserWhatsApp (hors pays où le 0 est intégré au numéro).
+  if (!ZERO_NATIONAL.has(info.code) && local.startsWith("0")) {
+    const sans0 = local.slice(1);
+    if (sans0.length >= min && sans0.length <= max) local = sans0;
+  }
 
   if (local.length < min || local.length > max) {
     const attendu =
@@ -243,14 +399,7 @@ export function validerWhatsApp(
     ok: true,
     local,
     e164: `+${info.indicatif}${local}`,
-    pretty: `${info.affiche} ${grouper(local)}`,
+    pretty: `${info.affiche} ${formaterLocal(local, info.groupes)}`,
     indicatif: info.indicatif,
   };
-}
-
-/** Regroupe les chiffres par 2 (longueur paire) pour la lisibilité :
- *  "0159173098" → "01 59 17 30 98" ; longueur impaire → tel quel. */
-function grouper(local: string): string {
-  if (local.length % 2 !== 0) return local;
-  return (local.match(/.{2}/g) ?? [local]).join(" ");
 }
