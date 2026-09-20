@@ -2,7 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import { flagUrl } from "@/lib/pays-villes";
-import { indicatifDuPays } from "@/lib/indicateurs-tel";
+import { indicatifDuPays, sanitiserWhatsApp } from "@/lib/indicateurs-tel";
 import { WhatsAppGlyph } from "./icons";
 
 /**
@@ -14,6 +14,15 @@ import { WhatsAppGlyph } from "./icons";
  * déduits AUTOMATIQUEMENT et affichés comme préfixe dans le champ —
  * le prospect ne saisit que son numéro local, validé selon les
  * longueurs usuelles du pays (src/lib/indicateurs-tel.ts).
+ *
+ * AJUSTEMENT PROPRIÉTAIRE (Task 49-bis) : le long texte d'aide
+ * au-dessus du champ est remplacé par la seule mention « SANS
+ * Indicatif » en italique SOUS le champ — et c'est le SYSTÈME qui
+ * empêche la saisie d'un indicatif : à chaque frappe,
+ * sanitiserWhatsApp() ne garde que les chiffres et retire
+ * automatiquement un indicatif retapé (ex. « +229… », « 00229… »,
+ * « 229… ») dès que la saisie ne peut plus être un numéro local
+ * valide.
  *
  * Tant qu'aucun pays n'est choisi, le champ reste DÉSACTIVÉ («
  * Sélectionne d'abord ton pays ») — même logique que le champ Ville.
@@ -47,11 +56,6 @@ export function WhatsAppField({
           *
         </span>
       </label>
-      <p className="t-caption mt-1.5 text-white/65">
-        Saisis ton numéro SANS l&apos;indicatif — celui-ci s&apos;affiche
-        automatiquement selon ton pays. C&apos;est sur ce numéro que le
-        coach te contactera sur WhatsApp.
-      </p>
       <div className="relative mt-2">
         {/* Préfixe indicatif + drapeau du pays sélectionné */}
         <span
@@ -88,7 +92,16 @@ export function WhatsAppField({
           autoComplete="tel-national"
           disabled={!paysPret}
           value={paysPret ? value : ""}
-          onChange={(e) => onChange(e.target.value)}
+          onChange={(e) =>
+            onChange(
+              // Task 49-bis : le SYSTÈME empêche la saisie de
+              // l'indicatif — nettoyage en direct (chiffres uniquement,
+              // indicatif retapé retiré automatiquement).
+              info
+                ? sanitiserWhatsApp(info, e.target.value)
+                : e.target.value,
+            )
+          }
           aria-invalid={Boolean(error)}
           aria-describedby={error ? errId : undefined}
           placeholder={
@@ -101,6 +114,9 @@ export function WhatsAppField({
         />
         <WhatsAppGlyph className="pointer-events-none absolute right-3.5 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-white/35" />
       </div>
+      {/* Ajustement propriétaire (Task 49-bis) : mention courte en
+          italique SOUS le champ, à la place du long texte d'aide. */}
+      <p className="t-caption mt-2 italic text-white/60">SANS Indicatif</p>
       {error ? (
         <p id={errId} role="alert" className="form-error">
           {error}

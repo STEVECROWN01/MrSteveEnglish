@@ -136,6 +136,51 @@ export type WhatsAppValidation =
   | { ok: false; erreur: string };
 
 /**
+ * NETTOYAGE EN DIRECT de la saisie (ajustement Task 49 — instruction
+ * propriétaire : c'est au SYSTÈME d'empêcher le prospect d'entrer un
+ * indicatif de pays).
+ *
+ * Appelé à CHAQUE frappe dans le champ :
+ * • la saisie ne peut contenir QUE des chiffres — « + », espaces,
+ *   points, tirets, parenthèses et lettres disparaissent au fil de
+ *   la frappe (l'indicatif « +229 » est déjà affiché à gauche du
+ *   champ : le retaper ne sert à rien) ;
+ * • un « 00 » international initial est retiré (« 00229… ») ;
+ * • un indicatif retapé par erreur (ex. « 2290159173098 ») est
+ *   retiré DÈS QUE la saisie ne peut plus être un numéro local
+ *   valide : soit le reste (sans l'indicatif) a une longueur valide
+ *   pour le pays, soit la saisie dépasse la longueur maximale.
+ *
+ * Tant qu'une ambiguïté reste possible, la saisie est PRÉSERVÉE :
+ * ex. au Bénin, un fixe « 22912345 » (8 chiffres) commence aussi par
+ * « 229 » — on ne retire JAMAIS un préfixe qui pourrait être le
+ * début légitime d'un numéro local. La validation finale
+ * (validerWhatsApp) tranche au moment de l'envoi.
+ */
+export function sanitiserWhatsApp(
+  info: IndicatifInfo,
+  saisie: string,
+): string {
+  // Chiffres uniquement — tout le reste disparaît au fil de la frappe
+  let digits = saisie.replace(/\D+/g, "");
+  // Préfixe international « 00 » retapé (ex. « 00229… »)
+  if (digits.startsWith("00")) digits = digits.slice(2);
+  // Indicatif retapé — retiré seulement si la saisie ne peut plus
+  // être un numéro local valide pour le pays choisi.
+  if (digits.startsWith(info.indicatif)) {
+    const rest = digits.slice(info.indicatif.length);
+    const [min, max] = info.longueurs;
+    if (
+      (rest.length >= min && rest.length <= max) ||
+      digits.length > max
+    ) {
+      digits = rest;
+    }
+  }
+  return digits;
+}
+
+/**
  * Valide la saisie du numéro WhatsApp du prospect pour le pays choisi.
  *
  * La saisie est nettoyée des séparateurs usuels (espaces, points,
