@@ -12,7 +12,7 @@ import { PageShell } from "@/components/site/page-shell";
 export const metadata: Metadata = {
   title: "Programme de coaching d'anglais — 03 mois | Stevens AKPOVI",
   description:
-    "03 mois de coaching d'anglais personnalisé en ligne : trois séances de 1h30 par semaine, speaking, prononciation, vocabulaire et confiance. 70 000 FCFA — paiement unique. En ligne partout en Afrique francophone.",
+    "03 mois de coaching d'anglais personnalisé en ligne : trois séances de 1h30 par semaine, speaking, prononciation, vocabulaire et confiance. Certificat de fin de programme. Prix de lancement 70 000 FCFA — paiement unique. En ligne partout en Afrique francophone.",
   alternates: {
     canonical: "/programme",
   },
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     title:
       "Programme « De Comprendre à Parler » — 03 mois de coaching d'anglais",
     description:
-      "Trois séances de 1h30 par semaine pendant 03 mois. Speaking, prononciation, confiance. 70 000 FCFA, paiement unique.",
+      "Trois séances de 1h30 par semaine pendant 03 mois. Speaking, prononciation, confiance. Certificat de fin de programme. Prix de lancement : 70 000 FCFA, paiement unique.",
     type: "website",
     locale: "fr_FR",
     siteName: "Stevens AKPOVI",
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
     title:
       "Programme « De Comprendre à Parler » — 03 mois de coaching d'anglais",
     description:
-      "Trois séances de 1h30 par semaine pendant 03 mois. 70 000 FCFA, paiement unique.",
+      "Trois séances de 1h30 par semaine pendant 03 mois. Certificat de fin de programme. Prix de lancement : 70 000 FCFA, paiement unique.",
   },
 };
 

@@ -585,6 +585,17 @@ function Accompagnement() {
                   application ce qui est travaillé ensemble. C&apos;est
                   exactement ce que la garantie engage.
                 </p>
+                {/* Task 50 (recommandation expert marketing) : la limite
+                    de cohorte est introduite APRÈS la présentation du
+                    programme — capacité RÉELLE (10 places), pas une
+                    urgence artificielle. */}
+                <p className="t-body text-white/85">
+                  C&apos;est aussi pour cette raison que la cohorte est
+                  volontairement limitée à {OFFRE.places} apprenants : à ce
+                  rythme, avec un suivi personnalisé pour chacun, je ne peux
+                  pas accompagner correctement plus de dix personnes à la
+                  fois.
+                </p>
               </Prose>
             </Reveal>
 
@@ -607,6 +618,22 @@ function Accompagnement() {
                   <span>Mois 2</span>
                   <span>Mois 3</span>
                 </div>
+              </div>
+            </Reveal>
+
+            {/* Task 50 : CERTIFICAT DE FIN DE PROGRAMME — formulé ici,
+                juste après la présentation des 03 mois de coaching
+                (recommandation expert). Encadré distinct, sobre. */}
+            <Reveal className="mt-8">
+              <div className="max-w-[34rem] rounded-[12px] border border-white/20 bg-white/[0.04] p-5 md:p-6">
+                <p className="t-caption font-medium uppercase tracking-[0.14em] text-white/75">
+                  Certificat de fin de programme
+                </p>
+                <p className="t-body mt-2 text-white/85">
+                  À l&apos;issue des 03 mois, chaque apprenant ayant complété
+                  le programme reçoit un certificat de fin de programme,
+                  délivré par Mr Steve English.
+                </p>
               </div>
             </Reveal>
 
@@ -1068,6 +1095,8 @@ const MOTS_CLES = [
   "Coaching d'anglais personnalisé",
   "03 mois d'accompagnement",
   "70 000 FCFA — Paiement unique",
+  "Première cohorte — 10 places",
+  "Certificat de fin de programme",
   "Speaking & Conversation",
   "Prise de parole",
   "Prononciation",
@@ -1156,12 +1185,32 @@ function SectionPrix() {
           {/* Bloc prix */}
           <Reveal>
             <div className="glass-card glass-dark flex h-full flex-col p-6 md:p-10">
-              <p className="t-caption font-medium uppercase tracking-[0.14em] text-white/75">
-                Paiement unique
+              {/* Task 50 (recommandation expert marketing) : « Paiement
+                  unique » devient « PRIX DE LANCEMENT » — tarif normal
+                  barré au-dessus du prix réel, mention première cohorte.
+                  Contraste volontairement élégant : pas de « profitez
+                  vite », le positionnement reste premium coaching. */}
+              <p className="t-caption font-medium uppercase tracking-[0.14em] text-red-button">
+                Prix de lancement
               </p>
-              <p className="mt-6 flex flex-wrap items-baseline gap-x-4">
+              <p className="mt-6 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                <span className="text-[1.375rem] font-[550] tabular-nums text-white/50 line-through">
+                  {OFFRE.prixNormal}
+                </span>
+                <span className="text-[0.9rem] font-[550] tabular-nums text-white/50 line-through">
+                  {OFFRE.devise}
+                </span>
+              </p>
+              <p className="mt-2 flex flex-wrap items-baseline gap-x-4">
                 <span className="t-stat text-white">{OFFRE.prix}</span>
                 <span className="t-stat-unit text-white">{OFFRE.devise}</span>
+              </p>
+              <p className="t-caption mt-4 italic text-white/70">
+                Tarif de lancement réservé à la première cohorte.
+              </p>
+              <p className="t-caption mt-1 text-white/60">
+                Le tarif de lancement prendra fin à la clôture de cette
+                cohorte.
               </p>
               <p className="t-body mt-6 text-white/85">
                 Pas d&apos;abonnement. Pas de paiement mensuel. Pas de frais
@@ -1225,7 +1274,18 @@ function SectionPrix() {
                   </li>
                 ))}
               </ul>
-              <p className="t-body mt-8 border-t border-white/15 pt-6 text-white/85">
+              {/* Task 50 : certificat de fin de programme — ligne
+                  DISTINCTE des 8 inclusions (cartes 01-08 intactes). */}
+              <div className="mt-6 border-t border-white/15 pt-6">
+                <p className="t-caption font-medium uppercase tracking-[0.14em] text-white/75">
+                  Certificat de fin de programme
+                </p>
+                <p className="t-body mt-2 text-white/90">
+                  Délivré à chaque apprenant ayant complété le programme, à
+                  l&apos;issue des 03 mois.
+                </p>
+              </div>
+              <p className="t-body mt-6 border-t border-white/15 pt-6 text-white/85">
                 Soit un accompagnement complet sur trois mois — pas des
                 séances isolées, mais un parcours structuré, du premier
                 déclic jusqu&apos;à une parole qui tient debout.
@@ -1364,6 +1424,16 @@ const FAQ_OBJECTIONS = [
       "Un paiement unique de 70 000 FCFA au moment de l'inscription. Après le formulaire, tu es dirigé automatiquement vers le paiement sécurisé. Trois jours après confirmation, ton coaching démarre réellement.",
   },
   {
+    question: "Pourquoi le prix est-il de 70 000 FCFA ?",
+    answer:
+      "70 000 FCFA est le tarif de lancement, réservé à la première cohorte. Quand cette cohorte sera fermée, le programme passera à son tarif normal : 120 000 FCFA. Le paiement reste unique — pas d'abonnement, pas de frais cachés.",
+  },
+  {
+    question: "Pourquoi seulement 10 places ?",
+    answer:
+      "Parce que l'accompagnement est réel : trois séances de 1h30 par semaine, des corrections personnalisées et un suivi individualisé pour chaque apprenant. Au-delà de dix personnes, la qualité de ce suivi baisserait — la cohorte est donc volontairement limitée.",
+  },
+  {
     question: "Pourquoi un paiement unique ?",
     answer:
       "Parce que le programme est un accompagnement complet de 03 mois, pas un abonnement. Pas de paiement mensuel, pas de reconduction, pas de frais cachés — tu sais exactement ce que tu paies, une fois.",
@@ -1377,6 +1447,11 @@ const FAQ_OBJECTIONS = [
     question: "Que se passe-t-il après les 03 mois ?",
     answer:
       "Tu repars avec une pratique installée : tu prends la parole plus facilement, tu construis tes phrases plus naturellement, tu as moins besoin de traduire mentalement. Si tu souhaites continuer, on en parle ensemble — sans engagement.",
+  },
+  {
+    question: "Y a-t-il un certificat à la fin du programme ?",
+    answer:
+      "Oui. À l'issue des 03 mois, chaque apprenant ayant complété le programme reçoit un certificat de fin de programme, délivré par Mr Steve English — il atteste que tu as complété l'intégralité du parcours.",
   },
 ];
 
@@ -1405,10 +1480,17 @@ function FaqSection() {
 
 /* — CTA FINAL : clôture du funnel. Task 28 (instruction propriétaire) :
       la carte « Le coût de l'inaction » doit venir AVANT le bouton
-      « Je veux parler anglais avec confiance » — elle vit désormais dans
-      cette section finale de l'accueil (le footer la masque sur
-      l'accueil via hideCarte : pas de double affichage ; toutes les
-      autres pages conservent la carte en tête de footer). — */
+      — elle vit désormais dans cette section finale de l'accueil (le
+      footer la masque sur l'accueil via hideCarte : pas de double
+      affichage ; toutes les autres pages conservent la carte en tête
+      de footer).
+    Task 50 (recommandation expert marketing) : bloc de conversion
+      « REJOINS LA PREMIÈRE COHORTE » inséré JUSTE AVANT le CTA — le
+      prospect comprend simultanément : ce qu'il obtient → pourquoi
+      seulement 10 personnes → pourquoi le prix est actuellement de
+      70 000 FCFA → ce qu'il doit faire maintenant. Rareté RÉELLE
+      (capacité opérationnelle) + prix de lancement réel — pas de
+      compteurs, pas d'urgence artificielle. — */
 function CtaFinal() {
   return (
     <Section className="on-dark relative overflow-hidden bg-black text-white">
@@ -1429,10 +1511,67 @@ function CtaFinal() {
         <Reveal>
           <CarteUrgenceEthique className="mx-auto max-w-[46rem]" />
         </Reveal>
+
+        {/* Task 50 : la décision, présentée dans l'ordre de l'expert —
+            10 places → prix de lancement → certificat → CTA. */}
+        <Reveal className="mt-10 lg:mt-14">
+          <div className="glass-card glass-dark mx-auto max-w-[46rem] p-6 md:p-10">
+            <p className="t-caption font-medium uppercase tracking-[0.14em] text-white/75">
+              « De Comprendre à Parler » — 03 mois de coaching
+            </p>
+            <h2 className="t-h2 mt-4 text-white">
+              Rejoins la{" "}
+              <span className="text-red-button">première cohorte</span>.
+            </h2>
+
+            {/* 10 places seulement — raison crédible de la limitation */}
+            <div className="mt-8 border-t border-white/15 pt-6">
+              <p className="flex items-center gap-2.5 text-[0.8125rem] font-bold uppercase tracking-[0.16em] text-red-button">
+                <span
+                  aria-hidden="true"
+                  className="h-2 w-2 shrink-0 rounded-full bg-red-button"
+                />
+                {OFFRE.places} places seulement
+              </p>
+              <p className="t-body mt-2 text-white/85">
+                Cohorte volontairement limitée, pour garantir un véritable
+                accompagnement de chaque apprenant.
+              </p>
+            </div>
+
+            {/* Prix de lancement — tarif normal barré */}
+            <div className="mt-6 border-t border-white/15 pt-6">
+              <p className="t-caption font-medium uppercase tracking-[0.14em] text-white/75">
+                Prix de lancement
+              </p>
+              <p className="mt-2 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                <span className="text-[1.25rem] font-[550] tabular-nums text-white/50 line-through">
+                  {OFFRE.prixNormal} {OFFRE.devise}
+                </span>
+                <span className="t-stat text-white">{OFFRE.prix}</span>
+                <span className="t-stat-unit text-white">{OFFRE.devise}</span>
+              </p>
+              <p className="t-caption mt-3 italic text-white/70">
+                Tarif de lancement pour la première cohorte.
+              </p>
+            </div>
+
+            {/* Certificat de fin de programme */}
+            <div className="mt-6 border-t border-white/15 pt-6">
+              <p className="t-caption font-medium uppercase tracking-[0.14em] text-white/75">
+                Certificat de fin de programme
+              </p>
+              <p className="t-body mt-2 text-white/85">
+                Délivré à chaque apprenant ayant complété le programme.
+              </p>
+            </div>
+          </div>
+        </Reveal>
+
         <Reveal className="mt-10 lg:mt-14">
           <div className="flex flex-col items-center gap-5 text-center">
             <span data-wa-cta className="inline-flex">
-              <CtaButton href="/contact">{CTA_LABELS.hero}</CtaButton>
+              <CtaButton href="/contact">{CTA_LABELS.rejoindreCohorte}</CtaButton>
             </span>
             <p className="t-caption text-white/70">{OFFRE.resumeSousCta}</p>
           </div>

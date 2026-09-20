@@ -37,14 +37,27 @@ export function waLink(message?: string): string {
  * d'UNE SEULE offre, plus aucun multi-format / multi-durée / multi-prix) :
  * Programme « De Comprendre à Parler » — 03 mois de coaching d'anglais
  * personnalisé — 70 000 FCFA — paiement unique.
+ *
+ * Task 50 (instruction propriétaire — recommandation expert marketing) :
+ * le tarif de 70 000 FCFA est un PRIX DE LANCEMENT réel, réservé à la
+ * PREMIÈRE cohorte ; à sa clôture, le programme passera à son tarif
+ * normal de 120 000 FCFA. La cohorte est par ailleurs volontairement
+ * limitée à 10 apprenants — contrainte opérationnelle RÉELLE (3 séances
+ * live de 1h30 par semaine + suivi personnalisé), pas une urgence
+ * artificielle. Ces éléments alimentent le bloc de conversion final.
  */
 export const OFFRE = {
   programme: "Programme « De Comprendre à Parler »",
   duree: "03 mois",
   rythme: "Trois séances de 1h30 par semaine",
   prix: "70 000",
+  /** Tarif normal après la période de lancement (prix de référence
+   *  réel annoncé par le propriétaire — Task 50). */
+  prixNormal: "120 000",
   devise: "FCFA",
   paiement: "Paiement unique",
+  /** Capacité RÉELLE par cohorte (Task 50) — contrainte opérationnelle. */
+  places: "10",
   resumeSousCta:
     "03 mois • Coaching en ligne • Accompagnement personnalisé • 70 000 FCFA",
   sousCtaPrix: "Paiement unique • Accès au programme pendant 03 mois",
@@ -59,6 +72,9 @@ export const CTA_LABELS = {
   decouvrir: "Découvrir le programme →",
   decouvrirCourt: "Découvrir le programme",
   rejoindre: "Rejoindre le programme — 70 000 FCFA",
+  /** Task 50 (recommandation expert marketing) : libellé du CTA FINAL
+   *  de l'accueil, après le bloc de conversion « première cohorte ». */
+  rejoindreCohorte: "Rejoindre la cohorte — 70 000 FCFA →",
   pourquoiMoi: "Découvrir mon parcours →",
   voirResultats: "Voir les résultats obtenus avec cette méthode →",
   faq: "Pose-moi ta question →",

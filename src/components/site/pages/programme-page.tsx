@@ -123,15 +123,33 @@ export function ProgrammePage() {
                   progression.
                 </p>
 
-                {/* Prix — blanc sur verre sombre (Task 29) */}
-                <div className="mt-10 flex flex-wrap items-baseline gap-x-4 border-t border-white/20 pt-8">
-                  <p className="flex flex-wrap items-baseline gap-x-3">
+                {/* Prix — Task 50 (recommandation expert marketing) :
+                    PRIX DE LANCEMENT — tarif normal barré au-dessus du
+                    prix réel, mention première cohorte. Élégance premium :
+                    pas de « profitez vite ». */}
+                <div className="mt-10 border-t border-white/20 pt-8">
+                  <p className="t-caption font-medium uppercase tracking-[0.14em] text-red-button">
+                    Prix de lancement
+                  </p>
+                  <p className="mt-3 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                    <span className="text-[1.375rem] font-[550] tabular-nums text-white/50 line-through">
+                      {OFFRE.prixNormal}
+                    </span>
+                    <span className="text-[0.9rem] font-[550] tabular-nums text-white/50 line-through">
+                      {OFFRE.devise}
+                    </span>
+                  </p>
+                  <p className="mt-2 flex flex-wrap items-baseline gap-x-4">
                     <span className="t-stat text-white">{OFFRE.prix}</span>
                     <span className="t-stat-unit text-white">
                       {OFFRE.devise}
                     </span>
                   </p>
-                  <p className="text-[0.9375rem] font-medium text-white/70">
+                  <p className="t-caption mt-4 italic text-white/70">
+                    Tarif de lancement réservé à la première cohorte — il
+                    prendra fin à sa clôture.
+                  </p>
+                  <p className="text-[0.9375rem] font-medium text-white/70 mt-4">
                     {OFFRE.paiement} — pas d&apos;abonnement, pas de paiement
                     mensuel, pas de frais cachés.
                   </p>
@@ -173,8 +191,23 @@ export function ProgrammePage() {
                   </div>
                 ))}
               </div>
-              <p className="t-body mt-8 text-white/85">
-                Soit un accompagnement complet sur trois mois — pas des
+              {/* Task 50 : certificat de fin de programme — ligne
+                  DISTINCTE des 8 inclusions (source unique partagée
+                  intacte), formulation différente de l'accueil. */}
+              <div className="mt-6 border-t border-white/20 pt-6">
+                <p className="t-caption font-medium uppercase tracking-[0.14em] text-white/75">
+                  Certificat de fin de programme
+                </p>
+                <p className="t-body mt-2 text-white">
+                  À l&apos;issue des 03 mois, chaque apprenant ayant complété
+                  le programme reçoit un certificat de fin de programme,
+                  délivré par Mr Steve English.
+                </p>
+              </div>
+              <p className="t-body mt-6 text-white/85">
+                Soit un accompagnement complet sur trois mois — au sein
+                d&apos;une cohorte volontairement limitée à {OFFRE.places}{" "}
+                apprenants, pour que chacun soit réellement suivi. Pas des
                 séances isolées, mais un parcours structuré, du premier
                 déclic jusqu&apos;à une parole qui tient debout.
               </p>

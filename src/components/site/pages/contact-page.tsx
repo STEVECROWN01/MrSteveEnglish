@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { CHECKOUT_URL, CTA_LABELS, waLink } from "@/lib/site";
+import { CHECKOUT_URL, CTA_LABELS, OFFRE, waLink } from "@/lib/site";
 import { sendContactEmail, type ContactFormData } from "@/lib/contact-email";
 import { INSCRIPTION_KEY } from "@/lib/receipt";
 import { Container, PageHero } from "../layout-primitives";
@@ -326,12 +326,15 @@ export function ContactPage() {
                 {/* Rappel du programme (offre unique — instruction
                     propriétaire) au moment exact de la décision.
                     « Comprendre » et « Parler » en rouge (instruction
-                    propriétaire — plus de guillemets imbriqués). */}
+                    propriétaire — plus de guillemets imbriqués).
+                    Task 50 : PRIX DE LANCEMENT + première cohorte (10
+                    places) — recommandation expert marketing. */}
                 <p className="t-caption mt-4 border-t border-white/15 pt-4 text-white/75">
                   Programme « De <span className="text-red-button">Comprendre</span> à{" "}
                   <span className="text-red-button">Parler</span> » — 03 mois
-                  de coaching d&apos;anglais personnalisé — 70 000 FCFA —
-                  paiement unique.
+                  de coaching d&apos;anglais personnalisé — prix de lancement :
+                  70 000 FCFA (au lieu de 120 000 FCFA), réservé à la
+                  première cohorte ({OFFRE.places} places) — paiement unique.
                 </p>
               </div>
             </Reveal>
@@ -573,8 +576,8 @@ export function ContactPage() {
                   <p className="t-caption mt-4 text-center text-white/70">
                     En soumettant, tes informations m&apos;arrivent directement
                     par email et tu es dirigé automatiquement vers le
-                    paiement sécurisé du programme (70 000 FCFA — paiement
-                    unique).
+                    paiement sécurisé du programme (prix de lancement :
+                    70 000 FCFA — paiement unique).
                   </p>
                   {/* Garantie basée sur l'engagement (instruction
                       propriétaire) — rappel au moment exact de la
