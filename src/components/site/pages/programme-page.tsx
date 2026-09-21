@@ -39,7 +39,7 @@ const OBJECTIONS = [
 /* Tout ce que comprend le programme — Task 34 (instruction
    propriétaire) : la liste est EXACTEMENT CONFORME à celle de la
    carte « Voici tout ce que tu reçois pour 70 000 FCFA : » de la
-   section « L'offre » de l'accueil : les 8 choses de « Ce qui est
+   section « L'offre » de l'accueil : les 12 choses de « Ce qui est
    inclus » (source unique src/lib/inclusions.ts — les deux listes
    dérivent de la MÊME donnée, conformité auto-synchronisée). */
 const PROGRAMME_INCLUS = VALUE_STACK;
@@ -192,7 +192,7 @@ export function ProgrammePage() {
                 ))}
               </div>
               {/* Task 50 : certificat de fin de programme — ligne
-                  DISTINCTE des 8 inclusions (source unique partagée
+                  DISTINCTE des 12 inclusions (source unique partagée
                   intacte), formulation différente de l'accueil. */}
               <div className="mt-6 border-t border-white/20 pt-6">
                 <p className="t-caption font-medium uppercase tracking-[0.14em] text-white/75">

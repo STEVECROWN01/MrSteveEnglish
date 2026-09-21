@@ -1,4 +1,5 @@
 import { CONTACT_EMAIL, FORMSUBMIT_ENDPOINT } from "./contact-email";
+import { INCLUS } from "./inclusions";
 
 /**
  * REÇU PDF POST-PAIEMENT (Task 34 — instruction propriétaire ;
@@ -274,29 +275,23 @@ export async function buildReceiptPdf(
     320,
   );
 
-  /* — Les 8 inclusions (2 colonnes × 4) — */
+  /* — Les inclusions du programme (Task 52 : source unique
+     inclusions.ts — 12 items, 3 colonnes × 4 rangées ; mêmes positions
+     verticales que l'ancienne grille 2×4 → aucun décalage des zones
+     situées en dessous). — */
   doc.setFont("helvetica", "bold");
   doc.setFontSize(8);
   doc.setTextColor(...GRAY);
   doc.text("CE QUE COMPREND LE PROGRAMME", M + 10, 344, { charSpace: 1 });
 
-  const inclus = [
-    "Coaching personnalisé",
-    "Speaking & Conversation",
-    "Prononciation",
-    "Vocabulaire & Expressions",
-    "Exercices personnalisés",
-    "Suivi de progression",
-    "Confiance & Fluidité",
-    "Podcasts & Ressources",
-  ];
+  const inclus = INCLUS.map((item) => item.titre);
   doc.setFont("helvetica", "normal");
   doc.setFontSize(9);
   doc.setTextColor(...INK);
   inclus.forEach((item, i) => {
-    const col = i % 2;
-    const row = Math.floor(i / 2);
-    const x = col === 0 ? M + 10 : M + 262;
+    const col = i % 3;
+    const row = Math.floor(i / 3);
+    const x = M + 10 + col * 164;
     const y = 362 + row * 15;
     doc.text(`—  ${item}`, x, y);
   });

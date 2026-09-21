@@ -831,8 +831,9 @@ function CeQueTuAchetes() {
   );
 }
 
-/* — « CE QUI EST INCLUS » (instruction propriétaire Task 27) : les 8
-     cartes sont définies dans src/lib/inclusions.ts (source unique
+/* — « CE QUI EST INCLUS » (instruction propriétaire Task 27 ; Task 52 :
+     liste étendue de 8 à 12 cartes — contenu complet du programme) : les
+     12 cartes sont définies dans src/lib/inclusions.ts (source unique
      partagée — Task 34 : la page Programme et la value stack de la
      carte « Paiement unique » dérivent des MÊMES données, conformité
      garantie et auto-synchronisée). — */
@@ -840,7 +841,7 @@ function CeQueTuAchetes() {
 function CeQuiEstInclus() {
   return (
     <Section className="relative overflow-hidden">
-      {/* Task 29 (instruction propriétaire) : les 8 cartes passent en
+      {/* Task 29 (instruction propriétaire) : les cartes passent en
           VERRE TRANSPARENT (style Pour qui ?) — nappes de couleur
           derrière la grille pour que la translucidité soit lisible. */}
       <div
@@ -861,9 +862,9 @@ function CeQuiEstInclus() {
           </Prose>
         </Reveal>
 
-        {/* Grille 8 cartes : 4×2 desktop (instruction propriétaire),
-            2 colonnes tablette, 1 colonne mobile — cartes jamais trop
-            petites, hauteurs uniformes par ligne. */}
+        {/* Grille 12 cartes : 4×3 desktop (instruction propriétaire —
+            Task 52 : 8 → 12), 2 colonnes tablette, 1 colonne mobile —
+            cartes jamais trop petites, hauteurs uniformes par ligne. */}
         <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:mt-14 lg:grid-cols-4 lg:gap-x-6 lg:gap-y-8">
           {INCLUS.map((item, i) => (
             <Reveal key={item.num} delay={(i % 4) * 100}>
@@ -876,7 +877,7 @@ function CeQuiEstInclus() {
                   <p className="font-display text-[2rem] font-medium leading-none text-black/50">
                     {item.num}
                   </p>
-                  {/* Badge BONUS (carte 08 uniquement) — discret mais
+                  {/* Badge BONUS (carte 12 uniquement) — discret mais
                       visible : pastille contour rouge, sans surcharger
                       la carte (instruction propriétaire). */}
                   {item.bonus ? (
@@ -1075,8 +1076,8 @@ function PourQui() {
      l'accueil — offre unique, value stack complet à côté du prix, CTA
      dédié. Fond noir : moment le plus fort du funnel. Task 32
      (instruction propriétaire) : le value stack reprend EXACTEMENT
-     les 8 choses de la section « Ce qui est inclus » (mêmes intitulés
-     que les cartes 01-08) en UNE SEULE colonne. — */
+     les 12 choses de la section « Ce qui est inclus » (mêmes intitulés
+     que les cartes 01-12) en UNE SEULE colonne. — */
 /* — BANDE DÉFILANTE DES MOTS-CLÉS (instruction propriétaire Task 39,
      couleurs revues Task 41) : TOUS les mots-clés / termes du site —
      pas juste quelques-uns — défilent de la DROITE vers la GAUCHE en
@@ -1084,7 +1085,7 @@ function PourQui() {
      (--red-button) posée exactement à la limite entre la section
      « Pour qui ? » (fond clair) et la section « L'offre » (fond noir).
      Le vocabulaire est celui du site lui-même : nom du programme,
-     rythme, prix, paiement unique, les 8 inclusions, garanties,
+     rythme, prix, paiement unique, les 12 inclusions, garanties,
      promesse du hero. La piste porte deux copies de la
      liste ; l'animation CSS (globals.css .marquee-track) translate
      de −50 % = exactement une copie → boucle sans couture. Chaque
@@ -1100,10 +1101,14 @@ const MOTS_CLES = [
   "Speaking & Conversation",
   "Prise de parole",
   "Prononciation",
+  "Correction personnalisée",
   "Vocabulaire & Expressions",
+  "Répétition",
   "Exercices personnalisés",
   "Suivi de progression",
+  "Évaluation finale",
   "Confiance & Fluidité",
+  "Communauté de pratique",
   "Podcasts & Ressources",
   "Trois séances de 1h30 par semaine",
   "Coaching en ligne",
@@ -1257,8 +1262,8 @@ function SectionPrix() {
 
           {/* Value stack — tout ce que tu reçois (instruction
               propriétaire : ne jamais écrire juste « 70 000 FCFA »).
-              Task 32 (instruction propriétaire) : les 8 choses de la
-              section « Ce qui est inclus » (cartes 01-08), en UNE
+              Task 32 (instruction propriétaire) : les 12 choses de la
+              section « Ce qui est inclus » (cartes 01-12), en UNE
               SEULE colonne dans la même carte. */}
           <Reveal delay={120}>
             <div className="glass-card glass-dark h-full p-6 md:p-10">
@@ -1275,7 +1280,7 @@ function SectionPrix() {
                 ))}
               </ul>
               {/* Task 50 : certificat de fin de programme — ligne
-                  DISTINCTE des 8 inclusions (cartes 01-08 intactes). */}
+                  DISTINCTE des 12 inclusions (cartes 01-12 intactes). */}
               <div className="mt-6 border-t border-white/15 pt-6">
                 <p className="t-caption font-medium uppercase tracking-[0.14em] text-white/75">
                   Certificat de fin de programme
