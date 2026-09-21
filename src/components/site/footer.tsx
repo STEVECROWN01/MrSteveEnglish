@@ -149,7 +149,7 @@ export function Footer({
             </p>
             <p className="t-caption mt-2 text-white/70">
               Coach d&apos;anglais — De <span className="text-red-button">Comprendre</span> à{" "}
-              <span className="text-red-button">Parler</span>, en 03 mois.
+              <span className="text-red-button">Parler</span>™, en 03 mois.
             </p>
 
             {/* Réseaux sociaux — ordre instruction propriétaire :

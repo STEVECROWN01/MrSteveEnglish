@@ -1177,7 +1177,7 @@ function SectionPrix() {
             </h2>
             <p className="t-body text-white/85">
               Programme « De <span className="text-red-button">Comprendre</span>{" "}
-              à <span className="text-red-button">Parler</span> » — 03 mois de
+              à <span className="text-red-button">Parler</span>™ » — 03 mois de
               coaching d&apos;anglais personnalisé, en ligne.
             </p>
           </Prose>

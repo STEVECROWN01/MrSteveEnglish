@@ -330,7 +330,7 @@ export function ContactPage() {
                     places) — recommandation expert marketing. */}
                 <p className="t-caption mt-4 border-t border-white/15 pt-4 text-white/75">
                   Programme « De <span className="text-red-button">Comprendre</span> à{" "}
-                  <span className="text-red-button">Parler</span> » — 03 mois
+                  <span className="text-red-button">Parler</span>™ » — 03 mois
                   de coaching d&apos;anglais personnalisé — prix de lancement :
                   70 000 FCFA (au lieu de 120 000 FCFA), réservé uniquement à
                   cette cohorte ({OFFRE.places} places seulement) — paiement

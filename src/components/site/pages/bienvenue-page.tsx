@@ -549,7 +549,7 @@ export function BienvenuePage() {
                   <dt className="t-caption text-white/55">Programme</dt>
                   <dd className="t-body font-medium text-white">
                     De <span className="text-red-button">Comprendre</span> à{" "}
-                    <span className="text-red-button">Parler</span>
+                    <span className="text-red-button">Parler</span>™
                   </dd>
                 </div>
                 <div className="flex flex-col gap-1 py-4 sm:flex-row sm:items-baseline sm:justify-between sm:gap-6">

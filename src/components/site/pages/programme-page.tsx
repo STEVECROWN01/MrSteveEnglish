@@ -48,7 +48,7 @@ export function ProgrammePage() {
   return (
     <>
       {/* Task 27 (instruction propriétaire) : le hero « De Comprendre
-          à Parler » passe sur fond NOIR #000000, avec une vraie
+          à Parler™ » passe sur fond NOIR #000000, avec une vraie
           respiration sous le sous-titre (pb-12/lg:pb-20) — il n'est plus
           collé à la limite de la section texture qui suit. */}
       <PageHero
