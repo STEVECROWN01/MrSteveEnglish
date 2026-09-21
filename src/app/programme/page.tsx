@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title:
-      "Programme « De Comprendre à Parler » — 03 mois de coaching d'anglais",
+      "Programme « De Comprendre à Parler™ » — 03 mois de coaching d'anglais",
     description:
       "Trois séances de 1h30 par semaine pendant 03 mois. Speaking, prononciation, confiance. Certificat de fin de programme. Prix de lancement : 70 000 FCFA, paiement unique.",
     type: "website",
@@ -31,14 +31,14 @@ export const metadata: Metadata = {
         width: 1200,
         height: 630,
         alt:
-          "Programme « De Comprendre à Parler » — 03 mois de coaching d'anglais personnalisé en ligne.",
+          "Programme « De Comprendre à Parler™ » — 03 mois de coaching d'anglais personnalisé en ligne.",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
     title:
-      "Programme « De Comprendre à Parler » — 03 mois de coaching d'anglais",
+      "Programme « De Comprendre à Parler™ » — 03 mois de coaching d'anglais",
     description:
       "Trois séances de 1h30 par semaine pendant 03 mois. Certificat de fin de programme. Prix de lancement : 70 000 FCFA, paiement unique.",
   },

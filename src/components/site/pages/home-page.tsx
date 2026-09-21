@@ -1092,7 +1092,7 @@ function PourQui() {
      item finit par son point noir + son espacement (pr-8) pour un
      rythme uniforme y compris à la jonction des deux copies. — */
 const MOTS_CLES = [
-  "De Comprendre à Parler",
+  "De Comprendre à Parler™",
   "Coaching d'anglais personnalisé",
   "03 mois d'accompagnement",
   "70 000 FCFA — Paiement unique",
@@ -1103,7 +1103,7 @@ const MOTS_CLES = [
   "Prononciation",
   "Correction personnalisée",
   "Vocabulaire & Expressions",
-  "Répétition",
+  "Conseils pratiques",
   "Exercices personnalisés",
   "Suivi de progression",
   "Évaluation finale",
@@ -1522,7 +1522,7 @@ function CtaFinal() {
         <Reveal className="mt-10 lg:mt-14">
           <div className="glass-card glass-dark mx-auto max-w-[46rem] p-6 md:p-10">
             <p className="t-caption font-medium uppercase tracking-[0.14em] text-white/75">
-              « De Comprendre à Parler » — 03 mois de coaching
+              « De Comprendre à Parler™ » — 03 mois de coaching
             </p>
             <h2 className="t-h2 mt-4 text-white">
               Rejoins la{" "}

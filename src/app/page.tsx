@@ -23,7 +23,7 @@ import { PageShell } from "@/components/site/page-shell";
 export const metadata: Metadata = {
   title: "Coach d'anglais en ligne pour francophones — Stevens AKPOVI",
   description:
-    "Programme « De Comprendre à Parler » : 03 mois de coaching d'anglais personnalisé en ligne pour les francophones d'Afrique et d'ailleurs. Speaking, prononciation, confiance — 70 000 FCFA, paiement unique.",
+    "Programme « De Comprendre à Parler™ » : 03 mois de coaching d'anglais personnalisé en ligne pour les francophones d'Afrique et d'ailleurs. Speaking, prononciation, confiance — 70 000 FCFA, paiement unique.",
   alternates: {
     canonical: "/",
   },

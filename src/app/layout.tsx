@@ -38,7 +38,7 @@ export const metadata: Metadata = {
   title:
     "Coach d'anglais en ligne pour francophones — Stevens AKPOVI",
   description:
-    "Programme « De Comprendre à Parler » — 03 mois de coaching d'anglais personnalisé, 70 000 FCFA, paiement unique. Parle anglais avec confiance, en t'exprimant vraiment, dès la première séance.",
+    "Programme « De Comprendre à Parler™ » — 03 mois de coaching d'anglais personnalisé, 70 000 FCFA, paiement unique. Parle anglais avec confiance, en t'exprimant vraiment, dès la première séance.",
   icons: {
     icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
   },
@@ -99,7 +99,7 @@ const jsonLd = {
     {
       "@type": "Service",
       "@id": `${SITE_URL}/#service`,
-      name: "Programme « De Comprendre à Parler »",
+      name: "Programme « De Comprendre à Parler™ »",
       serviceType: "Coaching d'anglais personnalisé en ligne",
       provider: { "@id": `${SITE_URL}/#person` },
       areaServed: [

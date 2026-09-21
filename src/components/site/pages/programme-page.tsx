@@ -12,7 +12,7 @@ import { ResponsiveImage } from "../responsive-image";
 /**
  * PAGE 5 — PROGRAMME (ex-Offres) : L'OFFRE UNIQUE (instruction
  * propriétaire) — la conversion tourne autour d'UNE SEULE offre :
- * Programme « De Comprendre à Parler » — 03 mois de coaching
+ * Programme « De Comprendre à Parler™ » — 03 mois de coaching
  * d'anglais personnalisé — 70 000 FCFA — paiement unique. Plus aucun
  * multi-format, aucune offre 2 mois, aucun tarif multiple. Le site
  * vend une transformation, pas des heures de cours.
@@ -57,7 +57,7 @@ export function ProgrammePage() {
         title={
           <>
             De <span className="text-red-button">Comprendre</span> à{" "}
-            <span className="text-red-button">Parler</span>.
+            <span className="text-red-button">Parler</span>™.
           </>
         }
         subtitle="Le programme d'accompagnement de 03 mois — un seul objectif : que tu parles anglais avec confiance."

@@ -109,7 +109,7 @@ const PAGE_H = 841.89;
 const X_END = PAGE_W - M; // 549.28
 const NBSP = "\u00A0";
 const PRIX = `70${NBSP}000${NBSP}FCFA`;
-const PROGRAMME_TITRE = "Programme « De Comprendre à Parler »";
+const PROGRAMME_TITRE = "Programme « De Comprendre à Parler™ »";
 const MONTANT_LETTRES = "Soixante-dix mille (70 000) francs CFA";
 
 /* Palette */
@@ -585,7 +585,7 @@ export function sendReceiptPdfCopy(
   const message = [
     "Bonjour Coach Stevens,",
     "",
-    "Un nouveau client vient de finaliser son inscription au programme d'accompagnement « De Comprendre à Parler » (03 mois). Son paiement a été effectué et validé.",
+    "Un nouveau client vient de finaliser son inscription au programme d'accompagnement « De Comprendre à Parler™ » (03 mois). Son paiement a été effectué et validé.",
     "",
     "Voici les informations du client :",
     "",

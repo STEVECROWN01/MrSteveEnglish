@@ -1,14 +1,19 @@
 /**
  * LES 12 INCLUSIONS DU PROGRAMME (Task 34 — source unique partagée ;
- * Task 52 : liste EXTENDUE de 8 à 12 sur instruction propriétaire — le
- * programme « De Comprendre à Parler » contient : 3 séances de 1h30/
- * semaine (affiché ailleurs : hero programme, marquee, FAQ, metas),
- * conversation guidée, correction personnalisée, travail de
- * prononciation, répétition, exercices pratiques, podcasts, ressources
- * pédagogiques, communauté de pratique, accompagnement personnalisé,
- * suivi de progression, évaluation finale, certification (communiquée
- * sous la formulation « Certificat de fin de programme » — Task 50,
- * lignes distinctes sur l'accueil et la page Programme).
+ * Task 52 : liste EXTENDUE de 8 à 12 sur instruction propriétaire ;
+ * Task 52-bis : carte 06 « Répétition » REMPLACÉE par « Conseils
+ * pratiques » sur instruction propriétaire — des conseils, des
+ * astuces, etc. pour accélérer la maîtrise de l'anglais, partagés
+ * pendant l'accompagnement ; la répétition n'a plus besoin d'être
+ * précisée). Le programme « De Comprendre à Parler™ » contient :
+ * 3 séances de 1h30/semaine (affiché ailleurs : hero programme,
+ * marquee, FAQ, metas), conversation guidée, correction
+ * personnalisée, travail de prononciation, conseils pratiques,
+ * exercices pratiques, podcasts, ressources pédagogiques, communauté
+ * de pratique, accompagnement personnalisé, suivi de progression,
+ * évaluation finale, certification (communiquée sous la formulation
+ * « Certificat de fin de programme » — Task 50, formulation conservée
+ * sur instruction propriétaire).
  *
  * Historique : cette liste vivait dans home-page.tsx (section « Ce qui
  * est inclus », Task 27) et la value stack de la carte « Paiement
@@ -21,7 +26,7 @@
  * désormais aussi de cette source.
  *
  * Hiérarchie (DA) : accompagnement → pratique orale → correction →
- * outils → ancrage/répétition → travail entre séances → mesure
+ * outils → conseils & astuces → travail entre séances → mesure
  * (continue + finale) → transformation → pratique collective → bonus.
  * La carte 12 porte un badge BONUS : ressource complémentaire, non
  * équivalente aux séances.
@@ -63,9 +68,9 @@ export const INCLUS: {
   },
   {
     num: "06",
-    titre: "Répétition",
+    titre: "Conseils pratiques",
     corps:
-      "Répéter les structures clés jusqu'à ce qu'elles sortent naturellement — sans chercher tes mots, sans traduire dans ta tête.",
+      "Des conseils concrets et des astuces pour accélérer ta maîtrise de l'anglais — partagés avec toi tout au long de l'accompagnement.",
   },
   {
     num: "07",

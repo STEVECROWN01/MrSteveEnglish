@@ -15,7 +15,7 @@ import { validerWhatsApp } from "@/lib/indicateurs-tel";
 /**
  * PAGE 7 — CONTACT / INSCRIPTION (instructions propriétaire)
  * Fonction : conversion finale — le formulaire qualifie le prospect
- * pour L'OFFRE UNIQUE (Programme « De Comprendre à Parler » —
+ * pour L'OFFRE UNIQUE (Programme « De Comprendre à Parler™ » —
  * 03 mois — 70 000 FCFA — paiement unique), puis — à la soumission —
  * les données sont envoyées DIRECTEMENT PAR EMAIL à
  * stevensakpovi@gmail.com (fiche professionnelle structurée, avec le
@@ -46,7 +46,7 @@ import { validerWhatsApp } from "@/lib/indicateurs-tel";
      (instruction propriétaire : la conversion tourne autour d'UNE
      SEULE offre). — */
 const PROGRAMME_LABEL =
-  "Programme « De Comprendre à Parler » — 03 mois — 70 000 FCFA — paiement unique";
+  "Programme « De Comprendre à Parler™ » — 03 mois — 70 000 FCFA — paiement unique";
 
 /* — Question d'évaluation (instruction propriétaire Task 27, libellé
      exact — Task 28 : le drapeau 🇬🇧 emoji est remplacé par un SVG qui

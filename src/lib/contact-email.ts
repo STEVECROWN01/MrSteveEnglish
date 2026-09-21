@@ -54,7 +54,7 @@ export const FORMSUBMIT_AJAX = `https://formsubmit.co/ajax/${CONTACT_EMAIL}`;
 export const FORMSUBMIT_ENDPOINT = `https://formsubmit.co/${CONTACT_EMAIL}`;
 
 const PROGRAMME_LABEL =
-  "Programme « De Comprendre à Parler » — 03 mois — 70 000 FCFA — paiement unique";
+  "Programme « De Comprendre à Parler™ » — 03 mois — 70 000 FCFA — paiement unique";
 
 export type ContactFormData = {
   nom: string;

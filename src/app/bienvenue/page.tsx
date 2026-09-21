@@ -15,7 +15,7 @@ import { PageShell } from "@/components/site/page-shell";
 export const metadata: Metadata = {
   title: "Bienvenue — Ton inscription est confirmée | Stevens AKPOVI",
   description:
-    "Ton inscription au programme « De Comprendre à Parler » est confirmée. Télécharge ton reçu et contacte ton coach sur WhatsApp.",
+    "Ton inscription au programme « De Comprendre à Parler™ » est confirmée. Télécharge ton reçu et contacte ton coach sur WhatsApp.",
   robots: {
     index: false,
     follow: false,
