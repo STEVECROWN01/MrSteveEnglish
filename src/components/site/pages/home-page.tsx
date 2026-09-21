@@ -832,7 +832,9 @@ function CeQueTuAchetes() {
 }
 
 /* — « CE QUI EST INCLUS » (instruction propriétaire Task 27 ; Task 52 :
-     liste étendue de 8 à 12 cartes — contenu complet du programme) : les
+     liste étendue de 8 à 12 cartes ; Task 53 : ordre et libellés
+     EXACTS du propriétaire — « Coaching personnalisé » retiré,
+     « Certificat de Fin » en carte 11, « Exercices pratiques ») : les
      12 cartes sont définies dans src/lib/inclusions.ts (source unique
      partagée — Task 34 : la page Programme et la value stack de la
      carte « Paiement unique » dérivent des MÊMES données, conformité
@@ -1098,17 +1100,21 @@ const MOTS_CLES = [
   "70 000 FCFA — Paiement unique",
   "Première cohorte — 10 places",
   "Certificat de fin de programme",
+  /* Task 53 : mots-clés des cartes — même ordre que la liste
+     propriétaire (sans « Certificat de Fin » : ligne distincte
+     ci-dessus) ; « Exercices pratiques » (ex-« Exercices
+     personnalisés »). */
   "Speaking & Conversation",
   "Prise de parole",
   "Prononciation",
-  "Correction personnalisée",
   "Vocabulaire & Expressions",
-  "Conseils pratiques",
-  "Exercices personnalisés",
-  "Suivi de progression",
-  "Évaluation finale",
-  "Confiance & Fluidité",
+  "Exercices pratiques",
+  "Correction personnalisée",
   "Communauté de pratique",
+  "Conseils pratiques",
+  "Suivi de progression",
+  "Confiance & Fluidité",
+  "Évaluation finale",
   "Podcasts & Ressources",
   "Trois séances de 1h30 par semaine",
   "Coaching en ligne",
@@ -1262,9 +1268,11 @@ function SectionPrix() {
 
           {/* Value stack — tout ce que tu reçois (instruction
               propriétaire : ne jamais écrire juste « 70 000 FCFA »).
-              Task 32 (instruction propriétaire) : les 12 choses de la
-              section « Ce qui est inclus » (cartes 01-12), en UNE
-              SEULE colonne dans la même carte. */}
+              Task 32 (instruction propriétaire) : les inclusions de la
+              section « Ce qui est inclus », en UNE SEULE colonne dans
+              la même carte. Task 53 : 11 lignes SANS « Certificat de
+              Fin » (ligne distincte ci-dessous — organisation
+              maintenue, instruction propriétaire). */}
           <Reveal delay={120}>
             <div className="glass-card glass-dark h-full p-6 md:p-10">
               <h3 className="t-h3 text-white">
@@ -1280,7 +1288,8 @@ function SectionPrix() {
                 ))}
               </ul>
               {/* Task 50 : certificat de fin de programme — ligne
-                  DISTINCTE des 12 inclusions (cartes 01-12 intactes). */}
+                  DISTINCTE des inclusions (Task 53 : la liste
+                  n'inclut PAS « Certificat de Fin », présenté ici). */}
               <div className="mt-6 border-t border-white/15 pt-6">
                 <p className="t-caption font-medium uppercase tracking-[0.14em] text-white/75">
                   Certificat de fin de programme

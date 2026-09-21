@@ -192,8 +192,10 @@ export function ProgrammePage() {
                 ))}
               </div>
               {/* Task 50 : certificat de fin de programme — ligne
-                  DISTINCTE des 12 inclusions (source unique partagée
-                  intacte), formulation différente de l'accueil. */}
+                  DISTINCTE des inclusions (Task 53 : la liste
+                  n'inclut PAS « Certificat de Fin », présenté ici —
+                  organisation maintenue, instruction propriétaire),
+                  formulation différente de l'accueil. */}
               <div className="mt-6 border-t border-white/20 pt-6">
                 <p className="t-caption font-medium uppercase tracking-[0.14em] text-white/75">
                   Certificat de fin de programme

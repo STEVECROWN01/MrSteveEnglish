@@ -1,19 +1,23 @@
 /**
  * LES 12 INCLUSIONS DU PROGRAMME (Task 34 — source unique partagée ;
- * Task 52 : liste EXTENDUE de 8 à 12 sur instruction propriétaire ;
- * Task 52-bis : carte 06 « Répétition » REMPLACÉE par « Conseils
- * pratiques » sur instruction propriétaire — des conseils, des
- * astuces, etc. pour accélérer la maîtrise de l'anglais, partagés
- * pendant l'accompagnement ; la répétition n'a plus besoin d'être
- * précisée). Le programme « De Comprendre à Parler™ » contient :
- * 3 séances de 1h30/semaine (affiché ailleurs : hero programme,
- * marquee, FAQ, metas), conversation guidée, correction
- * personnalisée, travail de prononciation, conseils pratiques,
- * exercices pratiques, podcasts, ressources pédagogiques, communauté
- * de pratique, accompagnement personnalisé, suivi de progression,
- * évaluation finale, certification (communiquée sous la formulation
- * « Certificat de fin de programme » — Task 50, formulation conservée
- * sur instruction propriétaire).
+ * Task 52 : liste étendue de 8 à 12 ; Task 52-bis : carte « Conseils
+ * pratiques » ; Task 53 — INSTRUCTION PROPRIÉTAIRE : ordre et libellés
+ * EXACTS ci-dessous, « Coaching personnalisé » RETIRÉ, nouvelle carte
+ * « Certificat de Fin » en position 11, « Exercices personnalisés »
+ * renommé « Exercices pratiques »). Le programme « De Comprendre à
+ * Parler™ » contient : 3 séances de 1h30/semaine (affiché ailleurs :
+ * hero programme, marquee, FAQ, metas), puis les 12 cartes de cette
+ * liste. L'accompagnement personnalisé reste communiqué hors liste
+ * (hero, marquee, FAQ, metas — c'est le cadre du programme).
+ *
+ * CERTIFICAT DE FIN (Task 53) : c'est une CARTE de la section « Ce qui
+ * est inclus » (position 11, avec description) mais elle reste HORS
+ * des LISTES SIMPLES — value stack de l'accueil, liste de la page
+ * Programme, grille du REÇU PDF — où le certificat apparaît déjà en
+ * ligne DISTINCTE après la liste (instruction propriétaire :
+ * « puisqu'on a mis ça comme à leur suite avec description, il faut
+ * pas le mettre dans la liste — pour maintenir l'organisation »).
+ * → VALUE_STACK (et le reçu) filtrent la carte `certificat: true`.
  *
  * Historique : cette liste vivait dans home-page.tsx (section « Ce qui
  * est inclus », Task 27) et la value stack de la carte « Paiement
@@ -25,9 +29,9 @@
  * auto-synchronisée. Task 52 : le REÇU PDF (receipt.ts) dérive
  * désormais aussi de cette source.
  *
- * Hiérarchie (DA) : accompagnement → pratique orale → correction →
- * outils → conseils & astuces → travail entre séances → mesure
- * (continue + finale) → transformation → pratique collective → bonus.
+ * Hiérarchie (DA, Task 53) : pratique orale → outils → travail entre
+ * séances → correction → pratique collective → conseils & astuces →
+ * mesure (continue + finale + confiance) → CERTIFICAT → bonus.
  * La carte 12 porte un badge BONUS : ressource complémentaire, non
  * équivalente aux séances.
  */
@@ -36,47 +40,52 @@ export const INCLUS: {
   titre: string;
   corps: string;
   bonus?: boolean;
+  /** Task 53 : carte « Certificat de Fin » — exclue des listes simples
+   *  (value stack, page Programme, reçu) qui présentent le certificat
+   *  en ligne distincte après la liste. */
+  certificat?: boolean;
 }[] = [
   {
     num: "01",
-    titre: "Coaching personnalisé",
-    corps: "Des séances adaptées à ton niveau, tes difficultés et ton objectif.",
-  },
-  {
-    num: "02",
     titre: "Speaking & Conversation",
     corps:
       "Des conversations guidées pour une pratique intensive de la prise de parole, dans des situations de la vie réelle.",
   },
   {
-    num: "03",
+    num: "02",
     titre: "Prononciation",
     corps:
       "Identification et correction de tes erreurs de prononciation pour parler plus clairement.",
   },
   {
-    num: "04",
-    titre: "Correction personnalisée",
-    corps:
-      "Chaque erreur relevée et corrigée avec toi — grammaire, structures, expressions — pour parler de plus en plus juste.",
-  },
-  {
-    num: "05",
+    num: "03",
     titre: "Vocabulaire & Expressions",
     corps:
       "Le vocabulaire et les expressions dont tu as réellement besoin pour t'exprimer dans des situations concrètes.",
   },
   {
-    num: "06",
-    titre: "Conseils pratiques",
+    num: "04",
+    titre: "Exercices pratiques",
     corps:
-      "Des conseils concrets et des astuces pour accélérer ta maîtrise de l'anglais — partagés avec toi tout au long de l'accompagnement.",
+      "Des exercices ciblés entre les séances pour renforcer tes acquis et accélérer ta progression.",
+  },
+  {
+    num: "05",
+    titre: "Correction personnalisée",
+    corps:
+      "Chaque erreur relevée et corrigée avec toi — grammaire, structures, expressions — pour parler de plus en plus juste.",
+  },
+  {
+    num: "06",
+    titre: "Communauté de pratique",
+    corps:
+      "Pratiquer et échanger avec les autres apprenants de la cohorte — une dynamique collective qui soutient ta progression.",
   },
   {
     num: "07",
-    titre: "Exercices personnalisés",
+    titre: "Conseils pratiques",
     corps:
-      "Des exercices ciblés entre les séances pour renforcer tes acquis et accélérer ta progression.",
+      "Des conseils concrets et des astuces pour accélérer ta maîtrise de l'anglais — partagés avec toi tout au long de l'accompagnement.",
   },
   {
     num: "08",
@@ -86,21 +95,22 @@ export const INCLUS: {
   },
   {
     num: "09",
-    titre: "Évaluation finale",
-    corps:
-      "Un bilan complet à la fin des 03 mois pour mesurer concrètement le chemin parcouru, de ton niveau de départ à ton niveau d'arrivée.",
-  },
-  {
-    num: "10",
     titre: "Confiance & Fluidité",
     corps:
       "Un travail ciblé pour t'aider à parler avec plus d'aisance, sans constamment chercher tes mots ni avoir peur de faire des erreurs.",
   },
   {
-    num: "11",
-    titre: "Communauté de pratique",
+    num: "10",
+    titre: "Évaluation finale",
     corps:
-      "Pratiquer et échanger avec les autres apprenants de la cohorte — une dynamique collective qui soutient ta progression.",
+      "Un bilan complet à la fin des 03 mois pour mesurer concrètement le chemin parcouru, de ton niveau de départ à ton niveau d'arrivée.",
+  },
+  {
+    num: "11",
+    titre: "Certificat de Fin",
+    corps:
+      "Un certificat de fin de programme délivré par Mr Steve English, à l'issue des 03 mois, une fois le parcours complété.",
+    certificat: true,
   },
   {
     num: "12",
@@ -111,9 +121,12 @@ export const INCLUS: {
   },
 ];
 
-/** Value stack (Task 32) : les titres des 12 inclusions — utilisée par
- *  la carte « Voici tout ce que tu reçois pour 70 000 FCFA : »
- *  (accueil), par la liste « Voici tout ce que comprend le
- *  programme : » (page Programme, Task 34) et par le reçu PDF
- *  (Task 52). */
-export const VALUE_STACK = INCLUS.map((item) => item.titre);
+/** Value stack (Task 32) : les titres des inclusions SANS le certificat
+ *  (Task 53) — utilisée par la carte « Voici tout ce que tu reçois
+ *  pour 70 000 FCFA : » (accueil), par la liste « Voici tout ce que
+ *  comprend le programme : » (page Programme, Task 34) et par la grille
+ *  du reçu PDF (Task 52) — le certificat y est présenté en ligne
+ *  distincte après la liste, organisation inchangée. */
+export const VALUE_STACK = INCLUS.filter((item) => !item.certificat).map(
+  (item) => item.titre,
+);

@@ -1,5 +1,5 @@
 import { CONTACT_EMAIL, FORMSUBMIT_ENDPOINT } from "./contact-email";
-import { INCLUS } from "./inclusions";
+import { VALUE_STACK } from "./inclusions";
 
 /**
  * REÇU PDF POST-PAIEMENT (Task 34 — instruction propriétaire ;
@@ -276,15 +276,17 @@ export async function buildReceiptPdf(
   );
 
   /* — Les inclusions du programme (Task 52 : source unique
-     inclusions.ts — 12 items, 3 colonnes × 4 rangées ; mêmes positions
-     verticales que l'ancienne grille 2×4 → aucun décalage des zones
-     situées en dessous). — */
+     inclusions.ts ; Task 53 : 11 items SANS « Certificat de Fin » —
+     le certificat n'est pas dans la liste, organisation maintenue
+     (instruction propriétaire) ; 3 colonnes × 4 rangées (dernière
+     rangée : 2 items), mêmes positions verticales que l'ancienne
+     grille 2×4 → aucun décalage des zones situées en dessous). — */
   doc.setFont("helvetica", "bold");
   doc.setFontSize(8);
   doc.setTextColor(...GRAY);
   doc.text("CE QUE COMPREND LE PROGRAMME", M + 10, 344, { charSpace: 1 });
 
-  const inclus = INCLUS.map((item) => item.titre);
+  const inclus = VALUE_STACK;
   doc.setFont("helvetica", "normal");
   doc.setFontSize(9);
   doc.setTextColor(...INK);
