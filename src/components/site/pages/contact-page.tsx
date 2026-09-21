@@ -597,8 +597,9 @@ export function ContactPage() {
                     className="mt-6 rounded-[12px] border border-white/25 bg-white/[0.06] p-6 text-center"
                   >
                     <p className="t-body text-white">
-                      Merci ! Ta demande m&apos;a été envoyée par email.
-                      Redirection vers le paiement sécurisé en cours…
+                      Merci ! Ton inscription a été bien envoyée.
+                      Redirection vers la page de validation de
+                      l&apos;inscription, en cours…
                     </p>
                   </div>
                 ) : null}
