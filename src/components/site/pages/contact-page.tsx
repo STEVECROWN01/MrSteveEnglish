@@ -284,7 +284,7 @@ export function ContactPage() {
       <PageHero
         dark
         title="Prêt à parler anglais avec confiance ?"
-        subtitle="Un formulaire. Ma réponse personnelle. Et ton programme de 03 mois peut démarrer cette semaine."
+        subtitle="Un formulaire. Et ton programme de 03 mois peut démarrer cette semaine."
       />
 
       <section
@@ -318,10 +318,9 @@ export function ContactPage() {
                 </p>
                 <p className="t-body mt-3 text-white/80">
                   Pour rejoindre le programme, remplis l&apos;intégralité du
-                  formulaire ci-dessous avec tes informations exactes — toutes
-                  les informations sont obligatoires. Dès que tu envoies, ta
-                  demande arrive directement dans ma boîte mail, avec ton
-                  niveau réel et ton objectif. Je te réponds personnellement.
+                  formulaire ci-dessous avec tes informations exactes — cela
+                  permettra de savoir exactement ce dont tu as besoin pour
+                  décoller.
                 </p>
                 {/* Rappel du programme (offre unique — instruction
                     propriétaire) au moment exact de la décision.
@@ -333,8 +332,9 @@ export function ContactPage() {
                   Programme « De <span className="text-red-button">Comprendre</span> à{" "}
                   <span className="text-red-button">Parler</span> » — 03 mois
                   de coaching d&apos;anglais personnalisé — prix de lancement :
-                  70 000 FCFA (au lieu de 120 000 FCFA), réservé à la
-                  première cohorte ({OFFRE.places} places) — paiement unique.
+                  70 000 FCFA (au lieu de 120 000 FCFA), réservé uniquement à
+                  cette cohorte ({OFFRE.places} places seulement) — paiement
+                  unique.
                 </p>
               </div>
             </Reveal>
@@ -574,10 +574,12 @@ export function ContactPage() {
                     {sending ? "Envoi en cours…" : CTA_LABELS.contact}
                   </button>
                   <p className="t-caption mt-4 text-center text-white/70">
-                    En soumettant, tes informations m&apos;arrivent directement
-                    par email et tu es dirigé automatiquement vers le
-                    paiement sécurisé du programme (prix de lancement :
-                    70 000 FCFA — paiement unique).
+                    Paiement sécurisé (prix de lancement : 70 000 FCFA{" "}
+                    <span className="text-white/50 line-through">
+                      120 000 FCFA
+                    </span>{" "}
+                    — paiement unique). Cohorte très limitée ({OFFRE.places}{" "}
+                    Places seulement).
                   </p>
                   {/* Garantie basée sur l'engagement (instruction
                       propriétaire) — rappel au moment exact de la
@@ -641,13 +643,6 @@ export function ContactPage() {
                   </div>
                 ) : null}
               </form>
-            </Reveal>
-
-            <Reveal delay={200}>
-              <p className="t-caption mt-12 text-center text-white/60">
-                Je te réponds personnellement. Aucun engagement avant
-                d&apos;avoir échangé.
-              </p>
             </Reveal>
           </div>
         </Container>
