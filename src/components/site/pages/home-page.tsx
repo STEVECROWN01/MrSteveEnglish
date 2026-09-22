@@ -1145,7 +1145,19 @@ function BandeMotsCles() {
               className="flex items-center gap-8 pr-8"
             >
               <span className="whitespace-nowrap text-[0.8125rem] font-bold uppercase tracking-[0.16em] text-white/90 md:text-sm">
-                {mot}
+                {/* Task 54 (instruction propriétaire) : le ™ doit être
+                    en HAUT, comme un exposant mathématique — pas posé
+                    sur la ligne de base. Les items restent des
+                    chaînes ; celle qui porte le ™ rend le symbole en
+                    <sup>. */}
+                {mot.endsWith("™") ? (
+                  <>
+                    {mot.slice(0, -1)}
+                    <sup className="top-[-0.6em] text-[0.6em]">™</sup>
+                  </>
+                ) : (
+                  mot
+                )}
               </span>
               <span
                 aria-hidden="true"
@@ -1183,7 +1195,8 @@ function SectionPrix() {
             </h2>
             <p className="t-body text-white/85">
               Programme « De <span className="text-red-button">Comprendre</span>{" "}
-              à <span className="text-red-button">Parler</span>™ » — 03 mois de
+              à <span className="text-red-button">Parler</span>
+              <sup className="top-[-0.6em] text-[0.6em]">™</sup> » — 03 mois de
               coaching d&apos;anglais personnalisé, en ligne.
             </p>
           </Prose>
@@ -1253,6 +1266,17 @@ function SectionPrix() {
                 </div>
               </div>
 
+              {/* Task 54 (instruction propriétaire) : phrase de valeur
+                  DÉPLACÉE depuis la carte « Voici tout ce que tu reçois
+                  pour 70 000 FCFA : » vers cette carte, juste après le
+                  trait horizontal Mois 1/2/3 — et reformulée « Un
+                  accompagnement complet… » (plus de « Soit »). */}
+              <p className="t-body pb-6 text-white/85">
+                Un accompagnement complet sur trois mois — pas des
+                séances isolées, mais un parcours structuré, du premier
+                déclic jusqu&apos;à une parole qui tient debout.
+              </p>
+
               <div>
                 <span data-wa-cta className="inline-flex w-full">
                   <CtaButton href="/contact" className="w-full">
@@ -1299,11 +1323,6 @@ function SectionPrix() {
                   l&apos;issue des 03 mois.
                 </p>
               </div>
-              <p className="t-body mt-6 border-t border-white/15 pt-6 text-white/85">
-                Soit un accompagnement complet sur trois mois — pas des
-                séances isolées, mais un parcours structuré, du premier
-                déclic jusqu&apos;à une parole qui tient debout.
-              </p>
             </div>
           </Reveal>
         </div>
@@ -1531,7 +1550,9 @@ function CtaFinal() {
         <Reveal className="mt-10 lg:mt-14">
           <div className="glass-card glass-dark mx-auto max-w-[46rem] p-6 md:p-10">
             <p className="t-caption font-medium uppercase tracking-[0.14em] text-white/75">
-              « De Comprendre à Parler™ » — 03 mois de coaching
+              « De Comprendre à Parler
+              <sup className="top-[-0.6em] text-[0.6em]">™</sup> » — 03 mois de
+              coaching
             </p>
             <h2 className="t-h2 mt-4 text-white">
               Rejoins la{" "}
@@ -1558,12 +1579,17 @@ function CtaFinal() {
               <p className="t-caption font-medium uppercase tracking-[0.14em] text-white/75">
                 Prix de lancement
               </p>
+              {/* Task 54 (instruction propriétaire) : prix de
+                  lancement D'ABORD, tarif normal barré DERRIÈRE, sur
+                  la MÊME ligne (partout sauf la carte « Prix de
+                  lancement » de la section L'offre, qui garde son
+                  affichage empilé). */}
               <p className="mt-2 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                <span className="t-stat text-white">{OFFRE.prix}</span>
+                <span className="t-stat-unit text-white">{OFFRE.devise}</span>
                 <span className="text-[1.25rem] font-[550] tabular-nums text-white/50 line-through">
                   {OFFRE.prixNormal} {OFFRE.devise}
                 </span>
-                <span className="t-stat text-white">{OFFRE.prix}</span>
-                <span className="t-stat-unit text-white">{OFFRE.devise}</span>
               </p>
               <p className="t-caption mt-3 italic text-white/70">
                 Tarif de lancement pour la première cohorte.

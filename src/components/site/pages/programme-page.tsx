@@ -57,7 +57,11 @@ export function ProgrammePage() {
         title={
           <>
             De <span className="text-red-button">Comprendre</span> à{" "}
-            <span className="text-red-button">Parler</span>™.
+            <span className="text-red-button">Parler</span>
+            {/* Task 54 (instruction propriétaire) : ™ en EXPOSANT et
+                POINT FINAL RETIRÉ — le titre reste « De Comprendre à
+                Parler™ », sans point. */}
+            <sup className="top-[-0.6em] text-[0.6em]">™</sup>
           </>
         }
         subtitle="Le programme d'accompagnement de 03 mois — un seul objectif : que tu parles anglais avec confiance."
@@ -131,17 +135,21 @@ export function ProgrammePage() {
                   <p className="t-caption font-medium uppercase tracking-[0.14em] text-red-button">
                     Prix de lancement
                   </p>
+                  {/* Task 54 (instruction propriétaire) : prix de
+                      lancement D'ABORD, tarif normal barré DERRIÈRE,
+                      sur la MÊME ligne — cette carte (page Programme)
+                      suit la règle générale ; seule la carte « Prix de
+                      lancement » de la section L'offre (accueil) garde
+                      sa présentation empilée (exception explicite). */}
                   <p className="mt-3 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                    <span className="t-stat text-white">{OFFRE.prix}</span>
+                    <span className="t-stat-unit text-white">
+                      {OFFRE.devise}
+                    </span>
                     <span className="text-[1.375rem] font-[550] tabular-nums text-white/50 line-through">
                       {OFFRE.prixNormal}
                     </span>
                     <span className="text-[0.9rem] font-[550] tabular-nums text-white/50 line-through">
-                      {OFFRE.devise}
-                    </span>
-                  </p>
-                  <p className="mt-2 flex flex-wrap items-baseline gap-x-4">
-                    <span className="t-stat text-white">{OFFRE.prix}</span>
-                    <span className="t-stat-unit text-white">
                       {OFFRE.devise}
                     </span>
                   </p>
