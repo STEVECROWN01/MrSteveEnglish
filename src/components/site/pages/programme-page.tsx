@@ -146,11 +146,12 @@ export function ProgrammePage() {
                     <span className="t-stat-unit text-white">
                       {OFFRE.devise}
                     </span>
-                    <span className="text-[1.375rem] font-[550] tabular-nums text-white/50 line-through">
-                      {OFFRE.prixNormal}
-                    </span>
-                    <span className="text-[0.9rem] font-[550] tabular-nums text-white/50 line-through">
-                      {OFFRE.devise}
+                    {/* Task 54-bis : barré en UN seul span insécable
+                        (whitespace-nowrap, 14 px sous sm) — une seule
+                        ligne jusqu'à 390 px, repli cohérent en dessous,
+                        jamais de « FCFA » orphelin. */}
+                    <span className="whitespace-nowrap text-[0.875rem] font-[550] tabular-nums text-white/50 line-through sm:text-[1.25rem]">
+                      {OFFRE.prixNormal} {OFFRE.devise}
                     </span>
                   </p>
                   <p className="t-caption mt-4 italic text-white/70">

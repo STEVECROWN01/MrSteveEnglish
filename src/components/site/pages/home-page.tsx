@@ -1587,7 +1587,7 @@ function CtaFinal() {
               <p className="mt-2 flex flex-wrap items-baseline gap-x-3 gap-y-1">
                 <span className="t-stat text-white">{OFFRE.prix}</span>
                 <span className="t-stat-unit text-white">{OFFRE.devise}</span>
-                <span className="text-[1.25rem] font-[550] tabular-nums text-white/50 line-through">
+                <span className="whitespace-nowrap text-[0.875rem] font-[550] tabular-nums text-white/50 line-through sm:text-[1.25rem]">
                   {OFFRE.prixNormal} {OFFRE.devise}
                 </span>
               </p>
