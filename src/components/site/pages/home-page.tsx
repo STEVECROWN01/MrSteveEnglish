@@ -1248,10 +1248,14 @@ function SectionPrix() {
                   de 03 mois, pas des séances isolées (instruction
                   propriétaire : valeur perçue).
                   Task 37 (retour propriétaire) : le trait Mois 1/2/3 est
-                  désormais CENTRÉ VERTICALEMENT dans l'espace libre de
-                  la carte — flex-1 absorbe l'espace et justify-center
-                  centre les points/étiquettes entre le filet et le CTA. */}
-              <div className="mt-8 flex flex-1 flex-col justify-center border-t border-white/15 pt-6 pb-6" aria-hidden="true">
+                  CENTRÉ VERTICALEMENT dans l'espace libre de la carte —
+                  flex-1 absorbe l'espace et justify-center centre les
+                  points/étiquettes dans l'espace libre.
+                  Task 55 (instruction propriétaire) : le trait simple
+                  (filet horizontal) sous « Un seul paiement. Trois
+                  mois d'accompagnement. » est SUPPRIMÉ — ne restent
+                  que les points et les étiquettes Mois 1/2/3. */}
+              <div className="mt-8 flex flex-1 flex-col justify-center pt-6 pb-6" aria-hidden="true">
                 <div className="flex items-center">
                   <span className="h-3 w-3 shrink-0 rounded-full bg-white" />
                   <span className="h-[2px] flex-1 bg-white/40" />
@@ -1372,13 +1376,6 @@ function Garantie() {
                   </li>
                 ))}
               </ul>
-
-              <p className="t-body mt-6 text-grey-mid">
-                Ce que je ne promets pas : que l&apos;anglais arrive tout seul.
-                <br />
-                Ce que je promets : si tu fais ta part et que ça ne suffit
-                pas, tu ne perds pas ton argent.
-              </p>
             </div>
           </Reveal>
 
@@ -1403,6 +1400,16 @@ function Garantie() {
               <p className="t-body">
                 Et ce n&apos;est pas un cas isolé : 98 % de mes débutants
                 absolus s&apos;expriment librement après un mois de coaching.
+              </p>
+              {/* Task 55 (instruction propriétaire) : ce nuage honnête
+                  vit désormais ICI, à la suite du texte de la Preuve
+                  et AVANT le bouton « Voir les résultats » — il ne
+                  clôture plus la carte Garantie. */}
+              <p className="t-body mt-6 text-grey-mid">
+                Ce que je ne promets pas : que l&apos;anglais arrive tout seul.
+                <br />
+                Ce que je promets : si tu fais ta part et que ça ne suffit
+                pas, tu ne perds pas ton argent.
               </p>
               <div className="mt-8">
                 <SecondaryLink
@@ -1518,36 +1525,43 @@ function FaqSection() {
       affichage ; toutes les autres pages conservent la carte en tête
       de footer).
     Task 50 (recommandation expert marketing) : bloc de conversion
-      « REJOINS LA PREMIÈRE COHORTE » inséré JUSTE AVANT le CTA — le
-      prospect comprend simultanément : ce qu'il obtient → pourquoi
-      seulement 10 personnes → pourquoi le prix est actuellement de
-      70 000 FCFA → ce qu'il doit faire maintenant. Rareté RÉELLE
-      (capacité opérationnelle) + prix de lancement réel — pas de
-      compteurs, pas d'urgence artificielle. — */
+      « REJOINS LA PREMIÈRE COHORTE » — le prospect comprend
+      simultanément : ce qu'il obtient → pourquoi seulement 10
+      personnes → pourquoi le prix est actuellement de 70 000 FCFA →
+      ce qu'il doit faire maintenant. Rareté RÉELLE (capacité
+      opérationnelle) + prix de lancement réel — pas de compteurs,
+      pas d'urgence artificielle.
+    Task 55 (instruction propriétaire) : le bouton « Rejoindre la
+      cohorte » et son résumé vivent SOUS la carte « Le coût de
+      l'inaction » — et NON sous la carte décision « De Comprendre à
+      Parler™ ». La carte décision OUVRE la section ; ordre final :
+      carte décision → carte « coût de l'inaction » → bouton. — */
 function CtaFinal() {
   return (
     <Section className="on-dark relative overflow-hidden bg-black text-white">
-      {/* Task 29 : la carte verre « coût de l'inaction » a besoin de
-          matière derrière elle pour que la translucidité se lise —
-          nappes franches TRAVERSANT la carte (leçon Task 27). Sur fond
-          NOIR, le bleu-gris doit être PLUS CLAIR (96,110,190) pour
-          transparaître à travers le voile du verre. */}
+      {/* Task 29 : les cartes verre ont besoin de matière derrière
+          elles pour que la translucidité se lise — nappes franches
+          TRAVERSANT les cartes (leçon Task 27). Sur fond NOIR, le
+          bleu-gris doit être PLUS CLAIR (96,110,190) pour transparaître
+          à travers le voile du verre. Task 55 : la nappe rouge éclaire
+          la carte décision (1re) ; la nappe bleue suit la carte « coût
+          de l'inaction » et le CTA, descendus plus bas dans la
+          section. */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute left-[8rem] top-[2rem] h-[36rem] w-[36rem] rounded-full bg-[radial-gradient(circle,rgba(255,26,26,0.32)_0%,transparent_62%)] blur-2xl"
       />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute right-[8rem] top-[4rem] h-[38rem] w-[38rem] rounded-full bg-[radial-gradient(circle,rgba(96,110,190,0.30)_0%,transparent_62%)] blur-2xl"
+        className="pointer-events-none absolute right-[8rem] top-[38rem] h-[38rem] w-[38rem] rounded-full bg-[radial-gradient(circle,rgba(96,110,190,0.30)_0%,transparent_62%)] blur-2xl"
       />
       <Container className="relative">
-        <Reveal>
-          <CarteUrgenceEthique className="mx-auto max-w-[46rem]" />
-        </Reveal>
-
         {/* Task 50 : la décision, présentée dans l'ordre de l'expert —
-            10 places → prix de lancement → certificat → CTA. */}
-        <Reveal className="mt-10 lg:mt-14">
+            10 places → prix de lancement → certificat. Task 55
+            (instruction propriétaire) : cette carte décision OUVRE
+            désormais la section — le CTA final vit sous la carte
+            « Le coût de l'inaction », plus sous celle-ci. */}
+        <Reveal>
           <div className="glass-card glass-dark mx-auto max-w-[46rem] p-6 md:p-10">
             <p className="t-caption font-medium uppercase tracking-[0.14em] text-white/75">
               « De Comprendre à Parler
@@ -1606,6 +1620,15 @@ function CtaFinal() {
               </p>
             </div>
           </div>
+        </Reveal>
+
+        {/* Task 55 (instruction propriétaire) : la carte « Le coût de
+            l'inaction » revient IMMÉDIATEMENT avant le CTA (esprit
+            Task 28) — le bouton « Rejoindre la cohorte » et son
+            résumé vivent sous CETTE carte, pas sous la carte
+            décision. */}
+        <Reveal className="mt-10 lg:mt-14">
+          <CarteUrgenceEthique className="mx-auto max-w-[46rem]" />
         </Reveal>
 
         <Reveal className="mt-10 lg:mt-14">
