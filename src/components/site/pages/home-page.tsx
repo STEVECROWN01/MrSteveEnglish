@@ -1534,8 +1534,12 @@ function FaqSection() {
     Task 55 (instruction propriétaire) : le bouton « Rejoindre la
       cohorte » et son résumé vivent SOUS la carte « Le coût de
       l'inaction » — et NON sous la carte décision « De Comprendre à
-      Parler™ ». La carte décision OUVRE la section ; ordre final :
-      carte décision → carte « coût de l'inaction » → bouton. — */
+      Parler™ ».
+    Task 56 (instruction propriétaire) : la carte décision « De
+      Comprendre à Parler™ » passe APRÈS le bouton — ordre final :
+      carte « coût de l'inaction » → bouton + résumé → carte
+      décision. La carte inaction reste le déclencheur immédiat du
+      CTA (esprit Task 28/55) ; la carte décision clôt la section. — */
 function CtaFinal() {
   return (
     <Section className="on-dark relative overflow-hidden bg-black text-white">
@@ -1543,25 +1547,45 @@ function CtaFinal() {
           elles pour que la translucidité se lise — nappes franches
           TRAVERSANT les cartes (leçon Task 27). Sur fond NOIR, le
           bleu-gris doit être PLUS CLAIR (96,110,190) pour transparaître
-          à travers le voile du verre. Task 55 : la nappe rouge éclaire
-          la carte décision (1re) ; la nappe bleue suit la carte « coût
-          de l'inaction » et le CTA, descendus plus bas dans la
-          section. */}
+          à travers le voile du verre. Task 56 : la nappe bleue revient
+          en tête de section (right, top 4rem) traverser la carte
+          « coût de l'inaction » (1re) et le CTA ; la nappe rouge
+          descend (left, top 38rem) derrière la carte décision (606
+          → 1174 px dans la section, centre 890 px) qui clôt
+          désormais la section. */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute left-[8rem] top-[2rem] h-[36rem] w-[36rem] rounded-full bg-[radial-gradient(circle,rgba(255,26,26,0.32)_0%,transparent_62%)] blur-2xl"
+        className="pointer-events-none absolute right-[8rem] top-[4rem] h-[38rem] w-[38rem] rounded-full bg-[radial-gradient(circle,rgba(96,110,190,0.30)_0%,transparent_62%)] blur-2xl"
       />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute right-[8rem] top-[38rem] h-[38rem] w-[38rem] rounded-full bg-[radial-gradient(circle,rgba(96,110,190,0.30)_0%,transparent_62%)] blur-2xl"
+        className="pointer-events-none absolute left-[8rem] top-[38rem] h-[36rem] w-[36rem] rounded-full bg-[radial-gradient(circle,rgba(255,26,26,0.32)_0%,transparent_62%)] blur-2xl"
       />
       <Container className="relative">
-        {/* Task 50 : la décision, présentée dans l'ordre de l'expert —
-            10 places → prix de lancement → certificat. Task 55
-            (instruction propriétaire) : cette carte décision OUVRE
-            désormais la section — le CTA final vit sous la carte
-            « Le coût de l'inaction », plus sous celle-ci. */}
+        {/* Task 56 (instruction propriétaire) : la carte « Le coût de
+            l'inaction » OUVRE la section — le bouton « Rejoindre la
+            cohorte » et son résumé vivent directement sous elle
+            (esprit Task 28/55 conservé : l'inaction déclenche le
+            CTA). */}
         <Reveal>
+          <CarteUrgenceEthique className="mx-auto max-w-[46rem]" />
+        </Reveal>
+
+        <Reveal className="mt-10 lg:mt-14">
+          <div className="flex flex-col items-center gap-5 text-center">
+            <span data-wa-cta className="inline-flex">
+              <CtaButton href="/contact">{CTA_LABELS.rejoindreCohorte}</CtaButton>
+            </span>
+            <p className="t-caption text-white/70">{OFFRE.resumeSousCta}</p>
+          </div>
+        </Reveal>
+
+        {/* Task 56 (instruction propriétaire) : la carte décision
+            « De Comprendre à Parler™ » FERME désormais la section,
+            APRÈS le bouton — le CTA reste accroché à la carte « coût
+            de l'inaction ». Task 50 : présentation experte de la
+            décision — 10 places → prix de lancement → certificat. */}
+        <Reveal className="mt-10 lg:mt-14">
           <div className="glass-card glass-dark mx-auto max-w-[46rem] p-6 md:p-10">
             <p className="t-caption font-medium uppercase tracking-[0.14em] text-white/75">
               « De Comprendre à Parler
@@ -1619,24 +1643,6 @@ function CtaFinal() {
                 Délivré à chaque apprenant ayant complété le programme.
               </p>
             </div>
-          </div>
-        </Reveal>
-
-        {/* Task 55 (instruction propriétaire) : la carte « Le coût de
-            l'inaction » revient IMMÉDIATEMENT avant le CTA (esprit
-            Task 28) — le bouton « Rejoindre la cohorte » et son
-            résumé vivent sous CETTE carte, pas sous la carte
-            décision. */}
-        <Reveal className="mt-10 lg:mt-14">
-          <CarteUrgenceEthique className="mx-auto max-w-[46rem]" />
-        </Reveal>
-
-        <Reveal className="mt-10 lg:mt-14">
-          <div className="flex flex-col items-center gap-5 text-center">
-            <span data-wa-cta className="inline-flex">
-              <CtaButton href="/contact">{CTA_LABELS.rejoindreCohorte}</CtaButton>
-            </span>
-            <p className="t-caption text-white/70">{OFFRE.resumeSousCta}</p>
           </div>
         </Reveal>
       </Container>
