@@ -73,6 +73,14 @@ import { FireworksSnow } from "../fireworks-snow";
  *   automatiquement : le client peut le modifier avant l'envoi.
  *   (Task 57 : remplacé par un lien DIRECT vers le groupe WhatsApp
  *   du programme — voir WHATSAPP_GROUP_URL dans site.ts.)
+ *
+ * TASK 58 (retour propriétaire) :
+ * — les deux boutons WhatsApp reçoivent des libellés DIFFÉRENTS :
+ *   CTA principal « Rejoindre la Communauté », bouton final
+ *   « Rejoindre le Programme » — les deux ouvrent toujours le même
+ *   groupe WhatsApp du programme ;
+ * — « Maintenant, on va transformer cette décision en progression
+ *   réelle. » en VERT PUR #008000 (ex-rouge Task 34).
  */
 
 /** Task 57 (instruction propriétaire) : les boutons de la page
@@ -80,8 +88,15 @@ import { FireworksSnow } from "../fireworks-snow";
  *  PROGRAMME (lien d'invitation fourni par le propriétaire) — plus de
  *  message pré-rempli à envoyer au coach : le nouveau client rejoint
  *  le groupe, l'accueil du programme s'y fait. Lien direct = ouverture
- *  immédiate, sans intermédiaire. */
-const GROUP_LABEL = "Rejoindre le groupe WhatsApp du programme";
+ *  immédiate, sans intermédiaire.
+ *
+ * TASK 58 (instruction propriétaire) : libellés DIFFÉRENCIÉS — le
+ *  PREMIER bouton (CTA principal « Prêt(e) à commencer ? ») devient
+ *  « Rejoindre la Communauté », le SECOND (message final « Merci pour
+ *  ta confiance. ») devient « Rejoindre le Programme ». Les deux
+ *  pointent toujours vers le même groupe WhatsApp du programme. */
+const COMMUNAUTE_LABEL = "Rejoindre la Communauté";
+const PROGRAMME_LABEL = "Rejoindre le Programme";
 
 /* Résumé élégant du programme (instruction propriétaire). */
 const PROGRAMME_RECAP = [
@@ -443,9 +458,10 @@ export function BienvenuePage() {
             <div className="flex justify-center">
               {/* Task 57 (instruction propriétaire) : « Contacter sur
                   WhatsApp » → lien DIRECT vers le groupe WhatsApp du
-                  programme. */}
+                  programme. Task 58 : libellé « Rejoindre la
+                  Communauté ». */}
               <WhatsAppCta
-                label={GROUP_LABEL}
+                label={COMMUNAUTE_LABEL}
                 className="w-full sm:w-auto"
               />
             </div>
@@ -509,7 +525,8 @@ export function BienvenuePage() {
       </section>
 
       {/* — VALORISER LA DÉCISION — Task 34 : la phrase clé en ROUGE
-          (retour propriétaire). — */}
+          (retour propriétaire) — Task 58 (retour propriétaire) :
+          désormais en VERT PUR #008000. — */}
       <section className="py-10 lg:py-14">
         <Container>
           <Reveal>
@@ -524,7 +541,9 @@ export function BienvenuePage() {
               <p className="t-body text-white/80">
                 Toi, tu viens de décider de faire quelque chose à ce sujet.
               </p>
-              <p className="t-body mt-6 font-medium text-red-button">
+              {/* Task 58 (instruction propriétaire) : VERT PUR
+                  #008000 (ex-rouge Task 34). */}
+              <p className="t-body mt-6 font-medium text-[#008000]">
                 Maintenant, on va transformer cette décision en progression
                 réelle.
               </p>
@@ -631,9 +650,10 @@ export function BienvenuePage() {
             <div className="flex justify-center">
               {/* Task 57 (instruction propriétaire) : « Démarrer mon
                   accompagnement » → lien DIRECT vers le groupe
-                  WhatsApp du programme. */}
+                  WhatsApp du programme. Task 58 : libellé « Rejoindre
+                  le Programme ». */}
               <WhatsAppCta
-                label={GROUP_LABEL}
+                label={PROGRAMME_LABEL}
                 className="w-full sm:w-auto"
               />
             </div>
