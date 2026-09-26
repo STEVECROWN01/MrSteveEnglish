@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Fraunces, Public_Sans } from "next/font/google";
+import { META_PIXEL_ID } from "@/lib/meta-pixel";
+import { MetaPixelPageView } from "@/components/site/meta-pixel-pageview";
 import "./globals.css";
 
 /**
@@ -196,6 +198,40 @@ export default function RootLayout({
               "(function(){try{var sp=new URLSearchParams(location.search);var o={};['source','medium','campaign','content','term'].forEach(function(k){var v=sp.get('utm_'+k);if(v)o[k]=v.slice(0,150);});if(Object.keys(o).length){localStorage.setItem('mse_utm',JSON.stringify(o));}}catch(e){}})();",
           }}
         />
+        {/* TASK 59 — META PIXEL (instruction propriétaire, Events
+            Manager) : code de base OFFICIEL, installé sur TOUTES les
+            pages. Next.js App Router ne permet pas d'écrire
+            directement dans <head> ; ce script inline en haut du
+            <body> s'exécute AVANT le rendu de la page — équivalent
+            fonctionnel d'une installation dans l'en-tête : la file
+            d'attente fbq est créée immédiatement (les appels
+            suivants sont mis en file même si fbevents.js n'est pas
+            encore chargé), puis fbevents.js se charge en asynchrone
+            et PageView est déclenché à chaque chargement complet
+            d'une page. Les navigations internes <Link> (sans
+            rechargement) sont couvertes par <MetaPixelPageView />.
+            Événements de conversion : « Lead » (contact-page) et
+            « Purchase » (bienvenue-page). */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','" +
+              META_PIXEL_ID +
+              "');fbq('track','PageView');",
+          }}
+        />
+        {/* Repli <noscript> officiel du pixel (visiteurs sans
+            JavaScript) : image invisible qui enregistre le PageView
+            côté Meta. */}
+        <noscript
+          dangerouslySetInnerHTML={{
+            __html:
+              '<img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=' +
+              META_PIXEL_ID +
+              '&ev=PageView&noscript=1" alt=""/>',
+          }}
+        />
+        <MetaPixelPageView />
         {children}
         <script
           type="application/ld+json"

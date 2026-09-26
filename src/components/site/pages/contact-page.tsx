@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { CHECKOUT_URL, CTA_LABELS, OFFRE, waLink } from "@/lib/site";
 import { sendContactEmail, type ContactFormData } from "@/lib/contact-email";
+import { trackPixel } from "@/lib/meta-pixel";
 import { INSCRIPTION_KEY } from "@/lib/receipt";
 import {
   OBJECTIFS,
@@ -331,6 +332,15 @@ export function ContactPage() {
         setFallbackMessage(buildFallbackMessage(payload, utm));
         setSending(false);
       }
+    });
+    // TASK 59 — META PIXEL : « Lead » = prospect inscrit (formulaire
+    // validé, place réservée pour 70 000 FCFA, redirection paiement
+    // imminente). Événement de conversion principal du tunnel,
+    // optimisable directement dans les campagnes Meta (Events
+    // Manager → pixel 1873557434014896). Déclenché AVANT la
+    // redirection pour être capté même si fbevents.js répond lentement.
+    trackPixel("Lead", {
+      content_name: "Inscription — De Comprendre à Parler (03 mois)",
     });
     // Task 57 (instruction propriétaire) : TOAST VERT PUR qui confirme
     // automatiquement que tout est bien réussi — durée 3 s, puis

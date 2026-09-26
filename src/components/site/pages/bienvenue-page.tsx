@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { WHATSAPP_GROUP_URL } from "@/lib/site";
+import { trackPixel } from "@/lib/meta-pixel";
 import {
   buildReceiptPdf,
   readInscription,
@@ -212,6 +213,21 @@ export function BienvenuePage() {
 
   useEffect(() => {
     setInscription(readInscription());
+  }, []);
+
+  /** TASK 59 — META PIXEL : « Purchase » à l'arrivée sur cette page.
+   *  Cette page est l'URL de retour du PAIEMENT RÉUSSI configurée par
+   *  le propriétaire dans son système de paiement (mymaketou) : un
+   *  visiteur ici = un achat confirmé. Valeur 70 000, devise XOF
+   *  (franc CFA) — exploitée par Meta pour l'optimisation des
+   *  campagnes sur les CLIENTS PAYANTS et le calcul du ROAS. */
+  useEffect(() => {
+    trackPixel("Purchase", {
+      content_name: "De Comprendre à Parler (03 mois)",
+      content_type: "product",
+      value: 70000,
+      currency: "XOF",
+    });
   }, []);
 
   /** Téléchargement du reçu + copie email au coach AU MÊME INSTANT
