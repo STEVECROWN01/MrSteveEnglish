@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
-import { waLink } from "@/lib/site";
+import { WHATSAPP_GROUP_URL } from "@/lib/site";
 import {
   buildReceiptPdf,
   readInscription,
@@ -71,15 +71,17 @@ import { FireworksSnow } from "../fireworks-snow";
  *   MÊME PDF en pièce jointe + un simple message d'envoi (Task 43).
  * — Le message WhatsApp est PRÉ-REMPLI mais jamais envoyé
  *   automatiquement : le client peut le modifier avant l'envoi.
+ *   (Task 57 : remplacé par un lien DIRECT vers le groupe WhatsApp
+ *   du programme — voir WHATSAPP_GROUP_URL dans site.ts.)
  */
 
-/** Message WhatsApp pré-rempli — libellé EXACT du propriétaire (Task 43) :
- *  mêmes mots que la Task 39 (« Bonjour Coach Stevens », « 03 mois »)
- *  mais AVEC RETOURS À LA LIGNE — salutation, corps du message et
- *  remerciement en paragraphes séparés (\n\n → %0A%0A dans le lien
- *  wa.me), et non plus un bloc compact d'une seule ligne. */
-const WHATSAPP_MESSAGE =
-  "Bonjour Coach Stevens,\n\nJe viens de finaliser mon inscription au programme d'accompagnement de 03 mois. Mon paiement a bien été effectué et je vous contacte pour connaître la prochaine étape.\n\nMerci !";
+/** Task 57 (instruction propriétaire) : les boutons de la page
+ *  redirigent désormais DIRECTEMENT vers le GROUPE WHATSAPP DU
+ *  PROGRAMME (lien d'invitation fourni par le propriétaire) — plus de
+ *  message pré-rempli à envoyer au coach : le nouveau client rejoint
+ *  le groupe, l'accueil du programme s'y fait. Lien direct = ouverture
+ *  immédiate, sans intermédiaire. */
+const GROUP_LABEL = "Rejoindre le groupe WhatsApp du programme";
 
 /* Résumé élégant du programme (instruction propriétaire). */
 const PROGRAMME_RECAP = [
@@ -92,12 +94,13 @@ const PROGRAMME_RECAP = [
   },
 ];
 
-/* Les 3 étapes « Et maintenant ? » (instruction propriétaire). */
+/* Les 3 étapes « Et maintenant ? » (instruction propriétaire —
+   Task 57 : étape 01 alignée sur le groupe WhatsApp du programme). */
 const ETAPES = [
   {
     num: "01",
-    titre: "Contacte-moi sur WhatsApp",
-    texte: "Envoie-moi un message pour confirmer ton arrivée et que nous puissions préparer la suite.",
+    titre: "Rejoins le groupe WhatsApp",
+    texte: "Rejoins le groupe WhatsApp du programme pour confirmer ton arrivée et recevoir les informations de démarrage.",
   },
   {
     num: "02",
@@ -111,11 +114,12 @@ const ETAPES = [
   },
 ];
 
-/* Statut du récapitulatif (coches vertes « état validé », DA §5). */
+/* Statut du récapitulatif (coches vertes « état validé », DA §5 —
+   Task 57 : dernière étape alignée sur le groupe WhatsApp). */
 const STATUTS = [
   "Paiement effectué",
   "Inscription confirmée",
-  "Prochaine étape : contacter le coach",
+  "Prochaine étape : rejoindre le groupe du programme",
 ];
 
 /** Données de repli si les données d'inscription ne sont plus dans le
@@ -132,8 +136,8 @@ const FALLBACK_INSCRIPTION: InscriptionData = {
   dateInscription: "",
 };
 
-/** Bouton WhatsApp principal / final — même lien, même message
- *  pré-rempli, modifiable par le client avant l'envoi. */
+/** Bouton principal / final — Task 57 : lien DIRECT vers le groupe
+ *  WhatsApp du programme (plus de message pré-rempli au coach). */
 function WhatsAppCta({
   label,
   className,
@@ -143,7 +147,7 @@ function WhatsAppCta({
 }) {
   return (
     <a
-      href={waLink(WHATSAPP_MESSAGE)}
+      href={WHATSAPP_GROUP_URL}
       target="_blank"
       rel="noopener noreferrer"
       className={cn("btn btn-primary t-btn", className)}
@@ -429,17 +433,19 @@ export function BienvenuePage() {
             <Prose className="mx-auto max-w-[42rem] text-center">
               <h2 className="t-h2 text-white">Prêt(e) à commencer ?</h2>
               <p className="t-body mt-6 text-white/80">
-                Une dernière étape : contacte-moi directement sur WhatsApp
-                pour que nous puissions préparer ton accompagnement.
+                Une dernière étape : rejoins le groupe WhatsApp du
+                programme pour confirmer ton arrivée et préparer ton
+                accompagnement.
               </p>
             </Prose>
           </Reveal>
           <Reveal className="mt-8 lg:mt-10">
             <div className="flex justify-center">
-              {/* Task 36 (retour propriétaire) : « Contacter mon coach
-                  sur WhatsApp » → « Contacter sur WhatsApp ». */}
+              {/* Task 57 (instruction propriétaire) : « Contacter sur
+                  WhatsApp » → lien DIRECT vers le groupe WhatsApp du
+                  programme. */}
               <WhatsAppCta
-                label="Contacter sur WhatsApp"
+                label={GROUP_LABEL}
                 className="w-full sm:w-auto"
               />
             </div>
@@ -623,8 +629,11 @@ export function BienvenuePage() {
           </Reveal>
           <Reveal className="mt-10">
             <div className="flex justify-center">
+              {/* Task 57 (instruction propriétaire) : « Démarrer mon
+                  accompagnement » → lien DIRECT vers le groupe
+                  WhatsApp du programme. */}
               <WhatsAppCta
-                label="Démarrer mon accompagnement"
+                label={GROUP_LABEL}
                 className="w-full sm:w-auto"
               />
             </div>

@@ -39,8 +39,24 @@ export const metadata: Metadata = {
     "Coach d'anglais en ligne pour francophones — Stevens AKPOVI",
   description:
     "Programme « De Comprendre à Parler™ » — 03 mois de coaching d'anglais personnalisé, 70 000 FCFA, paiement unique. Parle anglais avec confiance, en t'exprimant vraiment, dès la première séance.",
+  /* Task 57 (retour propriétaire) : le site n'avait qu'un SVG — les
+     aperçus de liens (YouTube, Google, etc.) ne supportent PAS les
+     favicons SVG. On sert désormais ICO + PNG EN PLUS du SVG :
+     /favicon.ico (service favicon de Google/YouTube), PNG 16/32
+     (onglets navigateur) et apple-touch-icon 180 (iOS). */
   icons: {
-    icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+    ],
+    apple: [
+      {
+        url: "/apple-touch-icon.png",
+        sizes: "180x180",
+        type: "image/png",
+      },
+    ],
   },
   openGraph: {
     title: "Stevens AKPOVI — Coach d'anglais",
@@ -166,6 +182,18 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{
             __html:
               "(function(){try{var h=location.hash||'';if(h.indexOf('#/')!==0)return;var key=h.slice(2).split('?')[0].replace(/\\/+$/,'');var q=h.split('?')[1]||'';var map={'a-propos':'/a-propos','resultats':'/resultats','programme':'/programme','offres':'/programme','contact':'/contact','bienvenue':'/bienvenue','faq':'/?section=faq'};var target;if(key===''){if(!q)return;var sp=new URLSearchParams(q);var s=sp.get('section');if(!s)return;target='/?section='+encodeURIComponent(s);}else{target=map[key];if(!target)return;if(q&&key!=='faq')target+=(target.indexOf('?')>=0?'&':'?')+q;}var tp=target.split('?')[0]||'/';if(location.pathname===tp){history.replaceState(history.state,'',target);return;}location.replace(target);}catch(e){}})();",
+          }}
+        />
+        {/* Task 57 — ATTRIBUTION PUBLICITAIRE (UTM) : si l'URL courante
+            contient des paramètres utm_source / utm_medium / utm_campaign /
+            utm_content / utm_term (campagnes Meta, YouTube, TikTok…), ils
+            sont persistés dans localStorage À CHAQUE page d'entrée — le
+            formulaire d'inscription les relèvera à la soumission, même si
+            le prospect a navigué entre les pages du site entre-temps. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "(function(){try{var sp=new URLSearchParams(location.search);var o={};['source','medium','campaign','content','term'].forEach(function(k){var v=sp.get('utm_'+k);if(v)o[k]=v.slice(0,150);});if(Object.keys(o).length){localStorage.setItem('mse_utm',JSON.stringify(o));}}catch(e){}})();",
           }}
         />
         {children}

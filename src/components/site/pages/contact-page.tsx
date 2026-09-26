@@ -1,16 +1,26 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CHECKOUT_URL, CTA_LABELS, OFFRE, waLink } from "@/lib/site";
 import { sendContactEmail, type ContactFormData } from "@/lib/contact-email";
 import { INSCRIPTION_KEY } from "@/lib/receipt";
+import {
+  OBJECTIFS,
+  SITUATIONS,
+  labelObjectif,
+  labelSituation,
+  lireUtm,
+  objectifValide,
+  situationValide,
+  type UtmParams,
+} from "@/lib/profil-prospect";
 import { Container, PageHero } from "../layout-primitives";
 import { Reveal } from "../reveal";
 import { StickyCTA } from "../sticky-cta";
-import { FlagUK } from "../icons";
-import { SelectPaysField, SelectVilleField } from "../pays-ville-fields";
+import { SelectPaysField, SelectVilleField, ListboxField } from "../pays-ville-fields";
 import { WhatsAppField } from "../whatsapp-field";
 import { validerWhatsApp } from "@/lib/indicateurs-tel";
+import { IconCheck } from "../icons";
 
 /**
  * PAGE 7 — CONTACT / INSCRIPTION (instructions propriétaire)
@@ -23,15 +33,33 @@ import { validerWhatsApp } from "@/lib/indicateurs-tel";
  * de paiement. Si l'email échoue, un lien de secours WhatsApp
  * contenant la même fiche est proposé — aucune donnée n'est perdue.
  *
- * TASK 27 — ÉVALUATION AUTOMATIQUE DU NIVEAU D'ANGLAIS :
- * Plus de QCM ni de niveau auto-déclaré. Une rédaction libre en
- * anglais (« tell me about yourself… »), TAPÉE À LA MAIN (coller est
- * bloqué), évaluée côté serveur (vocabulaire / construction /
- * grammaire / développement des idées / cohérence — 5 × 20 = 100) :
- * 0-49 BEGINNER, 50-100 INTERMEDIATE — de façon non mécanique : le
- * cœur est la capacité à communiquer et développer des idées de façon
- * autonome. Le coach reçoit le niveau estimé, le score, la confiance,
- * le texte ORIGINAL et une explication de 1-3 phrases.
+ * TASK 57 (instruction propriétaire) — PROFIL PAR MENUS DÉROULANTS :
+ * l'ancienne évaluation par rédaction libre en anglais (Task 27) est
+ * SUPPRIMÉE. Deux menus déroulants OBLIGATOIRES la remplacent (aucune
+ * option présélectionnée, placeholder non sélectionnable) :
+ * « Laquelle de ces situations te décrit le mieux aujourd'hui ? »
+ * (beginner_absolute / understands_but_blocked / speaks_with_errors /
+ * unknown_level) et « Quel est ton objectif principal avec l'anglais ? »
+ * (job_interview / career_business / travel_abroad / clients_colleagues /
+ * exam_training / daily_confidence / other) — les libellés COMPLETS
+ * sont transmis au coach (valeurs courtes en base/localStorage).
+ *
+ * TASK 57 — UX DE SOUMISSION « grande plateforme » :
+ * • validation AVANT redirection (erreurs claires, focus premier champ
+ *   en erreur, données conservées — aucune perte) ;
+ * • état de chargement (bouton désactivé) contre les soumissions
+ *   multiples ;
+ * • TOAST DE SUCCÈS « fond vert pur » dès la soumission valide,
+ *   durée 3 s puis disparition ;
+ * • redirection AUTOMATIQUE vers le paiement à la fin du toast —
+ *   l'email au coach part en fire-and-forget avec keepalive (il
+ *   survit à la navigation) : plus aucune attente serveur ;
+ * • champs UTM (utm_source…utm_term) transmis au coach pour
+ *   l'attribution publicitaire ;
+ * • la saisie du numéro WhatsApp est PLAFONNÉE à la longueur maximale
+ *   du pays (impossible de taper des chiffres sans fin) ;
+ * • l'autoremplissage du navigateur ne casse plus le style sombre
+ *   (règle :-webkit-autofill dans globals.css).
  *
  * Le numéro WhatsApp du COACH n'est JAMAIS affiché (instruction
  * propriétaire). TASK 49 (instruction propriétaire) : le formulaire
@@ -48,19 +76,14 @@ import { validerWhatsApp } from "@/lib/indicateurs-tel";
 const PROGRAMME_LABEL =
   "Programme « De Comprendre à Parler™ » — 03 mois — 70 000 FCFA — paiement unique";
 
-/* — Question d'évaluation (instruction propriétaire Task 27, libellé
-     exact — Task 28 : le drapeau 🇬🇧 emoji est remplacé par un SVG qui
-     s'affiche sur TOUS les appareils, et la question passe en corps
-     plus grand, plus lisible). — */
-const ANGLAIS_QUESTION =
-  "In English, tell me about yourself, what you currently do, and why you want to improve your English.";
-/* Task 29 (instruction propriétaire) : consigne ENTIÈREMENT EN
-   FRANÇAIS — même l'objectif de la question, pour que le prospect
-   comprenne pourquoi il doit écrire lui-même, sans traducteur ni IA. */
-const ANGLAIS_HINT =
-  "Répondez aussi naturellement que possible. N'utilisez ni traducteur ni IA. (L'objectif est de connaître votre niveau réel pour savoir comment vous accompagner)";
-const ANGLAIS_PASTE_NOTICE =
-  "Veuillez saisir votre propre réponse vous-même.";
+/* Task 57 (instruction propriétaire) : libellés des deux menus
+   déroulants obligatoires qui remplacent la rédaction libre en
+   anglais (Task 27, supprimée). */
+const SITUATION_LABEL =
+  "Laquelle de ces situations te décrit le mieux aujourd'hui ?";
+const SITUATION_PLACEHOLDER = "Sélectionne ta situation actuelle";
+const OBJECTIF_LABEL = "Quel est ton objectif principal avec l'anglais ?";
+const OBJECTIF_PLACEHOLDER = "Sélectionne ton objectif principal";
 
 /* Astérisque obligatoire — ROUGE dans tout le formulaire (instruction
    propriétaire Task 28). */
@@ -81,7 +104,10 @@ type FormState = {
   ville: string;
   /** numéro WhatsApp LOCAL (sans indicatif) tel que saisi */
   whatsapp: string;
-  anglais: string;
+  /** valeur technique de la situation (ex. "beginner_absolute") — Task 57 */
+  situation: string;
+  /** valeur technique de l'objectif (ex. "job_interview") — Task 57 */
+  objectif: string;
 };
 
 type FormErrors = Partial<Record<keyof FormState, string>>;
@@ -94,7 +120,8 @@ const INITIAL_FORM: FormState = {
   pays: "",
   ville: "",
   whatsapp: "",
-  anglais: "",
+  situation: "",
+  objectif: "",
 };
 
 const FIELD_ORDER: (keyof FormState)[] = [
@@ -105,7 +132,8 @@ const FIELD_ORDER: (keyof FormState)[] = [
   "pays",
   "ville",
   "whatsapp",
-  "anglais",
+  "situation",
+  "objectif",
 ];
 
 function validate(f: FormState): FormErrors {
@@ -136,20 +164,26 @@ function validate(f: FormState): FormErrors {
     const wa = validerWhatsApp(f.pays, f.whatsapp);
     if (!wa.ok) e.whatsapp = wa.erreur;
   }
-  if (f.anglais.trim().length < 15) {
-    e.anglais =
-      "Écris ta réponse en anglais — quelques phrases, tapées par toi-même.";
+  // Task 57 : menus déroulants obligatoires — la valeur doit faire
+  // partie de la liste (aucune option présélectionnée par défaut).
+  if (!situationValide(f.situation)) {
+    e.situation =
+      "Veuillez sélectionner la situation qui correspond le mieux à votre cas.";
+  }
+  if (!objectifValide(f.objectif)) {
+    e.objectif =
+      "Veuillez sélectionner l'option qui correspond le mieux à votre situation.";
   }
   return e;
 }
 
-/** Fiche de secours (WhatsApp) si l'email échoue — mêmes informations
- *  + le niveau estimé, pour que le coach ne perde rien. */
-function buildFallbackMessage(
-  f: ContactFormData,
-  level: string,
-  total: number,
-): string {
+/** Fiche de secours (WhatsApp) si l'email échoue — mêmes
+ *  informations (situation, objectif, UTM — Task 57), pour que le
+ *  coach ne perde rien. */
+function buildFallbackMessage(f: ContactFormData, utm: UtmParams): string {
+  const lignesUtm = Object.keys(utm).length
+    ? Object.entries(utm).map(([k, v]) => `• utm_${k} : ${v}`)
+    : ["• Aucun paramètre de campagne (accès direct)"];
   return [
     "NOUVEAU PROSPECT — MR STEVE ENGLISH",
     "(envoi de secours : l'email n'est pas passé)",
@@ -167,11 +201,14 @@ function buildFallbackMessage(
     "EMAIL",
     `• ${f.email.trim()}`,
     "",
-    "ENGLISH LEVEL ASSESSMENT",
-    `• Niveau estimé : ${level} (${total}/100)`,
+    "SITUATION ACTUELLE",
+    `• ${labelSituation(f.situation) || f.situation}`,
     "",
-    "ÉCHANTILLON D'ANGLAIS (texte original)",
-    `• ${f.anglais.trim()}`,
+    "OBJECTIF PRINCIPAL",
+    `• ${labelObjectif(f.objectif) || f.objectif}`,
+    "",
+    "SOURCE DE L'INSCRIPTION",
+    ...lignesUtm,
     "",
     "PROGRAMME (offre unique)",
     `• ${PROGRAMME_LABEL}`,
@@ -184,11 +221,21 @@ export function ContactPage() {
   const [form, setForm] = useState<FormState>(INITIAL_FORM);
   const [errors, setErrors] = useState<FormErrors>({});
   const [sending, setSending] = useState(false);
-  /** null = pas envoyé ; "ok" = email parti ; "fail" = email en échec. */
+  /** null = pas envoyé ; "ok" = toast vert affiché ; "fail" = email
+   *  en échec (secours WhatsApp) — Task 57 : le succès ne dépend plus
+   *  de la réponse du serveur email (redirection immédiate). */
   const [result, setResult] = useState<"ok" | "fail" | null>(null);
   const [fallbackMessage, setFallbackMessage] = useState("");
-  const [pasteNotice, setPasteNotice] = useState(false);
-  const noticeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  /** Timers (toast 3 s / redirection) — nettoyés au démontage. */
+  const redirectTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (redirectTimer.current) clearTimeout(redirectTimer.current);
+      if (toastTimer.current) clearTimeout(toastTimer.current);
+    };
+  }, []);
 
   const set = (key: keyof FormState) => (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -198,19 +245,14 @@ export function ContactPage() {
     setErrors((prev) => (prev[key] ? { ...prev, [key]: undefined } : prev));
   };
 
-  /* Instruction propriétaire : échantillon TAPÉ À LA MAIN — coller
-     (et glisser) est bloqué, un avis explique pourquoi. */
-  const blockPaste = (e: React.ClipboardEvent | React.DragEvent) => {
-    e.preventDefault();
-    setPasteNotice(true);
-    if (noticeTimer.current) clearTimeout(noticeTimer.current);
-    noticeTimer.current = setTimeout(() => setPasteNotice(false), 3200);
-  };
-
-  async function handleSubmit(e: React.FormEvent) {
+  function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (sending) return;
     const errs = validate(form);
+    // Task 57 (instruction propriétaire) : validation AVANT toute
+    // redirection — message d'erreur clair par champ, focus sur le
+    // premier champ en erreur, et les données déjà saisies sont
+    // CONSERVÉES (rien n'est effacé, aucune perte).
     if (Object.keys(errs).length > 0) {
       setErrors(errs);
       const first = FIELD_ORDER.find((k) => errs[k]);
@@ -220,6 +262,8 @@ export function ContactPage() {
       return;
     }
     setErrors({});
+    // État de chargement immédiat — empêche toute soumission multiple
+    // (le bouton reste désactivé jusqu'à la redirection).
     setSending(true);
     // Task 49 : validation garantie OK ici (validate() a déjà passé) —
     // on en déduit les deux formats du numéro WhatsApp du prospect :
@@ -228,11 +272,15 @@ export function ContactPage() {
     const wa = validerWhatsApp(form.pays, form.whatsapp);
     const whatsappPretty = wa.ok ? wa.pretty : "";
     const whatsappE164 = wa.ok ? wa.e164 : "";
+    // Task 57 : UTM capturés (URL courante, sinon copie persistée par
+    // le script du layout à l'arrivée sur le site).
+    const utm = lireUtm();
     // Task 34 (reçu post-paiement) : persister les données
     // d'inscription dans le navigateur — la page #/bienvenue s'en sert
     // pour PERSONNALISER le reçu PDF du client (nom, email,
     // profession, ville, pays, date). Repli silencieux si localStorage
-    // indisponible (le reçu affichera « Non renseigné »).
+    // indisponible (le reçu affichera « Non renseigné »). Les UTM et
+    // la situation/objectif sont conservés au passage (Task 57).
     try {
       window.localStorage.setItem(
         INSCRIPTION_KEY,
@@ -244,15 +292,20 @@ export function ContactPage() {
           pays: form.pays.trim(),
           ville: form.ville.trim(),
           whatsapp: whatsappE164,
+          situation: form.situation,
+          objectif: form.objectif,
+          utm,
           dateInscription: new Date().toISOString(),
         }),
       );
     } catch {
       /* localStorage indisponible — ignoré */
     }
-    // Envoi direct par email (FormSubmit AJAX depuis le navigateur) avec
-    // évaluation automatique du niveau d'anglais côté client (moteur TS
-    // pur — mêmes règles que la lib partagée src/lib/english-assessment).
+    // Envoi direct par email (FormSubmit AJAX depuis le navigateur) —
+    // Task 57 : fire-and-forget avec keepalive (la requête SURVIT à la
+    // navigation) : la redirection vers le paiement n'attend PLUS la
+    // réponse du serveur email (autrefois jusqu'à 12 s + 1,8 s —
+    // ressenti comme beaucoup trop lent par le propriétaire).
     const payload: ContactFormData = {
       nom: form.nom.trim(),
       age: form.age,
@@ -261,22 +314,34 @@ export function ContactPage() {
       pays: form.pays.trim(),
       ville: form.ville.trim(),
       whatsapp: whatsappPretty,
-      anglais: form.anglais.trim(),
+      situation: form.situation,
+      objectif: form.objectif,
+      utm,
     };
-    const { ok, assessment } = await sendContactEmail(payload);
-    if (ok) {
-      setResult("ok");
-      // Redirection automatique vers le paiement
-      window.setTimeout(() => {
-        window.location.href = CHECKOUT_URL;
-      }, 1800);
-    } else {
-      setFallbackMessage(
-        buildFallbackMessage(payload, assessment.level, assessment.total),
-      );
-      setResult("fail");
-    }
-    setSending(false);
+    sendContactEmail(payload).then(({ ok }) => {
+      // Échec connu AVANT la redirection → on annule la redirection,
+      // on masque le toast et on propose le secours WhatsApp (aucune
+      // donnée perdue). Échec après redirection : couvert par keepalive.
+      if (!ok && redirectTimer.current) {
+        clearTimeout(redirectTimer.current);
+        redirectTimer.current = null;
+        if (toastTimer.current) clearTimeout(toastTimer.current);
+        toastTimer.current = null;
+        setResult("fail");
+        setFallbackMessage(buildFallbackMessage(payload, utm));
+        setSending(false);
+      }
+    });
+    // Task 57 (instruction propriétaire) : TOAST VERT PUR qui confirme
+    // automatiquement que tout est bien réussi — durée 3 s, puis
+    // disparition ; la redirection vers la page de paiement est
+    // AUTOMATIQUE et se déclenche à la fin du toast (plus aucune
+    // attente serveur).
+    setResult("ok");
+    toastTimer.current = setTimeout(() => setResult(null), 3000);
+    redirectTimer.current = setTimeout(() => {
+      window.location.href = CHECKOUT_URL;
+    }, 3000);
   }
 
   return (
@@ -504,65 +569,49 @@ export function ContactPage() {
                   />
                 </div>
 
-                {/* Évaluation du niveau d'anglais — rédaction libre,
-                    obligatoire, TAPÉE À LA MAIN (coller bloqué). Le
-                    niveau n'est plus auto-déclaré : il est estimé
-                    automatiquement (5 critères × 20) et remis au coach
-                    avec le texte original (instruction Task 27). */}
-                <div className="mt-8">
-                  {/* Task 28 (instruction propriétaire) : question en
-                      police PLUS GRANDE que les autres libellés, et
-                      drapeau UK en SVG (l'emoji 🇬🇧 ne s'affiche pas sur
-                      tous les appareils — Windows affiche « GB »). */}
-                  <label
-                    htmlFor="f-anglais"
-                    className="form-label text-[1.0625rem] leading-snug md:text-[1.1875rem]"
-                  >
-                    {/* Task 32 (retour propriétaire) : drapeau de
-                        retour à son état RECTANGULAIRE précédent
-                        (Task 28 — 2:1, comme le vrai Union Jack). */}
-                    <FlagUK className="mr-2.5 h-[1em] w-[2em] rounded-[2px] align-[-0.125em] shadow-[0_0_0_1px_rgba(255,255,255,0.25)]" />{" "}
-                    {ANGLAIS_QUESTION} <Req />
-                  </label>
-                  <p className="t-caption mt-1.5 text-white/65">
-                    {ANGLAIS_HINT}
-                  </p>
-                  {/* Task 28 : PAS de placeholder — le prospect ne peut
-                      pas re-saisir l'exemple à sa place (instruction
-                      propriétaire).
-                      Task 32 (retour propriétaire) : hauteur LÉGÈREMENT
-                      réduite (rows 6→5) — la saisie reste illimitée et
-                      le champ reste redimensionnable. */}
-                  <textarea
-                    id="f-anglais"
-                    rows={5}
-                    autoComplete="off"
-                    spellCheck={false}
-                    value={form.anglais}
-                    onChange={set("anglais")}
-                    onPaste={blockPaste}
-                    onDrop={blockPaste}
-                    aria-invalid={Boolean(errors.anglais)}
-                    aria-describedby={
-                      errors.anglais ? "err-anglais" : undefined
-                    }
-                    className="form-input mt-2 resize-y font-[450]"
+                {/* Task 57 (instruction propriétaire) : la rédaction
+                    libre en anglais (Task 27) est SUPPRIMÉE — deux
+                    menus déroulants OBLIGATOIRES la remplacent.
+                    Aucune option présélectionnée : le placeholder
+                    n'est pas sélectionnable et la validation bloque
+                    l'envoi tant qu'un choix réel n'est pas fait. */}
+                <div className="mt-8 grid gap-6">
+                  <ListboxField
+                    id="f-situation"
+                    label={SITUATION_LABEL}
+                    required
+                    placeholder={SITUATION_PLACEHOLDER}
+                    value={form.situation}
+                    options={SITUATIONS}
+                    onChange={(situation) => {
+                      setForm((f) => ({ ...f, situation }));
+                      setErrors((prev) =>
+                        prev.situation
+                          ? { ...prev, situation: undefined }
+                          : prev,
+                      );
+                    }}
+                    error={errors.situation}
+                    multiline
                   />
-                  <p
-                    aria-live="polite"
-                    className={
-                      pasteNotice
-                        ? "t-caption mt-2 text-red-button transition-opacity duration-200"
-                        : "t-caption mt-2 text-transparent transition-opacity duration-200"
-                    }
-                  >
-                    {ANGLAIS_PASTE_NOTICE}
-                  </p>
-                  {errors.anglais ? (
-                    <p id="err-anglais" role="alert" className="form-error">
-                      {errors.anglais}
-                    </p>
-                  ) : null}
+                  <ListboxField
+                    id="f-objectif"
+                    label={OBJECTIF_LABEL}
+                    required
+                    placeholder={OBJECTIF_PLACEHOLDER}
+                    value={form.objectif}
+                    options={OBJECTIFS}
+                    onChange={(objectif) => {
+                      setForm((f) => ({ ...f, objectif }));
+                      setErrors((prev) =>
+                        prev.objectif
+                          ? { ...prev, objectif: undefined }
+                          : prev,
+                      );
+                    }}
+                    error={errors.objectif}
+                    multiline
+                  />
                 </div>
 
                 {/* Soumission : email direct + redirection paiement */}
@@ -572,7 +621,7 @@ export function ContactPage() {
                     disabled={sending}
                     className="btn btn-primary t-btn w-full text-[1.0625rem] lg:text-[1.125rem] disabled:cursor-not-allowed disabled:opacity-70"
                   >
-                    {sending ? "Envoi en cours…" : CTA_LABELS.contact}
+                    {sending ? "Inscription en cours…" : CTA_LABELS.contact}
                   </button>
                   <p className="t-caption mt-4 text-center text-white/70">
                     Paiement sécurisé (prix de lancement : 70 000 FCFA{" "}
@@ -590,20 +639,6 @@ export function ContactPage() {
                     sans expression à 02 mois — remboursement intégral.
                   </p>
                 </div>
-
-                {/* Confirmation après envoi (pendant la redirection) */}
-                {result === "ok" ? (
-                  <div
-                    role="status"
-                    className="mt-6 rounded-[12px] border border-white/25 bg-white/[0.06] p-6 text-center"
-                  >
-                    <p className="t-body text-white">
-                      Merci ! Ton inscription a été bien envoyée.
-                      Redirection vers la page de validation de
-                      l&apos;inscription, en cours…
-                    </p>
-                  </div>
-                ) : null}
 
                 {/* Échec de l'email : aucune donnée perdue — lien de
                     secours WhatsApp avec la même fiche + paiement
@@ -647,6 +682,20 @@ export function ContactPage() {
           </div>
         </Container>
       </section>
+
+      {/* Task 57 (instruction propriétaire) : TOAST DE SUCCÈS « fond
+          vert pur » — apparaît automatiquement dès la soumission
+          valide, confirme que tout est bien réussi, dure 3 s puis
+          disparaît ; la redirection vers le paiement se déclenche à la
+          fin du toast. Fixé en haut de l'écran, au-dessus de tout. */}
+      {result === "ok" ? (
+        <div role="status" aria-live="polite" className="toast-success">
+          <IconCheck className="h-5 w-5 shrink-0" />
+          <span>
+            Inscription réussie ! Redirection vers la page de paiement…
+          </span>
+        </div>
+      ) : null}
 
       {/* CTA sticky mobile — scrolle vers le formulaire (ancre #contact) */}
       <StickyCTA href="#contact" label="Remplir le formulaire →" />

@@ -20,6 +20,15 @@ export const WHATSAPP_NUMBER = "2290159173098";
 export const CHECKOUT_URL =
   "https://mrsteveenglish.mymaketou.shop/products/coaching-danglais-de-comprendre-a-parler-en-03-mois/checkout";
 
+/**
+ * Groupe WhatsApp du programme (Task 57 — instruction propriétaire) :
+ * les boutons de la page Bienvenue (post-paiement) y dirigent
+ * directement les nouveaux clients — l'accueil du programme se fait
+ * dans ce groupe (lien d'invitation fourni par le propriétaire).
+ */
+export const WHATSAPP_GROUP_URL =
+  "https://chat.whatsapp.com/J6kbZayLhlW1eF76fjTcZ5?s=cl&p=a&ilr=4&iam=1";
+
 /** Réseaux sociaux officiels (instruction propriétaire). */
 export const SOCIAL_LINKS = {
   facebook: "https://www.facebook.com/Mr.SteveEnglish",
@@ -78,9 +87,11 @@ export const CTA_LABELS = {
   pourquoiMoi: "Découvrir mon parcours →",
   voirResultats: "Voir les résultats obtenus avec cette méthode →",
   faq: "Pose-moi ta question →",
-  /** Task 28 (instruction propriétaire) : libellé exact demandé pour le
-   * bouton de soumission du formulaire d'inscription. */
-  contact: "Rejoindre le Programme",
+  /** Task 57 (instruction propriétaire) : libellé du bouton de
+   *  soumission du formulaire d'inscription — l'action suivante
+   *  (le paiement) doit être parfaitement claire. Remplace « Rejoindre
+   *  le Programme » (Task 28). */
+  contact: "Réserver ma place pour 70 000 FCFA",
 } as const;
 
 /** Pages internes (Task 48 — vraies pages SEO : chemins réels indexables)

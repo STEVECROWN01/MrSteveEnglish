@@ -296,6 +296,10 @@ export function formaterLocal(
  * « 229 » — on ne retire JAMAIS un préfixe qui pourrait être le
  * début légitime d'un numéro local. La validation finale
  * (validerWhatsApp) tranche au moment de l'envoi.
+ *
+ * PLAFOND (Task 57) : la saisie est de toute façon PLAFONNÉE à la
+ * longueur maximale du pays (+1 tolérance de tronc « 0 ») — impossible
+ * de « entrer des chiffres sans arrêt ».
  */
 export function sanitiserWhatsApp(
   info: IndicatifInfo,
@@ -327,6 +331,16 @@ export function sanitiserWhatsApp(
     const [min, max] = info.longueurs;
     if (sans0.length >= min && sans0.length <= max) digits = sans0;
   }
+  // PLAFOND DE SAISIE (Task 57 — retour propriétaire : « on peut entrer
+  // des chiffres sans arrêt ») : au-delà de la longueur maximale du
+  // pays, les chiffres supplémentaires sont IGNORÉS — comme sur les
+  // grandes plateformes. Tolérance d'UN chiffre pour les pays à tronc
+  // « 0 » (hors ZERO_NATIONAL) : le « 06… » français doit pouvoir être
+  // saisi EN ENTIER (10 chiffres) avant que le tronc soit retiré (9).
+  const cap = !ZERO_NATIONAL.has(info.code) && digits.startsWith("0")
+    ? info.longueurs[1] + 1
+    : info.longueurs[1];
+  if (digits.length > cap) digits = digits.slice(0, cap);
   return digits;
 }
 

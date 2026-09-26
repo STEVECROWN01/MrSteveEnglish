@@ -568,6 +568,33 @@
     color: #000000;
     background: #ffffff;
   }
+  /* Task 57 (retour propriétaire : « certains champs deviennent blancs
+     à l'autoremplissage ») : Chrome/Edge/Safari peignent les champs
+     autoremplis en bleu clair/blanc via leurs styles internes
+     :-webkit-autofill, ce qui casse le formulaire sombre. On force le
+     style du site : texte blanc, caret blanc, et un « fond » infini
+     inset de la MÊME couleur que .form-input (technique standard qui
+     recouvre la couleur d'autofill sans pouvoir être désactivée). */
+  input.form-input:-webkit-autofill,
+  input.form-input:-webkit-autofill:hover,
+  input.form-input:-webkit-autofill:focus,
+  input.form-input:-webkit-autofill:active,
+  textarea.form-input:-webkit-autofill,
+  textarea.form-input:-webkit-autofill:hover,
+  textarea.form-input:-webkit-autofill:focus,
+  textarea.form-input:-webkit-autofill:active,
+  select.form-input:-webkit-autofill,
+  select.form-input:-webkit-autofill:hover,
+  select.form-input:-webkit-autofill:focus,
+  select.form-input:-webkit-autofill:active {
+    -webkit-text-fill-color: #ffffff;
+    caret-color: #ffffff;
+    box-shadow: 0 0 0 1000px rgba(255, 255, 255, 0.06) inset;
+    -webkit-box-shadow: 0 0 0 1000px rgba(255, 255, 255, 0.06) inset;
+    transition: background-color 9999s ease-in-out 0s;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 8px;
+  }
   .form-error {
     margin-top: 6px;
     font-family: var(--font-public-sans), system-ui, sans-serif;
@@ -775,3 +802,43 @@ body[data-listbox-open] .sticky-cta {
    page, aucun flash d'accueil n'est possible. Les anciens liens
    …/#/page sont traduits AVANT le premier rendu par le script inline
    de layout.tsx (location.replace vers le chemin réel). — */
+
+/* — Task 57 : TOAST DE SUCCÈS « fond vert pur » (instruction
+   propriétaire) — apparaît automatiquement à la soumission du
+   formulaire d'inscription, dure 3 s puis disparaît, pendant que la
+   redirection vers la page de paiement se prépare. Vert pur #008000
+   (convention du projet — Task 36/38 : coches et cachet PAYÉ). — */
+.toast-success {
+  position: fixed;
+  top: 1.25rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  max-width: min(92vw, 34rem);
+  padding: 0.875rem 1.25rem;
+  border-radius: 10px;
+  background: #008000; /* vert pur */
+  color: #ffffff;
+  font-family: var(--font-public-sans), system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  line-height: 1.35;
+  text-align: center;
+  box-shadow:
+    0 14px 36px rgba(0, 0, 0, 0.5),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+  animation: toast-success-in 260ms var(--ease-std) both;
+}
+@keyframes toast-success-in {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}

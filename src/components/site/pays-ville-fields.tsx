@@ -73,7 +73,15 @@ function Flag({ code, alt }: { code: string; alt: string }) {
   );
 }
 
-function ListboxField({
+/**
+ * Champ dropliste générique (Task 57 : exporté — réutilisé par les
+ *  menus « Situation actuelle » et « Objectif principal » du
+ *  formulaire d'inscription, libellés longs ⇒ option `multiline`).
+ *  Panneau accessible (rôle listbox/option, aria-expanded, fermeture
+ *  au clic extérieur et à Échap), reproduction EXACTE du style des
+ *  champs du formulaire (.form-label / .form-input / .form-error).
+ */
+export function ListboxField({
   id,
   label,
   required,
@@ -86,6 +94,7 @@ function ListboxField({
   disabledPlaceholder,
   searchPlaceholder,
   emptyText,
+  multiline,
 }: {
   id: string;
   label: string;
@@ -99,6 +108,10 @@ function ListboxField({
   disabledPlaceholder?: string;
   searchPlaceholder?: string;
   emptyText?: string;
+  /** Task 57 : libellés LONGS (phrases complètes) — l'option et la
+   *  valeur sélectionnée passent à la ligne au lieu d'être tronquées
+   *  (le champ grandit en hauteur, comme sur les grandes plateformes). */
+  multiline?: boolean;
 }) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -208,8 +221,19 @@ function ListboxField({
       >
         <span className="flex min-w-0 items-center gap-3">
           {selected?.flagCode ? <Flag code={selected.flagCode} alt="" /> : null}
-          <span className={cn("truncate", value ? "" : "text-white/40")}>
-            {disabled && !value ? (disabledPlaceholder ?? placeholder) : (value || placeholder)}
+          <span
+            className={cn(
+              multiline ? "text-pretty" : "truncate",
+              value ? "" : "text-white/40",
+            )}
+          >
+            {/* Task 57 : afficher le LIBELLÉ de l'option sélectionnée
+                (pas sa valeur technique — ex. situation/objectif :
+                « Je comprends déjà l'anglais… », pas
+                « understands_but_blocked »). */}
+            {disabled && !value
+              ? (disabledPlaceholder ?? placeholder)
+              : (selected?.label || value || placeholder)}
           </span>
         </span>
         <Chevron open={open} />
@@ -262,7 +286,9 @@ function ListboxField({
                     )}
                   >
                     {o.flagCode ? <Flag code={o.flagCode} alt={o.label} /> : null}
-                    <span className="truncate">{o.label}</span>
+                    <span className={multiline ? "text-pretty" : "truncate"}>
+                      {o.label}
+                    </span>
                     {isSel ? (
                       <svg
                         aria-hidden="true"
