@@ -1,19 +1,22 @@
 import type { Metadata } from "next";
-import { ContactPage } from "@/components/site/pages/contact-page";
+import { InscriptionPage } from "@/components/site/pages/inscription-page";
 import { PageShell } from "@/components/site/page-shell";
 
 /**
- * CONTACT / INSCRIPTION — page réelle indexable (Task 48 — SEO) :
- * /contact. Le formulaire d'inscription avec évaluation du niveau
- * d'anglais. L'ancienne adresse …/#/contact est redirigée
- * automatiquement par le script inline de layout.tsx.
+ * INSCRIPTION — page réelle indexable (Task 48 — SEO) :
+ * /inscription (ex-/contact — renommage instruction propriétaire).
+ * Le formulaire d'inscription avec qualification du niveau d'anglais.
+ * L'ancienne adresse …/#/contact est redirigée automatiquement vers
+ * /inscription par le script inline de layout.tsx ; l'ancienne route
+ * complète /contact renvoie en redirection 308 permanente
+ * (next.config.ts) — SEO et anciens liens préservés.
  */
 export const metadata: Metadata = {
   title: "Inscription au coaching d'anglais — Formulaire | Stevens AKPOVI",
   description:
     "Inscris-toi au programme « De Comprendre à Parler™ » : 03 mois de coaching d'anglais personnalisé en ligne, 70 000 FCFA, paiement unique. Évalue ton niveau et réserve ta place en quelques minutes.",
   alternates: {
-    canonical: "/contact",
+    canonical: "/inscription",
   },
   openGraph: {
     title:
@@ -23,7 +26,7 @@ export const metadata: Metadata = {
     type: "website",
     locale: "fr_FR",
     siteName: "Stevens AKPOVI",
-    url: "/contact",
+    url: "/inscription",
     images: [
       {
         url: "/assets/OG-SOCIAL.png",
@@ -46,7 +49,7 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <PageShell>
-      <ContactPage />
+      <InscriptionPage />
     </PageShell>
   );
 }

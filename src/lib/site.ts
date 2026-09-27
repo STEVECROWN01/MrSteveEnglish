@@ -13,12 +13,14 @@
 export const WHATSAPP_NUMBER = "2290159173098";
 
 /**
- * Page de paiement vers laquelle le prospect est dirigé automatiquement
- * après l'envoi du formulaire (instruction propriétaire Task 28 — VRAI
- * lien du programme, fourni par le propriétaire).
+ * Page PRODUIT Maketou vers laquelle le prospect est dirigé
+ * automatiquement après l'envoi du formulaire (instruction
+ * propriétaire — mise à jour : redirection désormais vers la PAGE
+ * PRODUIT, plus la page /checkout : le prospect voit la fiche du
+ * programme avant de payer).
  */
 export const CHECKOUT_URL =
-  "https://mrsteveenglish.mymaketou.shop/products/coaching-danglais-de-comprendre-a-parler-en-03-mois/checkout";
+  "https://mrsteveenglish.mymaketou.shop/en/products/coaching-danglais-de-comprendre-a-parler-en-03-mois";
 
 /**
  * Groupe WhatsApp du programme (Task 57 — instruction propriétaire) :
@@ -90,8 +92,9 @@ export const CTA_LABELS = {
   /** Task 57 (instruction propriétaire) : libellé du bouton de
    *  soumission du formulaire d'inscription — l'action suivante
    *  (le paiement) doit être parfaitement claire. Remplace « Rejoindre
-   *  le Programme » (Task 28). */
-  contact: "Réserver ma place pour 70 000 FCFA",
+   *  le Programme » (Task 28). Renommé contact → inscription
+   *  (cohérence totale avec la page Inscription). */
+  inscription: "Réserver ma place pour 70 000 FCFA",
 } as const;
 
 /** Pages internes (Task 48 — vraies pages SEO : chemins réels indexables)
@@ -99,9 +102,14 @@ export const CTA_LABELS = {
  * volontairement dans AUCUNE navigation : elle reçoit les clients après
  * leur paiement (URL de redirection configurée par le propriétaire dans
  * son système de paiement — l'ancienne URL …/#/bienvenue est traduite
- * automatiquement vers /bienvenue par le script inline de layout.tsx). */
+ * automatiquement vers /bienvenue par le script inline de layout.tsx).
+ * RENOMMAGE contact → inscription (instruction propriétaire) : la page du
+ * formulaire s'appelle « Inscription » partout (route /inscription,
+ * navigation, footer). L'ancienne route /contact renvoie en redirection
+ * 308 permanente vers /inscription (next.config.ts) — les anciens liens
+ * et le référencement Google sont préservés. */
 export const PAGES = {
-  contact: "/contact",
+  inscription: "/inscription",
   programme: "/programme",
   aPropos: "/a-propos",
   resultats: "/resultats",

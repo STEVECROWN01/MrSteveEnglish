@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { WHATSAPP_GROUP_URL } from "@/lib/site";
-import { trackPixel } from "@/lib/meta-pixel";
+import { trackPixelWithCAPI, pixelEventId } from "@/lib/meta-pixel";
 import {
   buildReceiptPdf,
   readInscription,
@@ -215,19 +215,37 @@ export function BienvenuePage() {
     setInscription(readInscription());
   }, []);
 
-  /** TASK 59 — META PIXEL : « Purchase » à l'arrivée sur cette page.
-   *  Cette page est l'URL de retour du PAIEMENT RÉUSSI configurée par
-   *  le propriétaire dans son système de paiement (mymaketou) : un
-   *  visiteur ici = un achat confirmé. Valeur 70 000, devise XOF
-   *  (franc CFA) — exploitée par Meta pour l'optimisation des
-   *  campagnes sur les CLIENTS PAYANTS et le calcul du ROAS. */
+  /** TASK 59 + CONVERSIONS API — META PIXEL : « Purchase » à
+   *  l'arrivée sur cette page. Cette page est l'URL de retour du
+   *  PAIEMENT RÉUSSI configurée par le propriétaire dans son système
+   *  de paiement (mymaketou) : un visiteur ici = un achat confirmé.
+   *  Valeur 70 000, devise XOF (franc CFA) — exploitée par Meta pour
+   *  l'optimisation des campagnes sur les CLIENTS PAYANTS et le
+   *  calcul du ROAS. Copie serveur Conversions API avec le MÊME
+   *  event_id (déduplication automatique) + email/téléphone du reçu
+   *  (localStorage d'inscription) hachés SHA-256 côté serveur pour
+   *  un match d'identité maximal. */
   useEffect(() => {
-    trackPixel("Purchase", {
-      content_name: "De Comprendre à Parler (03 mois)",
-      content_type: "product",
-      value: 70000,
-      currency: "XOF",
-    });
+    /* Lecture DIRECTE du localStorage (l'état inscription est peint
+       de façon asynchrone — à la montée il est encore null) : le
+       Purchase doit partir immédiatement avec les données client. */
+    const data = readInscription();
+    trackPixelWithCAPI(
+      "Purchase",
+      {
+        content_name: "De Comprendre à Parler™",
+        content_type: "product",
+        value: 70000,
+        currency: "XOF",
+      },
+      {
+        eventId: pixelEventId("purchase"),
+        pii: {
+          email: data?.email,
+          phoneE164: data?.whatsapp || undefined,
+        },
+      },
+    );
   }, []);
 
   /** Téléchargement du reçu + copie email au coach AU MÊME INSTANT

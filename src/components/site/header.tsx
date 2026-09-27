@@ -36,7 +36,7 @@ const NAV_LINKS: {
   { id: "resultats", label: "Résultats", href: "/resultats" },
   { id: "programme", label: "Programme", href: "/programme" },
   { id: "faq-section", label: "FAQ", href: "/?section=faq", section: true },
-  { id: "contact", label: "Inscription", href: "/contact" },
+  { id: "inscription", label: "Inscription", href: "/inscription" },
 ];
 
 /** Liens du menu mobile — Accueil inclus. */
@@ -60,10 +60,10 @@ export function Header() {
   // quand la barre flotte sans fond. Les autres pages ont un haut clair :
   // texte noir, toujours lisible sans fond.
   // Task 27 : « a-propos » (hero noir) et « programme » (hero noir)
-  // rejoignent l'accueil et le contact.
+  // rejoignent l'accueil et la page Inscription.
   const topIsDark =
     route === "accueil" ||
-    route === "contact" ||
+    route === "inscription" ||
     route === "a-propos" ||
     route === "programme";
 

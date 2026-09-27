@@ -47,8 +47,8 @@ import {
   type UtmParams,
 } from "./profil-prospect";
 
-export const CONTACT_EMAIL = "stevensakpovi@gmail.com";
-export const FORMSUBMIT_AJAX = `https://formsubmit.co/ajax/${CONTACT_EMAIL}`;
+export const INSCRIPTION_EMAIL = "stevensakpovi@gmail.com";
+export const FORMSUBMIT_AJAX = `https://formsubmit.co/ajax/${INSCRIPTION_EMAIL}`;
 
 /**
  * Endpoint CLASSIQUE de FormSubmit (non-AJAX) — LE SEUL qui délivre
@@ -64,12 +64,12 @@ export const FORMSUBMIT_AJAX = `https://formsubmit.co/ajax/${CONTACT_EMAIL}`;
  * l'email, la réponse (page de remerciement) étant simplement
  * illisible côté JS — fire-and-forget assumé.
  */
-export const FORMSUBMIT_ENDPOINT = `https://formsubmit.co/${CONTACT_EMAIL}`;
+export const FORMSUBMIT_ENDPOINT = `https://formsubmit.co/${INSCRIPTION_EMAIL}`;
 
 const PROGRAMME_LABEL =
   "Programme « De Comprendre à Parler™ » — 03 mois — 70 000 FCFA — paiement unique";
 
-export type ContactFormData = {
+export type InscriptionFormData = {
   nom: string;
   age: string;
   profession: string;
@@ -123,7 +123,7 @@ function blocUtm(utm: UtmParams | undefined): string[] {
  * compris.
  */
 export function buildEmailFields(
-  p: ContactFormData,
+  p: InscriptionFormData,
 ): Record<string, string> {
   const date = new Intl.DateTimeFormat("fr-FR", {
     dateStyle: "long",
@@ -186,8 +186,8 @@ export function buildEmailFields(
  * attendre la réponse). Le timeout reste un filet de sécurité
  * (l'appel est fire-and-forget côté UI).
  */
-export async function sendContactEmail(
-  form: ContactFormData,
+export async function sendInscriptionEmail(
+  form: InscriptionFormData,
 ): Promise<{ ok: boolean }> {
   const fields = buildEmailFields(form);
 

@@ -11,7 +11,7 @@ import { trackPixel } from "@/lib/meta-pixel";
  * navigation entre pages se fait SANS rechargement complet — or le
  * code de base du pixel (layout.tsx) ne s'exécute qu'au chargement
  * d'une page. Sans ce composant, un visiteur qui arrive sur
- * l'accueil puis navigue vers /programme puis /contact ne
+ * l'accueil puis navigue vers /programme puis /inscription ne
  * compterait qu'UN SEUL PageView.
  *
  * Ce composant (rendu dans le layout racine, aucune sortie visuelle)

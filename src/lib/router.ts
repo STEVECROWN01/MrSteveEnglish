@@ -8,7 +8,7 @@ import { usePathname } from "next/navigation";
  * seule URL (SPA hash-routée #/a-propos, #/programme…), invisible pour
  * Google — les fragments #/… ne sont JAMAIS envoyés au serveur et le
  * crawler ne voyait qu'une page. Chaque page vit désormais à sa propre
- * adresse : /a-propos, /resultats, /programme, /contact, /bienvenue —
+ * adresse : /a-propos, /resultats, /programme, /inscription, /bienvenue —
  * pré-rendues en HTML statique par Next.js, donc INDEXABLES, avec
  * titre/description/openGraph propres à chaque route (fichiers
  * app/<route>/page.tsx).
@@ -34,7 +34,7 @@ export type RouteId =
   | "programme"
   | "offres"
   | "faq"
-  | "contact"
+  | "inscription"
   | "bienvenue";
 
 /** Chemin réel de chaque route (title conservé pour référence — le
@@ -46,7 +46,7 @@ export const ROUTES: Record<RouteId, { path: string; title: string }> = {
   programme: { path: "/programme", title: "Programme de coaching d'anglais — 03 mois" },
   offres: { path: "/programme", title: "Programme de coaching d'anglais — 03 mois" },
   faq: { path: "/", title: "Questions fréquentes — Stevens AKPOVI" },
-  contact: { path: "/contact", title: "Inscription au programme de coaching d'anglais" },
+  inscription: { path: "/inscription", title: "Inscription au programme de coaching d'anglais" },
   bienvenue: { path: "/bienvenue", title: "Bienvenue — Stevens AKPOVI" },
 };
 

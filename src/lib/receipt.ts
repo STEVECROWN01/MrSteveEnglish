@@ -1,4 +1,4 @@
-import { CONTACT_EMAIL, FORMSUBMIT_ENDPOINT } from "./contact-email";
+import { INSCRIPTION_EMAIL, FORMSUBMIT_ENDPOINT } from "./inscription-email";
 import { VALUE_STACK } from "./inclusions";
 
 /**
@@ -51,7 +51,7 @@ import { VALUE_STACK } from "./inclusions";
  * bundle initial du site n'est pas alourdi (leçon Task 33).
  */
 
-/* — Données d'inscription persistées par le formulaire de contact — */
+/* — Données d'inscription persistées par le formulaire d'inscription — */
 export type InscriptionData = {
   nom: string;
   age: string;
@@ -59,6 +59,10 @@ export type InscriptionData = {
   email: string;
   pays: string;
   ville: string;
+  /** Numéro WhatsApp E.164 du prospect — stocké par le formulaire
+   *  (utilisé par le Purchase Conversions API pour le match
+   *  d'identité côté Meta, haché SHA-256 serveur). */
+  whatsapp?: string;
   /** ISO — moment de la soumission du formulaire. */
   dateInscription: string;
 };
@@ -493,7 +497,7 @@ export async function buildReceiptPdf(
     { align: "center" },
   );
   doc.text(
-    `© ${new Date().getFullYear()} Stevens AKPOVI · mrsteveenglish.vercel.app · ${CONTACT_EMAIL}`,
+    `© ${new Date().getFullYear()} Stevens AKPOVI · mrsteveenglish.vercel.app · ${INSCRIPTION_EMAIL}`,
     PAGE_W / 2,
     809,
     { align: "center" },

@@ -7,7 +7,7 @@ import { PageShell } from "@/components/site/page-shell";
  * hash-routée (une seule URL pour tout le contenu) — Google n'indexait
  * que cette page et ne voyait ni le programme, ni les résultats, ni le
  * formulaire. Chaque page vit désormais à sa propre adresse
- * (app/a-propos, app/programme, app/resultats, app/contact…) avec son
+ * (app/a-propos, app/programme, app/resultats, app/inscription…) avec son
  * HTML statique pré-rendu, son titre, sa description et ses balises
  * Open Graph.
  *

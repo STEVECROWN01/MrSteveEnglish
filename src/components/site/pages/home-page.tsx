@@ -47,7 +47,7 @@ export function HomePage() {
       <Garantie />
       <FaqSection />
       <CtaFinal />
-      <StickyCTA href="/contact" label={CTA_LABELS.decouvrirCourt} />
+      <StickyCTA href="/inscription" label={CTA_LABELS.decouvrirCourt} />
     </>
   );
 }
@@ -223,7 +223,7 @@ function Hero() {
           </p>
           <div className="hero-line hero-d4 mt-5 lg:mt-5">
             <span data-wa-cta className="inline-flex">
-              <CtaButton href="/contact">{CTA_LABELS.hero}</CtaButton>
+              <CtaButton href="/inscription">{CTA_LABELS.hero}</CtaButton>
             </span>
           </div>
           {/* Ligne programme sous le CTA (instruction propriétaire) */}
@@ -639,7 +639,7 @@ function Accompagnement() {
 
             <Reveal className="mt-12">
               <span data-wa-cta className="inline-flex">
-                <CtaButton href="/contact">{CTA_LABELS.hero}</CtaButton>
+                <CtaButton href="/inscription">{CTA_LABELS.hero}</CtaButton>
               </span>
               {/* Ligne programme sous le CTA (instruction propriétaire) */}
               <p className="t-caption mt-4 text-white/70">
@@ -1283,7 +1283,7 @@ function SectionPrix() {
 
               <div>
                 <span data-wa-cta className="inline-flex w-full">
-                  <CtaButton href="/contact" className="w-full">
+                  <CtaButton href="/inscription" className="w-full">
                     {CTA_LABELS.rejoindre}
                   </CtaButton>
                 </span>
@@ -1574,7 +1574,7 @@ function CtaFinal() {
         <Reveal className="mt-10 lg:mt-14">
           <div className="flex flex-col items-center gap-5 text-center">
             <span data-wa-cta className="inline-flex">
-              <CtaButton href="/contact">{CTA_LABELS.rejoindreCohorte}</CtaButton>
+              <CtaButton href="/inscription">{CTA_LABELS.rejoindreCohorte}</CtaButton>
             </span>
             <p className="t-caption text-white/70">{OFFRE.resumeSousCta}</p>
           </div>

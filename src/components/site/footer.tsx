@@ -6,7 +6,7 @@ import { CarteUrgenceEthique } from "./carte-inaction";
 /**
  * Footer (instruction propriétaire) : fond noir, texte blanc, nom
  * « Stevens AKPOVI », icônes sociales dans l'ordre Facebook,
- * WhatsApp (qui dirige vers le formulaire de contact, le numéro
+ * WhatsApp (qui dirige vers le formulaire d'inscription, le numéro
  * n'est jamais affiché sur le site), YouTube — navigation complète
  * du site, mentions légales.
  * Task 48 (vraies pages Google) : liens internes en CHEMINS RÉELS
@@ -47,7 +47,7 @@ const FOOTER_LINKS = [
   { label: "Résultats", href: "/resultats" },
   { label: "Programme", href: "/programme" },
   { label: "FAQ", href: "/?section=faq", section: true },
-  { label: "Inscription", href: "/contact" },
+  { label: "Inscription", href: "/inscription" },
 ];
 
 /** Lien social carré, accessible, target externe. */
@@ -61,11 +61,11 @@ function SocialLink({
   href: string;
   label: string;
   external?: boolean;
-  /** Navigation interne (icône WhatsApp → page contact) : si on y est
+  /** Navigation interne (icône WhatsApp → page Inscription) : si on y est
    *  déjà, AUCUNE navigation ne se déclenche → remontée manuelle douce
    *  en haut de page (même règle que le logo du header — instruction
    *  propriétaire Task 27 : l'icône WhatsApp doit diriger vers la page
-   *  contact ET remonter en haut). */
+   *  inscription ET remonter en haut). */
   internalAnchor?: boolean;
   children: React.ReactNode;
 }) {
@@ -166,7 +166,7 @@ export function Footer({
                 <FacebookIcon />
               </SocialLink>
               <SocialLink
-                href="/contact"
+                href="/inscription"
                 label="WhatsApp — contacter Stevens AKPOVI via le formulaire"
                 internalAnchor
               >
@@ -198,7 +198,7 @@ export function Footer({
                 ))}
               </ul>
             </nav>
-            <Link href="/contact" data-wa-cta className="btn btn-primary t-btn">
+            <Link href="/inscription" data-wa-cta className="btn btn-primary t-btn">
               {CTA_LABELS.decouvrirCourt}
             </Link>
           </div>

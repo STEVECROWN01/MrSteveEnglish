@@ -2,8 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { CHECKOUT_URL, CTA_LABELS, OFFRE, waLink } from "@/lib/site";
-import { sendContactEmail, type ContactFormData } from "@/lib/contact-email";
-import { trackPixel } from "@/lib/meta-pixel";
+import { sendInscriptionEmail, type InscriptionFormData } from "@/lib/inscription-email";
+import { PRODUIT, trackPixelWithCAPI, pixelEventId } from "@/lib/meta-pixel";
 import { INSCRIPTION_KEY } from "@/lib/receipt";
 import {
   OBJECTIFS,
@@ -24,15 +24,17 @@ import { validerWhatsApp } from "@/lib/indicateurs-tel";
 import { IconCheck } from "../icons";
 
 /**
- * PAGE 7 — CONTACT / INSCRIPTION (instructions propriétaire)
+ * PAGE 7 — INSCRIPTION (instructions propriétaire — renommage
+ * contact → inscription : route /inscription, composant InscriptionPage)
  * Fonction : conversion finale — le formulaire qualifie le prospect
  * pour L'OFFRE UNIQUE (Programme « De Comprendre à Parler™ » —
  * 03 mois — 70 000 FCFA — paiement unique), puis — à la soumission —
  * les données sont envoyées DIRECTEMENT PAR EMAIL à
  * stevensakpovi@gmail.com (fiche professionnelle structurée, avec le
- * texte original du prospect) et le prospect est dirigé vers la page
- * de paiement. Si l'email échoue, un lien de secours WhatsApp
- * contenant la même fiche est proposé — aucune donnée n'est perdue.
+ * texte original du prospect) et le prospect est dirigé vers la
+ * page produit Maketou. Si l'email échoue, un lien de secours
+ * WhatsApp contenant la même fiche est proposé — aucune donnée
+ * n'est perdue.
  *
  * TASK 57 (instruction propriétaire) — PROFIL PAR MENUS DÉROULANTS :
  * l'ancienne évaluation par rédaction libre en anglais (Task 27) est
@@ -181,7 +183,7 @@ function validate(f: FormState): FormErrors {
 /** Fiche de secours (WhatsApp) si l'email échoue — mêmes
  *  informations (situation, objectif, UTM — Task 57), pour que le
  *  coach ne perde rien. */
-function buildFallbackMessage(f: ContactFormData, utm: UtmParams): string {
+function buildFallbackMessage(f: InscriptionFormData, utm: UtmParams): string {
   const lignesUtm = Object.keys(utm).length
     ? Object.entries(utm).map(([k, v]) => `• utm_${k} : ${v}`)
     : ["• Aucun paramètre de campagne (accès direct)"];
@@ -218,7 +220,7 @@ function buildFallbackMessage(f: ContactFormData, utm: UtmParams): string {
   ].join("\n");
 }
 
-export function ContactPage() {
+export function InscriptionPage() {
   const [form, setForm] = useState<FormState>(INITIAL_FORM);
   const [errors, setErrors] = useState<FormErrors>({});
   const [sending, setSending] = useState(false);
@@ -227,13 +229,17 @@ export function ContactPage() {
    *  de la réponse du serveur email (redirection immédiate). */
   const [result, setResult] = useState<"ok" | "fail" | null>(null);
   const [fallbackMessage, setFallbackMessage] = useState("");
-  /** Timers (toast 3 s / redirection) — nettoyés au démontage. */
+  /** Timers (toast 3 s / redirection / navigation) — nettoyés au
+   *  démontage. navTimer : court délai final entre les événements
+   *  Meta et le changement de page (laisse le pixel vider sa file). */
   const redirectTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const navTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     return () => {
       if (redirectTimer.current) clearTimeout(redirectTimer.current);
+      if (navTimer.current) clearTimeout(navTimer.current);
       if (toastTimer.current) clearTimeout(toastTimer.current);
     };
   }, []);
@@ -307,7 +313,7 @@ export function ContactPage() {
     // navigation) : la redirection vers le paiement n'attend PLUS la
     // réponse du serveur email (autrefois jusqu'à 12 s + 1,8 s —
     // ressenti comme beaucoup trop lent par le propriétaire).
-    const payload: ContactFormData = {
+    const payload: InscriptionFormData = {
       nom: form.nom.trim(),
       age: form.age,
       profession: form.profession.trim(),
@@ -319,7 +325,7 @@ export function ContactPage() {
       objectif: form.objectif,
       utm,
     };
-    sendContactEmail(payload).then(({ ok }) => {
+    sendInscriptionEmail(payload).then(({ ok }) => {
       // Échec connu AVANT la redirection → on annule la redirection,
       // on masque le toast et on propose le secours WhatsApp (aucune
       // donnée perdue). Échec après redirection : couvert par keepalive.
@@ -333,15 +339,26 @@ export function ContactPage() {
         setSending(false);
       }
     });
-    // TASK 59 — META PIXEL : « Lead » = prospect inscrit (formulaire
-    // validé, place réservée pour 70 000 FCFA, redirection paiement
-    // imminente). Événement de conversion principal du tunnel,
-    // optimisable directement dans les campagnes Meta (Events
-    // Manager → pixel 1873557434014896). Déclenché AVANT la
-    // redirection pour être capté même si fbevents.js répond lentement.
-    trackPixel("Lead", {
-      content_name: "Inscription — De Comprendre à Parler (03 mois)",
-    });
+    // TASK 59 + CONVERSIONS API — META PIXEL : « Lead » puis
+    // « InitiateCheckout » ne sont déclenchés QUE dans le rappel de
+    // redirection, c'est-à-dire quand les TROIS conditions sont
+    // réunies : ① champs validés (validate() a bloqué la soumission
+    // sinon) ; ② données enregistrées (localStorage écrit + email
+    // parti avec keepalive — un échec serveur connu AVANT la
+    // redirection annule la redirection, donc les événements) ;
+    // ③ redirection vers la page produit Maketou confirmée (elle
+    // s'exécute). Chaque événement part en DOUBLE — pixel navigateur
+    // + copie serveur Conversions API (/api/meta-conversions) — avec
+    // le MÊME event_id : Meta déduplique automatiquement. Les
+    // double-clics sont rendus impossibles par l'état sending
+    // (bouton désactivé) et chaque événement ne part qu'une fois, à
+    // un seul endroit du code.
+    const leadEventId = pixelEventId("lead");
+    const checkoutEventId = pixelEventId("checkout");
+    const pixelPii = {
+      email: form.email.trim(),
+      phoneE164: whatsappE164 || undefined,
+    };
     // Task 57 (instruction propriétaire) : TOAST VERT PUR qui confirme
     // automatiquement que tout est bien réussi — durée 3 s, puis
     // disparition ; la redirection vers la page de paiement est
@@ -350,7 +367,34 @@ export function ContactPage() {
     setResult("ok");
     toastTimer.current = setTimeout(() => setResult(null), 3000);
     redirectTimer.current = setTimeout(() => {
-      window.location.href = CHECKOUT_URL;
+      // Triple condition réunie → événements de conversion.
+      trackPixelWithCAPI(
+        "Lead",
+        {
+          content_name: "Formulaire De Comprendre à Parler™",
+          content_category: "Coaching anglais",
+        },
+        { eventId: leadEventId, pii: pixelPii },
+      );
+      // InitiateCheckout : juste avant la redirection Maketou —
+      trackPixelWithCAPI(
+        "InitiateCheckout",
+        {
+          content_name: PRODUIT.content_name,
+          content_ids: PRODUIT.content_ids,
+          content_type: PRODUIT.content_type,
+          value: PRODUIT.value,
+          currency: PRODUIT.currency,
+          num_items: 1,
+        },
+        { eventId: checkoutEventId, pii: pixelPii },
+      );
+      // Court délai pour laisser le pixel vider sa file avant la
+      // navigation (la copie serveur, elle, part en keepalive et
+      // survit au changement de page).
+      navTimer.current = setTimeout(() => {
+        window.location.href = CHECKOUT_URL;
+      }, 250);
     }, 3000);
   }
 
@@ -363,7 +407,7 @@ export function ContactPage() {
       />
 
       <section
-        id="contact"
+        id="inscription"
         className="relative scroll-mt-20 overflow-hidden pb-12 pt-8 lg:pb-24 lg:pt-12"
       >
         {/* Task 29 (instruction propriétaire) : la carte « Bienvenue à
@@ -631,7 +675,7 @@ export function ContactPage() {
                     disabled={sending}
                     className="btn btn-primary t-btn w-full text-[1.0625rem] lg:text-[1.125rem] disabled:cursor-not-allowed disabled:opacity-70"
                   >
-                    {sending ? "Inscription en cours…" : CTA_LABELS.contact}
+                    {sending ? "Redirection vers le paiement…" : CTA_LABELS.inscription}
                   </button>
                   <p className="t-caption mt-4 text-center text-white/70">
                     Paiement sécurisé (prix de lancement : 70 000 FCFA{" "}
@@ -707,8 +751,8 @@ export function ContactPage() {
         </div>
       ) : null}
 
-      {/* CTA sticky mobile — scrolle vers le formulaire (ancre #contact) */}
-      <StickyCTA href="#contact" label="Remplir le formulaire →" />
+      {/* CTA sticky mobile — scrolle vers le formulaire (ancre #inscription) */}
+      <StickyCTA href="#inscription" label="Remplir le formulaire →" />
 
       {/* Séparateur formulaire / footer (instruction propriétaire
           Task 28) : lumière blanche bien visible qui circule

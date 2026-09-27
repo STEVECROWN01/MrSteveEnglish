@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
  * et Contact. Apparaît uniquement quand AUCUN CTA principal in-page
  * n'est visible à l'écran — ainsi un seul CTA reste visible à tout
  * moment (DA §18 DO). Depuis l'instruction propriétaire, les CTA mènent
- * au formulaire de contact (liens internes, plus de WhatsApp direct).
+ * au formulaire d'inscription (liens internes, plus de WhatsApp direct).
  *
  * PERF (instruction propriétaire : réactivité) : visibilité pilotée par
  * IntersectionObserver — plus AUCUN getBoundingClientRect par événement
@@ -18,8 +18,8 @@ import { cn } from "@/lib/utils";
  * FAQ). Task 48 (vraies pages) : le composant est remonté à chaque
  * navigation — le rescan initial suffit.
  *
- * Task 48 : href peut être un CHEMIN de page ("/contact" — navigation
- * douce via <Link>) ou une ANCRE interne ("#contact" sur la page
+ * Task 48 : href peut être un CHEMIN de page ("/inscription" — navigation
+ * douce via <Link>) ou une ANCRE interne ("#inscription" sur la page
  * Inscription, défilement natif vers le formulaire).
  */
 export function StickyCTA({

@@ -1,7 +1,9 @@
 "use client";
 
+import { useEffect } from "react";
 import { CTA_LABELS, OFFRE } from "@/lib/site";
 import { VALUE_STACK } from "@/lib/inclusions";
+import { PRODUIT, trackPixelWithCAPI, pixelEventId } from "@/lib/meta-pixel";
 import { Container, Eyebrow, PageHero, Section } from "../layout-primitives";
 import { CtaButton } from "../buttons";
 import { IconCheck } from "../icons";
@@ -45,6 +47,29 @@ const OBJECTIONS = [
 const PROGRAMME_INCLUS = VALUE_STACK;
 
 export function ProgrammePage() {
+  /* TASK 59 — META PIXEL : « ViewContent » — cette page présente
+     L'OFFRE UNIQUE (70 000 XOF) : un visiteur ici a vu le produit.
+     Déclenché UNE fois par affichage de la page (montée du composant
+     — les navigations <Link> internes remontent le composant à
+     chaque venue sur la page). Part aussi en copie serveur via la
+     Conversions API avec le même event_id (déduplication
+     automatique chez Meta) : le suivi reste fiable même si le
+     navigateur bloque le pixel. */
+  useEffect(() => {
+    trackPixelWithCAPI(
+      "ViewContent",
+      {
+        content_name: PRODUIT.content_name,
+        content_category: PRODUIT.content_category,
+        content_ids: PRODUIT.content_ids,
+        content_type: PRODUIT.content_type,
+        value: PRODUIT.value,
+        currency: PRODUIT.currency,
+      },
+      { eventId: pixelEventId("viewcontent") },
+    );
+  }, []);
+
   return (
     <>
       {/* Task 27 (instruction propriétaire) : le hero « De Comprendre
@@ -169,7 +194,7 @@ export function ProgrammePage() {
 
                 <div className="mt-10">
                   <span data-wa-cta className="inline-flex w-full sm:w-auto">
-                    <CtaButton href="/contact" className="w-full sm:w-auto">
+                    <CtaButton href="/inscription" className="w-full sm:w-auto">
                       {CTA_LABELS.rejoindre}
                     </CtaButton>
                   </span>
@@ -279,7 +304,7 @@ export function ProgrammePage() {
               </p>
               <div className="mt-8">
                 <span data-wa-cta className="inline-flex">
-                  <CtaButton href="/contact">{CTA_LABELS.rejoindre}</CtaButton>
+                  <CtaButton href="/inscription">{CTA_LABELS.rejoindre}</CtaButton>
                 </span>
               </div>
             </div>
@@ -288,7 +313,7 @@ export function ProgrammePage() {
       </Section>
 
       {/* CTA sticky mobile (page Programme) */}
-      <StickyCTA href="/contact" label={CTA_LABELS.decouvrirCourt} />
+      <StickyCTA href="/inscription" label={CTA_LABELS.decouvrirCourt} />
     </>
   );
 }

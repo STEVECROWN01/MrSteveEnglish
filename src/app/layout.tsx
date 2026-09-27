@@ -177,13 +177,16 @@ export default function RootLayout({
             chemin réel via location.replace (sans polluer l'historique
             — le bouton Retour reste fonctionnel). Si la page demandée
             est déjà la bonne, le hash est simplement nettoyé sans
-            rechargement. Les ancres internes pures (#contact du sticky
-            sur la page Inscription, #main-content) ne sont PAS touchées
-            — elles ne commencent pas par "#/". */}
+            rechargement. Les ancres internes pures (#inscription du
+            sticky sur la page Inscription, #main-content) ne sont PAS
+            touchées — elles ne commencent pas par "#/". RENOMMAGE
+            contact → inscription : le hash #/contact pointe désormais
+            directement vers /inscription (les anciens liens partagés
+            fonctionnent toujours). */}
         <script
           dangerouslySetInnerHTML={{
             __html:
-              "(function(){try{var h=location.hash||'';if(h.indexOf('#/')!==0)return;var key=h.slice(2).split('?')[0].replace(/\\/+$/,'');var q=h.split('?')[1]||'';var map={'a-propos':'/a-propos','resultats':'/resultats','programme':'/programme','offres':'/programme','contact':'/contact','bienvenue':'/bienvenue','faq':'/?section=faq'};var target;if(key===''){if(!q)return;var sp=new URLSearchParams(q);var s=sp.get('section');if(!s)return;target='/?section='+encodeURIComponent(s);}else{target=map[key];if(!target)return;if(q&&key!=='faq')target+=(target.indexOf('?')>=0?'&':'?')+q;}var tp=target.split('?')[0]||'/';if(location.pathname===tp){history.replaceState(history.state,'',target);return;}location.replace(target);}catch(e){}})();",
+              "(function(){try{var h=location.hash||'';if(h.indexOf('#/')!==0)return;var key=h.slice(2).split('?')[0].replace(/\\/+$/,'');var q=h.split('?')[1]||'';var map={'a-propos':'/a-propos','resultats':'/resultats','programme':'/programme','offres':'/programme','contact':'/inscription','inscription':'/inscription','bienvenue':'/bienvenue','faq':'/?section=faq'};var target;if(key===''){if(!q)return;var sp=new URLSearchParams(q);var s=sp.get('section');if(!s)return;target='/?section='+encodeURIComponent(s);}else{target=map[key];if(!target)return;if(q&&key!=='faq')target+=(target.indexOf('?')>=0?'&':'?')+q;}var tp=target.split('?')[0]||'/';if(location.pathname===tp){history.replaceState(history.state,'',target);return;}location.replace(target);}catch(e){}})();",
           }}
         />
         {/* Task 57 — ATTRIBUTION PUBLICITAIRE (UTM) : si l'URL courante
@@ -200,18 +203,25 @@ export default function RootLayout({
         />
         {/* TASK 59 — META PIXEL (instruction propriétaire, Events
             Manager) : code de base OFFICIEL, installé sur TOUTES les
-            pages. Next.js App Router ne permet pas d'écrire
-            directement dans <head> ; ce script inline en haut du
-            <body> s'exécute AVANT le rendu de la page — équivalent
-            fonctionnel d'une installation dans l'en-tête : la file
-            d'attente fbq est créée immédiatement (les appels
+            pages, avec l'identifiant lu depuis la variable
+            d'environnement NEXT_PUBLIC_META_PIXEL_ID (repli : valeur
+            connue — lib/meta-pixel.ts). Next.js App Router ne permet
+            pas d'écrire directement dans <head> ; ce script inline en
+            haut du <body> s'exécute AVANT le rendu de la page —
+            équivalent fonctionnel d'une installation dans l'en-tête :
+            la file d'attente fbq est créée immédiatement (les appels
             suivants sont mis en file même si fbevents.js n'est pas
             encore chargé), puis fbevents.js se charge en asynchrone
             et PageView est déclenché à chaque chargement complet
             d'une page. Les navigations internes <Link> (sans
             rechargement) sont couvertes par <MetaPixelPageView />.
-            Événements de conversion : « Lead » (contact-page) et
-            « Purchase » (bienvenue-page). */}
+            Événements de conversion : « ViewContent » (programme-page),
+            « Lead » + « InitiateCheckout » (inscription-page,
+            déclenchés uniquement quand la redirection vers Maketou est
+            confirmée) et « Purchase » (bienvenue-page). Chacun part
+            aussi en copie SERVEUR via la Conversions API
+            (/api/meta-conversions) avec le même event_id — Meta
+            déduplique automatiquement. */}
         <script
           dangerouslySetInnerHTML={{
             __html:

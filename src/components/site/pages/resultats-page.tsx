@@ -146,7 +146,7 @@ export function ResultatsPage() {
 
           <Reveal className="mt-10">
             <span data-wa-cta className="inline-flex">
-              <CtaButton href="/contact">{CTA_LABELS.hero}</CtaButton>
+              <CtaButton href="/inscription">{CTA_LABELS.hero}</CtaButton>
             </span>
           </Reveal>
         </Container>
