@@ -208,7 +208,9 @@ export function ProgrammePage() {
 
           {/* Tout ce que le programme comprend (instruction
               propriétaire : valeur perçue) — Task 27 : textes BLANCS
-              sur le fond sombre */}
+              sur le fond sombre ; Task 61 : « Podcasts & Ressources »
+              AVANT « Évaluation finale » — la liste se termine sur
+              l'Évaluation finale. */}
           <Reveal className="mt-10 lg:mt-14">
             <div className="mx-auto max-w-[52rem]">
               <h3 className="t-h3 text-white">

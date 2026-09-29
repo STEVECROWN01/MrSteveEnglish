@@ -834,7 +834,9 @@ function CeQueTuAchetes() {
 /* — « CE QUI EST INCLUS » (instruction propriétaire Task 27 ; Task 52 :
      liste étendue de 8 à 12 cartes ; Task 53 : ordre et libellés
      EXACTS du propriétaire — « Coaching personnalisé » retiré,
-     « Certificat de Fin » en carte 11, « Exercices pratiques ») : les
+     « Exercices pratiques » ; Task 61 : « Podcasts & Ressources » AVANT
+     « Évaluation finale » — le bonus ne clôt plus la grille et
+     « Certificat de Fin » devient la 12e et dernière carte) : les
      12 cartes sont définies dans src/lib/inclusions.ts (source unique
      partagée — Task 34 : la page Programme et la value stack de la
      carte « Paiement unique » dérivent des MÊMES données, conformité
@@ -879,9 +881,10 @@ function CeQuiEstInclus() {
                   <p className="font-display text-[2rem] font-medium leading-none text-black/50">
                     {item.num}
                   </p>
-                  {/* Badge BONUS (carte 12 uniquement) — discret mais
-                      visible : pastille contour rouge, sans surcharger
-                      la carte (instruction propriétaire). */}
+                  {/* Badge BONUS (carte 10 — Task 61 : ex-carte 12)
+                      — discret mais visible : pastille contour rouge,
+                      sans surcharger la carte (instruction
+                      propriétaire). */}
                   {item.bonus ? (
                     <span
                       className="mt-1.5 inline-flex items-center rounded-full border-[1.5px] border-red-button px-2.5 py-[3px] text-[0.6875rem] font-bold uppercase tracking-[0.14em] text-red-button"
@@ -1103,7 +1106,8 @@ const MOTS_CLES = [
   /* Task 53 : mots-clés des cartes — même ordre que la liste
      propriétaire (sans « Certificat de Fin » : ligne distincte
      ci-dessus) ; « Exercices pratiques » (ex-« Exercices
-     personnalisés »). */
+     personnalisés ») ; Task 61 : « Podcasts & Ressources » AVANT
+     « Évaluation finale » (le bonus ne clôt plus la liste). */
   "Speaking & Conversation",
   "Prise de parole",
   "Prononciation",
@@ -1114,8 +1118,8 @@ const MOTS_CLES = [
   "Conseils pratiques",
   "Suivi de progression",
   "Confiance & Fluidité",
-  "Évaluation finale",
   "Podcasts & Ressources",
+  "Évaluation finale",
   "Trois séances de 1h30 par semaine",
   "Coaching en ligne",
   "Accompagnement personnalisé",
@@ -1300,7 +1304,9 @@ function SectionPrix() {
               section « Ce qui est inclus », en UNE SEULE colonne dans
               la même carte. Task 53 : 11 lignes SANS « Certificat de
               Fin » (ligne distincte ci-dessous — organisation
-              maintenue, instruction propriétaire). */}
+              maintenue, instruction propriétaire). Task 61 : « Podcasts
+              & Ressources » AVANT « Évaluation finale » — la liste se
+              termine sur l'Évaluation finale. */}
           <Reveal delay={120}>
             <div className="glass-card glass-dark h-full p-6 md:p-10">
               <h3 className="t-h3 text-white">

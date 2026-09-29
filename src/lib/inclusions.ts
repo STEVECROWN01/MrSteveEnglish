@@ -4,17 +4,22 @@
  * pratiques » ; Task 53 — INSTRUCTION PROPRIÉTAIRE : ordre et libellés
  * EXACTS ci-dessous, « Coaching personnalisé » RETIRÉ, nouvelle carte
  * « Certificat de Fin » en position 11, « Exercices personnalisés »
- * renommé « Exercices pratiques »). Le programme « De Comprendre à
- * Parler™ » contient : 3 séances de 1h30/semaine (affiché ailleurs :
- * hero programme, marquee, FAQ, metas), puis les 12 cartes de cette
- * liste. L'accompagnement personnalisé reste communiqué hors liste
- * (hero, marquee, FAQ, metas — c'est le cadre du programme).
+ * renommé « Exercices pratiques » ; Task 61 — INSTRUCTION PROPRIÉTAIRE :
+ * « Podcasts & Ressources » AVANT « Évaluation finale » PARTOUT — le
+ * bonus ne clôt plus les listes : « Évaluation finale » en devient le
+ * DERNIER item ; dans les cartes, « Certificat de Fin » passe en 12e et
+ * dernière position — l'évaluation précède toujours le certificat).
+ * Le programme « De Comprendre à Parler™ » contient : 3 séances de
+ * 1h30/semaine (affiché ailleurs : hero programme, marquee, FAQ,
+ * metas), puis les 12 cartes de cette liste. L'accompagnement
+ * personnalisé reste communiqué hors liste (hero, marquee, FAQ,
+ * metas — c'est le cadre du programme).
  *
  * CERTIFICAT DE FIN (Task 53) : c'est une CARTE de la section « Ce qui
- * est inclus » (position 11, avec description) mais elle reste HORS
- * des LISTES SIMPLES — value stack de l'accueil, liste de la page
- * Programme, grille du REÇU PDF — où le certificat apparaît déjà en
- * ligne DISTINCTE après la liste (instruction propriétaire :
+ * est inclus » (Task 61 : position 12, ex-11, avec description) mais
+ * elle reste HORS des LISTES SIMPLES — value stack de l'accueil, liste
+ * de la page Programme, grille du REÇU PDF — où le certificat apparaît
+ * déjà en ligne DISTINCTE après la liste (instruction propriétaire :
  * « puisqu'on a mis ça comme à leur suite avec description, il faut
  * pas le mettre dans la liste — pour maintenir l'organisation »).
  * → VALUE_STACK (et le reçu) filtrent la carte `certificat: true`.
@@ -29,10 +34,11 @@
  * auto-synchronisée. Task 52 : le REÇU PDF (receipt.ts) dérive
  * désormais aussi de cette source.
  *
- * Hiérarchie (DA, Task 53) : pratique orale → outils → travail entre
- * séances → correction → pratique collective → conseils & astuces →
- * mesure (continue + finale + confiance) → CERTIFICAT → bonus.
- * La carte 12 porte un badge BONUS : ressource complémentaire, non
+ * Hiérarchie (DA, Task 53 ; Task 61) : pratique orale → outils → travail
+ * entre séances → correction → pratique collective → conseils & astuces →
+ * BONUS (podcasts & ressources) → mesure (continue + confiance + finale)
+ * → CERTIFICAT.
+ * La carte 10 porte un badge BONUS : ressource complémentaire, non
  * équivalente aux séances.
  */
 export const INCLUS: {
@@ -99,25 +105,31 @@ export const INCLUS: {
     corps:
       "Un travail ciblé pour t'aider à parler avec plus d'aisance, sans constamment chercher tes mots ni avoir peur de faire des erreurs.",
   },
+  /* Task 61 (instruction propriétaire) : « Podcasts & Ressources »
+     (bonus) passe AVANT « Évaluation finale » — le bonus ne clôt plus
+     la liste ; « Évaluation finale » devient le DERNIER item des
+     listes simples (certificat filtré) et « Certificat de Fin » clôt
+     les cartes en 12e position (l'évaluation précède toujours le
+     certificat). */
   {
     num: "10",
+    titre: "Podcasts & Ressources",
+    corps:
+      "Des podcasts et ressources pédagogiques sélectionnés pour continuer à pratiquer ton anglais entre les séances, à ton rythme.",
+    bonus: true,
+  },
+  {
+    num: "11",
     titre: "Évaluation finale",
     corps:
       "Un bilan complet à la fin des 03 mois pour mesurer concrètement le chemin parcouru, de ton niveau de départ à ton niveau d'arrivée.",
   },
   {
-    num: "11",
+    num: "12",
     titre: "Certificat de Fin",
     corps:
       "Un certificat de fin de programme délivré par Mr Steve English, à l'issue des 03 mois, une fois le parcours complété.",
     certificat: true,
-  },
-  {
-    num: "12",
-    titre: "Podcasts & Ressources",
-    corps:
-      "Des podcasts et ressources pédagogiques sélectionnés pour continuer à pratiquer ton anglais entre les séances, à ton rythme.",
-    bonus: true,
   },
 ];
 
