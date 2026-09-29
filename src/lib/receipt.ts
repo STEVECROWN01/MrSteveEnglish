@@ -283,8 +283,12 @@ export async function buildReceiptPdf(
      inclusions.ts ; Task 53 : 11 items SANS « Certificat de Fin » —
      le certificat n'est pas dans la liste, organisation maintenue
      (instruction propriétaire) ; 3 colonnes × 4 rangées (dernière
-     rangée : 2 items), mêmes positions verticales que l'ancienne
-     grille 2×4 → aucun décalage des zones situées en dessous). — */
+     colonne : 3 items), mêmes positions verticales que l'ancienne
+     grille 2×4 → aucun décalage des zones situées en dessous).
+     Retour propriétaire : LECTURE PAR COLONNE — la liste se remplit
+     de HAUT EN BAS dans la 1re colonne, puis la suite de haut en bas
+     dans la 2e, puis la 3e (et NON plus de gauche à droite par
+     ligne). — */
   doc.setFont("helvetica", "bold");
   doc.setFontSize(8);
   doc.setTextColor(...GRAY);
@@ -294,9 +298,12 @@ export async function buildReceiptPdf(
   doc.setFont("helvetica", "normal");
   doc.setFontSize(9);
   doc.setTextColor(...INK);
+  /* Nb de rangées par colonne (11 items / 3 colonnes → 4 rangées ;
+     calcul dynamique : reste correct si la liste change). */
+  const rows = Math.ceil(inclus.length / 3);
   inclus.forEach((item, i) => {
-    const col = i % 3;
-    const row = Math.floor(i / 3);
+    const col = Math.floor(i / rows);
+    const row = i % rows;
     const x = M + 10 + col * 164;
     const y = 362 + row * 15;
     doc.text(`—  ${item}`, x, y);
