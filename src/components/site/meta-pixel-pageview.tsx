@@ -19,6 +19,11 @@ import { trackPixel } from "@/lib/meta-pixel";
  * rendu est ignoré : le PageView de l'arrivée sur le site est déjà
  * couvert par le fbq('track','PageView') du code de base (sinon il
  * serait compté deux fois).
+ *
+ * TASK 60 (instruction propriétaire) : la page /bienvenue (retour du
+ * paiement réussi) n'émet AUCUN PageView — ni au chargement (le code
+ * de base de layout.tsx saute cette route), ni en navigation interne
+ * (exclusion ci-dessous). Seul l'événement « Purchase » y est suivi.
  */
 export function MetaPixelPageView() {
   const pathname = usePathname();
@@ -29,6 +34,7 @@ export function MetaPixelPageView() {
       firstRender.current = false;
       return;
     }
+    if (pathname?.startsWith("/bienvenue")) return; // Task 60
     trackPixel("PageView");
   }, [pathname]);
 

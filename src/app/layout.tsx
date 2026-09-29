@@ -211,36 +211,44 @@ export default function RootLayout({
             équivalent fonctionnel d'une installation dans l'en-tête :
             la file d'attente fbq est créée immédiatement (les appels
             suivants sont mis en file même si fbevents.js n'est pas
-            encore chargé), puis fbevents.js se charge en asynchrone
-            et PageView est déclenché à chaque chargement complet
-            d'une page. Les navigations internes <Link> (sans
-            rechargement) sont couvertes par <MetaPixelPageView />.
+            encore chargé), puis fbevents.js se charge en asynchrone.
+            Les navigations internes <Link> (sans rechargement) sont
+            couvertes par <MetaPixelPageView />.
             Événements de conversion : « ViewContent » (programme-page),
-            « Lead » + « InitiateCheckout » (inscription-page,
-            déclenchés uniquement quand la redirection vers Maketou est
-            confirmée) et « Purchase » (bienvenue-page). Chacun part
-            aussi en copie SERVEUR via la Conversions API
-            (/api/meta-conversions) avec le même event_id — Meta
-            déduplique automatiquement. */}
+            « Lead » + « InitiateCheckout » (inscription-page, déclenchés
+            uniquement quand la redirection vers Maketou est confirmée)
+            et « Purchase » (bienvenue-page). Chacun part aussi en copie
+            SERVEUR via la Conversions API (/api/meta-conversions) avec
+            le même event_id — Meta déduplique automatiquement.
+
+            TASK 60 (retour propriétaire) — DEUX VERROUS de tracking :
+            1. fbq('set','autoConfigMatching','false',…) : coupe
+               l'extraction AUTOMATIQUE des champs du navigateur par
+               fbevents.js (« Automatic Advanced Matching ») — aucune
+               donnée saisie dans le formulaire (pays, ville, situation,
+               objectif…) ne peut plus être collectée/inférée par le
+               pixel de sa propre initiative. Notre matching MANUEL est
+               préservé : la Conversions API continue d'envoyer email +
+               téléphone hachés SHA-256 côté serveur (meta-capi.ts),
+               indépendamment de ce réglage.
+            2. Le PageView du code de base est SAUTÉ sur /bienvenue :
+               cette page (retour du paiement réussi) ne doit émettre
+               AUCUN PageView — uniquement l'événement Purchase. */}
         <script
           dangerouslySetInnerHTML={{
             __html:
               "!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','" +
               META_PIXEL_ID +
-              "');fbq('track','PageView');",
+              "');fbq('set','autoConfigMatching','false','" +
+              META_PIXEL_ID +
+              "');if(location.pathname.indexOf('/bienvenue')!==0){fbq('track','PageView');}",
           }}
         />
         {/* Repli <noscript> officiel du pixel (visiteurs sans
             JavaScript) : image invisible qui enregistre le PageView
-            côté Meta. */}
-        <noscript
-          dangerouslySetInnerHTML={{
-            __html:
-              '<img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=' +
-              META_PIXEL_ID +
-              '&ev=PageView&noscript=1" alt=""/>',
-          }}
-        />
+            côté Meta — rendu PAGE PAR PAGE via <PixelNoscript />
+            (Task 60) : la page Bienvenue ne le rend PAS (aucun
+            PageView, même sans JavaScript). */}
         <MetaPixelPageView />
         {children}
         <script

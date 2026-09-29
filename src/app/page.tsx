@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { HomePage } from "@/components/site/pages/home-page";
 import { PageShell } from "@/components/site/page-shell";
+import { PixelNoscript } from "@/components/site/pixel-noscript";
 
 /**
  * ACCUEIL (Task 48 — SEO, vraies pages Google) : le site était une SPA
@@ -55,8 +56,14 @@ export const metadata: Metadata = {
 
 export default function Page() {
   return (
-    <PageShell hideCarte>
-      <HomePage />
-    </PageShell>
+    <>
+      <PageShell hideCarte>
+        <HomePage />
+      </PageShell>
+      {/* Task 60 : repli <noscript> du pixel Meta — rendu page par
+          page car /bienvenue (retour paiement) n'émet AUCUN
+          PageView, seulement l'événement Purchase. */}
+      <PixelNoscript />
+    </>
   );
 }

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { ResultatsPage } from "@/components/site/pages/resultats-page";
 import { PageShell } from "@/components/site/page-shell";
+import { PixelNoscript } from "@/components/site/pixel-noscript";
 
 /**
  * RÉSULTATS — page réelle indexable (Task 48 — SEO) : /resultats.
@@ -42,8 +43,14 @@ export const metadata: Metadata = {
 
 export default function Page() {
   return (
-    <PageShell>
-      <ResultatsPage />
-    </PageShell>
+    <>
+      <PageShell>
+        <ResultatsPage />
+      </PageShell>
+      {/* Task 60 : repli <noscript> du pixel Meta — rendu page par
+          page car /bienvenue (retour paiement) n'émet AUCUN
+          PageView, seulement l'événement Purchase. */}
+      <PixelNoscript />
+    </>
   );
 }

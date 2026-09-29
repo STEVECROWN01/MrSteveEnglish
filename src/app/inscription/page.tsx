@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { InscriptionPage } from "@/components/site/pages/inscription-page";
 import { PageShell } from "@/components/site/page-shell";
+import { PixelNoscript } from "@/components/site/pixel-noscript";
 
 /**
  * INSCRIPTION — page réelle indexable (Task 48 — SEO) :
@@ -48,8 +49,14 @@ export const metadata: Metadata = {
 
 export default function Page() {
   return (
-    <PageShell>
-      <InscriptionPage />
-    </PageShell>
+    <>
+      <PageShell>
+        <InscriptionPage />
+      </PageShell>
+      {/* Task 60 : repli <noscript> du pixel Meta — rendu page par
+          page car /bienvenue (retour paiement) n'émet AUCUN
+          PageView, seulement l'événement Purchase. */}
+      <PixelNoscript />
+    </>
   );
 }

@@ -337,8 +337,14 @@ export function SelectPaysField({
       label="Pays"
       required
       placeholder="Sélectionne ton pays"
-      searchPlaceholder="Rechercher un pays…"
-      emptyText="Aucun pays ne correspond à ta recherche."
+      /* Task 60 (retour propriétaire — tracking) : le libellé ne
+         contient PLUS le mot « Rechercher » : fbevents.js (pixel Meta)
+         infère un événement « Search » automatique sur les champs
+         dont l'id/placeholder/label matche un motif de recherche.
+         Ce champ filtre simplement la liste — il ne doit RIEN
+         envoyer à Meta. */
+      searchPlaceholder="Tape le nom de ton pays…"
+      emptyText="Aucun pays ne correspond à ta saisie."
       value={value}
       onChange={onChange}
       error={error}
@@ -375,8 +381,9 @@ export function SelectVilleField({
       required
       placeholder="Sélectionne ta ville"
       disabledPlaceholder="Sélectionne d'abord ton pays"
-      searchPlaceholder="Rechercher une ville…"
-      emptyText="Aucune ville ne correspond à ta recherche."
+      /* Task 60 : pas de mot « Rechercher » — voir SelectPaysField. */
+      searchPlaceholder="Tape le nom de ta ville…"
+      emptyText="Aucune ville ne correspond à ta saisie."
       value={paysPret ? value : ""}
       onChange={onChange}
       error={error}

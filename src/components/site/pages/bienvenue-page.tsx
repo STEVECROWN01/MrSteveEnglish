@@ -91,13 +91,18 @@ import { FireworksSnow } from "../fireworks-snow";
  *  le groupe, l'accueil du programme s'y fait. Lien direct = ouverture
  *  immédiate, sans intermédiaire.
  *
- * TASK 58 (instruction propriétaire) : libellés DIFFÉRENCIÉS — le
- *  PREMIER bouton (CTA principal « Prêt(e) à commencer ? ») devient
- *  « Rejoindre la Communauté », le SECOND (message final « Merci pour
- *  ta confiance. ») devient « Rejoindre le Programme ». Les deux
- *  pointent toujours vers le même groupe WhatsApp du programme. */
-const COMMUNAUTE_LABEL = "Rejoindre la Communauté";
-const PROGRAMME_LABEL = "Rejoindre le Programme";
+ * TASK 60 (instruction propriétaire) — réorganisation du CTA :
+ *  — l'ancienne section autonome « Prêt(e) à commencer ? » est
+ *    SUPPRIMÉE : son titre, son texte et son bouton vivent désormais
+ *    AU BAS DE LA CARTE « Récapitulatif » ;
+ *  — le bouton est renommé « Rejoindre la Communauté WhatsApp du
+ *    Programme » ;
+ *  — l'ancien second bouton « Rejoindre le Programme » (message final)
+ *    est remplacé par un emoji 👋 amical de taille moyenne ;
+ *  — le lien texte « Télécharger mon Reçu (PDF) » de la carte
+ *    Récapitulatif est SUPPRIMÉ (le gros bouton de reçu du haut de
+ *    page reste la seule voie de téléchargement). */
+const COMMUNAUTE_LABEL = "Rejoindre la Communauté WhatsApp du Programme";
 
 /* Résumé élégant du programme (instruction propriétaire). */
 const PROGRAMME_RECAP = [
@@ -171,33 +176,6 @@ function WhatsAppCta({
       <WhatsAppGlyph />
       {label}
     </a>
-  );
-}
-
-/** Petit bouton de téléchargement du reçu (version lien discret dans
- *  la carte Récapitulatif). */
-function ReceiptLinkButton({
-  onClick,
-  state,
-}: {
-  onClick: () => void;
-  state: "idle" | "preparing" | "done" | "error";
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      disabled={state === "preparing"}
-      className="t-body mt-6 inline-flex items-center gap-2 font-medium text-red-button underline underline-offset-4 transition-opacity hover:opacity-80 disabled:opacity-60"
-    >
-      {state === "preparing"
-        ? "Préparation du reçu…"
-        : state === "done"
-          ? "Télécharger à nouveau mon Reçu (PDF)"
-          : state === "error"
-            ? "Le téléchargement a échoué — réessayer"
-            : "Télécharger mon Reçu (PDF)"}
-    </button>
   );
 }
 
@@ -475,34 +453,6 @@ export function BienvenuePage() {
         </Container>
       </section>
 
-      {/* — CTA WHATSAPP PRINCIPAL — */}
-      <section className="py-10 lg:py-14">
-        <Container>
-          <Reveal>
-            <Prose className="mx-auto max-w-[42rem] text-center">
-              <h2 className="t-h2 text-white">Prêt(e) à commencer ?</h2>
-              <p className="t-body mt-6 text-white/80">
-                Une dernière étape : rejoins le groupe WhatsApp du
-                programme pour confirmer ton arrivée et préparer ton
-                accompagnement.
-              </p>
-            </Prose>
-          </Reveal>
-          <Reveal className="mt-8 lg:mt-10">
-            <div className="flex justify-center">
-              {/* Task 57 (instruction propriétaire) : « Contacter sur
-                  WhatsApp » → lien DIRECT vers le groupe WhatsApp du
-                  programme. Task 58 : libellé « Rejoindre la
-                  Communauté ». */}
-              <WhatsAppCta
-                label={COMMUNAUTE_LABEL}
-                className="w-full sm:w-auto"
-              />
-            </div>
-          </Reveal>
-        </Container>
-      </section>
-
       {/* — RASSURANCE — Task 34 (retour propriétaire) : la partie
           « Tu es au bon endroit… » est présentée comme un PAQUET DE
           CARTES : deux cartes-fantômes décalées et inclinées derrière
@@ -649,17 +599,36 @@ export function BienvenuePage() {
                 </ul>
               </div>
               <div className="mt-6 border-t border-white/15 pt-6 text-center">
-                <ReceiptLinkButton
-                  onClick={handleDownloadReceipt}
-                  state={receiptState}
-                />
+                {/* TASK 60 (instruction propriétaire) : l'ancienne
+                    section « Prêt(e) à commencer ? » (entre « Et
+                    maintenant ? » et la Rassurance) vit désormais ICI,
+                    au BAS de la carte Récapitulatif — titre, texte et
+                    bouton ensemble. L'ancien lien texte de reçu est
+                    SUPPRIMÉ (le gros bouton de reçu du haut de page
+                    reste la seule voie de téléchargement). */}
+                <h3 className="t-h3 text-white">Prêt(e) à commencer ?</h3>
+                <p className="t-body mt-3 text-white/75">
+                  Une dernière étape : rejoins le groupe WhatsApp du
+                  programme pour confirmer ton arrivée et préparer ton
+                  accompagnement.
+                </p>
+                <div className="mt-6 flex justify-center">
+                  {/* Task 57 : lien DIRECT vers le groupe WhatsApp du
+                      programme. Task 60 : libellé complet, rendu au
+                      bas de la carte. */}
+                  <WhatsAppCta
+                    label={COMMUNAUTE_LABEL}
+                    className="w-full sm:w-auto"
+                  />
+                </div>
               </div>
             </div>
           </Reveal>
         </Container>
       </section>
 
-      {/* — MESSAGE FINAL + dernier bouton WhatsApp — */}
+      {/* — MESSAGE FINAL + emoji d'accueil (Task 60 : l'ancien bouton
+          WhatsApp final est remplacé par 👋) — */}
       <section className="pt-10 pb-14 lg:pt-14 lg:pb-20">
         <Container>
           <Reveal>
@@ -680,16 +649,20 @@ export function BienvenuePage() {
               </p>
             </div>
           </Reveal>
+          {/* TASK 60 (instruction propriétaire) : l'ancien bouton
+              « Rejoindre le Programme » est remplacé par un emoji 👋
+              amical — taille moyenne, clairement visible, souligné
+              d'une ombre douce pour ressortir du fond noir. Le seul
+              bouton WhatsApp de la page est désormais celui de la
+              carte Récapitulatif. */}
           <Reveal className="mt-10">
             <div className="flex justify-center">
-              {/* Task 57 (instruction propriétaire) : « Démarrer mon
-                  accompagnement » → lien DIRECT vers le groupe
-                  WhatsApp du programme. Task 58 : libellé « Rejoindre
-                  le Programme ». */}
-              <WhatsAppCta
-                label={PROGRAMME_LABEL}
-                className="w-full sm:w-auto"
-              />
+              <span
+                aria-hidden="true"
+                className="block select-none text-[64px] leading-none [filter:drop-shadow(0_14px_18px_rgba(0,0,0,0.5))] md:text-[72px]"
+              >
+                👋
+              </span>
             </div>
           </Reveal>
         </Container>
