@@ -39,7 +39,8 @@ import { FireworksSnow } from "../fireworks-snow";
  * TASK 34 (retour propriétaire) :
  * — icône de confirmation + « Inscription confirmée » en ROUGE
  *   (Task 38 : devenus VERT PUR #008000, comme les coches du
- *   récapitulatif et le cachet du reçu) ;
+ *   récapitulatif et le cachet du reçu ; Task 63 : le label devient
+ *   « Inscription terminée » — hero + statut du récapitulatif) ;
  * — particules de feu d'artifice tombant du haut vers le bas comme
  *   une neige de fête (FireworksSnow — canvas plein viewport) ;
  * — TOUTES les cartes de la page en VERRE TRANSPARENT exactement
@@ -136,10 +137,11 @@ const ETAPES = [
 ];
 
 /* Statut du récapitulatif (coches vertes « état validé », DA §5 —
-   Task 57 : dernière étape alignée sur le groupe WhatsApp). */
+   Task 57 : dernière étape alignée sur le groupe WhatsApp ;
+   Task 63 : « Inscription confirmée » → « Inscription terminée »). */
 const STATUTS = [
   "Paiement effectué",
-  "Inscription confirmée",
+  "Inscription terminée",
   "Prochaine étape : rejoindre le groupe du programme",
 ];
 
@@ -261,7 +263,8 @@ export function BienvenuePage() {
       <FireworksSnow />
 
       {/* — HERO : icône de confirmation + label « Inscription
-          confirmée » en VERT PUR #008000 (Task 38 — ex-rouge Task 34)
+          terminée » en VERT PUR #008000 (Task 38 — ex-rouge Task 34 ;
+          Task 63 : ex-« Inscription confirmée »)
           + titre + bouton de reçu PDF — */}
       <section className="pb-8 pt-16 lg:pb-12 lg:pt-24">
         <Container className="text-center">
@@ -275,7 +278,7 @@ export function BienvenuePage() {
             />
           </div>
           <p className="hero-line hero-d2 mt-6 text-[0.75rem] font-medium uppercase tracking-[0.18em] text-[#008000]">
-            Inscription confirmée
+            Inscription terminée
           </p>
           {/* Task 34 (fix responsive) : « accompagnement. » en Fraunces
               mesure ~310px à 36px — un seul mot plus large que le
