@@ -11,11 +11,13 @@ import { PageShell } from "@/components/site/page-shell";
  * de paiement du propriétaire pointait vers …/#/bienvenue : le script
  * inline de layout.tsx la traduit automatiquement vers /bienvenue — le
  * flux de paiement des clients existants est préservé.
+ * Task 64 : title + meta description alignés sur « Ton inscription est
+ * terminée » (terminologie Task 63 — ex-« confirmée »).
  */
 export const metadata: Metadata = {
-  title: "Bienvenue — Ton inscription est confirmée | Stevens AKPOVI",
+  title: "Bienvenue — Ton inscription est terminée | Stevens AKPOVI",
   description:
-    "Ton inscription au programme « De Comprendre à Parler™ » est confirmée. Télécharge ton reçu et contacte ton coach sur WhatsApp.",
+    "Ton inscription au programme « De Comprendre à Parler™ » est terminée. Télécharge ton reçu et contacte ton coach sur WhatsApp.",
   robots: {
     index: false,
     follow: false,

@@ -332,7 +332,9 @@ export function BienvenuePage() {
       </section>
 
       {/* — CONFIRMATION — carte VERRE (Task 34 : toutes les cartes de
-          la page en verre transparent comme sur le site) — */}
+          la page en verre transparent comme sur le site ; Task 64 :
+          « Ta place … est maintenant confirmée » → « Ton inscription …
+          est maintenant terminée » — terminologie Task 63) — */}
       <section className="relative overflow-hidden py-8 lg:py-10">
         <div
           aria-hidden="true"
@@ -346,8 +348,9 @@ export function BienvenuePage() {
           <Reveal>
             <div className="glass-card glass-dark mx-auto max-w-[42rem] p-6 text-center md:p-8">
               <p className="t-body text-white/90">
-                Ton paiement a bien été effectué. Ta place dans le programme
-                d&apos;accompagnement de 3 mois est maintenant confirmée.
+                Ton paiement a bien été effectué. Ton inscription au
+                programme d&apos;accompagnement de 3 mois est maintenant
+                terminée.
               </p>
               <p className="t-body mt-4 text-white/75">
                 Tu n&apos;as plus rien à acheter ni à refaire. La prochaine
