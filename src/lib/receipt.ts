@@ -479,7 +479,9 @@ export async function buildReceiptPdf(
   doc.text("CE QUE CE REÇU CONFIRME", M, 646, { charSpace: 1.2 });
 
   const confirmations = [
-    "Votre inscription au programme est confirmée et votre place réservée pour 03 mois.",
+    /* Task 65 : « confirmée » → « terminée » — terminologie alignée
+       sur la page Bienvenue (Tasks 63-64). */
+    "Votre inscription au programme est terminée et votre place réservée pour 03 mois.",
     "Le règlement intégral de 70 000 FCFA a bien été reçu — aucun autre montant ne vous est demandé.",
     "Votre coaching démarre dans les 03 jours suivant votre prise de contact sur WhatsApp.",
     "Garantie d'engagement : conditions respectées sans expression à 02 mois — remboursement intégral.",
