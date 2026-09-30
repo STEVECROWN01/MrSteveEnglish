@@ -1,5 +1,5 @@
 import { INSCRIPTION_EMAIL, FORMSUBMIT_ENDPOINT } from "./inscription-email";
-import { VALUE_STACK } from "./inclusions";
+import { INCLUS } from "./inclusions";
 
 /**
  * REÇU PDF POST-PAIEMENT (Task 34 — instruction propriétaire ;
@@ -32,6 +32,13 @@ import { VALUE_STACK } from "./inclusions";
  * de reçu et le nom du client). Le même nom sert aux trois usages :
  * téléchargement du client, pièce jointe de l'email au coach, et
  * mention du fichier dans le message.
+ * Task 62 : « Certificat de Fin » en DERNIER TIRET du reçu, juste
+ * après « Évaluation finale » (instruction propriétaire) — la grille
+ * « CE QUE COMPREND LE PROGRAMME » affiche désormais les 12 titres
+ * COMPLETS (le reçu ne filtre plus la carte `certificat: true`,
+ * contrairement aux listes du site qui présentent le certificat en
+ * ligne distincte) ; grille 3×4 PLEINE, aucune position verticale
+ * ne bouge (la 4e rangée de la 3e colonne était libre).
  *
  * Le client qui arrive sur #/bienvenue après son paiement peut
  * télécharger un reçu PDF TRÈS haute qualité : A4 vectoriel,
@@ -280,25 +287,34 @@ export async function buildReceiptPdf(
   );
 
   /* — Les inclusions du programme (Task 52 : source unique
-     inclusions.ts ; Task 53 : 11 items SANS « Certificat de Fin » —
-     le certificat n'est pas dans la liste, organisation maintenue
-     (instruction propriétaire) ; 3 colonnes × 4 rangées (dernière
-     colonne : 3 items), mêmes positions verticales que l'ancienne
-     grille 2×4 → aucun décalage des zones situées en dessous).
-     Retour propriétaire : LECTURE PAR COLONNE — la liste se remplit
-     de HAUT EN BAS dans la 1re colonne, puis la suite de haut en bas
-     dans la 2e, puis la 3e (et NON plus de gauche à droite par
-     ligne). — */
+     inclusions.ts ; Task 62 — INSTRUCTION PROPRIÉTAIRE : « Certificat
+     de Fin » AJOUTÉ en DERNIER TIRET après « Évaluation finale » —
+     la grille affiche désormais les 12 titres complets (le reçu ne
+     filtre plus la carte `certificat: true`) ; 3 colonnes × 4
+     rangées (grille PLEINE : 12 items — la 4e rangée de la 3e
+     colonne, libérée depuis la Task 53, accueille le certificat),
+     mêmes positions verticales que l'ancienne grille → aucun
+     décalage des zones situées en dessous).
+     Retour propriétaire (conservé) : LECTURE PAR COLONNE — la liste
+     se remplit de HAUT EN BAS dans la 1re colonne, puis la suite
+     de haut en bas dans la 2e, puis la 3e (et NON de gauche à
+     droite par ligne). — */
   doc.setFont("helvetica", "bold");
   doc.setFontSize(8);
   doc.setTextColor(...GRAY);
   doc.text("CE QUE COMPREND LE PROGRAMME", M + 10, 344, { charSpace: 1 });
 
-  const inclus = VALUE_STACK;
+  /* Task 62 : les 12 titres COMPLETS de la source unique —
+     « Certificat de Fin » (carte 12, `certificat: true`) clôt le
+     reçu en dernier tiret, juste après « Évaluation finale »
+     (l'évaluation précède toujours le certificat — Task 61) ;
+     les listes du site (accueil, page Programme) continuent de
+     filtrer le certificat via VALUE_STACK. */
+  const inclus = INCLUS.map((item) => item.titre);
   doc.setFont("helvetica", "normal");
   doc.setFontSize(9);
   doc.setTextColor(...INK);
-  /* Nb de rangées par colonne (11 items / 3 colonnes → 4 rangées ;
+  /* Nb de rangées par colonne (12 items / 3 colonnes → 4 rangées ;
      calcul dynamique : reste correct si la liste change). */
   const rows = Math.ceil(inclus.length / 3);
   inclus.forEach((item, i) => {

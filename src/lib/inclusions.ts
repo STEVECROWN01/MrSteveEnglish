@@ -16,13 +16,17 @@
  * metas — c'est le cadre du programme).
  *
  * CERTIFICAT DE FIN (Task 53) : c'est une CARTE de la section « Ce qui
- * est inclus » (Task 61 : position 12, ex-11, avec description) mais
- * elle reste HORS des LISTES SIMPLES — value stack de l'accueil, liste
- * de la page Programme, grille du REÇU PDF — où le certificat apparaît
- * déjà en ligne DISTINCTE après la liste (instruction propriétaire :
- * « puisqu'on a mis ça comme à leur suite avec description, il faut
- * pas le mettre dans la liste — pour maintenir l'organisation »).
- * → VALUE_STACK (et le reçu) filtrent la carte `certificat: true`.
+ * est inclus » (Task 61 : position 12, ex-11, avec description). Elle
+ * reste HORS des LISTES SIMPLES DU SITE — value stack de l'accueil et
+ * liste de la page Programme — où le certificat apparaît en ligne
+ * DISTINCTE après la liste (instruction propriétaire : « puisqu'on a
+ * mis ça comme à leur suite avec description, il faut pas le mettre
+ * dans la liste — pour maintenir l'organisation »).
+ * → VALUE_STACK filtre la carte `certificat: true`. EXCEPTION (Task 62,
+ * instruction propriétaire) : le REÇU PDF affiche désormais les 12
+ * titres COMPLETS — « Certificat de Fin » en DERNIER TIRET, juste
+ * après « Évaluation finale » (receipt.ts mappe INCLUS directement,
+ * sans filtrage).
  *
  * Historique : cette liste vivait dans home-page.tsx (section « Ce qui
  * est inclus », Task 27) et la value stack de la carte « Paiement
@@ -135,10 +139,12 @@ export const INCLUS: {
 
 /** Value stack (Task 32) : les titres des inclusions SANS le certificat
  *  (Task 53) — utilisée par la carte « Voici tout ce que tu reçois
- *  pour 70 000 FCFA : » (accueil), par la liste « Voici tout ce que
- *  comprend le programme : » (page Programme, Task 34) et par la grille
- *  du reçu PDF (Task 52) — le certificat y est présenté en ligne
- *  distincte après la liste, organisation inchangée. */
+ *  pour 70 000 FCFA : » (accueil) et par la liste « Voici tout ce que
+ *  comprend le programme : » (page Programme, Task 34) — le
+ *  certificat y est présenté en ligne distincte après la liste,
+ *  organisation inchangée. Task 62 : le reçu PDF n'utilise PLUS cette
+ *  constante — il mappe INCLUS (12 titres) pour terminer sur
+ *  « Certificat de Fin » en dernier tiret (instruction propriétaire). */
 export const VALUE_STACK = INCLUS.filter((item) => !item.certificat).map(
   (item) => item.titre,
 );
