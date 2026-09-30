@@ -319,7 +319,7 @@ export function BienvenuePage() {
                 <path d="M5 21h14" />
               </svg>
               {receiptState === "preparing"
-                ? "Préparation de ton reçu…"
+                ? "Téléchargement du reçu en cours…"
                 : receiptState === "error"
                   ? "Réessayer le téléchargement"
                   : "Télécharger mon Reçu (PDF)"}
