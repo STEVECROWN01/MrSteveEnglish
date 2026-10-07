@@ -25,10 +25,10 @@ export const metadata: Metadata = {
     url: "/a-propos",
     images: [
       {
-        url: "/assets/OG-SOCIAL.jpg",
+        url: "/assets/OG-SOCIAL-v2.jpg",
         type: "image/jpeg",
         width: 1200,
-        height: 630,
+        height: 1200,
         alt:
           "Stevens AKPOVI — coach d'anglais en ligne pour francophones.",
       },

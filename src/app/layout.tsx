@@ -69,10 +69,10 @@ export const metadata: Metadata = {
     siteName: "Stevens AKPOVI",
     images: [
       {
-        url: "/assets/OG-SOCIAL.jpg",
+        url: "/assets/OG-SOCIAL-v2.jpg",
         type: "image/jpeg",
         width: 1200,
-        height: 630,
+        height: 1200,
         alt:
           "03 mois pour transformer ton anglais que tu comprends en anglais que tu oses vraiment parler.",
       },
