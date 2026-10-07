@@ -25,7 +25,8 @@ export const metadata: Metadata = {
     url: "/resultats",
     images: [
       {
-        url: "/assets/OG-SOCIAL.png",
+        url: "/assets/OG-SOCIAL.jpg",
+        type: "image/jpeg",
         width: 1200,
         height: 630,
         alt:
