@@ -2,8 +2,16 @@
 
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
-import { WHATSAPP_GROUP_URL } from "@/lib/site";
-import { trackPixelWithCAPI, pixelEventId } from "@/lib/meta-pixel";
+import {
+  PRELAUNCH_WHATSAPP_URL,
+  WHATSAPP_GROUP_URL,
+  waLink,
+} from "@/lib/site";
+import {
+  PRODUIT_PRELAUNCH,
+  pixelEventId,
+  trackPixelWithCAPI,
+} from "@/lib/meta-pixel";
 import {
   buildReceiptPdf,
   readInscription,
@@ -11,6 +19,7 @@ import {
   saveReceiptBlob,
   sendReceiptPdfCopy,
   type InscriptionData,
+  type OffreId,
 } from "@/lib/receipt";
 import { Container, Eyebrow, Prose } from "../layout-primitives";
 import { Reveal } from "../reveal";
@@ -145,6 +154,70 @@ const STATUTS = [
   "Prochaine étape : rejoindre le groupe du programme",
 ];
 
+/* ============================================================
+ * TASK 69 — VARIANTE PRÉ-LANCEMENT (« Pré-lancement • De
+ * COMPRENDRE à PARLER™ » — 15 000 FCFA — 02 mois — première
+ * cohorte de 05) : le propriétaire configure l'URL de retour du
+ * paiement Maketou du produit de pré-lancement AVEC le paramètre
+ * ?offre=prelaunch — la page adapte alors textes, récapitulatif,
+ * étapes, statuts, CTA WhatsApp et REÇU (offre « prelaunch » de
+ * receipt.ts). Le tunnel du programme principal reste STRICTEMENT
+ * inchangé (mêmes textes, même HTML).
+ * ============================================================ */
+const PRELAUNCH_COMMUNAUTE_LABEL =
+  "Rejoindre la Communauté WhatsApp de la Cohorte";
+
+/* Résumé élégant de l'offre de pré-lancement (brief §6). */
+const PRELAUNCH_RECAP = [
+  { titre: "02 mois", texte: "Accompagnement intensif" },
+  { titre: "03 séances / semaine", texte: "Séances de 1h30 en ligne" },
+  { titre: "Pratique orale", texte: "Au centre de l'accompagnement" },
+  { titre: "Communauté WhatsApp", texte: "Dédiée à la première cohorte" },
+];
+
+/* Les 3 étapes « Et maintenant ? » — variante cohorte. */
+const PRELAUNCH_ETAPES = [
+  {
+    num: "01",
+    titre: "Rejoins la communauté de la cohorte",
+    texte: "Rejoins la communauté WhatsApp de la première cohorte pour confirmer ton arrivée et recevoir les informations de démarrage.",
+  },
+  {
+    num: "02",
+    titre: "Nous préparons le démarrage",
+    texte: "Nous échangeons sur les prochaines étapes de ton accompagnement et sur la manière dont nous allons commencer.",
+  },
+  {
+    num: "03",
+    titre: "Ton accompagnement commence",
+    texte: "Nous travaillons à partir de ton niveau actuel pour construire progressivement une expression anglaise plus naturelle et plus confiante.",
+  },
+];
+
+/* Statuts du récapitulatif — variante cohorte. */
+const PRELAUNCH_STATUTS = [
+  "Paiement effectué",
+  "Inscription terminée",
+  "Prochaine étape : rejoindre la communauté de la cohorte",
+];
+
+/** Message WhatsApp de REPLI tant que le lien du groupe de la
+ * cohorte n'a pas été fourni (PRELAUNCH_WHATSAPP_URL vide) : contact
+ * direct du coach — un canal RÉEL, jamais un lien de groupe
+ * inventé. Le bouton bascule automatiquement sur le groupe dès que
+ * le lien est collé dans site.ts. */
+const PRELAUNCH_WHATSAPP_MSG =
+  "Bonjour Coach Stevens, je viens de compléter mon inscription au pré-lancement De COMPRENDRE à PARLER™ (première cohorte — 02 mois). Merci de m'indiquer la communauté WhatsApp de la cohorte.";
+
+/** Task 69 : le tunnel de pré-lancement n'a pas de formulaire avant
+ * paiement — le client saisit son nom sur cette page pour
+ * personnaliser son reçu ; il est persisté (n° de reçu stable au
+ * re-téléchargement, date d'inscription = premier retour sur la
+ * page). Données JAMAIS réutilisées du formulaire du programme
+ * principal (elles ne correspondent pas à cette offre). */
+const PRELAUNCH_CLIENT_KEY = "mse_prelaunch_client";
+type PrelaunchClient = { nom: string; date: string };
+
 /** Données de repli si les données d'inscription ne sont plus dans le
  *  navigateur (localStorage vidé, autre appareil…) — le reste reste
  *  correct, les champs absents affichent « Non renseigné » sur le
@@ -160,17 +233,21 @@ const FALLBACK_INSCRIPTION: InscriptionData = {
 };
 
 /** Bouton principal / final — Task 57 : lien DIRECT vers le groupe
- *  WhatsApp du programme (plus de message pré-rempli au coach). */
+ *  WhatsApp du programme (plus de message pré-rempli au coach).
+ *  Task 69 : href paramétré — groupe de la COHORTE (lien fourni par
+ *  le propriétaire) ou repli contact coach pour le pré-lancement. */
 function WhatsAppCta({
+  href,
   label,
   className,
 }: {
+  href: string;
   label: string;
   className?: string;
 }) {
   return (
     <a
-      href={WHATSAPP_GROUP_URL}
+      href={href}
       target="_blank"
       rel="noopener noreferrer"
       className={cn("btn btn-primary t-btn", className)}
@@ -191,8 +268,42 @@ export function BienvenuePage() {
   /** Garde-fou anti double-clic : un seul envoi email par 4 s. */
   const lastClickRef = useRef(0);
 
+  /* Task 69 — variante pré-lancement : détectée au montage via le
+     paramètre d'URL ?offre=prelaunch (URL de retour Maketou du produit
+     de pré-lancement configurée par le propriétaire). */
+  const [prelaunch, setPrelaunch] = useState(false);
+  /** Nom saisi par le client prelaunch (reçu personnalisé). */
+  const [nomPrelaunch, setNomPrelaunch] = useState("");
+  /** Date du premier retour sur la page (prelaunch) — ancre le n° de
+   *  reçu, stable au re-téléchargement. */
+  const prelaunchDateRef = useRef("");
+
   useEffect(() => {
     setInscription(readInscription());
+    if (
+      new URLSearchParams(window.location.search).get("offre") !== "prelaunch"
+    ) {
+      return;
+    }
+    setPrelaunch(true);
+    try {
+      const raw = window.localStorage.getItem(PRELAUNCH_CLIENT_KEY);
+      const saved = raw
+        ? (JSON.parse(raw) as Partial<PrelaunchClient>)
+        : null;
+      const date = saved?.date || new Date().toISOString();
+      prelaunchDateRef.current = date;
+      setNomPrelaunch(typeof saved?.nom === "string" ? saved.nom : "");
+      window.localStorage.setItem(
+        PRELAUNCH_CLIENT_KEY,
+        JSON.stringify({
+          nom: typeof saved?.nom === "string" ? saved.nom : "",
+          date,
+        } satisfies PrelaunchClient),
+      );
+    } catch {
+      prelaunchDateRef.current = new Date().toISOString();
+    }
   }, []);
 
   /** TASK 59 + CONVERSIONS API — META PIXEL : « Purchase » à
@@ -210,14 +321,27 @@ export function BienvenuePage() {
        de façon asynchrone — à la montée il est encore null) : le
        Purchase doit partir immédiatement avec les données client. */
     const data = readInscription();
+    /* Task 69 : le Purchase porte l'offre réellement payée —
+       pré-lancement (15 000 XOF) quand l'URL de retour Maketou
+       contient ?offre=prelaunch, programme principal sinon. */
+    const estPrelaunch =
+      new URLSearchParams(window.location.search).get("offre") ===
+      "prelaunch";
     trackPixelWithCAPI(
       "Purchase",
-      {
-        content_name: "De Comprendre à Parler™",
-        content_type: "product",
-        value: 70000,
-        currency: "XOF",
-      },
+      estPrelaunch
+        ? {
+            content_name: PRODUIT_PRELAUNCH.content_name,
+            content_type: "product",
+            value: PRODUIT_PRELAUNCH.value,
+            currency: PRODUIT_PRELAUNCH.currency,
+          }
+        : {
+            content_name: "De Comprendre à Parler™",
+            content_type: "product",
+            value: 70000,
+            currency: "XOF",
+          },
       {
         eventId: pixelEventId("purchase"),
         pii: {
@@ -240,14 +364,29 @@ export function BienvenuePage() {
       return;
     }
     lastClickRef.current = now;
-    const data = inscription ?? FALLBACK_INSCRIPTION;
-    const receiptNo = receiptNumberFor(data);
+    /* Task 69 : l'offre du reçu suit le tunnel réellement emprunté —
+       le reçu du programme principal reste IDENTIQUE à l'existant. */
+    const offre: OffreId = prelaunch ? "prelaunch" : "programme";
+    let data = inscription ?? FALLBACK_INSCRIPTION;
+    if (prelaunch) {
+      /* Le tunnel prelaunch n'a pas de formulaire avant paiement :
+         seules les données saisies sur CETTE page (nom) sont
+         utilisées — jamais celles d'un ancien formulaire du
+         programme principal (elles ne correspondent pas à cette
+         offre). */
+      data = {
+        ...FALLBACK_INSCRIPTION,
+        nom: nomPrelaunch.trim(),
+        dateInscription: prelaunchDateRef.current,
+      };
+    }
+    const receiptNo = receiptNumberFor(data, offre);
     setReceiptState("preparing");
     try {
       // UN SEUL PDF construit, utilisé pour les DEUX destinations :
       // téléchargement client + copie coach (pièce jointe identique).
-      const { blob, filename } = await buildReceiptPdf(data);
-      sendReceiptPdfCopy(blob, filename, data, receiptNo);
+      const { blob, filename } = await buildReceiptPdf(data, offre);
+      sendReceiptPdfCopy(blob, filename, data, receiptNo, offre);
       saveReceiptBlob(blob, filename);
       setReceiptState("done");
     } catch {
@@ -290,10 +429,60 @@ export function BienvenuePage() {
             Bienvenue dans ton accompagnement.
           </h1>
           <p className="hero-line hero-d4 t-body mx-auto mt-6 max-w-[38rem] text-white/75">
-            Tu viens de faire le premier pas vers un anglais que tu ne te
-            contentes plus de comprendre — mais que tu oses réellement
-            parler.
+            {prelaunch ? (
+              <>
+                Tu viens de rejoindre la première cohorte du
+                pré-lancement — deux mois pour commencer à pratiquer
+                l&apos;anglais, étape par étape.
+              </>
+            ) : (
+              <>
+                Tu viens de faire le premier pas vers un anglais que tu
+                ne te contentes plus de comprendre — mais que tu oses
+                réellement parler.
+              </>
+            )}
           </p>
+
+          {/* Task 69 (prelaunch) : le tunnel de pré-lancement n'a pas
+              de formulaire avant paiement — le client saisit ici son
+              nom pour personnaliser son reçu (optionnel, persisté
+              localement, jamais réutilisé à d'autres fins). */}
+          {prelaunch ? (
+            <div className="mx-auto mt-8 max-w-[26rem] text-left">
+              <label
+                htmlFor="prelaunch-nom"
+                className="t-caption block text-white/70"
+              >
+                Ton nom complet — pour personnaliser ton reçu :
+              </label>
+              <input
+                id="prelaunch-nom"
+                type="text"
+                autoComplete="name"
+                value={nomPrelaunch}
+                onChange={(e) => {
+                  const v = e.target.value;
+                  setNomPrelaunch(v);
+                  try {
+                    window.localStorage.setItem(
+                      PRELAUNCH_CLIENT_KEY,
+                      JSON.stringify({
+                        nom: v,
+                        date:
+                          prelaunchDateRef.current ||
+                          new Date().toISOString(),
+                      } satisfies PrelaunchClient),
+                    );
+                  } catch {
+                    /* ignoré */
+                  }
+                }}
+                placeholder="Ex. : Awa Kponou"
+                className="form-input mt-2"
+              />
+            </div>
+          ) : null}
 
           {/* Task 34 : reçu PDF officiel — cachet PAYÉ vert
               oblique, personnalisé, copie automatique au coach. */}
@@ -348,14 +537,37 @@ export function BienvenuePage() {
           <Reveal>
             <div className="glass-card glass-dark mx-auto max-w-[42rem] p-6 text-center md:p-8">
               <p className="t-body text-white/90">
-                Ton paiement a bien été effectué. Ton inscription au
-                programme d&apos;accompagnement de 3 mois est maintenant
-                terminée.
+                {prelaunch ? (
+                  <>
+                    Ton paiement a bien été effectué. Ton inscription au
+                    pré-lancement De <span className="text-red-button">COMPRENDRE</span> à{" "}
+                    <span className="text-red-button">PARLER</span>
+                    <sup className="top-[-0.6em] text-[0.6em]">™</sup> —
+                    première cohorte — est maintenant terminée.
+                  </>
+                ) : (
+                  <>
+                    Ton paiement a bien été effectué. Ton inscription au
+                    programme d&apos;accompagnement de 3 mois est
+                    maintenant terminée.
+                  </>
+                )}
               </p>
               <p className="t-body mt-4 text-white/75">
-                Tu n&apos;as plus rien à acheter ni à refaire. La prochaine
-                étape est simplement de prendre contact avec moi afin de
-                préparer le début de ton accompagnement.
+                {prelaunch ? (
+                  <>
+                    Tu n&apos;as plus rien à acheter ni à refaire. La
+                    prochaine étape est simplement de rejoindre la
+                    communauté WhatsApp de la cohorte pour préparer le
+                    démarrage.
+                  </>
+                ) : (
+                  <>
+                    Tu n&apos;as plus rien à acheter ni à refaire. La
+                    prochaine étape est simplement de prendre contact avec
+                    moi afin de préparer le début de ton accompagnement.
+                  </>
+                )}
               </p>
             </div>
           </Reveal>
@@ -398,9 +610,9 @@ export function BienvenuePage() {
                 Tu viens de choisir de passer à l&apos;action.
               </h2>
               <p className="t-body mt-6 text-black/70">
-                Pendant ces trois mois, nous allons travailler ton anglais
-                de manière progressive, pratique et adaptée à ton niveau,
-                tes difficultés et tes objectifs.
+                {prelaunch
+                  ? "Pendant ces deux mois, nous allons travailler ton anglais de manière progressive, pratique et adaptée à ton niveau, tes difficultés et tes objectifs."
+                  : "Pendant ces trois mois, nous allons travailler ton anglais de manière progressive, pratique et adaptée à ton niveau, tes difficultés et tes objectifs."}
               </p>
               <p className="t-body text-black/70">
                 L&apos;objectif n&apos;est pas simplement de connaître
@@ -411,7 +623,8 @@ export function BienvenuePage() {
             </Prose>
           </Reveal>
           <div className="mx-auto mt-10 grid max-w-[46rem] gap-4 sm:grid-cols-2 lg:mt-12">
-            {PROGRAMME_RECAP.map((item, i) => (
+            {(prelaunch ? PRELAUNCH_RECAP : PROGRAMME_RECAP).map(
+              (item, i) => (
               <Reveal key={item.titre} delay={i * 100}>
                 <div className="glass-card card-hover h-full p-6">
                   <p className="font-display text-[1.25rem] font-medium leading-snug text-black md:text-[1.375rem]">
@@ -444,7 +657,7 @@ export function BienvenuePage() {
             </h2>
           </Reveal>
           <div className="mx-auto mt-10 grid max-w-[60rem] gap-6 md:grid-cols-3 lg:mt-14">
-            {ETAPES.map((e, i) => (
+            {(prelaunch ? PRELAUNCH_ETAPES : ETAPES).map((e, i) => (
               <Reveal key={e.num} delay={i * 120}>
                 <div className="glass-card glass-dark card-hover h-full p-6 lg:p-7">
                   <p className="font-display text-[2rem] font-medium leading-none text-white/30">
@@ -561,9 +774,12 @@ export function BienvenuePage() {
               <h2 className="t-h3 mt-3 text-white">Ton accompagnement</h2>
               <dl className="mt-6 divide-y divide-white/15">
                 <div className="flex flex-col gap-1 py-4 sm:flex-row sm:items-baseline sm:justify-between sm:gap-6">
-                  <dt className="t-caption text-white/55">Programme</dt>
+                  <dt className="t-caption text-white/55">
+                    {prelaunch ? "Offre" : "Programme"}
+                  </dt>
                   <dd className="t-body font-medium text-white">
-                    De <span className="text-red-button">Comprendre</span> à{" "}
+                    {prelaunch ? "Pré-lancement — " : ""}De{" "}
+                    <span className="text-red-button">Comprendre</span> à{" "}
                     <span className="text-red-button">Parler</span>
                     <sup className="top-[-0.6em] text-[0.6em]">™</sup>
                   </dd>
@@ -571,27 +787,33 @@ export function BienvenuePage() {
                 <div className="flex flex-col gap-1 py-4 sm:flex-row sm:items-baseline sm:justify-between sm:gap-6">
                   <dt className="t-caption text-white/55">Durée</dt>
                   {/* Task 36 (retour propriétaire) : « 3 mois » →
-                      « 03 mois ». */}
-                  <dd className="t-body font-medium text-white">03 mois</dd>
+                      « 03 mois ». Task 69 : « 02 mois » en variante
+                      pré-lancement. */}
+                  <dd className="t-body font-medium text-white">
+                    {prelaunch ? "02 mois" : "03 mois"}
+                  </dd>
                 </div>
                 <div className="flex flex-col gap-1 py-4 sm:flex-row sm:items-baseline sm:justify-between sm:gap-6">
                   <dt className="t-caption text-white/55">Format</dt>
                   <dd className="t-body font-medium text-white">
-                    Coaching en ligne personnalisé
+                    {prelaunch
+                      ? "Accompagnement intensif 100 % en ligne"
+                      : "Coaching en ligne personnalisé"}
                   </dd>
                 </div>
                 <div className="flex flex-col gap-1 py-4 sm:flex-row sm:items-baseline sm:justify-between sm:gap-6">
                   <dt className="t-caption text-white/55">Objectif</dt>
                   <dd className="t-body font-medium text-white">
-                    Développer ton expression orale et gagner en aisance en
-                    anglais
+                    {prelaunch
+                      ? "Commencer à pratiquer et à prendre la parole en anglais"
+                      : "Développer ton expression orale et gagner en aisance en anglais"}
                   </dd>
                 </div>
               </dl>
               <div className="mt-6 border-t border-white/15 pt-6">
                 <p className="t-caption text-white/55">Statut</p>
                 <ul className="mt-3 space-y-2.5">
-                  {STATUTS.map((s) => (
+                  {(prelaunch ? PRELAUNCH_STATUTS : STATUTS).map((s) => (
                     <li key={s} className="flex items-center gap-3">
                       {/* Task 36 (retour propriétaire) : coches en VERT
                           PUR #008000 (comme le cachet PAYÉ du reçu). */}
@@ -614,16 +836,41 @@ export function BienvenuePage() {
                     reste la seule voie de téléchargement). */}
                 <h3 className="t-h3 text-white">Prêt(e) à commencer ?</h3>
                 <p className="t-body mt-3 text-white/75">
-                  Une dernière étape : rejoins le groupe WhatsApp du
-                  programme pour confirmer ton arrivée et préparer ton
-                  accompagnement.
+                  {prelaunch ? (
+                    <>
+                      Une dernière étape : rejoins la communauté WhatsApp
+                      de la première cohorte pour confirmer ton arrivée et
+                      préparer le démarrage.
+                    </>
+                  ) : (
+                    <>
+                      Une dernière étape : rejoins le groupe WhatsApp du
+                      programme pour confirmer ton arrivée et préparer ton
+                      accompagnement.
+                    </>
+                  )}
                 </p>
                 <div className="mt-6 flex justify-center">
                   {/* Task 57 : lien DIRECT vers le groupe WhatsApp du
                       programme. Task 60 : libellé complet, rendu au
-                      bas de la carte. */}
+                      bas de la carte. Task 69 : variante prelaunch —
+                      groupe de la COHORTE si le lien a été fourni
+                      (PRELAUNCH_WHATSAPP_URL), sinon repli contact
+                      coach — jamais un lien inventé. */}
                   <WhatsAppCta
-                    label={COMMUNAUTE_LABEL}
+                    href={
+                      prelaunch
+                        ? PRELAUNCH_WHATSAPP_URL ||
+                          waLink(PRELAUNCH_WHATSAPP_MSG)
+                        : WHATSAPP_GROUP_URL
+                    }
+                    label={
+                      prelaunch
+                        ? PRELAUNCH_WHATSAPP_URL
+                          ? PRELAUNCH_COMMUNAUTE_LABEL
+                          : "Contacter le coach sur WhatsApp"
+                        : COMMUNAUTE_LABEL
+                    }
                     className="w-full sm:w-auto"
                   />
                 </div>

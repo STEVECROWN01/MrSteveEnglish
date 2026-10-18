@@ -49,6 +49,20 @@ export const PRODUIT = {
   currency: "XOF",
 } as const;
 
+/** TASK 69 — produit de l'offre PRÉ-LANCEMENT (lib/site.ts PRELAUNCH —
+ *  15 000 FCFA) : ViewContent sur /pre-lancement, InitiateCheckout au
+ *  clic des CTA de la page, Purchase sur la variante prelaunch de
+ *  /bienvenue. Distinct du produit principal → les campagnes Meta
+ *  peuvent optimiser séparément les deux offres. */
+export const PRODUIT_PRELAUNCH = {
+  content_name: "Pre-launch De Comprendre à Parler™",
+  content_category: "Coaching anglais",
+  content_ids: ["prelaunch-de-comprendre-a-parler"],
+  content_type: "product",
+  value: 15000,
+  currency: "XOF",
+} as const;
+
 /* Le code de base définit window.fbq (file d'attente) avant même le
    chargement de fbevents.js — typage global pour TypeScript. */
 declare global {

@@ -29,6 +29,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.9,
     },
     {
+      /* Task 69 — landing de l'offre de pré-lancement (15 000 FCFA,
+          02 mois, 05 places) : page marketing publique indexable. */
+      url: `${base}/pre-lancement`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.8,
+    },
+    {
       url: `${base}/a-propos`,
       lastModified: new Date(),
       changeFrequency: "monthly",

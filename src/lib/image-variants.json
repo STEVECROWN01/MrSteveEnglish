@@ -180,5 +180,101 @@
       768,
       1122
     ]
+  },
+  "/assets/prelaunch/mrsteve-portrait-hero.png": {
+    "natural": [
+      1672,
+      941
+    ],
+    "variants": [
+      480,
+      768,
+      1152,
+      1672
+    ]
+  },
+  "/assets/prelaunch/prelaunch-final-cta.png": {
+    "natural": [
+      1671,
+      941
+    ],
+    "variants": [
+      480,
+      768,
+      1152,
+      1671
+    ]
+  },
+  "/assets/prelaunch/prelaunch-independent-study.png": {
+    "natural": [
+      1672,
+      941
+    ],
+    "variants": [
+      480,
+      768,
+      1152,
+      1672
+    ]
+  },
+  "/assets/prelaunch/prelaunch-offer-value.png": {
+    "natural": [
+      1672,
+      941
+    ],
+    "variants": [
+      480,
+      768,
+      1152,
+      1672
+    ]
+  },
+  "/assets/prelaunch/prelaunch-online-session.png": {
+    "natural": [
+      1672,
+      941
+    ],
+    "variants": [
+      480,
+      768,
+      1152,
+      1672
+    ]
+  },
+  "/assets/prelaunch/prelaunch-practice-exercises.png": {
+    "natural": [
+      1672,
+      941
+    ],
+    "variants": [
+      480,
+      768,
+      1152,
+      1672
+    ]
+  },
+  "/assets/prelaunch/prelaunch-small-cohort.png": {
+    "natural": [
+      1672,
+      941
+    ],
+    "variants": [
+      480,
+      768,
+      1152,
+      1672
+    ]
+  },
+  "/assets/prelaunch/prelaunch-speaking-block.png": {
+    "natural": [
+      1536,
+      1024
+    ],
+    "variants": [
+      480,
+      768,
+      1152,
+      1536
+    ]
   }
 }

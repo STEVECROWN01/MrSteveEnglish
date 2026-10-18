@@ -97,6 +97,54 @@ export const CTA_LABELS = {
   inscription: "Réserver ma place pour 70 000 FCFA",
 } as const;
 
+/* ============================================================
+ * TASK 69 — OFFRE PRÉ-LANCEMENT « Pre-launch • De COMPRENDRE à
+ * PARLER™ » (brief propriétaire 2026-10-18) : première cohorte de
+ * 05 participants — 02 mois d'accompagnement intensif en ligne —
+ *  03 séances de 1h30 par semaine — 15 000 FCFA — paiement unique.
+ * STRICTEMENT DISTINCTE du programme principal de 03 mois à
+ * 70 000 FCFA (OFFRE ci-dessus) : pages, paiement et reçu propres.
+ * ============================================================ */
+export const PRELAUNCH = {
+  /** Nom exact de l'offre (brief §6 — utilisé par le reçu). */
+  nom: "Pré-lancement • De COMPRENDRE à PARLER™",
+  duree: "02 mois",
+  rythme: "Trois séances de 1h30 par semaine",
+  prix: "15 000",
+  devise: "FCFA",
+  /** Capacité RÉELLE de la première cohorte (brief §6) — aucune
+   *  place « restante » inventée, aucun faux compte à rebours. */
+  places: "05",
+  format: "100 % en ligne",
+  paiement: "Paiement unique",
+} as const;
+
+/**
+ * TASK 69 — Page produit Maketou de l'offre de pré-lancement.
+ * ⚠️ CONFIGURATION RESTANTE (propriétaire) : créer le produit
+ * « Pré-lancement De Comprendre à Parler — 02 mois » à 15 000 FCFA
+ * dans la boutique mymaketou.shop (comme le produit principal), puis
+ * coller son URL ici. VIDE POUR L'INSTANT : les CTA de la page
+ * /pre-lancement basculent sur un repli propre — contact WhatsApp du
+ * coach avec message pré-rempli (aucune erreur, aucun paiement au
+ * mauvais tarif ; le tunnel du programme principal n'est jamais
+ * touché). Dès que l'URL est renseignée, les CTA dirigent vers la
+ * page de paiement sécurisée, et l'URL de retour à configurer dans
+ * Maketou est : /bienvenue?offre=prelaunch
+ */
+export const PRELAUNCH_CHECKOUT_URL = "";
+
+/**
+ * TASK 69 — Groupe WhatsApp DÉDIÉ à la cohorte de pré-lancement.
+ * ⚠️ Le lien sera fourni par le propriétaire (brief : « utilise
+ * uniquement le lien qui sera fourni ») — JAMAIS inventé. VIDE
+ * POUR L'INSTANT : la page Bienvenue (variante prelaunch) propose
+ * alors le contact direct du coach sur WhatsApp (repli honnête),
+ * et bascule automatiquement sur ce groupe dès que le lien est
+ * collé ici.
+ */
+export const PRELAUNCH_WHATSAPP_URL = "";
+
 /** Pages internes (Task 48 — vraies pages SEO : chemins réels indexables)
  * — cible des CTA. La page « bienvenue » (post-paiement) n'apparaît
  * volontairement dans AUCUNE navigation : elle reçoit les clients après
@@ -114,4 +162,6 @@ export const PAGES = {
   aPropos: "/a-propos",
   resultats: "/resultats",
   bienvenue: "/bienvenue",
+  /** Task 69 — landing de l'offre de pré-lancement (15 000 FCFA). */
+  prelaunch: "/pre-lancement",
 } as const;

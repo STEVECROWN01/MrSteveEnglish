@@ -46,14 +46,24 @@ export function ResponsiveImage({
   const entry = MANIFEST[src];
   const naturalW = entry?.natural[0] ?? width;
 
-  // srcset : variantes pré-générées + l'original comme candidat le plus large
+  // srcset : variantes pré-générées + l'original comme candidat le plus large.
+  // Task 69 (prelaunch) : les variantes des sources PNG sont de VRAIES
+  // conversions WebP générées par script (Lanczos, q90) — le nom de variante
+  // remplace l'extension d'origine par « -<largeur>.webp ». L'original ne
+  // reste candidat QUE si sa largeur diffère de la plus large variante :
+  // sinon la variante WebP de même largeur suffit et le PNG lourd
+  // (ex. 2 Mo) n'est jamais téléchargé par les navigateurs modernes
+  // (il reste le repli `src` des navigateurs sans WebP).
   const srcSet =
     entry && entry.variants.length > 0
       ? [
           ...entry.variants.map(
-            (w) => `${src.replace(/\.webp$/, `-${w}.webp`)} ${w}w`,
+            (w) =>
+              `${src.replace(/\.(webp|png|jpe?g)$/i, `-${w}.webp`)} ${w}w`,
           ),
-          `${src} ${naturalW}w`,
+          ...(entry.variants[entry.variants.length - 1] === naturalW
+            ? []
+            : [`${src} ${naturalW}w`]),
         ].join(", ")
       : undefined;
 

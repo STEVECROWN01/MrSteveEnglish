@@ -98,8 +98,12 @@ export function readInscription(): InscriptionData | null {
   }
 }
 
-/* — N° de reçu déterministe : MSE-YYMM-XXXX (stable au re-téléchargement) — */
-export function receiptNumberFor(d: InscriptionData): string {
+/* — N° de reçu déterministe : MSE-YYMM-XXXX (programme) ou
+     MSE-PL-YYMM-XXXX (pré-lancement) — stable au re-téléchargement. — */
+export function receiptNumberFor(
+  d: InscriptionData,
+  offre: OffreId = "programme",
+): string {
   const seed = `${d.nom}|${d.email}|${d.dateInscription}`.toLowerCase();
   let h = 5381;
   for (let i = 0; i < seed.length; i++) {
@@ -110,7 +114,7 @@ export function receiptNumberFor(d: InscriptionData): string {
   const ym = `${String(dt.getFullYear()).slice(2)}${String(
     dt.getMonth() + 1,
   ).padStart(2, "0")}`;
-  return `MSE-${ym}-${code}`;
+  return `${OFFRES[offre].recuPrefix}-${ym}-${code}`;
 }
 
 /* — Constantes du document — */
@@ -119,9 +123,105 @@ const PAGE_W = 595.28;
 const PAGE_H = 841.89;
 const X_END = PAGE_W - M; // 549.28
 const NBSP = "\u00A0";
-const PRIX = `70${NBSP}000${NBSP}FCFA`;
-const PROGRAMME_TITRE = "Programme « De Comprendre à Parler™ »";
-const MONTANT_LETTRES = "Soixante-dix mille (70 000) francs CFA";
+
+/* ============================================================
+ * TASK 69 — REÇU PARAMÉTRÉ PAR OFFRE.
+ * « programme » : 70 000 FCFA — 03 mois (comportement STRICTEMENT
+ * identique à l'existant — aucun octet ne change pour le tunnel
+ * principal). « prelaunch » : Pré-lancement • De COMPRENDRE à
+ * PARLER™ — 15 000 FCFA — 02 mois — première cohorte de 05.
+ * Le reçu de pré-lancement respecte le brief : nom EXACT de
+ * l'offre, durée, montant réellement payé — SANS inventer de
+ * politique de remboursement ni de données de transaction.
+ * ============================================================ */
+export type OffreId = "programme" | "prelaunch";
+
+type ConfigOffre = {
+  /** Ligne DÉSIGNATION du tableau. */
+  titre: string;
+  /** Montant affiché (espaces insécables). */
+  prix: string;
+  /** Montant en toutes lettres. */
+  montantLettres: string;
+  /** Durée affichée dans la colonne droite. */
+  duree: string;
+  /** Libellé de la ligne durée. */
+  dureeLabel: string;
+  /** Deux lignes de description sous la désignation. */
+  lignes: [string, string];
+  /** Titre du bloc inclusions. */
+  inclusTitre: string;
+  /** Titres des inclusions — grille 3 colonnes, lecture par colonne
+   * (règle propriétaire Task 59/62 conservée pour les deux offres). */
+  inclus: string[];
+  /** Préfixe du n° de reçu : MSE-YYMM-XXXX (programme) /
+   * MSE-PL-YYMM-XXXX (pré-lancement — distinguable au premier regard). */
+  recuPrefix: string;
+  /** Coches « CE QUE CE REÇU CONFIRME ». */
+  confirmations: string[];
+};
+
+const OFFRES: Record<OffreId, ConfigOffre> = {
+  programme: {
+    titre: "Programme « De Comprendre à Parler™ »",
+    prix: `70${NBSP}000${NBSP}FCFA`,
+    montantLettres: "Soixante-dix mille (70 000) francs CFA",
+    duree: "03 mois",
+    dureeLabel: "DURÉE DU PROGRAMME",
+    lignes: [
+      "03 mois de coaching d'anglais personnalisé — accompagnement en ligne",
+      "Trois séances de 1h30 par semaine  ·  Suivi personnalisé  ·  Exercices entre les séances",
+    ],
+    inclusTitre: "CE QUE COMPREND LE PROGRAMME",
+    inclus: INCLUS.map((item) => item.titre),
+    recuPrefix: "MSE",
+    confirmations: [
+      /* Task 65 : « confirmée » → « terminée » — terminologie alignée
+         sur la page Bienvenue (Tasks 63-64). */
+      "Votre inscription au programme est terminée et votre place réservée pour 03 mois.",
+      "Le règlement intégral de 70 000 FCFA a bien été reçu — aucun autre montant ne vous est demandé.",
+      "Votre coaching démarre dans les 03 jours suivant votre prise de contact sur WhatsApp.",
+      "Garantie d'engagement : conditions respectées sans expression à 02 mois — remboursement intégral.",
+    ],
+  },
+  prelaunch: {
+    /* Brief pré-lancement §6 : nom exact « Pré-lancement • De
+       COMPRENDRE à PARLER™ », 02 mois, 15 000 FCFA, 03 séances de
+       1h30/semaine, 100 % en ligne, communauté WhatsApp. Aucune
+       promesse de maîtrise, aucune politique de remboursement
+       inventée (les conditions de l'offre restent à clarifier par
+       le propriétaire avant mise en production). */
+    titre: "Pré-lancement • De COMPRENDRE à PARLER™",
+    prix: `15${NBSP}000${NBSP}FCFA`,
+    montantLettres: "Quinze mille (15 000) francs CFA",
+    duree: "02 mois",
+    dureeLabel: "DURÉE DE L'ACCOMPAGNEMENT",
+    lignes: [
+      "02 mois d'accompagnement intensif en ligne — première cohorte de pré-lancement",
+      "Trois séances de 1h30 par semaine  ·  Exercices pratiques  ·  Communauté WhatsApp",
+    ],
+    inclusTitre: "CE QUE COMPREND CETTE OFFRE",
+    inclus: [
+      "Trois séances par semaine",
+      "Pratique orale au centre",
+      "Exercices pratiques",
+      /* QA Task 69 : « Accompagnement pendant deux mois » mesurait
+         exactement 164 pt = largeur de colonne (chevauchement avec la
+         colonne suivante sur le PDF) — libellé raccourci, même sens
+         (mesuré 134,8 pt). */
+      "Accompagnement sur 02 mois",
+      "Communauté WhatsApp",
+      "Formation 100 % en ligne",
+    ],
+    recuPrefix: "MSE-PL",
+    confirmations: [
+      "Votre inscription au pré-lancement est terminée et votre place réservée pour 02 mois.",
+      "Le règlement intégral de 15 000 FCFA a bien été reçu — aucun autre montant ne vous est demandé pour cette offre.",
+      "Les horaires des séances vous seront communiqués dans la communauté WhatsApp de la cohorte.",
+      "Cet accompagnement de 02 mois est réservé à la première cohorte du pré-lancement.",
+    ],
+  },
+};
 
 /* Palette */
 const INK: [number, number, number] = [26, 26, 30];
@@ -150,11 +250,16 @@ function dash(v: string): string {
  */
 export async function buildReceiptPdf(
   data: InscriptionData,
+  offre: OffreId = "programme",
 ): Promise<{ blob: Blob; filename: string }> {
   const { jsPDF, GState } = await import("jspdf");
   const doc = new jsPDF({ unit: "pt", format: "a4", compress: true });
 
-  const noRecu = receiptNumberFor(data);
+  /* Task 69 : toute la personnalisation par offre passe par cette
+     configuration — les coordonnées du document ne bougent pas. */
+  const cfg = OFFRES[offre];
+
+  const noRecu = receiptNumberFor(data, offre);
   const emisLe = dateLong("");
   const emisLeCourt = dateShort("");
 
@@ -246,12 +351,12 @@ export async function buildReceiptPdf(
   doc.setFontSize(8);
   doc.setTextColor(...GRAY);
   labelRight("MODE DE PAIEMENT", 193);
-  labelRight("DURÉE DU PROGRAMME", 226);
+  labelRight(cfg.dureeLabel, 226);
   doc.setFont("helvetica", "normal");
   doc.setFontSize(9.5);
   doc.setTextColor(...INK);
   doc.text("Paiement en ligne sécurisé", X_END, 208, { align: "right" });
-  doc.text("03 mois", X_END, 241, { align: "right" });
+  doc.text(cfg.duree, X_END, 241, { align: "right" });
 
   /* — Tableau : bandeau d'en-têtes — */
   doc.setFillColor(...BAND);
@@ -266,25 +371,17 @@ export async function buildReceiptPdf(
   doc.setFont("times", "bold");
   doc.setFontSize(12.5);
   doc.setTextColor(...INK);
-  doc.text(PROGRAMME_TITRE, M + 10, 292);
+  doc.text(cfg.titre, M + 10, 292);
 
   doc.setFont("helvetica", "bold");
   doc.setFontSize(11);
-  doc.text(PRIX, X_END - 10, 292, { align: "right" });
+  doc.text(cfg.prix, X_END - 10, 292, { align: "right" });
 
   doc.setFont("helvetica", "normal");
   doc.setFontSize(9);
   doc.setTextColor(...GRAY);
-  doc.text(
-    "03 mois de coaching d'anglais personnalisé — accompagnement en ligne",
-    M + 10,
-    307,
-  );
-  doc.text(
-    "Trois séances de 1h30 par semaine  ·  Suivi personnalisé  ·  Exercices entre les séances",
-    M + 10,
-    320,
-  );
+  doc.text(cfg.lignes[0], M + 10, 307);
+  doc.text(cfg.lignes[1], M + 10, 320);
 
   /* — Les inclusions du programme (Task 52 : source unique
      inclusions.ts ; Task 62 — INSTRUCTION PROPRIÉTAIRE : « Certificat
@@ -302,7 +399,7 @@ export async function buildReceiptPdf(
   doc.setFont("helvetica", "bold");
   doc.setFontSize(8);
   doc.setTextColor(...GRAY);
-  doc.text("CE QUE COMPREND LE PROGRAMME", M + 10, 344, { charSpace: 1 });
+  doc.text(cfg.inclusTitre, M + 10, 344, { charSpace: 1 });
 
   /* Task 62 : les 12 titres COMPLETS de la source unique —
      « Certificat de Fin » (carte 12, `certificat: true`) clôt le
@@ -310,7 +407,7 @@ export async function buildReceiptPdf(
      (l'évaluation précède toujours le certificat — Task 61) ;
      les listes du site (accueil, page Programme) continuent de
      filtrer le certificat via VALUE_STACK. */
-  const inclus = INCLUS.map((item) => item.titre);
+  const inclus = cfg.inclus;
   doc.setFont("helvetica", "normal");
   doc.setFontSize(9);
   doc.setTextColor(...INK);
@@ -356,7 +453,7 @@ export async function buildReceiptPdf(
   doc.setFont("helvetica", "italic");
   doc.setFontSize(9.5);
   doc.setTextColor(...INK);
-  doc.text(MONTANT_LETTRES, M, 492);
+  doc.text(cfg.montantLettres, M, 492);
 
   doc.setFont("helvetica", "normal");
   doc.setFontSize(9.5);
@@ -364,7 +461,7 @@ export async function buildReceiptPdf(
   doc.text("Sous-total", X_END - 120, 476, { align: "right" });
   doc.text("TVA", X_END - 120, 492, { align: "right" });
   doc.setTextColor(...INK);
-  doc.text(PRIX, X_END, 476, { align: "right" });
+  doc.text(cfg.prix, X_END, 476, { align: "right" });
   doc.text("Non applicable", X_END, 492, { align: "right" });
 
   doc.setDrawColor(...INK);
@@ -377,7 +474,7 @@ export async function buildReceiptPdf(
   doc.text("TOTAL PAYÉ", X_END - 120, 520, { align: "right" });
   doc.setFont("times", "bold");
   doc.setFontSize(15);
-  doc.text(PRIX, X_END, 520, { align: "right" });
+  doc.text(cfg.prix, X_END, 520, { align: "right" });
 
   /* — CACHET « PAYÉ » OBLIQUE EN VERT PUR — double cadre + date,
      légère transparence d'encre. Bande dédiée centrée sous les
@@ -478,14 +575,9 @@ export async function buildReceiptPdf(
   doc.setTextColor(...GRAY);
   doc.text("CE QUE CE REÇU CONFIRME", M, 646, { charSpace: 1.2 });
 
-  const confirmations = [
-    /* Task 65 : « confirmée » → « terminée » — terminologie alignée
-       sur la page Bienvenue (Tasks 63-64). */
-    "Votre inscription au programme est terminée et votre place réservée pour 03 mois.",
-    "Le règlement intégral de 70 000 FCFA a bien été reçu — aucun autre montant ne vous est demandé.",
-    "Votre coaching démarre dans les 03 jours suivant votre prise de contact sur WhatsApp.",
-    "Garantie d'engagement : conditions respectées sans expression à 02 mois — remboursement intégral.",
-  ];
+  /* Task 69 : confirmations paramétrées par offre (aucune politique
+     de remboursement inventée pour le pré-lancement). */
+  const confirmations = cfg.confirmations;
   doc.setFont("helvetica", "normal");
   doc.setFontSize(9.5);
   doc.setTextColor(...INK);
@@ -600,6 +692,7 @@ export function sendReceiptPdfCopy(
   filename: string,
   data: InscriptionData,
   receiptNo: string,
+  offre: OffreId = "programme",
 ): void {
   const emisLe = new Intl.DateTimeFormat("fr-FR", {
     dateStyle: "long",
@@ -609,6 +702,21 @@ export function sendReceiptPdfCopy(
   const renseigne = (v: string, suffixe = "") =>
     v && v.trim() ? `${v.trim()}${suffixe}` : "Non renseigné";
 
+  /* Task 69 : le message au coach identifie clairement l'OFFRE
+     concernée — le coach distingue immédiatement un client du
+     PROGRAMME principal (70 000 FCFA — 03 mois) d'un participant du
+     PRÉ-LANCEMENT (15 000 FCFA — 02 mois — première cohorte). */
+  const estPrelaunch = offre === "prelaunch";
+  const annonce = estPrelaunch
+    ? "Un participant de la PREMIÈRE COHORTE DE PRÉ-LANCEMENT vient de finaliser son inscription au « Pré-lancement • De COMPRENDRE à PARLER™ » (02 mois — 15 000 FCFA). Son paiement a été effectué et validé."
+    : "Un nouveau client vient de finaliser son inscription au programme d'accompagnement « De Comprendre à Parler™ » (03 mois). Son paiement a été effectué et validé.";
+  const ligneMontant = estPrelaunch
+    ? `Montant : 15${NBSP}000${NBSP}FCFA (paiement unique — offre de pré-lancement)`
+    : `Montant : 70${NBSP}000${NBSP}FCFA (paiement unique)`;
+  const etapeSuivante = estPrelaunch
+    ? "Le client a été invité à rejoindre la communauté WhatsApp dédiée à la cohorte de pré-lancement."
+    : "Le client a été invité à vous contacter sur WhatsApp pour planifier le démarrage de son accompagnement.";
+
   /* Message professionnel « système → Coach » : salutation,
      annonce du nouveau client, coordonnées, détails du paiement,
      pièce jointe signalée, prochaine étape, signature. Chaque
@@ -616,7 +724,7 @@ export function sendReceiptPdfCopy(
   const message = [
     "Bonjour Coach Stevens,",
     "",
-    "Un nouveau client vient de finaliser son inscription au programme d'accompagnement « De Comprendre à Parler™ » (03 mois). Son paiement a été effectué et validé.",
+    annonce,
     "",
     "Voici les informations du client :",
     "",
@@ -629,14 +737,14 @@ export function sendReceiptPdfCopy(
     "",
     "Détails du paiement :",
     "",
-    `Montant : 70${NBSP}000${NBSP}FCFA (paiement unique)`,
+    ligneMontant,
     "Mode de paiement : Paiement en ligne sécurisé",
     `Date d'inscription : ${dateLong(data.dateInscription)}`,
     `Reçu N° ${receiptNo} — émis le ${emisLe}`,
     "",
     `Vous trouverez le reçu de paiement du client en pièce jointe de cet e-mail (fichier « ${filename} »).`,
     "",
-    "Le client a été invité à vous contacter sur WhatsApp pour planifier le démarrage de son accompagnement.",
+    etapeSuivante,
     "",
     "Cordialement,",
     "Le système Mr Steve English",
@@ -645,7 +753,9 @@ export function sendReceiptPdfCopy(
   const fd = new FormData();
   fd.set(
     "_subject",
-    `Nouveau client — ${nom} — Reçu ${receiptNo} en pièce jointe`,
+    estPrelaunch
+      ? `Nouveau participant PRÉ-LANCEMENT — ${nom} — Reçu ${receiptNo} en pièce jointe`
+      : `Nouveau client — ${nom} — Reçu ${receiptNo} en pièce jointe`,
   );
   fd.set("_template", "basic");
   fd.set("_captcha", "false");
