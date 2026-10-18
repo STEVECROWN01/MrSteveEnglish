@@ -4,11 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { validerWhatsApp } from "@/lib/indicateurs-tel";
 import { PAYS_VILLES } from "@/lib/pays-villes";
-import {
-  PRELAUNCH_WHATSAPP_URL,
-  WHATSAPP_GROUP_URL,
-  waLink,
-} from "@/lib/site";
+import { PRELAUNCH_WHATSAPP_URL, WHATSAPP_GROUP_URL, waLink } from "@/lib/site";
 import {
   PRODUIT_PRELAUNCH,
   pixelEventId,
@@ -148,17 +144,20 @@ const ETAPES = [
   {
     num: "01",
     titre: "Rejoins le groupe WhatsApp",
-    texte: "Rejoins le groupe WhatsApp du programme pour confirmer ton arrivée et recevoir les informations de démarrage.",
+    texte:
+      "Rejoins le groupe WhatsApp du programme pour confirmer ton arrivée et recevoir les informations de démarrage.",
   },
   {
     num: "02",
     titre: "Nous préparons ton démarrage",
-    texte: "Nous échangeons sur les prochaines étapes de ton accompagnement et sur la manière dont nous allons commencer.",
+    texte:
+      "Nous échangeons sur les prochaines étapes de ton accompagnement et sur la manière dont nous allons commencer.",
   },
   {
     num: "03",
     titre: "Ton coaching commence",
-    texte: "Nous travaillons à partir de ton niveau actuel pour construire progressivement une expression anglaise plus naturelle et plus confiante.",
+    texte:
+      "Nous travaillons à partir de ton niveau actuel pour construire progressivement une expression anglaise plus naturelle et plus confiante.",
   },
 ];
 
@@ -181,8 +180,9 @@ const STATUTS = [
  * receipt.ts). Le tunnel du programme principal reste STRICTEMENT
  * inchangé (mêmes textes, même HTML).
  * ============================================================ */
-const PRELAUNCH_COMMUNAUTE_LABEL =
-  "Rejoindre la Communauté WhatsApp de la Cohorte";
+/* TASK 73 (instruction propriétaire) : libellé raccourci du CTA
+ * communauté — « Rejoindre le groupe WhatsApp ». */
+const PRELAUNCH_COMMUNAUTE_LABEL = "Rejoindre le groupe WhatsApp";
 
 /* Résumé élégant de l'offre pre-launch (brief §6). */
 const PRELAUNCH_RECAP = [
@@ -197,17 +197,20 @@ const PRELAUNCH_ETAPES = [
   {
     num: "01",
     titre: "Rejoins la communauté de la cohorte",
-    texte: "Rejoins la communauté WhatsApp de la première cohorte pour confirmer ton arrivée et recevoir les informations de démarrage.",
+    texte:
+      "Rejoins la communauté WhatsApp de la première cohorte pour confirmer ton arrivée et recevoir les informations de démarrage.",
   },
   {
     num: "02",
     titre: "Nous préparons le démarrage",
-    texte: "Nous échangeons sur les prochaines étapes de ton accompagnement et sur la manière dont nous allons commencer.",
+    texte:
+      "Nous échangeons sur les prochaines étapes de ton accompagnement et sur la manière dont nous allons commencer.",
   },
   {
     num: "03",
     titre: "Ton accompagnement commence",
-    texte: "Nous travaillons à partir de ton niveau actuel pour construire progressivement une expression anglaise plus naturelle et plus confiante.",
+    texte:
+      "Nous travaillons à partir de ton niveau actuel pour construire progressivement une expression anglaise plus naturelle et plus confiante.",
   },
 ];
 
@@ -339,9 +342,7 @@ export function BienvenuePage() {
     setPrelaunch(true);
     try {
       const raw = window.localStorage.getItem(PRELAUNCH_CLIENT_KEY);
-      const saved = raw
-        ? (JSON.parse(raw) as Partial<PrelaunchClient>)
-        : null;
+      const saved = raw ? (JSON.parse(raw) as Partial<PrelaunchClient>) : null;
       const date = saved?.date || new Date().toISOString();
       prelaunchDateRef.current = date;
       /* Task 72 — migration de l'ancien format {nom, date} : le nom
@@ -371,9 +372,7 @@ export function BienvenuePage() {
         telPaysCharge = saved.telPays;
       }
       const tel =
-        typeof saved?.tel === "string"
-          ? saved.tel.replace(/\D+/g, "")
-          : "";
+        typeof saved?.tel === "string" ? saved.tel.replace(/\D+/g, "") : "";
       setNomPrelaunch(nom);
       setPrenomPrelaunch(prenom);
       setTelPays(telPaysCharge);
@@ -412,8 +411,7 @@ export function BienvenuePage() {
        pre-launch (15 000 XOF) quand l'URL de retour Maketou
        contient ?offre=prelaunch, programme principal sinon. */
     const estPrelaunch =
-      new URLSearchParams(window.location.search).get("offre") ===
-      "prelaunch";
+      new URLSearchParams(window.location.search).get("offre") === "prelaunch";
     trackPixelWithCAPI(
       "Purchase",
       estPrelaunch
@@ -580,15 +578,14 @@ export function BienvenuePage() {
           <p className="hero-line hero-d4 t-body mx-auto mt-6 max-w-[38rem] text-white/75">
             {prelaunch ? (
               <>
-                Tu viens de rejoindre la première cohorte du
-                Pre-launch — deux mois pour commencer à pratiquer
-                l&apos;anglais, étape par étape.
+                Tu viens de rejoindre la première cohorte du Pre-launch — deux
+                mois pour commencer à pratiquer l&apos;anglais, étape par étape.
               </>
             ) : (
               <>
-                Tu viens de faire le premier pas vers un anglais que tu
-                ne te contentes plus de comprendre — mais que tu oses
-                réellement parler.
+                Tu viens de faire le premier pas vers un anglais que tu ne te
+                contentes plus de comprendre — mais que tu oses réellement
+                parler.
               </>
             )}
           </p>
@@ -605,15 +602,12 @@ export function BienvenuePage() {
           {prelaunch ? (
             <div className="mx-auto mt-8 max-w-[26rem] text-left">
               <p className="t-caption text-white/70">
-                Renseigne tes informations pour générer ton reçu —
-                les 03 champs sont obligatoires :
+                Renseigne tes informations pour générer ton reçu — les 03 champs
+                sont obligatoires :
               </p>
               <div className="mt-4 space-y-4">
                 <div>
-                  <label
-                    htmlFor="prelaunch-nom"
-                    className="form-label"
-                  >
+                  <label htmlFor="prelaunch-nom" className="form-label">
                     Ton nom{" "}
                     <span
                       aria-hidden="true"
@@ -631,9 +625,7 @@ export function BienvenuePage() {
                       setNomPrelaunch(e.target.value);
                       sauverPrelaunch({ nom: e.target.value });
                     }}
-                    onBlur={() =>
-                      setTouches((t) => ({ ...t, nom: true }))
-                    }
+                    onBlur={() => setTouches((t) => ({ ...t, nom: true }))}
                     aria-invalid={touches.nom && !nomOk}
                     aria-describedby={
                       touches.nom && !nomOk ? "err-prelaunch-nom" : undefined
@@ -655,10 +647,7 @@ export function BienvenuePage() {
                   ) : null}
                 </div>
                 <div>
-                  <label
-                    htmlFor="prelaunch-prenom"
-                    className="form-label"
-                  >
+                  <label htmlFor="prelaunch-prenom" className="form-label">
                     Ton prénom{" "}
                     <span
                       aria-hidden="true"
@@ -676,9 +665,7 @@ export function BienvenuePage() {
                       setPrenomPrelaunch(e.target.value);
                       sauverPrelaunch({ prenom: e.target.value });
                     }}
-                    onBlur={() =>
-                      setTouches((t) => ({ ...t, prenom: true }))
-                    }
+                    onBlur={() => setTouches((t) => ({ ...t, prenom: true }))}
                     aria-invalid={touches.prenom && !prenomOk}
                     aria-describedby={
                       touches.prenom && !prenomOk
@@ -730,8 +717,7 @@ export function BienvenuePage() {
               type="button"
               onClick={handleDownloadReceipt}
               disabled={
-                receiptState === "preparing" ||
-                (prelaunch && !formulaireValide)
+                receiptState === "preparing" || (prelaunch && !formulaireValide)
               }
               className="btn btn-primary t-btn inline-flex items-center gap-3 text-[1.0625rem] disabled:cursor-not-allowed disabled:opacity-70"
             >
@@ -759,8 +745,8 @@ export function BienvenuePage() {
                 courte sous le bouton, tunnel pre-launch uniquement. */}
             {prelaunch && !formulaireValide && receiptState === "idle" ? (
               <p className="t-caption mt-3 text-white/55">
-                Complète d&apos;abord les 03 champs ci-dessus pour activer
-                ton reçu.
+                Complète d&apos;abord les 03 champs ci-dessus pour activer ton
+                reçu.
               </p>
             ) : null}
             {/* Task 36 (retour propriétaire) : le texte « Reçu officiel
@@ -799,24 +785,23 @@ export function BienvenuePage() {
                 ) : (
                   <>
                     Ton paiement a bien été effectué. Ton inscription au
-                    programme d&apos;accompagnement de 3 mois est
-                    maintenant terminée.
+                    programme d&apos;accompagnement de 3 mois est maintenant
+                    terminée.
                   </>
                 )}
               </p>
               <p className="t-body mt-4 text-white/75">
                 {prelaunch ? (
                   <>
-                    Tu n&apos;as plus rien à acheter ni à refaire. La
-                    prochaine étape est simplement de rejoindre la
-                    communauté WhatsApp de la cohorte pour préparer le
-                    démarrage.
+                    Tu n&apos;as plus rien à acheter ni à refaire. La prochaine
+                    étape est simplement de rejoindre la communauté WhatsApp de
+                    la cohorte pour préparer le démarrage.
                   </>
                 ) : (
                   <>
-                    Tu n&apos;as plus rien à acheter ni à refaire. La
-                    prochaine étape est simplement de prendre contact avec
-                    moi afin de préparer le début de ton accompagnement.
+                    Tu n&apos;as plus rien à acheter ni à refaire. La prochaine
+                    étape est simplement de prendre contact avec moi afin de
+                    préparer le début de ton accompagnement.
                   </>
                 )}
               </p>
@@ -866,16 +851,15 @@ export function BienvenuePage() {
                   : "Pendant ces trois mois, nous allons travailler ton anglais de manière progressive, pratique et adaptée à ton niveau, tes difficultés et tes objectifs."}
               </p>
               <p className="t-body text-black/70">
-                L&apos;objectif n&apos;est pas simplement de connaître
-                davantage de règles. L&apos;objectif est de te permettre de
-                mieux comprendre, de mieux t&apos;exprimer et surtout de
-                prendre la parole avec davantage de confiance.
+                L&apos;objectif n&apos;est pas simplement de connaître davantage
+                de règles. L&apos;objectif est de te permettre de mieux
+                comprendre, de mieux t&apos;exprimer et surtout de prendre la
+                parole avec davantage de confiance.
               </p>
             </Prose>
           </Reveal>
           <div className="mx-auto mt-10 grid max-w-[46rem] gap-4 sm:grid-cols-2 lg:mt-12">
-            {(prelaunch ? PRELAUNCH_RECAP : PROGRAMME_RECAP).map(
-              (item, i) => (
+            {(prelaunch ? PRELAUNCH_RECAP : PROGRAMME_RECAP).map((item, i) => (
               <Reveal key={item.titre} delay={i * 100}>
                 <div className="glass-card card-hover h-full p-6">
                   <p className="font-display text-[1.25rem] font-medium leading-snug text-black md:text-[1.375rem]">
@@ -953,8 +937,8 @@ export function BienvenuePage() {
                 <h2 className="t-h2 text-white">Tu es au bon endroit.</h2>
                 <div className="mt-8 space-y-3">
                   <p className="t-quote text-white/85">
-                    Tu n&apos;as pas besoin d&apos;avoir un anglais parfait
-                    pour commencer.
+                    Tu n&apos;as pas besoin d&apos;avoir un anglais parfait pour
+                    commencer.
                   </p>
                   <p className="t-quote text-white/85">
                     Tu n&apos;as pas besoin d&apos;avoir confiance avant de
@@ -969,8 +953,8 @@ export function BienvenuePage() {
                 </p>
                 <p className="t-body mt-4 text-white/75">
                   Nous allons partir de ton niveau actuel et avancer
-                  progressivement, avec une méthode adaptée à tes besoins et
-                  à tes objectifs.
+                  progressivement, avec une méthode adaptée à tes besoins et à
+                  tes objectifs.
                 </p>
               </div>
             </div>
@@ -1089,9 +1073,9 @@ export function BienvenuePage() {
                 <p className="t-body mt-3 text-white/75">
                   {prelaunch ? (
                     <>
-                      Une dernière étape : rejoins la communauté WhatsApp
-                      de la première cohorte pour confirmer ton arrivée et
-                      préparer le démarrage.
+                      Une dernière étape : rejoins la communauté WhatsApp de la
+                      première cohorte pour confirmer ton arrivée et préparer le
+                      démarrage.
                     </>
                   ) : (
                     <>
@@ -1177,8 +1161,8 @@ export function BienvenuePage() {
       <div className="mt-auto border-t border-white/10 py-8">
         <Container>
           <p className="t-caption text-center text-white/40">
-            © {new Date().getFullYear()} Stevens AKPOVI — Coach
-            d&apos;anglais en ligne.
+            © {new Date().getFullYear()} Stevens AKPOVI — Coach d&apos;anglais
+            en ligne.
           </p>
         </Container>
       </div>
