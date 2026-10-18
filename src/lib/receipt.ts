@@ -1,5 +1,6 @@
 import { INSCRIPTION_EMAIL, FORMSUBMIT_ENDPOINT } from "./inscription-email";
 import { INCLUS } from "./inclusions";
+import { formaterLocal, indicatifDuPays } from "./indicateurs-tel";
 
 /**
  * REÇU PDF POST-PAIEMENT (Task 34 — instruction propriétaire ;
@@ -60,7 +61,13 @@ import { INCLUS } from "./inclusions";
 
 /* — Données d'inscription persistées par le formulaire d'inscription — */
 export type InscriptionData = {
+  /** Nom de famille (tunnel pre-launch : champ séparé du prénom ;
+   *  tunnel programme : « Nom complet » saisi d'un bloc). */
   nom: string;
+  /** Prénom — champ OBLIGATOIRE séparé du nom sur la page Bienvenue
+   *  du Pre-launch (instruction propriétaire Task 72). Absent du tunnel
+   *  programme (jamais stocké par son formulaire). */
+  prenom?: string;
   age: string;
   profession: string;
   email: string;
@@ -68,7 +75,9 @@ export type InscriptionData = {
   ville: string;
   /** Numéro WhatsApp E.164 du prospect — stocké par le formulaire
    *  (utilisé par le Purchase Conversions API pour le match
-   *  d'identité côté Meta, haché SHA-256 serveur). */
+   *  d'identité côté Meta, haché SHA-256 serveur) ; saisi sur la page
+   *  Bienvenue pre-launch pour figurer sur le reçu et dans l'email au
+   *  coach (Task 72). */
   whatsapp?: string;
   /** ISO — moment de la soumission du formulaire. */
   dateInscription: string;
@@ -86,16 +95,44 @@ export function readInscription(): InscriptionData | null {
     if (typeof v.nom !== "string") return null;
     return {
       nom: v.nom ?? "",
+      prenom: typeof v.prenom === "string" ? v.prenom : undefined,
       age: v.age ?? "",
       profession: v.profession ?? "",
       email: v.email ?? "",
       pays: v.pays ?? "",
       ville: v.ville ?? "",
+      /* Task 72 : le numéro WhatsApp (E.164) EST stocké par le
+         formulaire du programme — il est désormais restitué (le champ
+         de la page Bienvenue pre-launch et l'email au coach en ont
+         besoin ; avant, la lecture l'abandonnait silencieusement). */
+      whatsapp: typeof v.whatsapp === "string" ? v.whatsapp : undefined,
       dateInscription: v.dateInscription ?? "",
     };
   } catch {
     return null;
   }
+}
+
+/** Nom complet affiché : prénom + nom (pre-launch, champs séparés
+ *  — instruction propriétaire Task 72) ou nom seul (programme —
+ *  strictement identique à l'existant). */
+export function nomComplet(d: InscriptionData): string {
+  return [d.prenom?.trim(), d.nom?.trim()].filter(Boolean).join(" ");
+}
+
+/** Numéro de téléphone au format lisible — "+229 01 96 12 34 56" —
+ *  reconstitué depuis le E.164 et le pays (replis : E.164 brut,
+ *  puis "" si absent). Utilisé sur la ligne contact du reçu pre-launch
+ *  (à la place de l'e-mail vide) et dans l'email au coach (Task 72). */
+export function telLisible(d: InscriptionData): string {
+  const w = d.whatsapp?.trim();
+  if (!w) return "";
+  const info = d.pays?.trim() ? indicatifDuPays(d.pays) : null;
+  if (info && w.startsWith(`+${info.indicatif}`)) {
+    const local = w.slice(1 + info.indicatif.length);
+    return `${info.affiche} ${formaterLocal(local, info.groupes)}`;
+  }
+  return w;
 }
 
 /* — N° de reçu déterministe : MSE-YYMM-XXXX (programme) ou
@@ -104,7 +141,13 @@ export function receiptNumberFor(
   d: InscriptionData,
   offre: OffreId = "programme",
 ): string {
-  const seed = `${d.nom}|${d.email}|${d.dateInscription}`.toLowerCase();
+  /* Task 72 : le seed porte le NOM COMPLET (prénom + nom). Pour le
+     tunnel programme (sans prénom), nomComplet() = nom EXACTEMENT →
+     le seed est IDENTIQUE octet pour octet à l'existant → le n° de
+     reçu d'un client du programme NE CHANGE PAS. Pour le pre-launch,
+     « Awa » + « Kponou » reconstitue l'ancien nom saisi d'un bloc —
+     les numéros déjà émis restent stables dans tous les cas. */
+  const seed = `${nomComplet(d)}|${d.email}|${d.dateInscription}`.toLowerCase();
   let h = 5381;
   for (let i = 0; i < seed.length; i++) {
     h = ((h << 5) + h + seed.charCodeAt(i)) >>> 0;
@@ -326,7 +369,9 @@ export async function buildReceiptPdf(
   doc.setFont("times", "bold");
   doc.setFontSize(13);
   doc.setTextColor(...INK);
-  doc.text(dash(data.nom), M, 180);
+  /* Task 72 : nom COMPLET « Prénom Nom » (pre-launch) — pour le
+     programme (sans prénom) la valeur est inchangée. */
+  doc.text(dash(nomComplet(data) || data.nom), M, 180);
 
   doc.setFont("helvetica", "normal");
   doc.setFontSize(9.5);
@@ -343,7 +388,11 @@ export async function buildReceiptPdf(
     M,
     212,
   );
-  doc.text(dash(data.email), M, 227);
+  /* Task 72 : ligne contact — l'e-mail du formulaire (programme)
+     PRIME ; pour le pre-launch (pas d'e-mail collecté), c'est le
+     NUMÉRO DE TÉLÉPHONE saisi sur la page Bienvenue qui s'affiche —
+     bien plus utile qu'un « Non renseigné ». */
+  doc.text(dash(data.email || telLisible(data)), M, 227);
 
   doc.setFont("helvetica", "normal");
   doc.setFontSize(9.5);
@@ -640,12 +689,11 @@ export async function buildReceiptPdf(
      caractères sûrs (lettres, chiffres, tirets). Ce nom unique sert
      aux TROIS usages : téléchargement client, pièce jointe de
      l'email au coach, mention « (fichier « … ») » dans le message. — */
-  const nomFichier =
-    data.nom
-      .replace(/[\u0000-\u001f\\/:*?"<>|]+/g, " ")
-      .replace(/\s+/g, " ")
-      .trim()
-      .slice(0, 60) || "Client";
+  const nomFichier = (nomComplet(data) || data.nom)
+    .replace(/[\u0000-\u001f\\/:*?"<>|]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, 60) || "Client";
   const filename = `Reçu N° ${noRecu} — ${nomFichier}.pdf`;
 
   return { blob: doc.output("blob"), filename };
@@ -701,7 +749,17 @@ export function sendReceiptPdfCopy(
     dateStyle: "long",
     timeStyle: "short",
   }).format(new Date());
-  const nom = data.nom?.trim() || "Client";
+  /* Task 72 : le corps distingue le NOM (de famille pour le
+     pre-launch) du PRÉNOM (champ séparé, instruction propriétaire) ;
+     le SUJET et le nom du fichier portent le nom COMPLET
+     « Prénom Nom ». Pour le programme (sans prénom, téléphone
+     absent du localStorage avant Task 72) : lignes identiques à
+     l'existant — au numéro de téléphone près, désormais transmis
+     quand il est connu (amélioration continue, même intention que
+     Task 49 : le coach peut rappeler son client). */
+  const nomFamille = data.nom?.trim() || "Client";
+  const complet = nomComplet(data) || "Client";
+  const tel = telLisible(data);
   const renseigne = (v: string, suffixe = "") =>
     v && v.trim() ? `${v.trim()}${suffixe}` : "Non renseigné";
 
@@ -731,12 +789,16 @@ export function sendReceiptPdfCopy(
     "",
     "Voici les informations du client :",
     "",
-    `Nom : ${nom}`,
+    `Nom : ${nomFamille}`,
+    ...(data.prenom?.trim()
+      ? [`Prénom : ${data.prenom.trim()}`]
+      : []),
     `Profession : ${renseigne(data.profession)}`,
     `Âge : ${renseigne(data.age, " ans")}`,
     `Pays : ${renseigne(data.pays)}`,
     `Ville : ${renseigne(data.ville)}`,
     `Adresse e-mail : ${renseigne(data.email)}`,
+    ...(tel ? [`Numéro de téléphone : ${tel}`] : []),
     "",
     "Détails du paiement :",
     "",
@@ -757,8 +819,8 @@ export function sendReceiptPdfCopy(
   fd.set(
     "_subject",
     estPrelaunch
-      ? `Nouveau participant PRE-LAUNCH — ${nom} — Reçu ${receiptNo} en pièce jointe`
-      : `Nouveau client — ${nom} — Reçu ${receiptNo} en pièce jointe`,
+      ? `Nouveau participant PRE-LAUNCH — ${complet} — Reçu ${receiptNo} en pièce jointe`
+      : `Nouveau client — ${complet} — Reçu ${receiptNo} en pièce jointe`,
   );
   fd.set("_template", "basic");
   fd.set("_captcha", "false");

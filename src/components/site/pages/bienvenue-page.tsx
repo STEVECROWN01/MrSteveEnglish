@@ -1,7 +1,9 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
+import { validerWhatsApp } from "@/lib/indicateurs-tel";
+import { PAYS_VILLES } from "@/lib/pays-villes";
 import {
   PRELAUNCH_WHATSAPP_URL,
   WHATSAPP_GROUP_URL,
@@ -24,6 +26,7 @@ import {
 import { Container, Eyebrow, Prose } from "../layout-primitives";
 import { Reveal } from "../reveal";
 import { IconCheck, WhatsAppGlyph } from "../icons";
+import { TelField } from "../tel-field";
 import { FireworksSnow } from "../fireworks-snow";
 
 /**
@@ -111,7 +114,21 @@ import { FireworksSnow } from "../fireworks-snow";
  *    est remplacé par un emoji 👋 amical de taille moyenne ;
  *  — le lien texte « Télécharger mon Reçu (PDF) » de la carte
  *    Récapitulatif est SUPPRIMÉ (le gros bouton de reçu du haut de
- *    page reste la seule voie de téléchargement). */
+ *    page reste la seule voie de téléchargement).
+ *
+ * TASK 72 (instruction propriétaire — Pre-launch) :
+ *  — sur la variante ?offre=prelaunch, le champ optionnel unique
+ *    « Ton nom complet » est remplacé par TROIS champs OBLIGATOIRES :
+ *    Ton nom, Ton prénom, Ton numéro de téléphone (préfix sélection
+ *    de pays, comme dans le formulaire du programme — TelField) ;
+ *  — le bouton « Télécharger mon Reçu (PDF) » reste VERROUILLÉ
+ *    (disabled) tant que les 03 champs ne sont pas tous valides ;
+ *  — au clic : le reçu se télécharge ET sa copie PDF part
+ *    automatiquement à stevensakpovi@gmail.com (même instant, même
+ *    blob — Task 43/44), désormais enrichie du prénom, du numéro de
+ *    téléphone et du pays de l'apprenant ;
+ *  — le tunnel du programme principal (sans paramètre) est
+ *    STRICTEMENT inchangé : aucun champ, bouton immédiatement actif. */
 const COMMUNAUTE_LABEL = "Rejoindre la Communauté WhatsApp du Programme";
 
 /* Résumé élégant du programme (instruction propriétaire). */
@@ -214,9 +231,28 @@ const PRELAUNCH_WHATSAPP_MSG =
  * personnaliser son reçu ; il est persisté (n° de reçu stable au
  * re-téléchargement, date d'inscription = premier retour sur la
  * page). Données JAMAIS réutilisées du formulaire du programme
- * principal (elles ne correspondent pas à cette offre). */
+ * principal (elles ne correspondent pas à cette offre).
+ * Task 72 (instruction propriétaire) : le champ unique « Ton nom
+ * complet » devient TROIS champs OBLIGATOIRES — Ton nom, Ton
+ * prénom, Ton numéro de téléphone (avec préfix sélection de pays,
+ * comme dans le formulaire du programme). */
 const PRELAUNCH_CLIENT_KEY = "mse_prelaunch_client";
-type PrelaunchClient = { nom: string; date: string };
+type PrelaunchClient = {
+  /** Nom de famille (champ séparé du prénom — Task 72). */
+  nom: string;
+  /** Prénom (champ séparé — Task 72). */
+  prenom: string;
+  /** Code ISO du pays du numéro (préfixe téléphonique — Task 72). */
+  telPays: string;
+  /** Numéro local — chiffres uniquement (Task 72). */
+  tel: string;
+  date: string;
+};
+
+/** Pays du préfixe téléphonique par DÉFAUT : le Bénin — public
+ * principal de l'offre (FCFA, indicatif +229). Le client peut le
+ * changer dans la dropliste du champ téléphone. */
+const TEL_PAYS_DEFAUT = "bj";
 
 /** Données de repli si les données d'inscription ne sont plus dans le
  *  navigateur (localStorage vidé, autre appareil…) — le reste reste
@@ -272,8 +308,23 @@ export function BienvenuePage() {
      paramètre d'URL ?offre=prelaunch (URL de retour Maketou du produit
      de pre-launch configurée par le propriétaire). */
   const [prelaunch, setPrelaunch] = useState(false);
-  /** Nom saisi par le client prelaunch (reçu personnalisé). */
+  /* Task 72 — les 03 champs OBLIGATOIRES du Pre-launch. */
+  /** Nom de famille saisi par le client prelaunch (reçu + email
+   *  coach — champ séparé du prénom). */
   const [nomPrelaunch, setNomPrelaunch] = useState("");
+  /** Prénom saisi par le client prelaunch (champ séparé). */
+  const [prenomPrelaunch, setPrenomPrelaunch] = useState("");
+  /** Téléphone : code ISO du pays (préfixe) + numéro local en
+   *  chiffres. Par défaut : Bénin (+229). */
+  const [telPays, setTelPays] = useState(TEL_PAYS_DEFAUT);
+  const [telLocal, setTelLocal] = useState("");
+  /** Champs touchés — les erreurs ne s'affichent qu'après blur
+   *  (même convention que le formulaire d'inscription). */
+  const [touches, setTouches] = useState<{
+    nom: boolean;
+    prenom: boolean;
+    tel: boolean;
+  }>({ nom: false, prenom: false, tel: false });
   /** Date du premier retour sur la page (prelaunch) — ancre le n° de
    *  reçu, stable au re-téléchargement. */
   const prelaunchDateRef = useRef("");
@@ -293,11 +344,47 @@ export function BienvenuePage() {
         : null;
       const date = saved?.date || new Date().toISOString();
       prelaunchDateRef.current = date;
-      setNomPrelaunch(typeof saved?.nom === "string" ? saved.nom : "");
+      /* Task 72 — migration de l'ancien format {nom, date} : le nom
+         était saisi D'UN BLOC (« Awa Kponou ») → premier mot =
+         PRÉNOM, le reste = NOM (convention francophone). Le nom
+         complet reconstitué est identique → le n° de reçu des
+         téléchargements précédents reste STABLE. */
+      let nom = "";
+      let prenom = "";
+      if (typeof saved?.nom === "string") {
+        nom = saved.nom.trim();
+      }
+      if (typeof saved?.prenom === "string" && saved.prenom.trim()) {
+        prenom = saved.prenom.trim();
+      } else if (nom) {
+        const parts = nom.split(/\s+/);
+        if (parts.length >= 2) {
+          prenom = parts[0];
+          nom = parts.slice(1).join(" ");
+        }
+      }
+      let telPaysCharge = TEL_PAYS_DEFAUT;
+      if (
+        typeof saved?.telPays === "string" &&
+        PAYS_VILLES.some((p) => p.code === saved.telPays)
+      ) {
+        telPaysCharge = saved.telPays;
+      }
+      const tel =
+        typeof saved?.tel === "string"
+          ? saved.tel.replace(/\D+/g, "")
+          : "";
+      setNomPrelaunch(nom);
+      setPrenomPrelaunch(prenom);
+      setTelPays(telPaysCharge);
+      setTelLocal(tel);
       window.localStorage.setItem(
         PRELAUNCH_CLIENT_KEY,
         JSON.stringify({
-          nom: typeof saved?.nom === "string" ? saved.nom : "",
+          nom,
+          prenom,
+          telPays: telPaysCharge,
+          tel,
           date,
         } satisfies PrelaunchClient),
       );
@@ -352,6 +439,57 @@ export function BienvenuePage() {
     );
   }, []);
 
+  /* ============================================================
+   * TASK 72 — FORMULAIRE OBLIGATOIRE DU PRE-LAUNCH.
+   * Les 03 champs (Nom, Prénom, Numéro de téléphone avec préfix
+   * pays) doivent être TOUS valides avant que le bouton
+   * « Télécharger mon Reçu (PDF) » ne soit CLIQUABLE (instruction
+   * propriétaire : le bouton reste disabled tant que tout n'est pas
+   * renseigné). Le tunnel du programme principal n'a AUCUN champ —
+   * son bouton est immédiatement actif, strictement comme avant.
+   * ============================================================ */
+  /** Nom du pays du téléphone (dropliste du préfixe). */
+  const nomDuPaysTel = useMemo(
+    () => PAYS_VILLES.find((p) => p.code === telPays)?.nom ?? "",
+    [telPays],
+  );
+  /** Validation du numéro — MÊME moteur que le formulaire
+   *  d'inscription (validerWhatsApp : longueurs par pays, indicatif
+   *  retapé retiré, tronc « 0 »…). */
+  const telValide = useMemo(
+    () => validerWhatsApp(nomDuPaysTel, telLocal),
+    [nomDuPaysTel, telLocal],
+  );
+  /* Le message d'erreur de validerWhatsApp mentionne le champ
+     « Numéro WhatsApp » du formulaire — reformulé pour « Numéro de
+     téléphone » (même sens, aucun impact sur le formulaire). */
+  const telErreur = telValide.ok
+    ? ""
+    : telValide.erreur.replace(/numéro WhatsApp/g, "numéro");
+  const nomOk = nomPrelaunch.trim().length >= 2;
+  const prenomOk = prenomPrelaunch.trim().length >= 2;
+  const formulaireValide = !prelaunch || (nomOk && prenomOk && telValide.ok);
+
+  /** Persiste les informations du client prelaunch — n° de reçu et
+   *  données stables au re-téléchargement (même mécanique que le
+   *  champ nom unique de la Task 69). */
+  function sauverPrelaunch(v: Partial<Omit<PrelaunchClient, "date">>) {
+    try {
+      window.localStorage.setItem(
+        PRELAUNCH_CLIENT_KEY,
+        JSON.stringify({
+          nom: v.nom ?? nomPrelaunch,
+          prenom: v.prenom ?? prenomPrelaunch,
+          telPays: v.telPays ?? telPays,
+          tel: v.tel ?? telLocal,
+          date: prelaunchDateRef.current || new Date().toISOString(),
+        } satisfies PrelaunchClient),
+      );
+    } catch {
+      /* ignoré */
+    }
+  }
+
   /** Téléchargement du reçu + copie email au coach AU MÊME INSTANT
    *  (instruction propriétaire Task 34 : « exactement au même instant
    *  où il le télécharge » ; revue Task 43 : la copie est LE REÇU PDF
@@ -363,6 +501,11 @@ export function BienvenuePage() {
     if (receiptState === "preparing" || now - lastClickRef.current < 4000) {
       return;
     }
+    /* Task 72 : double garde — le bouton est déjà disabled tant que
+       les 03 champs ne sont pas tous valides. */
+    if (prelaunch && !formulaireValide) {
+      return;
+    }
     lastClickRef.current = now;
     /* Task 69 : l'offre du reçu suit le tunnel réellement emprunté —
        le reçu du programme principal reste IDENTIQUE à l'existant. */
@@ -370,13 +513,19 @@ export function BienvenuePage() {
     let data = inscription ?? FALLBACK_INSCRIPTION;
     if (prelaunch) {
       /* Le tunnel prelaunch n'a pas de formulaire avant paiement :
-         seules les données saisies sur CETTE page (nom) sont
-         utilisées — jamais celles d'un ancien formulaire du
-         programme principal (elles ne correspondent pas à cette
-         offre). */
+         seules les données saisies sur CETTE page sont utilisées —
+         jamais celles d'un ancien formulaire du programme principal
+         (elles ne correspondent pas à cette offre).
+         Task 72 : nom + PRÉNOM séparés (reçu : « Prénom Nom ») ;
+         le PAYS du téléphone remplit la ligne « Ville, Pays » du
+         reçu et le bloc « Pays » de l'email au coach ; le numéro
+         E.164 sert de contact (ligne contact du reçu + email). */
       data = {
         ...FALLBACK_INSCRIPTION,
         nom: nomPrelaunch.trim(),
+        prenom: prenomPrelaunch.trim(),
+        pays: nomDuPaysTel,
+        whatsapp: telValide.ok ? telValide.e164 : undefined,
         dateInscription: prelaunchDateRef.current,
       };
     }
@@ -444,53 +593,146 @@ export function BienvenuePage() {
             )}
           </p>
 
-          {/* Task 69 (prelaunch) : le tunnel pre-launch n'a pas
-              de formulaire avant paiement — le client saisit ici son
-              nom pour personnaliser son reçu (optionnel, persisté
-              localement, jamais réutilisé à d'autres fins). */}
+          {/* TASK 72 (instruction propriétaire) : le tunnel pre-launch
+              n'a pas de formulaire avant paiement — le client DOIT
+              renseigner ici son NOM, son PRÉNOM et son NUMÉRO DE
+              TÉLÉPHONE (avec préfix sélection de pays, comme dans le
+              formulaire du programme) avant que le bouton du reçu ne
+              soit cliquable. Style = formulaire d'inscription
+              (.form-label / .form-input / .form-error, astérisque
+              rouge). Persisté localement — jamais réutilisé à
+              d'autres fins. */}
           {prelaunch ? (
             <div className="mx-auto mt-8 max-w-[26rem] text-left">
-              <label
-                htmlFor="prelaunch-nom"
-                className="t-caption block text-white/70"
-              >
-                Ton nom complet — pour personnaliser ton reçu :
-              </label>
-              <input
-                id="prelaunch-nom"
-                type="text"
-                autoComplete="name"
-                value={nomPrelaunch}
-                onChange={(e) => {
-                  const v = e.target.value;
-                  setNomPrelaunch(v);
-                  try {
-                    window.localStorage.setItem(
-                      PRELAUNCH_CLIENT_KEY,
-                      JSON.stringify({
-                        nom: v,
-                        date:
-                          prelaunchDateRef.current ||
-                          new Date().toISOString(),
-                      } satisfies PrelaunchClient),
-                    );
-                  } catch {
-                    /* ignoré */
-                  }
-                }}
-                placeholder="Ex. : Awa Kponou"
-                className="form-input mt-2"
-              />
+              <p className="t-caption text-white/70">
+                Renseigne tes informations pour générer ton reçu —
+                les 03 champs sont obligatoires :
+              </p>
+              <div className="mt-4 space-y-4">
+                <div>
+                  <label
+                    htmlFor="prelaunch-nom"
+                    className="form-label"
+                  >
+                    Ton nom{" "}
+                    <span
+                      aria-hidden="true"
+                      className="font-semibold text-red-button"
+                    >
+                      *
+                    </span>
+                  </label>
+                  <input
+                    id="prelaunch-nom"
+                    type="text"
+                    autoComplete="family-name"
+                    value={nomPrelaunch}
+                    onChange={(e) => {
+                      setNomPrelaunch(e.target.value);
+                      sauverPrelaunch({ nom: e.target.value });
+                    }}
+                    onBlur={() =>
+                      setTouches((t) => ({ ...t, nom: true }))
+                    }
+                    aria-invalid={touches.nom && !nomOk}
+                    aria-describedby={
+                      touches.nom && !nomOk ? "err-prelaunch-nom" : undefined
+                    }
+                    placeholder="Ex. : Kponou"
+                    className={cn(
+                      "form-input mt-2",
+                      touches.nom && !nomOk && "border-red-button",
+                    )}
+                  />
+                  {touches.nom && !nomOk ? (
+                    <p
+                      id="err-prelaunch-nom"
+                      role="alert"
+                      className="form-error"
+                    >
+                      Indique ton nom (nom de famille).
+                    </p>
+                  ) : null}
+                </div>
+                <div>
+                  <label
+                    htmlFor="prelaunch-prenom"
+                    className="form-label"
+                  >
+                    Ton prénom{" "}
+                    <span
+                      aria-hidden="true"
+                      className="font-semibold text-red-button"
+                    >
+                      *
+                    </span>
+                  </label>
+                  <input
+                    id="prelaunch-prenom"
+                    type="text"
+                    autoComplete="given-name"
+                    value={prenomPrelaunch}
+                    onChange={(e) => {
+                      setPrenomPrelaunch(e.target.value);
+                      sauverPrelaunch({ prenom: e.target.value });
+                    }}
+                    onBlur={() =>
+                      setTouches((t) => ({ ...t, prenom: true }))
+                    }
+                    aria-invalid={touches.prenom && !prenomOk}
+                    aria-describedby={
+                      touches.prenom && !prenomOk
+                        ? "err-prelaunch-prenom"
+                        : undefined
+                    }
+                    placeholder="Ex. : Awa"
+                    className={cn(
+                      "form-input mt-2",
+                      touches.prenom && !prenomOk && "border-red-button",
+                    )}
+                  />
+                  {touches.prenom && !prenomOk ? (
+                    <p
+                      id="err-prelaunch-prenom"
+                      role="alert"
+                      className="form-error"
+                    >
+                      Indique ton prénom.
+                    </p>
+                  ) : null}
+                </div>
+                <TelField
+                  id="prelaunch-tel"
+                  pays={telPays}
+                  tel={telLocal}
+                  onPaysChange={(codePays) => {
+                    setTelPays(codePays);
+                    sauverPrelaunch({ telPays: codePays });
+                  }}
+                  onTelChange={(numero) => {
+                    setTelLocal(numero);
+                    sauverPrelaunch({ tel: numero });
+                  }}
+                  onBlur={() => setTouches((t) => ({ ...t, tel: true }))}
+                  error={touches.tel && !telValide.ok ? telErreur : undefined}
+                />
+              </div>
             </div>
           ) : null}
 
           {/* Task 34 : reçu PDF officiel — cachet PAYÉ vert
-              oblique, personnalisé, copie automatique au coach. */}
+              oblique, personnalisé, copie automatique au coach.
+              Task 72 (instruction propriétaire) : sur le tunnel
+              pre-launch, le bouton reste VERROUILLÉ (disabled) tant
+              que les 03 champs obligatoires ne sont pas tous valides. */}
           <div className="hero-line hero-d5 mt-10">
             <button
               type="button"
               onClick={handleDownloadReceipt}
-              disabled={receiptState === "preparing"}
+              disabled={
+                receiptState === "preparing" ||
+                (prelaunch && !formulaireValide)
+              }
               className="btn btn-primary t-btn inline-flex items-center gap-3 text-[1.0625rem] disabled:cursor-not-allowed disabled:opacity-70"
             >
               <svg
@@ -513,6 +755,14 @@ export function BienvenuePage() {
                   ? "Réessayer le téléchargement"
                   : "Télécharger mon Reçu (PDF)"}
             </button>
+            {/* Task 72 : pourquoi le bouton est verrouillé — mention
+                courte sous le bouton, tunnel pre-launch uniquement. */}
+            {prelaunch && !formulaireValide && receiptState === "idle" ? (
+              <p className="t-caption mt-3 text-white/55">
+                Complète d&apos;abord les 03 champs ci-dessus pour activer
+                ton reçu.
+              </p>
+            ) : null}
             {/* Task 36 (retour propriétaire) : le texte « Reçu officiel
                 personnalisé — cachet PAYÉ… » sous le bouton est
                 SUPPRIMÉ. */}
