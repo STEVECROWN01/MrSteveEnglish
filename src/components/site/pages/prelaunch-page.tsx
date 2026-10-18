@@ -390,16 +390,20 @@ export function PrelaunchPage() {
           et tient en UNE SEULE LIGNE ; il est traversé par le MÊME
           balayage lumineux oblique que les CTA rouges (classe
           .band-shine — mèche étroite adaptée à la pleine largeur).
-          Taille fluide sur mobile (min(2.7vw, 0.7rem)) pour garantir
-          la ligne unique jusqu'à 360 px de large. Posée HORS du
-          conteneur racine : aucune interférence avec son overflow-x.
+          Taille fluide sur mobile (min(2.9vw, 0.8rem)) pour garantir
+          la ligne unique jusqu'à 320 px de large (mesuré navigateur :
+          3vw débordait d'1 px à 360 px). TASK 74 : police AGRANDIE
+          pour une vraie lisibilité (propriétaire) — mobile
+          min(2.9vw, 0.8rem) au lieu de min(2.7vw, 0.7rem), desktop
+          md:text-sm au lieu de md:text-xs. Posée HORS du conteneur
+          racine : aucune interférence avec son overflow-x.
           ============================================================ */}
       <div
         aria-label="Cohorte strictement limitée"
         role="note"
         className="band-shine fixed inset-x-0 top-0 z-[60] border-b border-black/20 bg-red-button py-2.5 text-center text-white md:py-3"
       >
-        <p className="whitespace-nowrap text-[min(2.7vw,0.7rem)] font-bold tracking-[0.02em] text-white md:text-xs md:tracking-[0.1em]">
+        <p className="whitespace-nowrap text-[min(2.9vw,0.8rem)] font-bold tracking-[0.02em] text-white md:text-sm md:tracking-[0.1em]">
           Cohorte strictement limitée • Seulement 05 places sont disponibles
         </p>
       </div>
@@ -417,10 +421,12 @@ export function PrelaunchPage() {
           des 02 mois, prix, CTA, méta — portrait RÉEL du fondateur à
           côté du titre (SEULE section où il apparaît). TASK 71 : plus
           de header — la page commence ici, respiration pleine.
-          TASK 73 : padding supérieur augmenté pour respirer sous la
-          bande fixe ; portrait en FORMAT VERTICAL (4:5) sur desktop.
+          TASK 73 : portrait en FORMAT VERTICAL (4:5) sur desktop ;
+          TASK 74 : padding supérieur RÉDUIT d'un cran (pt-20/lg:pt-24,
+          était pt-24/lg:pt-32) — le propriétaire trouvait l'espace
+          entre la bande fixe et l'image trop grand sur desktop.
           ============================================================ */}
-        <section className="on-dark relative overflow-hidden bg-black pb-16 pt-24 text-white lg:pb-24 lg:pt-32">
+        <section className="on-dark relative overflow-hidden bg-black pb-16 pt-20 text-white lg:pb-24 lg:pt-24">
           <div
             aria-hidden="true"
             className="blob-drift pointer-events-none absolute left-[4%] top-[12%] h-[32rem] w-[32rem] rounded-full bg-[radial-gradient(circle,rgba(255,26,26,0.28)_0%,transparent_62%)] blur-2xl"
