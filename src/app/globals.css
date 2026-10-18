@@ -397,6 +397,75 @@
       transform 600ms var(--ease-std);
   }
 
+  /* — TASK 71 (instruction propriétaire — sections vivantes) :
+     variantes de révélation. Mêmes règles que .reveal (une seule fois à
+     l'entrée du viewport, 600ms, easing DA), seule la direction change.
+     Les classes sont AUTO-PORTANTES (pas de cumul avec .reveal) : chaque
+     variante porte son état caché ET son état visible — zéro conflit de
+     spécificité. */
+  .reveal-left,
+  .reveal-right,
+  .reveal-zoom,
+  .reveal-pop {
+    opacity: 0;
+    will-change: opacity, transform;
+  }
+  .reveal-left {
+    transform: translateX(-28px);
+  }
+  .reveal-right {
+    transform: translateX(28px);
+  }
+  .reveal-zoom {
+    transform: scale(0.94);
+  }
+  .reveal-pop {
+    transform: scale(0.55);
+  }
+  .reveal-left.is-visible,
+  .reveal-right.is-visible,
+  .reveal-zoom.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+    transition:
+      opacity 600ms var(--ease-std),
+      transform 600ms var(--ease-std);
+  }
+  /* Pop : unique easing non standard — léger rebond (overshoot) réservé
+     aux grands chiffres ponctuels (01–06, stats). Reste court et net. */
+  .reveal-pop.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+    transition:
+      opacity 400ms var(--ease-std),
+      transform 700ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  /* — TASK 71 : dérive lente des nappes de couleur (ambiance vivante,
+     premium — mouvement imperceptible de fond, jamais sur le contenu).
+     18s en va-et-vent : assez lent pour rester discret. */
+  .blob-drift {
+    animation: blob-drift 18s ease-in-out infinite alternate;
+  }
+  .blob-drift-alt {
+    animation: blob-drift 18s ease-in-out infinite alternate-reverse;
+  }
+
+  /* — TASK 71 : zoom discret de l'image au survol de son cadre (desktop
+     uniquement — .group:hover). 800ms easing DA : assez lent pour être
+     élégant, assez court pour rester réactif. */
+  .img-zoom {
+    transition: transform 800ms var(--ease-std);
+  }
+  .group:hover .img-zoom {
+    transform: scale(1.04);
+  }
+  @media (hover: none) {
+    .group:hover .img-zoom {
+      transform: none;
+    }
+  }
+
   /* — Waveform SVG : SUPPRIMÉES (instruction propriétaire — plus aucune
      sinusoïde sur le site). Seules les animations textes/cards restent. — */
 
@@ -443,6 +512,39 @@
     .hero-d3 { animation-delay: 330ms; }
     .hero-d4 { animation-delay: 390ms; }
     .hero-d5 { animation-delay: 450ms; }
+  }
+
+  /* — TASK 71 : entrée du portrait hero (landing pre-launch) — fondu
+     + montée + zoom arrière 0.96 → 1, dans l'orchestration hero
+     (même délai que hero-d1). « to » EXPLICITE obligatoire : la base
+     de .hero-portrait-in est opacity 0 (état d'avant-animation) —
+     sans keyframe « to », le navigateur reprendrait cette valeur de
+     base comme état final implicite et le portrait resterait invisible
+     (même mécanique que hero-line, qui définit son « to »). — */
+  @keyframes hero-portrait-in {
+    from {
+      opacity: 0;
+      transform: translateY(18px) scale(0.96);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+  .hero-portrait-in {
+    opacity: 0;
+    animation: hero-portrait-in 700ms var(--ease-std) 150ms forwards;
+  }
+
+  /* — TASK 71 : dérive des nappes de couleur — va-et-vent lent,
+     amplitude faible (mouvement de fond, jamais du contenu). — */
+  @keyframes blob-drift {
+    from {
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+    to {
+      transform: translate3d(4%, -3%, 0) scale(1.07);
+    }
   }
 
   /* — Machine à écrire du titre hero (instruction propriétaire) :
@@ -725,6 +827,30 @@ body[data-listbox-open] .sticky-cta {
   }
   .reveal.is-visible {
     transition: none;
+  }
+  /* TASK 71 — variantes de révélation : apparition directe. */
+  .reveal-left,
+  .reveal-right,
+  .reveal-zoom,
+  .reveal-pop {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  /* TASK 71 — nappes figées, zoom image coupé, portrait hero direct. */
+  .blob-drift,
+  .blob-drift-alt {
+    animation: none;
+  }
+  .img-zoom {
+    transition: none;
+  }
+  .group:hover .img-zoom {
+    transform: none;
+  }
+  .hero-portrait-in {
+    opacity: 1;
+    animation: none;
   }
   .page-enter {
     animation: none;

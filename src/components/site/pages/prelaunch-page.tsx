@@ -3,13 +3,12 @@
 import { useEffect } from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { PRELAUNCH, PRELAUNCH_CHECKOUT_URL, waLink } from "@/lib/site";
+import { PRELAUNCH_CHECKOUT_URL, waLink } from "@/lib/site";
 import {
   PRODUIT_PRELAUNCH,
   pixelEventId,
   trackPixelWithCAPI,
 } from "@/lib/meta-pixel";
-import { useScrolled } from "@/lib/motion";
 import { Container, Eyebrow, Prose } from "../layout-primitives";
 import { Reveal } from "../reveal";
 import { StickyCTA } from "../sticky-cta";
@@ -28,9 +27,10 @@ import { IconCheck } from "../icons";
  *
  * PAGE FOCALISÉE (comme /bienvenue) : ni header ni footer global du
  * site — la séparation des deux offres est totale (aucun CTA du
- * programme principal ne fuit vers ce tunnel, et inversement). Une
- * barre minimaliste (logo → accueil) et un pied de page dédié à
- * l'offre encadrent la page.
+ * programme principal ne fuit vers ce tunnel, et inversement).
+ * TASK 71 (instruction propriétaire) : PLUS AUCUN header — la landing
+ * commence directement par le hero ; un pied de page dédié à l'offre
+ * ferme la page.
  *
  * IDENTITÉ (brief §1) : blanc #FFFFFF / noir #000000 / rouge #FF0000,
  * composants, styles et animations existants (btn-primary + reflet,
@@ -38,6 +38,16 @@ import { IconCheck } from "../icons";
  * + pied de page. Images : public/assets/prelaunch/ (noms réels —
  * le portrait du fondateur est un .png, extension réelle respectée),
  * variantes WebP pré-générées (manifeste image-variants.json).
+ *
+ * TASK 71 — PRÉSENTATION VIVANTE (instruction propriétaire) :
+ * — cartes des sections à fond blanc en VERRE TRANSPARENT (glass-card
+ *   + nappes de couleur derrière, comme la page d'accueil) ;
+ * — cadrage des images IDENTIQUE à l'accueil (coins 12px, ombre douce,
+ *   sans bordure) + zoom discret au survol (img-zoom) ;
+ * — chiffres de l'offre au format 02 / 03 / 05 (cohérent avec le
+ *   brief et le reçu) ;
+ * — animations au scroll directionnelles (left/right), zoom des
+ *   cartes, rebond des grands chiffres (pop), dérive lente des nappes.
  *
  * PERSONNAGES : le portrait du fondateur n'apparaît QUE dans le hero ;
  * toutes les autres images sont des illustrations fictives — jamais
@@ -101,39 +111,11 @@ function CtaOffre({
   );
 }
 
-/** Barre minimaliste (page focalisée) : logo « Stevens AKPOVI » →
- *  accueil du site. Transparente au sommet (hero noir), noire au
- *  scroll — même mécanique que le header global. */
-function TopBar() {
-  const scrolled = useScrolled(8);
-  return (
-    <header
-      className={cn(
-        "fixed inset-x-0 top-0 z-50 transition-[background-color,border-color] duration-[240ms] [transition-timing-function:cubic-bezier(0.22,1,0.36,1)]",
-        scrolled
-          ? "border-b border-white/10 bg-[#000000]"
-          : "border-b border-transparent bg-transparent",
-      )}
-    >
-      <Container>
-        <div className="flex h-16 items-center justify-between lg:h-[72px]">
-          <Link
-            href="/"
-            className="font-display text-[1.125rem] font-medium tracking-tight text-white"
-          >
-            Stevens AKPOVI
-          </Link>
-          <p className="t-caption hidden text-white/60 sm:block">
-            Pre-launch · Première cohorte · {PRELAUNCH.places} places
-          </p>
-        </div>
-      </Container>
-    </header>
-  );
-}
-
-/** Cadre image élégant et homogène (ratio fixe = zéro décalage de
- *  mise en page). */
+/** Cadre image — MÊME style que la page d'accueil (instruction
+ *  propriétaire TASK 71) : coins 12px + ombre douce, SANS bordure ni
+ *  fond blanc — le cadrage respire pareil sur fond blanc et sur fond
+ *  noir. `group` : zoom discret de l'image au survol (classe img-zoom
+ *  posée sur chaque image). */
 function CadreImage({
   children,
   className,
@@ -144,7 +126,7 @@ function CadreImage({
   return (
     <div
       className={cn(
-        "overflow-hidden rounded-[12px] border border-grey-line bg-white shadow-[0_4px_20px_rgba(0,0,0,0.08)]",
+        "group overflow-hidden rounded-[12px] shadow-[0_4px_20px_rgba(0,0,0,0.10)]",
         className,
       )}
     >
@@ -165,9 +147,9 @@ function Legende({ children }: { children: React.ReactNode }) {
 const INCLUS_PRELAUNCH = [
   {
     num: "01",
-    titre: "Trois séances par semaine",
+    titre: "03 séances par semaine",
     corps:
-      "Trois séances de 1 h 30 par semaine pendant deux mois, organisées pour te permettre de pratiquer régulièrement et de travailler progressivement ton expression orale.",
+      "03 séances de 1 h 30 par semaine pendant 02 mois, organisées pour te permettre de pratiquer régulièrement et de travailler progressivement ton expression orale.",
   },
   {
     num: "02",
@@ -183,7 +165,7 @@ const INCLUS_PRELAUNCH = [
   },
   {
     num: "04",
-    titre: "Un accompagnement pendant les deux mois",
+    titre: "Un accompagnement pendant les 02 mois",
     corps:
       "Tu bénéficieras d'un cadre d'apprentissage structuré et d'un suivi pendant cette première expérience, avec l'objectif de travailler régulièrement et de progresser étape par étape.",
   },
@@ -207,7 +189,7 @@ const POUR_TOI = [
   "Tu connais quelques mots ou expressions, mais tu as du mal à construire des phrases.",
   "Tu comprends certaines choses en anglais, mais tu bloques lorsque tu dois répondre.",
   "Tu souhaites apprendre à t'exprimer oralement et tu es prêt à pratiquer régulièrement.",
-  "Tu peux consacrer du temps aux trois séances hebdomadaires et aux exercices.",
+  "Tu peux consacrer du temps aux 03 séances hebdomadaires et aux exercices.",
   "Tu disposes d'une connexion internet adaptée pour suivre l'accompagnement en ligne.",
   "Tu es prêt à appliquer les conseils reçus et à prendre ton apprentissage au sérieux.",
 ];
@@ -215,7 +197,7 @@ const PAS_POUR_TOI = [
   "Tu cherches une formation sans devoir participer activement.",
   "Tu n'es pas disponible pour suivre régulièrement les séances.",
   "Tu n'es pas prêt à réaliser les exercices ou à pratiquer entre les séances.",
-  "Tu attends une garantie de maîtrise complète de l'anglais en seulement deux mois.",
+  "Tu attends une garantie de maîtrise complète de l'anglais en seulement 02 mois.",
 ];
 
 /* — SECTION 8 : les 04 étapes (textes exacts du brief) — */
@@ -236,7 +218,7 @@ const ETAPES_INSCRIPTION = [
     num: "03",
     titre: "Procède au paiement",
     texte:
-      "Si l'offre te convient, clique sur le bouton d'inscription pour accéder à la page de paiement sécurisée et régler les 15 000 FCFA correspondant aux deux mois d'accompagnement.",
+      "Si l'offre te convient, clique sur le bouton d'inscription pour accéder à la page de paiement sécurisée et régler les 15 000 FCFA correspondant aux 02 mois d'accompagnement.",
   },
   {
     num: "04",
@@ -262,12 +244,12 @@ const FAQ_PRELAUNCH = [
   {
     question: "Combien de temps dure l'accompagnement ?",
     answer:
-      "L'accompagnement dure deux mois, avec trois séances de 1 h 30 par semaine.",
+      "L'accompagnement dure 02 mois, avec 03 séances de 1 h 30 par semaine.",
   },
   {
     question: "Quel est le tarif ?",
     answer:
-      "La participation est de 15 000 FCFA pour les deux mois d'accompagnement prévus dans cette offre de pré-lancement.",
+      "La participation est de 15 000 FCFA pour les 02 mois d'accompagnement prévus dans cette offre de pré-lancement.",
   },
   {
     question: "La formation se déroule-t-elle en présentiel ?",
@@ -277,12 +259,12 @@ const FAQ_PRELAUNCH = [
   {
     question: "Dois-je être disponible à des horaires précis ?",
     answer:
-      "Oui. Il est nécessaire de pouvoir participer aux trois séances hebdomadaires. Les horaires précis seront communiqués aux participants dans la communauté WhatsApp.",
+      "Oui. Il est nécessaire de pouvoir participer aux 03 séances hebdomadaires. Les horaires précis seront communiqués aux participants dans la communauté WhatsApp.",
   },
   {
-    question: "Vais-je parler couramment anglais après deux mois ?",
+    question: "Vais-je parler couramment anglais après 02 mois ?",
     answer:
-      "Nous ne garantissons pas une maîtrise complète de l'anglais en deux mois. L'objectif est de pratiquer régulièrement, de travailler ton expression orale et de commencer à t'exprimer progressivement en fonction de ton niveau et de ton implication.",
+      "Nous ne garantissons pas une maîtrise complète de l'anglais en 02 mois. L'objectif est de pratiquer régulièrement, de travailler ton expression orale et de commencer à t'exprimer progressivement en fonction de ton niveau et de ton implication.",
   },
   {
     question: "Pourquoi le nombre de participants est-il limité à 05 ?",
@@ -323,29 +305,30 @@ export function PrelaunchPage() {
 
   return (
     <div className="flex min-h-screen flex-col bg-white">
-      <TopBar />
-
       {/* ============================================================
           SECTION 1 — HERO (brief §1) : question d'accroche, promesse
           des 02 mois, prix, CTA, méta — portrait RÉEL du fondateur à
-          côté du titre (SEULE section où il apparaît).
+          côté du titre (SEULE section où il apparaît). TASK 71 : plus
+          de header — la page commence ici, respiration pleine.
           ============================================================ */}
-      <section className="on-dark relative overflow-hidden bg-black pb-16 pt-[112px] text-white lg:pb-24 lg:pt-[168px]">
+      <section className="on-dark relative overflow-hidden bg-black pb-16 pt-16 text-white lg:pb-24 lg:pt-24">
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute left-[4%] top-[12%] h-[32rem] w-[32rem] rounded-full bg-[radial-gradient(circle,rgba(255,26,26,0.28)_0%,transparent_62%)] blur-2xl"
+          className="blob-drift pointer-events-none absolute left-[4%] top-[12%] h-[32rem] w-[32rem] rounded-full bg-[radial-gradient(circle,rgba(255,26,26,0.28)_0%,transparent_62%)] blur-2xl"
         />
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute right-[2%] bottom-[-6rem] h-[36rem] w-[36rem] rounded-full bg-[radial-gradient(circle,rgba(96,110,190,0.30)_0%,transparent_62%)] blur-2xl"
+          className="blob-drift-alt pointer-events-none absolute right-[2%] bottom-[-6rem] h-[36rem] w-[36rem] rounded-full bg-[radial-gradient(circle,rgba(96,110,190,0.30)_0%,transparent_62%)] blur-2xl"
         />
         <Container className="relative">
           <div className="grid items-center gap-10 lg:grid-cols-[45%_55%] lg:gap-14">
-            {/* Portrait du fondateur — cadre professionnel élégant,
-                AUCUN filtre (teint inchangé), recadrage 4:3 orienté
-                vers le sujet (visage + lunettes préservés). */}
-            <div className="hero-line hero-d1 lg:order-1">
-              <div className="relative overflow-hidden rounded-[12px] border border-white/15 shadow-[0_24px_60px_rgba(0,0,0,0.55)]">
+            {/* Portrait du fondateur — cadrage IDENTIQUE à l'accueil
+                (TASK 71 : coins 12px, ombre douce, aucune bordure),
+                entrée dédiée hero-portrait-in (fondu + montée + zoom
+                arrière 0.96 → 1), AUCUN filtre (teint inchangé),
+                recadrage 4:3 orienté vers le sujet. */}
+            <div className="hero-portrait-in lg:order-1">
+              <div className="group relative overflow-hidden rounded-[12px] shadow-[0_4px_20px_rgba(0,0,0,0.10)]">
                 <div className="aspect-[4/3]">
                   <ResponsiveImage
                     src="/assets/prelaunch/mrsteve-portrait-hero.png"
@@ -353,7 +336,7 @@ export function PrelaunchPage() {
                     fill
                     priority
                     sizes="(min-width: 1024px) 45vw, 100vw"
-                    className="object-cover [object-position:65%_35%]"
+                    className="img-zoom object-cover [object-position:65%_35%]"
                   />
                 </div>
               </div>
@@ -378,12 +361,12 @@ export function PrelaunchPage() {
                   02 mois d&apos;accompagnement intensif en ligne pour
                   commencer à pratiquer l&apos;anglais
                 </span>
-                , avec seulement cinq places pour cette première cohorte.
+                , avec seulement 05 places pour cette première cohorte.
               </p>
               <p className="hero-line hero-d5 mt-8 font-display text-[1.75rem] font-medium leading-tight text-white md:text-[2.125rem]">
                 15 000 FCFA{" "}
                 <span className="text-[1.125rem] font-normal text-white/70 md:text-[1.25rem]">
-                  pour les deux mois d&apos;accompagnement.
+                  pour les 02 mois d&apos;accompagnement.
                 </span>
               </p>
               <div className="hero-line hero-d5 mt-8 flex justify-center lg:justify-start">
@@ -408,7 +391,7 @@ export function PrelaunchPage() {
       <section id="probleme" className="scroll-mt-20 py-12 lg:py-24">
         <Container>
           <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
-            <Reveal>
+            <Reveal variant="left">
               <Prose>
                 <h2 className="t-h2 text-black">
                   Tu connais quelques mots d&apos;anglais. Mais peux-tu
@@ -447,7 +430,7 @@ export function PrelaunchPage() {
                 </div>
               </Prose>
             </Reveal>
-            <Reveal delay={120}>
+            <Reveal variant="right" delay={120}>
               <div>
                 <CadreImage>
                   <div className="aspect-[3/2]">
@@ -456,7 +439,7 @@ export function PrelaunchPage() {
                       alt="Illustration d'un personnage fictif qui hésite à parler lors d'une conversation en ligne"
                       fill
                       sizes="(min-width: 1024px) 48vw, 100vw"
-                      className="object-cover"
+                      className="img-zoom object-cover"
                     />
                   </div>
                 </CadreImage>
@@ -481,15 +464,15 @@ export function PrelaunchPage() {
       >
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute right-[8%] top-[2rem] h-[30rem] w-[30rem] rounded-full bg-[radial-gradient(circle,rgba(255,26,26,0.26)_0%,transparent_62%)] blur-2xl"
+          className="blob-drift pointer-events-none absolute right-[8%] top-[2rem] h-[30rem] w-[30rem] rounded-full bg-[radial-gradient(circle,rgba(255,26,26,0.26)_0%,transparent_62%)] blur-2xl"
         />
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute left-[4%] bottom-[-4rem] h-[32rem] w-[32rem] rounded-full bg-[radial-gradient(circle,rgba(96,110,190,0.28)_0%,transparent_62%)] blur-2xl"
+          className="blob-drift-alt pointer-events-none absolute left-[4%] bottom-[-4rem] h-[32rem] w-[32rem] rounded-full bg-[radial-gradient(circle,rgba(96,110,190,0.28)_0%,transparent_62%)] blur-2xl"
         />
         <Container className="relative">
           <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
-            <Reveal>
+            <Reveal variant="left">
               <Prose>
                 <h2 className="t-h2 text-white">
                   Une première cohorte. 05 personnes. Un objectif :
@@ -503,7 +486,7 @@ export function PrelaunchPage() {
                     <sup className="top-[-0.6em] text-[0.6em]">™</sup>
                   </span>
                   , nous ouvrons une première cohorte de 05 participants pour
-                  deux mois d&apos;accompagnement intensif.
+                  02 mois d&apos;accompagnement intensif.
                 </p>
                 <p className="t-body text-white/75">
                   Cette expérience est destinée aux personnes qui veulent
@@ -511,7 +494,7 @@ export function PrelaunchPage() {
                   qui n&apos;arrivent pas encore à s&apos;exprimer oralement.
                 </p>
                 <p className="t-body text-white/75">
-                  Pendant ces deux mois, nous mettrons l&apos;accent sur la
+                  Pendant ces 02 mois, nous mettrons l&apos;accent sur la
                   pratique, les expressions utiles, les exercices et
                   l&apos;application progressive de ce que tu apprends.
                 </p>
@@ -523,22 +506,22 @@ export function PrelaunchPage() {
                 </p>
                 <p className="t-body border-t border-white/15 pt-6 text-white/75">
                   Il ne s&apos;agit pas de te promettre de devenir
-                  parfaitement bilingue en deux mois. Il s&apos;agit de te
+                  parfaitement bilingue en 02 mois. Il s&apos;agit de te
                   proposer un cadre structuré pour pratiquer, travailler ton
                   expression orale et progresser avec méthode.
                 </p>
               </Prose>
             </Reveal>
-            <Reveal delay={120}>
+            <Reveal variant="right" delay={120}>
               <div>
-                <CadreImage className="border-white/15 bg-black shadow-[0_24px_60px_rgba(0,0,0,0.55)]">
+                <CadreImage>
                   <div className="aspect-[16/10]">
                     <ResponsiveImage
                       src="/assets/prelaunch/prelaunch-online-session.png"
                       alt="Illustration d'une apprenante fictive qui parle anglais pendant une séance en ligne"
                       fill
                       sizes="(min-width: 1024px) 48vw, 100vw"
-                      className="object-cover"
+                      className="img-zoom object-cover"
                     />
                   </div>
                 </CadreImage>
@@ -555,19 +538,34 @@ export function PrelaunchPage() {
       {/* ============================================================
           SECTION 4 — CE QUI EST INCLUS (brief §4 + IMAGE 4
           prelaunch-practice-exercises.png) : 06 cartes numérotées.
+          TASK 71 : cartes en VERRE TRANSPARENT + nappes de couleur
+          derrière (même présentation que la section Pour qui ? de
+          l'accueil) — c'est la traversée translucide des nappes qui
+          signale le verre, pas le voile seul.
           ============================================================ */}
-      <section id="inclus" className="scroll-mt-20 py-12 lg:py-24">
-        <Container>
+      <section
+        id="inclus"
+        className="relative scroll-mt-20 overflow-hidden py-12 lg:py-24"
+      >
+        <div
+          aria-hidden="true"
+          className="blob-drift pointer-events-none absolute -left-24 top-[44rem] h-[44rem] w-[44rem] rounded-full bg-[radial-gradient(circle,rgba(255,26,26,0.30)_0%,transparent_62%)] blur-2xl md:top-[8rem] md:h-[34rem] md:w-[34rem]"
+        />
+        <div
+          aria-hidden="true"
+          className="blob-drift-alt pointer-events-none absolute -right-24 top-[104rem] h-[46rem] w-[46rem] rounded-full bg-[radial-gradient(circle,rgba(28,28,64,0.30)_0%,transparent_62%)] blur-2xl md:top-[24rem] md:h-[38rem] md:w-[38rem]"
+        />
+        <Container className="relative">
           <Reveal>
             <Prose className="mx-auto text-center">
               <h2 className="t-h2 text-black">
-                Deux mois pour commencer à pratiquer l&apos;anglais avec un
+                02 mois pour commencer à pratiquer l&apos;anglais avec un
                 accompagnement structuré.
               </h2>
             </Prose>
           </Reveal>
           <div className="mx-auto mt-10 grid max-w-[60rem] items-center gap-10 lg:grid-cols-[42%_58%] lg:gap-12">
-            <Reveal delay={100}>
+            <Reveal variant="left" delay={100}>
               <div>
                 <CadreImage>
                   <div className="aspect-[4/3]">
@@ -576,7 +574,7 @@ export function PrelaunchPage() {
                       alt="Illustration d'un apprenant fictif qui pratique l'anglais devant son ordinateur"
                       fill
                       sizes="(min-width: 1024px) 40vw, 100vw"
-                      className="object-cover"
+                      className="img-zoom object-cover"
                     />
                   </div>
                 </CadreImage>
@@ -586,25 +584,30 @@ export function PrelaunchPage() {
                 </Legende>
               </div>
             </Reveal>
-            <Reveal delay={160}>
+            <Reveal variant="right" delay={160}>
               <Prose>
                 <p className="t-body text-black/75">
                   Les séances en ligne, la pratique orale, les expressions
                   utiles, les exercices, l&apos;accompagnement et la
                   communauté WhatsApp : voici exactement ce que couvrent les
-                  deux mois.
+                  02 mois.
                 </p>
               </Prose>
             </Reveal>
           </div>
           <div className="mx-auto mt-10 grid max-w-[60rem] gap-6 md:grid-cols-2">
             {INCLUS_PRELAUNCH.map((item, i) => (
-              <Reveal key={item.num} delay={i * 80}>
-                <div className="card-hover h-full rounded-[12px] border border-grey-line bg-grey-soft p-6 lg:p-7">
+              <Reveal key={item.num} variant="zoom" delay={i * 80}>
+                <div className="glass-card card-hover h-full p-6 lg:p-7">
                   <div className="flex items-baseline gap-4">
-                    <p className="font-display text-[2rem] font-medium leading-none text-black/25">
+                    <Reveal
+                      as="p"
+                      variant="pop"
+                      delay={i * 80 + 180}
+                      className="font-display text-[2rem] font-medium leading-none text-black/25"
+                    >
                       {item.num}
-                    </p>
+                    </Reveal>
                     <h3 className="t-h3 text-black">{item.titre}</h3>
                   </div>
                   <p className="t-body mt-4 text-black/70">{item.corps}</p>
@@ -626,15 +629,15 @@ export function PrelaunchPage() {
       >
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute left-[6%] top-[4rem] h-[32rem] w-[32rem] rounded-full bg-[radial-gradient(circle,rgba(255,26,26,0.30)_0%,transparent_62%)] blur-2xl"
+          className="blob-drift pointer-events-none absolute left-[6%] top-[4rem] h-[32rem] w-[32rem] rounded-full bg-[radial-gradient(circle,rgba(255,26,26,0.30)_0%,transparent_62%)] blur-2xl"
         />
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute right-[6%] bottom-[2rem] h-[34rem] w-[34rem] rounded-full bg-[radial-gradient(circle,rgba(96,110,190,0.28)_0%,transparent_62%)] blur-2xl"
+          className="blob-drift-alt pointer-events-none absolute right-[6%] bottom-[2rem] h-[34rem] w-[34rem] rounded-full bg-[radial-gradient(circle,rgba(96,110,190,0.28)_0%,transparent_62%)] blur-2xl"
         />
         <Container className="relative">
           <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
-            <Reveal>
+            <Reveal variant="left">
               <Prose>
                 <h2 className="t-h2 text-white">
                   Une condition exceptionnelle pour la première cohorte de
@@ -647,11 +650,11 @@ export function PrelaunchPage() {
                     <span className="text-red-button">Parler</span>
                     <sup className="top-[-0.6em] text-[0.6em]">™</sup>
                   </span>{" "}
-                  est prévu sur trois mois, au tarif de 70 000 FCFA.
+                  est prévu sur 03 mois, au tarif de 70 000 FCFA.
                 </p>
                 <p className="t-body text-white/75">
                   L&apos;offre que nous te présentons ici est différente :
-                  elle porte exclusivement sur deux mois
+                  elle porte exclusivement sur 02 mois
                   d&apos;accompagnement, proposés exceptionnellement à{" "}
                   <span className="font-medium text-white">15 000 FCFA</span>{" "}
                   pour cette première cohorte.
@@ -663,7 +666,7 @@ export function PrelaunchPage() {
                   lancement officiel du programme.
                 </p>
                 <p className="t-body text-white/75">
-                  Nous voulons accompagner cinq personnes pendant deux mois,
+                  Nous voulons accompagner 05 personnes pendant 02 mois,
                   observer leurs progrès réels, recueillir leurs retours et
                   tirer des enseignements concrets de cette première
                   expérience.
@@ -686,10 +689,11 @@ export function PrelaunchPage() {
                 </p>
               </Prose>
             </Reveal>
-            <Reveal delay={120}>
-              <div className="space-y-6">
-                {/* Bloc tarifaire — PRIX EN VRAI TEXTE HTML/CSS, très
-                    visible ; durée et rythme affichés clairement. */}
+            <div className="space-y-6">
+              {/* Bloc tarifaire — PRIX EN VRAI TEXTE HTML/CSS, très
+                  visible ; durée et rythme affichés clairement.
+                  TASK 71 : entrée en zoom doux au scroll. */}
+              <Reveal variant="zoom" delay={120}>
                 <div className="glass-card glass-dark card-hover p-6 text-center md:p-8">
                   <Eyebrow className="text-white/70">
                     Pre-launch · Première cohorte
@@ -737,19 +741,21 @@ export function PrelaunchPage() {
                     />
                   </div>
                 </div>
-                <CadreImage className="border-white/15 bg-black shadow-[0_24px_60px_rgba(0,0,0,0.55)]">
+              </Reveal>
+              <Reveal variant="zoom" delay={220}>
+                <CadreImage>
                   <div className="aspect-[16/10]">
                     <ResponsiveImage
                       src="/assets/prelaunch/prelaunch-offer-value.png"
                       alt="Bureau minimaliste avec ordinateur portable, carnet et casque audio"
                       fill
                       sizes="(min-width: 1024px) 48vw, 100vw"
-                      className="object-cover"
+                      className="img-zoom object-cover"
                     />
                   </div>
                 </CadreImage>
-              </div>
-            </Reveal>
+              </Reveal>
+            </div>
           </div>
         </Container>
       </section>
@@ -763,7 +769,7 @@ export function PrelaunchPage() {
       <section id="places" className="scroll-mt-20 py-12 lg:py-24">
         <Container>
           <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
-            <Reveal>
+            <Reveal variant="left">
               <Prose>
                 <h2 className="t-h2 text-black">
                   Parce qu&apos;un accompagnement sérieux demande du temps et
@@ -771,13 +777,13 @@ export function PrelaunchPage() {
                 </h2>
                 <p className="t-body mt-6 text-black/75">
                   Nous avons volontairement limité cette première cohorte à
-                  cinq participants.
+                  05 participants.
                 </p>
                 <p className="t-body text-black/75">
                   Notre objectif n&apos;est pas de réunir le plus grand nombre
                   de personnes possible. Nous voulons pouvoir consacrer
                   suffisamment de temps à chaque apprenant, suivre son
-                  évolution et observer les progrès réalisés pendant les deux
+                  évolution et observer les progrès réalisés pendant les 02
                   mois.
                 </p>
                 <p className="t-body text-black/75">
@@ -800,13 +806,19 @@ export function PrelaunchPage() {
                 </p>
               </Prose>
             </Reveal>
-            <Reveal delay={120}>
+            <Reveal variant="right" delay={120}>
               <div>
                 {/* « 05 PLACES MAXIMUM » — vrai texte HTML/CSS, séparé de
-                    l'image (exigence du brief). */}
-                <p className="t-stat text-black">
+                    l'image (exigence du brief). TASK 71 : entrée en rebond
+                    léger (pop) au scroll. */}
+                <Reveal
+                  as="p"
+                  variant="pop"
+                  delay={220}
+                  className="t-stat text-black"
+                >
                   05 <span className="t-stat-unit">places maximum</span>
-                </p>
+                </Reveal>
                 <div className="mt-6">
                   <CadreImage>
                     <div className="aspect-[16/10]">
@@ -815,7 +827,7 @@ export function PrelaunchPage() {
                         alt="Illustration de quatre personnages fictifs réunis autour d'un ordinateur pour apprendre ensemble"
                         fill
                         sizes="(min-width: 1024px) 48vw, 100vw"
-                        className="object-cover"
+                        className="img-zoom object-cover"
                       />
                     </div>
                   </CadreImage>
@@ -832,25 +844,39 @@ export function PrelaunchPage() {
 
       {/* ============================================================
           SECTION 7 — À QUI S'ADRESSE CETTE OFFRE (brief §7) :
-          deux colonnes « pour toi » / « pas pour toi ».
+          deux colonnes « pour toi » / « pas pour toi ». TASK 71 : cartes
+          en VERRE TRANSPARENT sur fond blanc + nappes de couleur
+          derrière (même présentation que la section Pour qui ? de
+          l'accueil) ; entrées latérales croisées gauche/droite.
           ============================================================ */}
-      <section id="profil" className="scroll-mt-20 bg-[#F4F4F6] py-12 lg:py-24">
-        <Container>
+      <section
+        id="profil"
+        className="relative scroll-mt-20 overflow-hidden py-12 lg:py-24"
+      >
+        <div
+          aria-hidden="true"
+          className="blob-drift pointer-events-none absolute -left-24 top-[10rem] h-[36rem] w-[36rem] rounded-full bg-[radial-gradient(circle,rgba(255,26,26,0.30)_0%,transparent_62%)] blur-2xl"
+        />
+        <div
+          aria-hidden="true"
+          className="blob-drift-alt pointer-events-none absolute -right-24 top-[40rem] h-[44rem] w-[44rem] rounded-full bg-[radial-gradient(circle,rgba(28,28,64,0.30)_0%,transparent_62%)] blur-2xl md:top-[6rem] md:h-[40rem] md:w-[40rem]"
+        />
+        <Container className="relative">
           <Reveal>
             <Prose className="mx-auto text-center">
               <h2 className="t-h2 text-black">
                 Cette expérience est faite pour toi si…
               </h2>
               <p className="t-body mt-6 text-black/75">
-                Nous voulons réunir cinq personnes motivées, conscientes de
+                Nous voulons réunir 05 personnes motivées, conscientes de
                 leurs objectifs et prêtes à s&apos;investir dans leur
                 apprentissage.
               </p>
             </Prose>
           </Reveal>
           <div className="mx-auto mt-10 grid max-w-[60rem] gap-6 md:grid-cols-2">
-            <Reveal delay={80}>
-              <div className="card-hover h-full rounded-[12px] border border-grey-line bg-white p-6 shadow-[0_4px_20px_rgba(0,0,0,0.08)] lg:p-7">
+            <Reveal variant="left" delay={80}>
+              <div className="glass-card card-hover h-full p-6 lg:p-7">
                 <h3 className="t-h3 text-black">Cette offre est pour toi si…</h3>
                 <ul className="mt-5 space-y-3.5">
                   {POUR_TOI.map((item) => (
@@ -865,8 +891,8 @@ export function PrelaunchPage() {
                 </ul>
               </div>
             </Reveal>
-            <Reveal delay={160}>
-              <div className="card-hover h-full rounded-[12px] border border-grey-line bg-white p-6 shadow-[0_4px_20px_rgba(0,0,0,0.08)] lg:p-7">
+            <Reveal variant="right" delay={160}>
+              <div className="glass-card card-hover h-full p-6 lg:p-7">
                 <h3 className="t-h3 text-black">
                   Cette offre n&apos;est probablement pas adaptée à toi si…
                 </h3>
@@ -899,27 +925,32 @@ export function PrelaunchPage() {
       >
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute left-[10%] top-[2rem] h-[30rem] w-[30rem] rounded-full bg-[radial-gradient(circle,rgba(255,26,26,0.24)_0%,transparent_62%)] blur-2xl"
+          className="blob-drift pointer-events-none absolute left-[10%] top-[2rem] h-[30rem] w-[30rem] rounded-full bg-[radial-gradient(circle,rgba(255,26,26,0.24)_0%,transparent_62%)] blur-2xl"
         />
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute right-[8%] bottom-[2rem] h-[32rem] w-[32rem] rounded-full bg-[radial-gradient(circle,rgba(96,110,190,0.26)_0%,transparent_62%)] blur-2xl"
+          className="blob-drift-alt pointer-events-none absolute right-[8%] bottom-[2rem] h-[32rem] w-[32rem] rounded-full bg-[radial-gradient(circle,rgba(96,110,190,0.26)_0%,transparent_62%)] blur-2xl"
         />
         <Container className="relative">
           <Reveal>
             <Prose className="mx-auto text-center">
               <h2 className="t-h2 text-white">
-                Quatre étapes pour rejoindre cette première expérience.
+                04 étapes pour rejoindre cette première expérience.
               </h2>
             </Prose>
           </Reveal>
           <div className="mx-auto mt-10 grid max-w-[60rem] gap-6 md:grid-cols-2">
             {ETAPES_INSCRIPTION.map((e, i) => (
-              <Reveal key={e.num} delay={i * 100}>
+              <Reveal key={e.num} variant="zoom" delay={i * 100}>
                 <div className="glass-card glass-dark card-hover h-full p-6 lg:p-7">
-                  <p className="font-display text-[2rem] font-medium leading-none text-white/30">
+                  <Reveal
+                    as="p"
+                    variant="pop"
+                    delay={i * 100 + 200}
+                    className="font-display text-[2rem] font-medium leading-none text-white/30"
+                  >
                     {e.num}
-                  </p>
+                  </Reveal>
                   <h3 className="t-h3 mt-5 text-white">{e.titre}</h3>
                   <p className="t-body mt-3 text-white/75">{e.texte}</p>
                 </div>
@@ -968,15 +999,15 @@ export function PrelaunchPage() {
       >
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute left-[8%] top-[4rem] h-[32rem] w-[32rem] rounded-full bg-[radial-gradient(circle,rgba(255,26,26,0.30)_0%,transparent_62%)] blur-2xl"
+          className="blob-drift pointer-events-none absolute left-[8%] top-[4rem] h-[32rem] w-[32rem] rounded-full bg-[radial-gradient(circle,rgba(255,26,26,0.30)_0%,transparent_62%)] blur-2xl"
         />
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute right-[6%] bottom-[-4rem] h-[34rem] w-[34rem] rounded-full bg-[radial-gradient(circle,rgba(96,110,190,0.28)_0%,transparent_62%)] blur-2xl"
+          className="blob-drift-alt pointer-events-none absolute right-[6%] bottom-[-4rem] h-[34rem] w-[34rem] rounded-full bg-[radial-gradient(circle,rgba(96,110,190,0.28)_0%,transparent_62%)] blur-2xl"
         />
         <Container className="relative">
           <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
-            <Reveal>
+            <Reveal variant="left">
               <Prose>
                 <h2 className="t-h2 text-white">
                   Tu veux commencer à parler anglais ? C&apos;est le moment de
@@ -999,11 +1030,11 @@ export function PrelaunchPage() {
                     <sup className="top-[-0.6em] text-[0.6em]">™</sup>
                   </span>
                   , tu peux rejoindre une première cohorte de 05 participants
-                  pour deux mois d&apos;accompagnement intensif en ligne, à
+                  pour 02 mois d&apos;accompagnement intensif en ligne, à
                   15 000 FCFA.
                 </p>
                 <p className="t-body text-white/75">
-                  Mais cette expérience est volontairement limitée à cinq
+                  Mais cette expérience est volontairement limitée à 05
                   personnes afin de permettre un suivi rapproché.
                 </p>
                 <p className="t-body text-white/75">
@@ -1019,16 +1050,16 @@ export function PrelaunchPage() {
                 </p>
               </Prose>
             </Reveal>
-            <Reveal delay={120}>
+            <Reveal variant="right" delay={120}>
               <div>
-                <CadreImage className="border-white/15 bg-black shadow-[0_24px_60px_rgba(0,0,0,0.55)]">
+                <CadreImage>
                   <div className="aspect-[16/10]">
                     <ResponsiveImage
                       src="/assets/prelaunch/prelaunch-final-cta.png"
                       alt="Illustration d'une apprenante fictive enthousiaste devant son ordinateur"
                       fill
                       sizes="(min-width: 1024px) 48vw, 100vw"
-                      className="object-cover"
+                      className="img-zoom object-cover"
                     />
                   </div>
                 </CadreImage>
@@ -1047,10 +1078,11 @@ export function PrelaunchPage() {
           ni de navigation du site principal. — */}
       <footer className="on-dark mt-auto border-t border-white/10 bg-black py-10 text-white">
         <Container>
-          <div className="mx-auto max-w-[42rem] text-center">
-            <p className="font-display text-[1.25rem] font-medium">
-              Mr. Steve English
-            </p>
+          <Reveal>
+            <div className="mx-auto max-w-[42rem] text-center">
+              <p className="font-display text-[1.25rem] font-medium">
+                Mr. Steve English
+              </p>
             <p className="t-body mt-2 text-white/85">
               Pre-launch • De <span className="text-red-button">COMPRENDRE</span>{" "}
               à <span className="text-red-button">PARLER</span>
@@ -1073,7 +1105,8 @@ export function PrelaunchPage() {
                 mrsteveenglish.vercel.app
               </Link>
             </p>
-          </div>
+            </div>
+          </Reveal>
         </Container>
       </footer>
 
