@@ -155,10 +155,10 @@ const STATUTS = [
 ];
 
 /* ============================================================
- * TASK 69 — VARIANTE PRÉ-LANCEMENT (« Pré-lancement • De
- * COMPRENDRE à PARLER™ » — 15 000 FCFA — 02 mois — première
- * cohorte de 05) : le propriétaire configure l'URL de retour du
- * paiement Maketou du produit de pré-lancement AVEC le paramètre
+ * TASK 69 — VARIANTE PRE-LAUNCH (« Pre-launch • De COMPRENDRE à
+ * PARLER™ » — 15 000 FCFA — 02 mois — première cohorte de 05) :
+ * le propriétaire configure l'URL de retour du paiement Maketou du
+ * produit pre-launch AVEC le paramètre
  * ?offre=prelaunch — la page adapte alors textes, récapitulatif,
  * étapes, statuts, CTA WhatsApp et REÇU (offre « prelaunch » de
  * receipt.ts). Le tunnel du programme principal reste STRICTEMENT
@@ -167,7 +167,7 @@ const STATUTS = [
 const PRELAUNCH_COMMUNAUTE_LABEL =
   "Rejoindre la Communauté WhatsApp de la Cohorte";
 
-/* Résumé élégant de l'offre de pré-lancement (brief §6). */
+/* Résumé élégant de l'offre pre-launch (brief §6). */
 const PRELAUNCH_RECAP = [
   { titre: "02 mois", texte: "Accompagnement intensif" },
   { titre: "03 séances / semaine", texte: "Séances de 1h30 en ligne" },
@@ -207,9 +207,9 @@ const PRELAUNCH_STATUTS = [
  * inventé. Le bouton bascule automatiquement sur le groupe dès que
  * le lien est collé dans site.ts. */
 const PRELAUNCH_WHATSAPP_MSG =
-  "Bonjour Coach Stevens, je viens de compléter mon inscription au pré-lancement De COMPRENDRE à PARLER™ (première cohorte — 02 mois). Merci de m'indiquer la communauté WhatsApp de la cohorte.";
+  "Bonjour Coach Stevens, je viens de compléter mon inscription à l'offre « Pre-launch • De COMPRENDRE à PARLER™ » (première cohorte — 02 mois). Merci de m'indiquer la communauté WhatsApp de la cohorte.";
 
-/** Task 69 : le tunnel de pré-lancement n'a pas de formulaire avant
+/** Task 69 : le tunnel pre-launch n'a pas de formulaire avant
  * paiement — le client saisit son nom sur cette page pour
  * personnaliser son reçu ; il est persisté (n° de reçu stable au
  * re-téléchargement, date d'inscription = premier retour sur la
@@ -235,7 +235,7 @@ const FALLBACK_INSCRIPTION: InscriptionData = {
 /** Bouton principal / final — Task 57 : lien DIRECT vers le groupe
  *  WhatsApp du programme (plus de message pré-rempli au coach).
  *  Task 69 : href paramétré — groupe de la COHORTE (lien fourni par
- *  le propriétaire) ou repli contact coach pour le pré-lancement. */
+ *  le propriétaire) ou repli contact coach pour le pre-launch. */
 function WhatsAppCta({
   href,
   label,
@@ -268,9 +268,9 @@ export function BienvenuePage() {
   /** Garde-fou anti double-clic : un seul envoi email par 4 s. */
   const lastClickRef = useRef(0);
 
-  /* Task 69 — variante pré-lancement : détectée au montage via le
+  /* Task 69 — variante pre-launch : détectée au montage via le
      paramètre d'URL ?offre=prelaunch (URL de retour Maketou du produit
-     de pré-lancement configurée par le propriétaire). */
+     de pre-launch configurée par le propriétaire). */
   const [prelaunch, setPrelaunch] = useState(false);
   /** Nom saisi par le client prelaunch (reçu personnalisé). */
   const [nomPrelaunch, setNomPrelaunch] = useState("");
@@ -322,7 +322,7 @@ export function BienvenuePage() {
        Purchase doit partir immédiatement avec les données client. */
     const data = readInscription();
     /* Task 69 : le Purchase porte l'offre réellement payée —
-       pré-lancement (15 000 XOF) quand l'URL de retour Maketou
+       pre-launch (15 000 XOF) quand l'URL de retour Maketou
        contient ?offre=prelaunch, programme principal sinon. */
     const estPrelaunch =
       new URLSearchParams(window.location.search).get("offre") ===
@@ -432,7 +432,7 @@ export function BienvenuePage() {
             {prelaunch ? (
               <>
                 Tu viens de rejoindre la première cohorte du
-                pré-lancement — deux mois pour commencer à pratiquer
+                Pre-launch — deux mois pour commencer à pratiquer
                 l&apos;anglais, étape par étape.
               </>
             ) : (
@@ -444,7 +444,7 @@ export function BienvenuePage() {
             )}
           </p>
 
-          {/* Task 69 (prelaunch) : le tunnel de pré-lancement n'a pas
+          {/* Task 69 (prelaunch) : le tunnel pre-launch n'a pas
               de formulaire avant paiement — le client saisit ici son
               nom pour personnaliser son reçu (optionnel, persisté
               localement, jamais réutilisé à d'autres fins). */}
@@ -539,10 +539,11 @@ export function BienvenuePage() {
               <p className="t-body text-white/90">
                 {prelaunch ? (
                   <>
-                    Ton paiement a bien été effectué. Ton inscription au
-                    pré-lancement De <span className="text-red-button">COMPRENDRE</span> à{" "}
+                    Ton paiement a bien été effectué. Ton inscription à
+                    l&apos;offre « Pre-launch • De{" "}
+                    <span className="text-red-button">COMPRENDRE</span> à{" "}
                     <span className="text-red-button">PARLER</span>
-                    <sup className="top-[-0.6em] text-[0.6em]">™</sup> —
+                    <sup className="top-[-0.6em] text-[0.6em]">™</sup> » —
                     première cohorte — est maintenant terminée.
                   </>
                 ) : (
@@ -778,7 +779,7 @@ export function BienvenuePage() {
                     {prelaunch ? "Offre" : "Programme"}
                   </dt>
                   <dd className="t-body font-medium text-white">
-                    {prelaunch ? "Pré-lancement — " : ""}De{" "}
+                    {prelaunch ? "Pre-launch — " : ""}De{" "}
                     <span className="text-red-button">Comprendre</span> à{" "}
                     <span className="text-red-button">Parler</span>
                     <sup className="top-[-0.6em] text-[0.6em]">™</sup>
@@ -788,7 +789,7 @@ export function BienvenuePage() {
                   <dt className="t-caption text-white/55">Durée</dt>
                   {/* Task 36 (retour propriétaire) : « 3 mois » →
                       « 03 mois ». Task 69 : « 02 mois » en variante
-                      pré-lancement. */}
+                      pre-launch. */}
                   <dd className="t-body font-medium text-white">
                     {prelaunch ? "02 mois" : "03 mois"}
                   </dd>

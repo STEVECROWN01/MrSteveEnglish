@@ -49,13 +49,13 @@ export const PRODUIT = {
   currency: "XOF",
 } as const;
 
-/** TASK 69 — produit de l'offre PRÉ-LANCEMENT (lib/site.ts PRELAUNCH —
- *  15 000 FCFA) : ViewContent sur /pre-lancement, InitiateCheckout au
+/** TASK 69 — produit de l'offre PRE-LAUNCH (lib/site.ts PRELAUNCH —
+ *  15 000 FCFA) : ViewContent sur /pre-launch, InitiateCheckout au
  *  clic des CTA de la page, Purchase sur la variante prelaunch de
  *  /bienvenue. Distinct du produit principal → les campagnes Meta
  *  peuvent optimiser séparément les deux offres. */
 export const PRODUIT_PRELAUNCH = {
-  content_name: "Pre-launch De Comprendre à Parler™",
+  content_name: "Pre-launch • De COMPRENDRE à PARLER™",
   content_category: "Coaching anglais",
   content_ids: ["prelaunch-de-comprendre-a-parler"],
   content_type: "product",

@@ -24,7 +24,7 @@ import { IconCheck } from "../icons";
  * Offre STRICTEMENT distincte du programme principal (03 mois —
  * 70 000 FCFA) : 02 mois d'accompagnement intensif en ligne — 15 000
  * FCFA — 03 séances de 1h30 par semaine — 05 participants maximum —
- * première cohorte de pré-lancement.
+ * première cohorte pre-launch.
  *
  * PAGE FOCALISÉE (comme /bienvenue) : ni header ni footer global du
  * site — la séparation des deux offres est totale (aucun CTA du
@@ -46,23 +46,24 @@ import { IconCheck } from "../icons";
  * rebours, aucune promesse de maîtrise garantie.
  */
 
-/** Cible du CTA : page produit Maketou du pré-lancement dès que le
- *  propriétaire l'a créée (PRELAUNCH_CHECKOUT_URL). En attendant :
- *  repli HONNÊTE — contact WhatsApp du coach avec message pré-rempli
- *  (aucun lien cassé, aucun paiement au mauvais tarif de 70 000 FCFA,
- *  le tunnel du programme principal n'est jamais touché). */
+/** Cible du CTA : page produit Maketou du pre-launch
+ *  (PRELAUNCH_CHECKOUT_URL — produit créé par le propriétaire,
+ *  vérifié : 15 000 FCFA, 02 mois). Repli si l'URL était vidée :
+ *  contact WhatsApp du coach avec message pré-rempli (aucun lien
+ *  cassé, aucun paiement au mauvais tarif de 70 000 FCFA, le
+ *  tunnel du programme principal n'est jamais touché). */
 const CTA_HREF =
   PRELAUNCH_CHECKOUT_URL ||
   waLink(
-    "Bonjour Coach Stevens, je souhaite rejoindre la première cohorte du pré-lancement De COMPRENDRE à PARLER™ (02 mois — 15 000 FCFA). Comment je procède pour réserver ma place ?",
+    "Bonjour Coach Stevens, je souhaite rejoindre la première cohorte de l'offre « Pre-launch • De COMPRENDRE à PARLER™ » (02 mois — 15 000 FCFA). Comment je procède pour réserver ma place ?",
   );
 
 const CTA_HERO_LABEL = "Découvrir l'offre et s'inscrire →";
 const CTA_FINAL_LABEL = "Je veux découvrir l'offre et m'inscrire →";
 
-/** Bouton d'inscription de l'offre de pré-lancement — externe
+/** Bouton d'inscription de l'offre pre-launch — externe
  *  (Maketou ou repli WhatsApp), avec événement Meta InitiateCheckout
- *  (produit pré-lancement, 15 000 XOF) au clic. `data-wa-cta` :
+ *  (produit pre-launch, 15 000 XOF) au clic. `data-wa-cta` :
  *  la barre sticky mobile n'apparaît que quand aucun CTA in-page
  *  n'est visible (règle DA §18 conservée). */
 function CtaOffre({
@@ -302,7 +303,7 @@ const FAQ_PRELAUNCH = [
 
 export function PrelaunchPage() {
   /* TASK 69 — META PIXEL : « ViewContent » — cette page présente
-     l'offre de pré-lancement (15 000 XOF) : un visiteur ici a vu ce
+     l'offre pre-launch (15 000 XOF) : un visiteur ici a vu ce
      produit. Déclenché une fois par affichage, copie serveur CAPI
      avec le même event_id — même mécanique que la page Programme. */
   useEffect(() => {
@@ -691,7 +692,7 @@ export function PrelaunchPage() {
                     visible ; durée et rythme affichés clairement. */}
                 <div className="glass-card glass-dark card-hover p-6 text-center md:p-8">
                   <Eyebrow className="text-white/70">
-                    Pré-lancement · Première cohorte
+                    Pre-launch · Première cohorte
                   </Eyebrow>
                   <p className="t-stat mt-4 text-white">15 000 FCFA</p>
                   <p className="t-body mt-2 text-white/75">

@@ -7,7 +7,7 @@ import { PixelNoscript } from "@/components/site/pixel-noscript";
  * PRE-LAUNCH (Task 69 — brief propriétaire 2026-10-18) : landing
  * dédiée à l'offre « Pre-launch • De COMPRENDRE à PARLER™ » — 02 mois
  * d'accompagnement intensif en ligne — 15 000 FCFA — 05 participants
- * maximum — première cohorte de pré-lancement.
+ * maximum — première cohorte pre-launch.
  *
  * Page INDEXABLE (landing marketing publique, déclarée dans le
  * sitemap), mais FOCALISÉE comme /bienvenue : ni header ni footer
@@ -16,29 +16,34 @@ import { PixelNoscript } from "@/components/site/pixel-noscript";
  * cette page ne mène au formulaire ni au paiement du programme
  * principal, et réciproquement.
  *
- * Le CTA d'inscription mène à la page produit Maketou du pré-lancement
- * (PRELAUNCH_CHECKOUT_URL dans lib/site.ts — configuration restante
- * propriétaire) ; l'URL de retour du paiement est
+ * Le CTA d'inscription mène à la page produit Maketou du pre-launch
+ * (PRELAUNCH_CHECKOUT_URL dans lib/site.ts — produit 15 000 FCFA
+ * créé par le propriétaire) ; l'URL de retour du paiement est
  * /bienvenue?offre=prelaunch (variante prelaunch de la page Bienvenue
  * + reçu dédié).
+ *
+ * RENOMMAGE /pre-lancement → /pre-launch (instruction propriétaire
+ * 2026-10-19 : « Pre-launch » en anglais dans le code) : redirection
+ * 308 PERMANENTE depuis l'ancienne route (next.config.ts) — les
+ * liens déjà partagés restent valides.
  */
 export const metadata: Metadata = {
   title:
-    "Pre-launch De COMPRENDRE à PARLER™ — 02 mois · 15 000 FCFA | Stevens AKPOVI",
+    "Pre-launch • De COMPRENDRE à PARLER™ — 02 mois · 15 000 FCFA | Stevens AKPOVI",
   description:
     "Première cohorte de pré-lancement : 02 mois d'accompagnement intensif en ligne pour commencer à pratiquer l'anglais — 03 séances de 1h30 par semaine — 15 000 FCFA — 05 places maximum.",
   alternates: {
-    canonical: "/pre-lancement",
+    canonical: "/pre-launch",
   },
   openGraph: {
     title:
-      "Pre-launch De COMPRENDRE à PARLER™ — Première cohorte | Stevens AKPOVI",
+      "Pre-launch • De COMPRENDRE à PARLER™ — Première cohorte | Stevens AKPOVI",
     description:
       "02 mois d'accompagnement intensif en ligne pour commencer à pratiquer l'anglais. 15 000 FCFA — 05 places maximum.",
     type: "website",
     locale: "fr_FR",
     siteName: "Stevens AKPOVI",
-    url: "/pre-lancement",
+    url: "/pre-launch",
     images: [
       {
         url: "/assets/OG-SOCIAL-v2.jpg",
@@ -53,7 +58,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title:
-      "Pre-launch De COMPRENDRE à PARLER™ — Première cohorte | Stevens AKPOVI",
+      "Pre-launch • De COMPRENDRE à PARLER™ — Première cohorte | Stevens AKPOVI",
     description:
       "02 mois d'accompagnement intensif en ligne pour commencer à pratiquer l'anglais. 15 000 FCFA — 05 places maximum.",
   },

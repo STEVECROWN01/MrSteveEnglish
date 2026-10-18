@@ -99,7 +99,7 @@ export function readInscription(): InscriptionData | null {
 }
 
 /* — N° de reçu déterministe : MSE-YYMM-XXXX (programme) ou
-     MSE-PL-YYMM-XXXX (pré-lancement) — stable au re-téléchargement. — */
+     MSE-PL-YYMM-XXXX (pre-launch) — stable au re-téléchargement. — */
 export function receiptNumberFor(
   d: InscriptionData,
   offre: OffreId = "programme",
@@ -128,9 +128,9 @@ const NBSP = "\u00A0";
  * TASK 69 — REÇU PARAMÉTRÉ PAR OFFRE.
  * « programme » : 70 000 FCFA — 03 mois (comportement STRICTEMENT
  * identique à l'existant — aucun octet ne change pour le tunnel
- * principal). « prelaunch » : Pré-lancement • De COMPRENDRE à
+ * principal). « prelaunch » : Pre-launch • De COMPRENDRE à
  * PARLER™ — 15 000 FCFA — 02 mois — première cohorte de 05.
- * Le reçu de pré-lancement respecte le brief : nom EXACT de
+ * Le reçu pre-launch respecte le brief : nom EXACT de
  * l'offre, durée, montant réellement payé — SANS inventer de
  * politique de remboursement ni de données de transaction.
  * ============================================================ */
@@ -155,7 +155,7 @@ type ConfigOffre = {
    * (règle propriétaire Task 59/62 conservée pour les deux offres). */
   inclus: string[];
   /** Préfixe du n° de reçu : MSE-YYMM-XXXX (programme) /
-   * MSE-PL-YYMM-XXXX (pré-lancement — distinguable au premier regard). */
+   * MSE-PL-YYMM-XXXX (pre-launch — distinguable au premier regard). */
   recuPrefix: string;
   /** Coches « CE QUE CE REÇU CONFIRME ». */
   confirmations: string[];
@@ -185,19 +185,22 @@ const OFFRES: Record<OffreId, ConfigOffre> = {
     ],
   },
   prelaunch: {
-    /* Brief pré-lancement §6 : nom exact « Pré-lancement • De
-       COMPRENDRE à PARLER™ », 02 mois, 15 000 FCFA, 03 séances de
-       1h30/semaine, 100 % en ligne, communauté WhatsApp. Aucune
-       promesse de maîtrise, aucune politique de remboursement
-       inventée (les conditions de l'offre restent à clarifier par
-       le propriétaire avant mise en production). */
-    titre: "Pré-lancement • De COMPRENDRE à PARLER™",
+    /* Brief pre-launch §6 : nom exact « Pre-launch • De
+       COMPRENDRE à PARLER™ » (instruction propriétaire 2026-10-19 :
+       « Pre-launch » en anglais — le nom, jamais « Pré-lancement »,
+       qui reste autorisé uniquement dans le copywriting), 02 mois,
+       15 000 FCFA, 03 séances de 1h30/semaine, 100 % en ligne,
+       communauté WhatsApp. Aucune promesse de maîtrise, aucune
+       politique de remboursement inventée (les conditions de
+       l'offre restent à clarifier par le propriétaire avant mise
+       en production). */
+    titre: "Pre-launch • De COMPRENDRE à PARLER™",
     prix: `15${NBSP}000${NBSP}FCFA`,
     montantLettres: "Quinze mille (15 000) francs CFA",
     duree: "02 mois",
     dureeLabel: "DURÉE DE L'ACCOMPAGNEMENT",
     lignes: [
-      "02 mois d'accompagnement intensif en ligne — première cohorte de pré-lancement",
+      "02 mois d'accompagnement intensif en ligne — première cohorte du Pre-launch",
       "Trois séances de 1h30 par semaine  ·  Exercices pratiques  ·  Communauté WhatsApp",
     ],
     inclusTitre: "CE QUE COMPREND CETTE OFFRE",
@@ -215,10 +218,10 @@ const OFFRES: Record<OffreId, ConfigOffre> = {
     ],
     recuPrefix: "MSE-PL",
     confirmations: [
-      "Votre inscription au pré-lancement est terminée et votre place réservée pour 02 mois.",
+      "Votre inscription à l'offre Pre-launch est terminée et votre place réservée pour 02 mois.",
       "Le règlement intégral de 15 000 FCFA a bien été reçu — aucun autre montant ne vous est demandé pour cette offre.",
       "Les horaires des séances vous seront communiqués dans la communauté WhatsApp de la cohorte.",
-      "Cet accompagnement de 02 mois est réservé à la première cohorte du pré-lancement.",
+      "Cet accompagnement de 02 mois est réservé à la première cohorte du Pre-launch.",
     ],
   },
 };
@@ -576,7 +579,7 @@ export async function buildReceiptPdf(
   doc.text("CE QUE CE REÇU CONFIRME", M, 646, { charSpace: 1.2 });
 
   /* Task 69 : confirmations paramétrées par offre (aucune politique
-     de remboursement inventée pour le pré-lancement). */
+     de remboursement inventée pour le pre-launch). */
   const confirmations = cfg.confirmations;
   doc.setFont("helvetica", "normal");
   doc.setFontSize(9.5);
@@ -705,16 +708,16 @@ export function sendReceiptPdfCopy(
   /* Task 69 : le message au coach identifie clairement l'OFFRE
      concernée — le coach distingue immédiatement un client du
      PROGRAMME principal (70 000 FCFA — 03 mois) d'un participant du
-     PRÉ-LANCEMENT (15 000 FCFA — 02 mois — première cohorte). */
+     PRE-LAUNCH (15 000 FCFA — 02 mois — première cohorte). */
   const estPrelaunch = offre === "prelaunch";
   const annonce = estPrelaunch
-    ? "Un participant de la PREMIÈRE COHORTE DE PRÉ-LANCEMENT vient de finaliser son inscription au « Pré-lancement • De COMPRENDRE à PARLER™ » (02 mois — 15 000 FCFA). Son paiement a été effectué et validé."
+    ? "Un participant de la PREMIÈRE COHORTE PRE-LAUNCH vient de finaliser son inscription au « Pre-launch • De COMPRENDRE à PARLER™ » (02 mois — 15 000 FCFA). Son paiement a été effectué et validé."
     : "Un nouveau client vient de finaliser son inscription au programme d'accompagnement « De Comprendre à Parler™ » (03 mois). Son paiement a été effectué et validé.";
   const ligneMontant = estPrelaunch
-    ? `Montant : 15${NBSP}000${NBSP}FCFA (paiement unique — offre de pré-lancement)`
+    ? `Montant : 15${NBSP}000${NBSP}FCFA (paiement unique — offre Pre-launch)`
     : `Montant : 70${NBSP}000${NBSP}FCFA (paiement unique)`;
   const etapeSuivante = estPrelaunch
-    ? "Le client a été invité à rejoindre la communauté WhatsApp dédiée à la cohorte de pré-lancement."
+    ? "Le client a été invité à rejoindre la communauté WhatsApp dédiée à la première cohorte."
     : "Le client a été invité à vous contacter sur WhatsApp pour planifier le démarrage de son accompagnement.";
 
   /* Message professionnel « système → Coach » : salutation,
@@ -754,7 +757,7 @@ export function sendReceiptPdfCopy(
   fd.set(
     "_subject",
     estPrelaunch
-      ? `Nouveau participant PRÉ-LANCEMENT — ${nom} — Reçu ${receiptNo} en pièce jointe`
+      ? `Nouveau participant PRE-LAUNCH — ${nom} — Reçu ${receiptNo} en pièce jointe`
       : `Nouveau client — ${nom} — Reçu ${receiptNo} en pièce jointe`,
   );
   fd.set("_template", "basic");

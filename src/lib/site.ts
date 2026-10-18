@@ -98,7 +98,7 @@ export const CTA_LABELS = {
 } as const;
 
 /* ============================================================
- * TASK 69 — OFFRE PRÉ-LANCEMENT « Pre-launch • De COMPRENDRE à
+ * TASK 69 — OFFRE PRE-LAUNCH « Pre-launch • De COMPRENDRE à
  * PARLER™ » (brief propriétaire 2026-10-18) : première cohorte de
  * 05 participants — 02 mois d'accompagnement intensif en ligne —
  *  03 séances de 1h30 par semaine — 15 000 FCFA — paiement unique.
@@ -106,8 +106,11 @@ export const CTA_LABELS = {
  * 70 000 FCFA (OFFRE ci-dessus) : pages, paiement et reçu propres.
  * ============================================================ */
 export const PRELAUNCH = {
-  /** Nom exact de l'offre (brief §6 — utilisé par le reçu). */
-  nom: "Pré-lancement • De COMPRENDRE à PARLER™",
+  /** Nom exact de l'offre (brief §6 — utilisé par le reçu).
+   *  Instruction propriétaire (2026-10-19) : le nom officiel est
+   *  « Pre-launch » (anglais) — « Pré-lancement » reste autorisé
+   *  uniquement comme mot du copywriting, jamais comme nom. */
+  nom: "Pre-launch • De COMPRENDRE à PARLER™",
   duree: "02 mois",
   rythme: "Trois séances de 1h30 par semaine",
   prix: "15 000",
@@ -120,30 +123,30 @@ export const PRELAUNCH = {
 } as const;
 
 /**
- * TASK 69 — Page produit Maketou de l'offre de pré-lancement.
- * ⚠️ CONFIGURATION RESTANTE (propriétaire) : créer le produit
- * « Pré-lancement De Comprendre à Parler — 02 mois » à 15 000 FCFA
- * dans la boutique mymaketou.shop (comme le produit principal), puis
- * coller son URL ici. VIDE POUR L'INSTANT : les CTA de la page
- * /pre-lancement basculent sur un repli propre — contact WhatsApp du
- * coach avec message pré-rempli (aucune erreur, aucun paiement au
- * mauvais tarif ; le tunnel du programme principal n'est jamais
- * touché). Dès que l'URL est renseignée, les CTA dirigent vers la
- * page de paiement sécurisée, et l'URL de retour à configurer dans
- * Maketou est : /bienvenue?offre=prelaunch
+ * TASK 69 — Page produit Maketou de l'offre pre-launch.
+ * Lien fourni par le propriétaire (2026-10-19) et VÉRIFIÉ : produit
+ * « Pre-launch • De COMPRENDRE à PARLER™ » — 15 000 FCFA (prix
+ * promotionnel barré à 70 000) — 02 mois. Les CTA de la page
+ * /pre-launch dirigent directement vers ce paiement sécurisé ; si
+ * l'URL était vidée, ils basculeraient sur un repli propre —
+ * contact WhatsApp du coach avec message pré-rempli (aucun paiement
+ * au mauvais tarif ; le tunnel du programme principal n'est jamais
+ * touché). URL de retour à configurer dans Maketou :
+ * /bienvenue?offre=prelaunch
  */
-export const PRELAUNCH_CHECKOUT_URL = "";
+export const PRELAUNCH_CHECKOUT_URL =
+  "https://mrsteveenglish.mymaketou.shop/products/coaching-danglais-de-comprendre-a-parler-en-03-mois-2";
 
 /**
- * TASK 69 — Groupe WhatsApp DÉDIÉ à la cohorte de pré-lancement.
- * ⚠️ Le lien sera fourni par le propriétaire (brief : « utilise
- * uniquement le lien qui sera fourni ») — JAMAIS inventé. VIDE
- * POUR L'INSTANT : la page Bienvenue (variante prelaunch) propose
- * alors le contact direct du coach sur WhatsApp (repli honnête),
- * et bascule automatiquement sur ce groupe dès que le lien est
- * collé ici.
+ * TASK 69 — Groupe WhatsApp DÉDIÉ à la cohorte pre-launch. Lien
+ * d'invitation fourni par le propriétaire (2026-10-19, vérifié) :
+ * la page Bienvenue (variante prelaunch) y dirige directement les
+ * nouveaux participants de la première cohorte. Si l'URL était
+ * vidée, la page basculerait sur le contact direct du coach
+ * (repli honnête).
  */
-export const PRELAUNCH_WHATSAPP_URL = "";
+export const PRELAUNCH_WHATSAPP_URL =
+  "https://chat.whatsapp.com/I1pOO7953m63WsWBWPCpxf";
 
 /** Pages internes (Task 48 — vraies pages SEO : chemins réels indexables)
  * — cible des CTA. La page « bienvenue » (post-paiement) n'apparaît
@@ -162,6 +165,6 @@ export const PAGES = {
   aPropos: "/a-propos",
   resultats: "/resultats",
   bienvenue: "/bienvenue",
-  /** Task 69 — landing de l'offre de pré-lancement (15 000 FCFA). */
-  prelaunch: "/pre-lancement",
+  /** Task 69 — landing de l'offre pre-launch (15 000 FCFA). */
+  prelaunch: "/pre-launch",
 } as const;
