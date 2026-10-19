@@ -31,7 +31,7 @@ export const metadata: Metadata = {
   title:
     "Pre-launch • De COMPRENDRE à PARLER™ — 02 mois · 15 000 FCFA | Stevens AKPOVI",
   description:
-    "Première cohorte de pré-lancement : 02 mois d'accompagnement intensif en ligne pour commencer à pratiquer l'anglais — 03 séances de 1h30 par semaine — 15 000 FCFA — 05 places maximum.",
+    "Première cohorte de pré-lancement : 02 mois d'accompagnement intensif en ligne pour commencer à pratiquer l'anglais — 03 séances de 1h30 par semaine — 15 000 FCFA — 05 places disponibles.",
   alternates: {
     canonical: "/pre-launch",
   },
@@ -39,19 +39,26 @@ export const metadata: Metadata = {
     title:
       "Pre-launch • De COMPRENDRE à PARLER™ — Première cohorte | Stevens AKPOVI",
     description:
-      "02 mois d'accompagnement intensif en ligne pour commencer à pratiquer l'anglais. 15 000 FCFA — 05 places maximum.",
+      "02 mois d'accompagnement intensif en ligne pour commencer à pratiquer l'anglais. 15 000 FCFA — 05 places disponibles.",
     type: "website",
     locale: "fr_FR",
     siteName: "Stevens AKPOVI",
     url: "/pre-launch",
+    /* TASK 75 (instruction propriétaire) : OG DÉDIÉE au pre-launch —
+       image uploadée par le propriétaire
+       (public/assets/prelaunch/OG-SOCIAL.png, 1254×1254), optimisée
+       selon la règle établie pour l'OG du programme (worklog) :
+       JPEG q90 LANCZOS 1254→1200 = 229 Ko (limite pratique WhatsApp
+       ~300 Ko), nom CACHE-BUSTER (OG-SOCIAL-PL-v1.jpg) pour forcer le
+       re-fetch des crawlers — l'OG du programme principal
+       (/assets/OG-SOCIAL-v2.jpg) reste STRICTEMENT inchangée. */
     images: [
       {
-        url: "/assets/OG-SOCIAL-v2.jpg",
+        url: "/assets/prelaunch/OG-SOCIAL-PL-v1.jpg",
         type: "image/jpeg",
         width: 1200,
         height: 1200,
-        alt:
-          "Pre-launch • De COMPRENDRE à PARLER™ — première cohorte de 05 participants.",
+        alt: "Pre-launch • De COMPRENDRE à PARLER™ — première cohorte de 05 participants.",
       },
     ],
   },
@@ -60,7 +67,7 @@ export const metadata: Metadata = {
     title:
       "Pre-launch • De COMPRENDRE à PARLER™ — Première cohorte | Stevens AKPOVI",
     description:
-      "02 mois d'accompagnement intensif en ligne pour commencer à pratiquer l'anglais. 15 000 FCFA — 05 places maximum.",
+      "02 mois d'accompagnement intensif en ligne pour commencer à pratiquer l'anglais. 15 000 FCFA — 05 places disponibles.",
   },
 };
 

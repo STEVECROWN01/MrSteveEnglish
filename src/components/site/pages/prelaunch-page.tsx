@@ -191,14 +191,15 @@ const INCLUS_PRELAUNCH = [
   },
 ];
 
-/* — SECTION 7 : à qui s'adresse l'offre (listes exactes du brief) — */
+/* — SECTION 7 : à qui s'adresse l'offre (listes exactes du brief) —
+   TASK 75 (instruction propriétaire) : 03 points SUPPRIMÉS (« Tu
+   connais quelques mots ou expressions… », « Tu comprends certaines
+   choses… », « Tu disposes d'une connexion internet… ») et le point
+   des séances CORRIGÉ (1h30 + au moins 10 min d'exercices). — */
 const POUR_TOI = [
   "Tu es un vrai débutant en anglais et tu ne sais presque pas parler.",
-  "Tu connais quelques mots ou expressions, mais tu as du mal à construire des phrases.",
-  "Tu comprends certaines choses en anglais, mais tu bloques lorsque tu dois répondre.",
   "Tu souhaites apprendre à t'exprimer oralement et tu es prêt à pratiquer régulièrement.",
-  "Tu peux consacrer du temps aux 03 séances hebdomadaires et aux exercices.",
-  "Tu disposes d'une connexion internet adaptée pour suivre l'accompagnement en ligne.",
+  "Tu peux consacrer 1h30 aux 03 séances hebdomadaires et au moins 10 min aux exercices.",
   "Tu es prêt à appliquer les conseils reçus et à prendre ton apprentissage au sérieux.",
 ];
 const PAS_POUR_TOI = [
@@ -286,8 +287,11 @@ const FAQ_PRELAUNCH = [
   },
   {
     question: "Puis-je obtenir un remboursement ?",
+    /* TASK 75 (instruction propriétaire) : réponse remplacée —
+       politique explicite : inscription définitive, aucun
+       remboursement. */
     answer:
-      "Les conditions applicables aux paiements et aux éventuels remboursements sont précisées dans les conditions de l'offre. Consulte-les attentivement avant de procéder au paiement.",
+      "Toute inscription est définitive. Une fois l'inscription terminée, aucun remboursement ne sera accordé.",
   },
 ];
 
@@ -436,7 +440,18 @@ export function PrelaunchPage() {
             className="blob-drift-alt pointer-events-none absolute right-[2%] bottom-[-6rem] h-[36rem] w-[36rem] rounded-full bg-[radial-gradient(circle,rgba(96,110,190,0.30)_0%,transparent_62%)] blur-2xl"
           />
           <Container className="relative">
-            <div className="grid items-center gap-10 lg:grid-cols-[45%_55%] lg:gap-14">
+            {/* TASK 75 (instruction propriétaire) : l'eyebrow du hero
+                est renommé « Pre-launch • De COMPRENDRE à PARLER™ »
+                (nom officiel de l'offre) et posé AU-DESSUS de la
+                grille : centré horizontalement sur les DEUX colonnes
+                du hero sur desktop (centré également sur mobile).
+                Animation hero-line/hero-d1 conservée (1re ligne à
+                apparaître). */}
+            <p className="hero-line hero-d1 text-center text-[0.75rem] font-medium uppercase tracking-[0.18em] text-red-button">
+              Pre-launch • De COMPRENDRE à PARLER
+              <sup className="top-[-0.6em] text-[0.6em]">™</sup>
+            </p>
+            <div className="mt-6 grid items-center gap-10 lg:grid-cols-[45%_55%] lg:gap-14">
               {/* Portrait du fondateur — cadrage IDENTIQUE à l'accueil
                 (TASK 71 : coins 12px, ombre douce, aucune bordure),
                 entrée dédiée hero-portrait-in (fondu + montée + zoom
@@ -453,7 +468,7 @@ export function PrelaunchPage() {
                       alt="Stevens AKPOVI, coach d'anglais et fondateur de Mr Steve English"
                       fill
                       priority
-                      sizes="(min-width: 1024px) 45vw, 100vw"
+                      sizes="100vw"
                       className="img-zoom object-cover [object-position:65%_35%] lg:[object-position:50%_35%]"
                     />
                   </div>
@@ -461,10 +476,7 @@ export function PrelaunchPage() {
               </div>
 
               <div className="text-center lg:order-2 lg:text-left">
-                <p className="hero-line hero-d1 text-[0.75rem] font-medium uppercase tracking-[0.18em] text-red-button">
-                  Pre-launch · Première cohorte
-                </p>
-                <h1 className="hero-line hero-d2 t-h1 mt-4 text-white">
+                <h1 className="hero-line hero-d2 t-h1 mt-0 text-white">
                   Tu veux parler anglais, mais tu ne sais pas encore comment
                   t&apos;y prendre ?
                 </h1>
@@ -505,8 +517,22 @@ export function PrelaunchPage() {
         {/* ============================================================
           SECTION 2 — LE PROBLÈME (brief §2 + IMAGE 2
           prelaunch-speaking-block.png) : le visiteur se reconnaît.
+          TASK 75 (instruction propriétaire) : limite OBLIQUE entre le
+          hero (noir) et cette section (blanche) — EXACTEMENT comme la
+          limite noir→blanc de la section « Ma méthode » de l'accueil
+          du programme (même SVG, 24 px mobile / 32 px desktop : le
+          noir du hero pénètre le haut-gauche de la section claire,
+          bord montant bas-gauche → haut-droite).
           ============================================================ */}
-        <section id="probleme" className="scroll-mt-20 py-12 lg:py-24">
+        <section id="probleme" className="relative scroll-mt-20 py-12 lg:py-24">
+          <svg
+            aria-hidden="true"
+            viewBox="0 0 100 100"
+            preserveAspectRatio="none"
+            className="absolute inset-x-0 top-0 block h-6 w-full lg:h-8"
+          >
+            <polygon points="0,0 100,0 0,100" fill="#000000" />
+          </svg>
           <Container>
             <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
               <Reveal variant="left">
@@ -541,10 +567,9 @@ export function PrelaunchPage() {
                       t&apos;entraîner régulièrement et d&apos;apprendre à
                       utiliser progressivement ce que tu connais déjà.
                     </p>
-                    <p className="t-body mt-4 text-white/75">
-                      C&apos;est précisément dans cette démarche que
-                      s&apos;inscrit notre offre de pré-lancement.
-                    </p>
+                    {/* TASK 75 (instruction propriétaire) : « C'est
+                        précisément dans cette démarche que s'inscrit
+                        notre offre de pré-lancement. » SUPPRIMÉ. */}
                   </div>
                 </Prose>
               </Reveal>
@@ -559,7 +584,7 @@ export function PrelaunchPage() {
                         src="/assets/prelaunch/prelaunch-speaking-block.png"
                         alt="Illustration d'un personnage fictif qui hésite à parler lors d'une conversation en ligne"
                         fill
-                        sizes="(min-width: 1024px) 48vw, 100vw"
+                        sizes="100vw"
                         className="img-zoom object-cover lg:[object-position:40%_50%]"
                       />
                     </div>
@@ -608,7 +633,7 @@ export function PrelaunchPage() {
                         src="/assets/prelaunch/prelaunch-online-session.png"
                         alt="Illustration d'une apprenante fictive qui parle anglais pendant une séance en ligne"
                         fill
-                        sizes="(min-width: 1024px) 48vw, 100vw"
+                        sizes="100vw"
                         className="img-zoom object-cover lg:[object-position:40%_50%]"
                       />
                     </div>
@@ -650,12 +675,10 @@ export function PrelaunchPage() {
                     des phrases, à utiliser des expressions adaptées à ton
                     niveau et à prendre progressivement la parole en anglais.
                   </p>
-                  <p className="t-body border-t border-white/15 pt-6 text-white/75">
-                    Il ne s&apos;agit pas de te promettre de devenir
-                    parfaitement bilingue en 02 mois. Il s&apos;agit de te
-                    proposer un cadre structuré pour pratiquer, travailler ton
-                    expression orale et progresser avec méthode.
-                  </p>
+                  {/* TASK 75 (instruction propriétaire) : le paragraphe
+                      « Il ne s'agit pas de te promettre de devenir
+                      parfaitement bilingue… » et le trait horizontal
+                      qui le surmontait sont SUPPRIMÉS. */}
                   {/* TASK 73 (instruction propriétaire) : CTA au cœur de
                     la section — le visiteur convaincu n'attend pas la
                     section tarifaire pour s'inscrire. */}
@@ -667,7 +690,7 @@ export function PrelaunchPage() {
                   </div>
                   <p className="t-caption mt-4 text-white/55">
                     15 000 FCFA · 02 mois d&apos;accompagnement · 05 places
-                    maximum
+                    disponibles
                   </p>
                 </Prose>
               </Reveal>
@@ -699,8 +722,8 @@ export function PrelaunchPage() {
             <Reveal>
               <Prose className="mx-auto text-center">
                 <h2 className="t-h2 text-black">
-                  02 mois pour commencer à pratiquer l&apos;anglais avec un
-                  accompagnement structuré.
+                  02 mois pour pratiquer l&apos;anglais avec un accompagnement
+                  structuré.
                 </h2>
               </Prose>
             </Reveal>
@@ -713,7 +736,7 @@ export function PrelaunchPage() {
                         src="/assets/prelaunch/prelaunch-practice-exercises.png"
                         alt="Illustration d'un apprenant fictif qui pratique l'anglais devant son ordinateur"
                         fill
-                        sizes="(min-width: 1024px) 40vw, 100vw"
+                        sizes="(min-width: 1024px) 55vw, 100vw"
                         className="img-zoom object-cover"
                       />
                     </div>
@@ -780,54 +803,40 @@ export function PrelaunchPage() {
               <Reveal variant="left">
                 <Prose>
                   <h2 className="t-h2 text-white">
-                    Une condition exceptionnelle pour la première cohorte de
-                    pré-lancement.
+                    Une condition exceptionnelle du pré-lancement.
                   </h2>
+                  {/* TASK 75 (instruction propriétaire) : contenu
+                      REMPLACÉ par la version resserrée — 04
+                      paragraphes, passages clés en graisse moyenne. */}
                   <p className="t-body mt-6 text-white/75">
                     Le programme principal{" "}
                     <span className="font-medium text-white">
-                      De <span className="text-red-button">Comprendre</span> à{" "}
-                      <span className="text-red-button">Parler</span>
+                      De <span className="text-red-button">COMPRENDRE</span> à{" "}
+                      <span className="text-red-button">PARLER</span>
                       <sup className="top-[-0.6em] text-[0.6em]">™</sup>
                     </span>{" "}
-                    est prévu sur 03 mois, au tarif de 70 000 FCFA.
+                    est prévu sur 03 mois au tarif de 70 000 FCFA. Pour ce
+                    pré-lancement, nous proposons exceptionnellement{" "}
+                    <span className="font-medium text-white">
+                      02 mois d&apos;accompagnement à 15 000 FCFA, réservés à 05
+                      participants seulement
+                    </span>
+                    .
                   </p>
-                  <p className="t-body text-white/75">
-                    L&apos;offre que nous te présentons ici est différente :
-                    elle porte exclusivement sur 02 mois d&apos;accompagnement,
-                    proposés exceptionnellement à{" "}
-                    <span className="font-medium text-white">15 000 FCFA</span>{" "}
-                    pour cette première cohorte.
+                  <p className="t-body mt-4 text-white/75">
+                    Cette première cohorte nous permettra d&apos;accompagner ces
+                    participants, d&apos;observer leurs progrès réels et de
+                    recueillir leurs retours afin de préparer le lancement
+                    officiel sur des bases concrètes.
                   </p>
-                  <p className="t-body text-white/75">
-                    Pourquoi cette différence ?
+                  <p className="t-body mt-4 text-white/75">
+                    En contrepartie, nous recherchons des personnes sérieuses,
+                    prêtes à s&apos;investir pleinement dans leur apprentissage.
                   </p>
-                  <p className="t-body text-white/75">
-                    Parce que cette expérience s&apos;inscrit dans un défi que
-                    nous nous sommes fixé dans le cadre de la préparation du
-                    lancement officiel du programme.
-                  </p>
-                  <p className="t-body text-white/75">
-                    Nous voulons accompagner 05 personnes pendant 02 mois,
-                    observer leurs progrès réels, recueillir leurs retours et
-                    tirer des enseignements concrets de cette première
-                    expérience.
-                  </p>
-                  <p className="t-body text-white/75">
-                    Nous avons choisi d&apos;investir notre temps et notre
-                    expertise dans ce travail afin de préparer la suite du
-                    programme sur des bases concrètes.
-                  </p>
-                  <p className="t-body text-white/75">
-                    En retour, nous recherchons des participants qui
-                    s&apos;impliqueront sérieusement dans leur apprentissage et
-                    qui accepteront de faire les efforts nécessaires pour
-                    progresser.
-                  </p>
-                  <p className="t-body text-white/75">
-                    Cette offre est donc une occasion particulière de bénéficier
-                    d&apos;un accompagnement structuré à un tarif accessible,
-                    dans le cadre de notre pré-lancement.
+                  <p className="t-body mt-4 font-medium text-white">
+                    Une occasion de bénéficier d&apos;un accompagnement
+                    structuré à un tarif exceptionnel, tout en contribuant à la
+                    préparation du programme officiel.
                   </p>
                 </Prose>
               </Reveal>
@@ -887,7 +896,7 @@ export function PrelaunchPage() {
                           fg="#ffffff"
                         />
                         <span className="t-body text-white">
-                          100 % en ligne · 05 places maximum
+                          100 % en ligne · 05 places disponibles
                         </span>
                       </li>
                     </ul>
@@ -906,7 +915,7 @@ export function PrelaunchPage() {
                         src="/assets/prelaunch/prelaunch-offer-value.png"
                         alt="Bureau minimaliste avec ordinateur portable, carnet et casque audio"
                         fill
-                        sizes="(min-width: 1024px) 48vw, 100vw"
+                        sizes="(min-width: 1024px) 55vw, 100vw"
                         className="img-zoom object-cover"
                       />
                     </div>
@@ -919,14 +928,15 @@ export function PrelaunchPage() {
 
         {/* ============================================================
           SECTION 6 — POURQUOI SEULEMENT 05 PLACES (brief §6 + IMAGE 7
-          prelaunch-small-cohort.png) : « 05 PLACES MAXIMUM » en VRAI
-          texte HTML — aucun compteur restant, aucun faux compte à
-          rebours (capacité réelle). TASK 73 : BANDE DÉFILANTE ROUGE
-          des mots-clés pre-launch en tête de section (instruction
-          propriétaire — même marquee que l'accueil du programme).
+          prelaunch-small-cohort.png) : « 05 PLACES DISPONIBLES » en
+          VRAI texte HTML — aucun compteur restant, aucun faux compte
+          à rebours (capacité réelle).
+          TASK 75 (instruction propriétaire) : la bande défilante
+          rouge qui ouvrait cette section (à la fin de la précédente
+          « Une condition exceptionnelle ») est SUPPRIMÉE ; le contenu
+          texte est REMPLACÉ par la version resserrée.
           ============================================================ */}
         <section id="places" className="scroll-mt-20">
-          <BandeMotsClesPrelaunch />
           <div className="py-12 lg:py-24">
             <Container>
               <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
@@ -936,33 +946,30 @@ export function PrelaunchPage() {
                       Parce qu&apos;un accompagnement sérieux demande du temps
                       et de l&apos;attention.
                     </h2>
+                    {/* TASK 75 (instruction propriétaire) : contenu
+                        REMPLACÉ par la version resserrée. */}
                     <p className="t-body mt-6 text-black/75">
-                      Nous avons volontairement limité cette première cohorte à
-                      05 participants.
+                      Nous avons volontairement limité cette première cohorte à{" "}
+                      <span className="font-medium text-black">
+                        05 participants
+                      </span>{" "}
+                      afin de consacrer suffisamment de temps à chaque
+                      apprenant, de suivre son évolution et d&apos;observer ses
+                      progrès tout au long des 02 mois.
                     </p>
-                    <p className="t-body text-black/75">
-                      Notre objectif n&apos;est pas de réunir le plus grand
-                      nombre de personnes possible. Nous voulons pouvoir
-                      consacrer suffisamment de temps à chaque apprenant, suivre
-                      son évolution et observer les progrès réalisés pendant les
-                      02 mois.
+                    <p className="t-body mt-4 text-black/75">
+                      L&apos;objectif est de travailler avec un groupe restreint
+                      pour mieux accompagner chaque participant et tirer des
+                      enseignements concrets de cette première expérience.
                     </p>
-                    <p className="t-body text-black/75">
-                      Cette première expérience doit nous permettre de
-                      travailler avec un groupe restreint et de mieux comprendre
-                      le parcours des participants.
+                    <p className="t-body mt-4 font-medium text-black">
+                      C&apos;est pourquoi nous n&apos;accepterons pas plus de 05
+                      personnes pour cette cohorte. Dès que les 05 inscriptions
+                      seront confirmées, les inscriptions seront fermées.
                     </p>
-                    <p className="t-body font-medium text-black">
-                      C&apos;est pourquoi nous ne prendrons pas plus de 05
-                      personnes pour cette cohorte.
-                    </p>
-                    <p className="t-body text-black/75">
-                      Dès que les 05 inscriptions seront confirmées, les
-                      inscriptions à cette offre seront fermées.
-                    </p>
-                    <p className="t-body text-black/75">
-                      Si tu souhaites participer, nous t&apos;invitons à
-                      découvrir les conditions dès maintenant plutôt que de
+                    <p className="t-body mt-4 text-black/75">
+                      Si tu souhaites participer, nous t&apos;invitons donc à
+                      passer à l&apos;action dès maintenant plutôt que de
                       supposer qu&apos;une place sera encore disponible plus
                       tard.
                     </p>
@@ -970,16 +977,18 @@ export function PrelaunchPage() {
                 </Reveal>
                 <Reveal variant="right" delay={120}>
                   <div>
-                    {/* « 05 PLACES MAXIMUM » — vrai texte HTML/CSS, séparé de
-                    l'image (exigence du brief). TASK 71 : entrée en rebond
-                    léger (pop) au scroll. */}
+                    {/* « 05 PLACES DISPONIBLES » — vrai texte HTML/CSS,
+                      séparé de l'image (exigence du brief). TASK 71 :
+                      entrée en rebond léger (pop) au scroll. TASK 75 :
+                      « maximum » → « disponibles » (instruction
+                      propriétaire). */}
                     <Reveal
                       as="p"
                       variant="pop"
                       delay={220}
                       className="t-stat text-black"
                     >
-                      05 <span className="t-stat-unit">places maximum</span>
+                      05 <span className="t-stat-unit">places disponibles</span>
                     </Reveal>
                     <div className="mt-6">
                       <CadreImage>
@@ -988,7 +997,7 @@ export function PrelaunchPage() {
                             src="/assets/prelaunch/prelaunch-small-cohort.png"
                             alt="Illustration de quatre personnages fictifs réunis autour d'un ordinateur pour apprendre ensemble"
                             fill
-                            sizes="(min-width: 1024px) 48vw, 100vw"
+                            sizes="(min-width: 1024px) 55vw, 100vw"
                             className="img-zoom object-cover"
                           />
                         </div>
@@ -1216,7 +1225,7 @@ export function PrelaunchPage() {
                   </div>
                   <p className="t-caption mt-6 text-white/55">
                     15 000 FCFA · 02 mois d&apos;accompagnement · 05 places
-                    maximum
+                    disponibles
                   </p>
                 </Prose>
               </Reveal>
@@ -1232,7 +1241,7 @@ export function PrelaunchPage() {
                         src="/assets/prelaunch/prelaunch-final-cta.png"
                         alt="Illustration d'une apprenante fictive enthousiaste devant son ordinateur"
                         fill
-                        sizes="(min-width: 1024px) 48vw, 100vw"
+                        sizes="100vw"
                         className="img-zoom object-cover lg:[object-position:40%_50%]"
                       />
                     </div>
@@ -1249,8 +1258,14 @@ export function PrelaunchPage() {
         {/* — Pied de page dédié à l'offre (brief : Mr. Steve English,
           Pre-launch • De COMPRENDRE à PARLER™, mention des conditions
           avant paiement). La page est focalisée : pas de footer global
-          ni de navigation du site principal. — */}
-        <footer className="on-dark mt-auto border-t border-white/10 bg-black py-10 text-white">
+          ni de navigation du site principal. TASK 75 (instruction
+          propriétaire) : la ligne horizontale entre le dernier appel et
+          le pied de page porte le MÊME balayage lumineux que sous le
+          formulaire d'inscription du programme (classe .beam-separator
+          de globals.css — lumière blanche qui circule de gauche à
+          droite en continu). — */}
+        <div className="beam-separator" aria-hidden="true" />
+        <footer className="on-dark mt-auto bg-black py-10 text-white">
           <Container>
             <Reveal>
               <div className="mx-auto max-w-[42rem] text-center">

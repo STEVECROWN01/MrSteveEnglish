@@ -263,8 +263,11 @@ const OFFRES: Record<OffreId, ConfigOffre> = {
     confirmations: [
       "Votre inscription à l'offre Pre-launch est terminée et votre place réservée pour 02 mois.",
       "Le règlement intégral de 15 000 FCFA a bien été reçu — aucun autre montant ne vous est demandé pour cette offre.",
-      "Les horaires des séances vous seront communiqués dans la communauté WhatsApp de la cohorte.",
-      "Cet accompagnement de 02 mois est réservé à la première cohorte du Pre-launch.",
+      /* Task 75 (instruction propriétaire) : les deux derniers
+         cochets (« horaires communiqués dans la communauté » et
+         « réservé à la première cohorte ») sont remplacés par un
+         seul — l'appartenance au programme Pre-launch. */
+      "Vous êtes désormais un apprenant du Pre-launch • De COMPRENDRE à PARLER™.",
     ],
   },
 };
@@ -358,7 +361,10 @@ export async function buildReceiptPdf(
      seulement, d'où l'impression de chevauchement). — */
   const labelRight = (t: string, y: number) => {
     // compense le charSpace que jsPDF n'ajoute pas à la largeur d'alignement
-    doc.text(t, X_END - (t.length - 1) * 1.2, y, { align: "right", charSpace: 1.2 });
+    doc.text(t, X_END - (t.length - 1) * 1.2, y, {
+      align: "right",
+      charSpace: 1.2,
+    });
   };
   doc.setFont("helvetica", "bold");
   doc.setFontSize(8);
@@ -376,18 +382,11 @@ export async function buildReceiptPdf(
   doc.setFont("helvetica", "normal");
   doc.setFontSize(9.5);
   doc.setTextColor(...INK);
-  const identite = [
-    data.profession.trim(),
-    data.age ? `${data.age} ans` : "",
-  ]
+  const identite = [data.profession.trim(), data.age ? `${data.age} ans` : ""]
     .filter(Boolean)
     .join("  ·  ");
   doc.text(dash(identite), M, 197);
-  doc.text(
-    dash([data.ville, data.pays].filter(Boolean).join(", ")),
-    M,
-    212,
-  );
+  doc.text(dash([data.ville, data.pays].filter(Boolean).join(", ")), M, 212);
   /* Task 72 : ligne contact — l'e-mail du formulaire (programme)
      PRIME ; pour le pre-launch (pas d'e-mail collecté), c'est le
      NUMÉRO DE TÉLÉPHONE saisi sur la page Bienvenue qui s'affiche —
@@ -689,11 +688,12 @@ export async function buildReceiptPdf(
      caractères sûrs (lettres, chiffres, tirets). Ce nom unique sert
      aux TROIS usages : téléchargement client, pièce jointe de
      l'email au coach, mention « (fichier « … ») » dans le message. — */
-  const nomFichier = (nomComplet(data) || data.nom)
-    .replace(/[\u0000-\u001f\\/:*?"<>|]+/g, " ")
-    .replace(/\s+/g, " ")
-    .trim()
-    .slice(0, 60) || "Client";
+  const nomFichier =
+    (nomComplet(data) || data.nom)
+      .replace(/[\u0000-\u001f\\/:*?"<>|]+/g, " ")
+      .replace(/\s+/g, " ")
+      .trim()
+      .slice(0, 60) || "Client";
   const filename = `Reçu N° ${noRecu} — ${nomFichier}.pdf`;
 
   return { blob: doc.output("blob"), filename };
@@ -790,9 +790,7 @@ export function sendReceiptPdfCopy(
     "Voici les informations du client :",
     "",
     `Nom : ${nomFamille}`,
-    ...(data.prenom?.trim()
-      ? [`Prénom : ${data.prenom.trim()}`]
-      : []),
+    ...(data.prenom?.trim() ? [`Prénom : ${data.prenom.trim()}`] : []),
     `Profession : ${renseigne(data.profession)}`,
     `Âge : ${renseigne(data.age, " ans")}`,
     `Pays : ${renseigne(data.pays)}`,

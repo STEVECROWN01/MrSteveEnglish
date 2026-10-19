@@ -30,14 +30,16 @@ import { PAYS_VILLES, flagUrl, normaliser } from "@/lib/pays-villes";
  *   pays choisi (Task 49-ter) : « Ex. : 01 96 12 34 56 » (Bénin),
  *   « Ex. : 690 12 34 56 » (Cameroun)…, espacement progressif du
  *   numéro pendant la frappe ;
- * • mention courte « SANS Indicatif » en italique SOUS le champ
- *   (ajustement propriétaire Task 49-bis, même convention que le
- *   formulaire) ;
  * • le DRAPEAU figure dans le bouton de préfixe : contrairement au
  *   formulaire (où le champ « Pays » juste au-dessus montre déjà le
  *   drapeau, Task 49-ter l'y avait retiré du champ WhatsApp), la
  *   sélection du pays se fait ICI, dans ce champ lui-même — le
  *   drapeau y est donc nécessaire à la reconnaissance.
+ *
+ * TASK 75 (instructions propriétaire) : la mention « SANS Indicatif »
+ * sous le champ est SUPPRIMÉE ; le bouton de préfixe est ÉLARGI
+ * (7rem → 8.75rem) — à 1rem de police, l'indicatif « +229 » était
+ * rogné en « +… » par le truncate du conteneur trop étroit.
  *
  * Le style reproduit EXACTEMENT celui des champs du formulaire
  * (.form-label / .form-input / .form-error) et du panneau dropliste
@@ -165,7 +167,7 @@ export function TelField({
             }
           }}
           className={cn(
-            "form-input flex w-[7rem] shrink-0 items-center justify-between gap-1.5 px-3",
+            "form-input flex w-[8.75rem] shrink-0 items-center justify-between gap-1.5 px-3",
             open && "border-white bg-white/10",
           )}
         >
@@ -220,10 +222,7 @@ export function TelField({
             aria-invalid={Boolean(error)}
             aria-describedby={error ? errId : undefined}
             placeholder={info ? `Ex. : ${info.exemple}` : "Ton numéro"}
-            className={cn(
-              "form-input min-w-0",
-              error && "border-red-button",
-            )}
+            className={cn("form-input min-w-0", error && "border-red-button")}
           />
         </div>
       </div>
@@ -327,9 +326,6 @@ export function TelField({
         </div>
       ) : null}
 
-      {/* Ajustement propriétaire (Task 49-bis, même convention que le
-          formulaire) : mention courte en italique SOUS le champ. */}
-      <p className="t-caption mt-2 italic text-white/60">SANS Indicatif</p>
       {error ? (
         <p id={errId} role="alert" className="form-error">
           {error}

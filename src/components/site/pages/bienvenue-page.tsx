@@ -189,7 +189,9 @@ const PRELAUNCH_RECAP = [
   { titre: "02 mois", texte: "Accompagnement intensif" },
   { titre: "03 séances / semaine", texte: "Séances de 1h30 en ligne" },
   { titre: "Pratique orale", texte: "Au centre de l'accompagnement" },
-  { titre: "Communauté WhatsApp", texte: "Dédiée à la première cohorte" },
+  /* TASK 75 (instruction propriétaire) : « Dédiée à la première
+     cohorte » → « Dédiée à la pratique ». */
+  { titre: "Communauté WhatsApp", texte: "Dédiée à la pratique" },
 ];
 
 /* Les 3 étapes « Et maintenant ? » — variante cohorte. */
@@ -601,92 +603,99 @@ export function BienvenuePage() {
               d'autres fins. */}
           {prelaunch ? (
             <div className="mx-auto mt-8 max-w-[26rem] text-left">
+              {/* TASK 75 (instruction propriétaire) : texte
+                  d'introduction REMPLACÉ. */}
               <p className="t-caption text-white/70">
-                Renseigne tes informations pour générer ton reçu — les 03 champs
-                sont obligatoires :
+                Renseigne tes vraies informations pour télécharger ton reçu de
+                paiement
               </p>
               <div className="mt-4 space-y-4">
-                <div>
-                  <label htmlFor="prelaunch-nom" className="form-label">
-                    Ton nom{" "}
-                    <span
-                      aria-hidden="true"
-                      className="font-semibold text-red-button"
-                    >
-                      *
-                    </span>
-                  </label>
-                  <input
-                    id="prelaunch-nom"
-                    type="text"
-                    autoComplete="family-name"
-                    value={nomPrelaunch}
-                    onChange={(e) => {
-                      setNomPrelaunch(e.target.value);
-                      sauverPrelaunch({ nom: e.target.value });
-                    }}
-                    onBlur={() => setTouches((t) => ({ ...t, nom: true }))}
-                    aria-invalid={touches.nom && !nomOk}
-                    aria-describedby={
-                      touches.nom && !nomOk ? "err-prelaunch-nom" : undefined
-                    }
-                    placeholder="Ex. : Kponou"
-                    className={cn(
-                      "form-input mt-2",
-                      touches.nom && !nomOk && "border-red-button",
-                    )}
-                  />
-                  {touches.nom && !nomOk ? (
-                    <p
-                      id="err-prelaunch-nom"
-                      role="alert"
-                      className="form-error"
-                    >
-                      Indique ton nom (nom de famille).
-                    </p>
-                  ) : null}
-                </div>
-                <div>
-                  <label htmlFor="prelaunch-prenom" className="form-label">
-                    Ton prénom{" "}
-                    <span
-                      aria-hidden="true"
-                      className="font-semibold text-red-button"
-                    >
-                      *
-                    </span>
-                  </label>
-                  <input
-                    id="prelaunch-prenom"
-                    type="text"
-                    autoComplete="given-name"
-                    value={prenomPrelaunch}
-                    onChange={(e) => {
-                      setPrenomPrelaunch(e.target.value);
-                      sauverPrelaunch({ prenom: e.target.value });
-                    }}
-                    onBlur={() => setTouches((t) => ({ ...t, prenom: true }))}
-                    aria-invalid={touches.prenom && !prenomOk}
-                    aria-describedby={
-                      touches.prenom && !prenomOk
-                        ? "err-prelaunch-prenom"
-                        : undefined
-                    }
-                    placeholder="Ex. : Awa"
-                    className={cn(
-                      "form-input mt-2",
-                      touches.prenom && !prenomOk && "border-red-button",
-                    )}
-                  />
-                  {touches.prenom && !prenomOk ? (
-                    <p
-                      id="err-prelaunch-prenom"
-                      role="alert"
-                      className="form-error"
-                    >
-                      Indique ton prénom.
-                    </p>
-                  ) : null}
+                {/* TASK 75 (instruction propriétaire) : Nom et Prénom
+                    sur une MÊME LIGNE (2 colonnes) — le numéro de
+                    téléphone reste en dessous, pleine largeur. */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label htmlFor="prelaunch-nom" className="form-label">
+                      Ton nom{" "}
+                      <span
+                        aria-hidden="true"
+                        className="font-semibold text-red-button"
+                      >
+                        *
+                      </span>
+                    </label>
+                    <input
+                      id="prelaunch-nom"
+                      type="text"
+                      autoComplete="family-name"
+                      value={nomPrelaunch}
+                      onChange={(e) => {
+                        setNomPrelaunch(e.target.value);
+                        sauverPrelaunch({ nom: e.target.value });
+                      }}
+                      onBlur={() => setTouches((t) => ({ ...t, nom: true }))}
+                      aria-invalid={touches.nom && !nomOk}
+                      aria-describedby={
+                        touches.nom && !nomOk ? "err-prelaunch-nom" : undefined
+                      }
+                      placeholder="Ex. : Kponou"
+                      className={cn(
+                        "form-input mt-2",
+                        touches.nom && !nomOk && "border-red-button",
+                      )}
+                    />
+                    {touches.nom && !nomOk ? (
+                      <p
+                        id="err-prelaunch-nom"
+                        role="alert"
+                        className="form-error"
+                      >
+                        Indique ton nom (nom de famille).
+                      </p>
+                    ) : null}
+                  </div>
+                  <div>
+                    <label htmlFor="prelaunch-prenom" className="form-label">
+                      Ton prénom{" "}
+                      <span
+                        aria-hidden="true"
+                        className="font-semibold text-red-button"
+                      >
+                        *
+                      </span>
+                    </label>
+                    <input
+                      id="prelaunch-prenom"
+                      type="text"
+                      autoComplete="given-name"
+                      value={prenomPrelaunch}
+                      onChange={(e) => {
+                        setPrenomPrelaunch(e.target.value);
+                        sauverPrelaunch({ prenom: e.target.value });
+                      }}
+                      onBlur={() => setTouches((t) => ({ ...t, prenom: true }))}
+                      aria-invalid={touches.prenom && !prenomOk}
+                      aria-describedby={
+                        touches.prenom && !prenomOk
+                          ? "err-prelaunch-prenom"
+                          : undefined
+                      }
+                      placeholder="Ex. : Awa"
+                      className={cn(
+                        "form-input mt-2",
+                        touches.prenom && !prenomOk && "border-red-button",
+                      )}
+                    />
+                    {touches.prenom && !prenomOk ? (
+                      <p
+                        id="err-prelaunch-prenom"
+                        role="alert"
+                        className="form-error"
+                      >
+                        Indique ton prénom.
+                      </p>
+                    ) : null}
+                  </div>
                 </div>
                 <TelField
                   id="prelaunch-tel"
@@ -1061,54 +1070,52 @@ export function BienvenuePage() {
                   ))}
                 </ul>
               </div>
-              <div className="mt-6 border-t border-white/15 pt-6 text-center">
-                {/* TASK 60 (instruction propriétaire) : l'ancienne
-                    section « Prêt(e) à commencer ? » (entre « Et
-                    maintenant ? » et la Rassurance) vit désormais ICI,
-                    au BAS de la carte Récapitulatif — titre, texte et
-                    bouton ensemble. L'ancien lien texte de reçu est
-                    SUPPRIMÉ (le gros bouton de reçu du haut de page
-                    reste la seule voie de téléchargement). */}
-                <h3 className="t-h3 text-white">Prêt(e) à commencer ?</h3>
-                <p className="t-body mt-3 text-white/75">
-                  {prelaunch ? (
-                    <>
-                      Une dernière étape : rejoins la communauté WhatsApp de la
-                      première cohorte pour confirmer ton arrivée et préparer le
-                      démarrage.
-                    </>
-                  ) : (
-                    <>
-                      Une dernière étape : rejoins le groupe WhatsApp du
-                      programme pour confirmer ton arrivée et préparer ton
-                      accompagnement.
-                    </>
-                  )}
-                </p>
-                <div className="mt-6 flex justify-center">
-                  {/* Task 57 : lien DIRECT vers le groupe WhatsApp du
-                      programme. Task 60 : libellé complet, rendu au
-                      bas de la carte. Task 69 : variante prelaunch —
-                      groupe de la COHORTE si le lien a été fourni
-                      (PRELAUNCH_WHATSAPP_URL), sinon repli contact
-                      coach — jamais un lien inventé. */}
-                  <WhatsAppCta
-                    href={
-                      prelaunch
-                        ? PRELAUNCH_WHATSAPP_URL ||
-                          waLink(PRELAUNCH_WHATSAPP_MSG)
-                        : WHATSAPP_GROUP_URL
-                    }
-                    label={
-                      prelaunch
-                        ? PRELAUNCH_WHATSAPP_URL
-                          ? PRELAUNCH_COMMUNAUTE_LABEL
-                          : "Contacter le coach sur WhatsApp"
-                        : COMMUNAUTE_LABEL
-                    }
-                    className="w-full sm:w-auto"
-                  />
-                </div>
+            </div>
+          </Reveal>
+
+          {/* TASK 75 (instruction propriétaire) : la partie « Prêt(e) à
+              commencer ? » — titre, texte et bouton — ne fait PLUS partie
+              de la carte Récapitulatif : elle vit désormais SOUS la
+              carte, au-dessus du message final (la carte se termine sur
+              les statuts). */}
+          <Reveal className="mx-auto mt-8 max-w-[36rem]">
+            <div className="text-center">
+              <h3 className="t-h3 text-white">Prêt(e) à commencer ?</h3>
+              <p className="t-body mt-3 text-white/75">
+                {prelaunch ? (
+                  <>
+                    Une dernière étape : rejoins la communauté WhatsApp de la
+                    première cohorte pour confirmer ton arrivée et préparer le
+                    démarrage.
+                  </>
+                ) : (
+                  <>
+                    Une dernière étape : rejoins le groupe WhatsApp du programme
+                    pour confirmer ton arrivée et préparer ton accompagnement.
+                  </>
+                )}
+              </p>
+              <div className="mt-6 flex justify-center">
+                {/* Task 57 : lien DIRECT vers le groupe WhatsApp du
+                    programme. Task 60 : libellé complet. Task 69 :
+                    variante prelaunch — groupe de la COHORTE si le lien
+                    a été fourni (PRELAUNCH_WHATSAPP_URL), sinon repli
+                    contact coach — jamais un lien inventé. */}
+                <WhatsAppCta
+                  href={
+                    prelaunch
+                      ? PRELAUNCH_WHATSAPP_URL || waLink(PRELAUNCH_WHATSAPP_MSG)
+                      : WHATSAPP_GROUP_URL
+                  }
+                  label={
+                    prelaunch
+                      ? PRELAUNCH_WHATSAPP_URL
+                        ? PRELAUNCH_COMMUNAUTE_LABEL
+                        : "Contacter le coach sur WhatsApp"
+                      : COMMUNAUTE_LABEL
+                  }
+                  className="w-full sm:w-auto"
+                />
               </div>
             </div>
           </Reveal>
