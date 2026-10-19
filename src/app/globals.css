@@ -389,11 +389,19 @@
     }
   }
 
-  /* — Scroll reveal (DA §13 : 600ms, translateY court, une fois) — */
+  /* — Scroll reveal (DA §13 : 600ms, translateY court). TASK 77
+     (instruction propriétaire) : révélation REJOUABLE — la transition vit
+     désormais sur l'ÉTAT DE BASE autant que sur .is-visible, pour que la
+     SORTIE soit animée elle aussi (fondu retour à l'état caché quand
+     l'élément quitte complètement le viewport) ; l'entrée se rejoue à
+     CHAQUE retour dans le viewport, en descendant comme en remontant. — */
   .reveal {
     opacity: 0;
     transform: translateY(12px);
     will-change: opacity, transform;
+    transition:
+      opacity 600ms var(--ease-std),
+      transform 600ms var(--ease-std);
   }
   .reveal.is-visible {
     opacity: 1;
@@ -404,17 +412,21 @@
   }
 
   /* — TASK 71 (instruction propriétaire — sections vivantes) :
-     variantes de révélation. Mêmes règles que .reveal (une seule fois à
-     l'entrée du viewport, 600ms, easing DA), seule la direction change.
-     Les classes sont AUTO-PORTANTES (pas de cumul avec .reveal) : chaque
-     variante porte son état caché ET son état visible — zéro conflit de
-     spécificité. */
+     variantes de révélation. Mêmes règles que .reveal, seule la direction
+     change. TASK 77 : transition posée AUSSI sur l'état de base — sortie
+     animée (fondu retour), entrée rejouée à chaque passage dans le
+     viewport. Les classes sont AUTO-PORTANTES (pas de cumul avec .reveal) :
+     chaque variante porte son état caché ET son état visible — zéro conflit
+     de spécificité. */
   .reveal-left,
   .reveal-right,
   .reveal-zoom,
   .reveal-pop {
     opacity: 0;
     will-change: opacity, transform;
+    transition:
+      opacity 600ms var(--ease-std),
+      transform 600ms var(--ease-std);
   }
   .reveal-left {
     transform: translateX(-28px);

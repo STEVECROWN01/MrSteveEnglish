@@ -396,20 +396,24 @@ export function PrelaunchPage() {
           et tient en UNE SEULE LIGNE ; il est traversé par le MÊME
           balayage lumineux oblique que les CTA rouges (classe
           .band-shine — mèche étroite adaptée à la pleine largeur).
-          Taille fluide sur mobile (min(2.9vw, 0.8rem)) pour garantir
-          la ligne unique jusqu'à 320 px de large (mesuré navigateur :
-          3vw débordait d'1 px à 360 px). TASK 74 : police AGRANDIE
-          pour une vraie lisibilité (propriétaire) — mobile
-          min(2.9vw, 0.8rem) au lieu de min(2.7vw, 0.7rem), desktop
-          md:text-sm au lieu de md:text-xs. Posée HORS du conteneur
-          racine : aucune interférence avec son overflow-x.
+          TASK 74 : police AGRANDIE pour une vraie lisibilité.
+          TASK 77 (instruction propriétaire : « le texte de la bande
+          soit seulement en majuscule ») : classe uppercase — mesuré
+          navigateur E2E, les capitales élargissent le texte à 39,5 px
+          par pixel de police ; le coefficient mobile est donc
+          RECALIBRÉ à min(2.48vw, 0.75rem) avec tracking normal
+          (2.55vw débordait de 2-3 px à 320-441 px) pour garantir
+          la ligne unique jusqu'à 320 px ; desktop md:text-sm
+          conservé (14 px à 768px = 553 px de texte, large marge).
+          Posée HORS du conteneur racine : aucune interférence avec
+          son overflow-x.
           ============================================================ */}
       <div
         aria-label="Cohorte strictement limitée"
         role="note"
         className="band-shine fixed inset-x-0 top-0 z-[60] border-b border-black/20 bg-red-button py-2.5 text-center text-white md:py-3"
       >
-        <p className="whitespace-nowrap text-[min(2.9vw,0.8rem)] font-bold tracking-[0.02em] text-white md:text-sm md:tracking-[0.1em]">
+        <p className="whitespace-nowrap text-[min(2.48vw,0.75rem)] font-bold uppercase tracking-normal text-white md:text-sm md:tracking-[0.1em]">
           Cohorte strictement limitée • Seulement 05 places sont disponibles
         </p>
       </div>
@@ -478,7 +482,15 @@ export function PrelaunchPage() {
               </div>
 
               <div className="text-center lg:order-2 lg:text-left">
-                <h1 className="hero-line hero-d2 t-h1 mt-0 text-white">
+                {/* TASK 77 (instruction propriétaire : « réduis un peu la
+                    taille du titre ») : surcharge LOCALE de la taille —
+                    clamp(2rem, 1.4rem + 3vw, 3.5rem) soit 32 → 56 px,
+                    un cran sous le t-h1 générique (36 → 64 px, inchangé
+                    pour les autres pages) ; la typo serif Fraunces, la
+                    graisse et l'interlignage de .t-h1 sont conservés
+                    (l'utilitaire Tailwind ne surcharge que font-size,
+                    couche utilities > components). */}
+                <h1 className="hero-line hero-d2 t-h1 mt-0 text-[clamp(2rem,1.4rem+3vw,3.5rem)] text-white">
                   Tu veux parler anglais, mais tu ne sais pas encore comment
                   t&apos;y prendre ?
                 </h1>
