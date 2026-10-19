@@ -1055,18 +1055,41 @@ body[data-listbox-open] .sticky-cta {
   }
 }
 
-/* — TASK 81 (instruction propriétaire : « sur mobile, tous les contenus
-   textes devraient être justifiés et non centrés ») : sous 1024 px —
-   la mise en page mobile de la page pre-launch — les titres et
-   paragraphes de la zone de contenu passent en JUSTIFIÉ. Règle HORS
-   layer (même priorité maximale que la règle sticky-cta ci-dessus) :
-   indispensable pour surmonter .text-center, qui vit dans la couche
-   utilities de Tailwind (l'ordre des couches otherwise l'emporterait
-   quelle que soit la spécificité). Exclus par construction : la bande
-   rouge fixe et les boutons/liens (non ciblés par :is(h1…p)) ; la
-   barre CTA sticky (un lien) reste donc centrée. — */
+/* — TASK 81 + TASK 82 (instructions propriétaire) : sous 1024 px — la
+   mise en page mobile de la page pre-launch.
+   TASK 81 : « sur mobile, tous les contenus textes devraient être
+   justifiés et non centrés » → les PARAGRAPHES passent en JUSTIFIÉ.
+   TASK 82 (retours propriétaire) : « ramène tous les titres de section
+   et de carte en état aligné à gauche au lieu d'état justifié » → les
+   TITRES (h1-h4) passent À GAUCHE ; « le contenu du footer doit être
+   centré et non justifié » → les paragraphes du pied de page dédié
+   repassent au CENTRE ; « le texte sous le bouton "Je veux découvrir
+   l'offre et m'inscrire" doit être centré » → la note tarifaire sous
+   le CTA final passe au CENTRE (marqueur .prelaunch-mobile-center).
+   Règles HORS layer (même priorité maximale que la règle sticky-cta
+   ci-dessus) : indispensables pour surmonter .text-center, qui vit
+   dans la couche utilities de Tailwind (l'ordre des couches otherwise
+   l'emporterait quelle que soit la spécificité). Exclus par
+   construction : la bande rouge fixe et les boutons/liens (non
+   ciblés) ; la barre CTA sticky (un lien) reste donc centrée.
+   Desktop (≥ 1024 px) strictement inchangé. — */
 @media (max-width: 1023.98px) {
-  .prelaunch-contents :is(h1, h2, h3, h4, p) {
+  /* TASK 82 : tous les titres de section et de carte à gauche. */
+  .prelaunch-contents :is(h1, h2, h3, h4) {
+    text-align: left;
+  }
+  /* TASK 81 : les paragraphes justifiés (inchangé). */
+  .prelaunch-contents p {
     text-align: justify;
+  }
+  /* TASK 82 : contenu du footer centré (spécificité 0-1-2, bat la
+     règle des paragraphes 0-1-1). */
+  .prelaunch-contents footer p {
+    text-align: center;
+  }
+  /* TASK 82 : contenus que le propriétaire veut centrés sur mobile
+     (note tarifaire sous le bouton final — 0-2-0 bat 0-1-1). */
+  .prelaunch-contents .prelaunch-mobile-center {
+    text-align: center;
   }
 }

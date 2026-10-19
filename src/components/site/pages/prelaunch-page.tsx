@@ -409,15 +409,25 @@ export function PrelaunchPage() {
           TASK 81 (instruction propriétaire : « peu importe la taille
           ou largeur d'écran, le texte de la bande ne doit jamais
           être coupé ou coincé à gauche ou à droite, et jamais en
-          deux lignes ») : mesures E2E réelles (Range API, chargement
-          frais) — l'ancien min(2.48vw, 0.75rem) laissait le texte
-          remplir 98-109 % de la largeur entre 280 et 510 px (coupé
-          ou coincé bord à bord) ; ratio texte/font PIRE CAS mesuré
-          = 44 (à 280 px) → coefficient RECALIBRÉ à min(2vw, 0.75rem)
-          : le texte occupe ~83-88 vw à toutes les largeurs mobiles —
-          une seule ligne GARANTIE par construction (nowrap conservé,
-          cap 12 px inchangée) ; desktop md:text-sm + tracking 0.1em
-          inchangé (86 % de remplissage à 768 px).
+          deux lignes ») : mesures E2E réelles — coefficient
+          recalibré à min(2vw, 0.75rem), une seule ligne garantie.
+          TASK 82 (instruction propriétaire : « la taille du texte
+          de la bande est petite — augmente un peu légèrement ») :
+          diagnostic E2E approfondi — le rendu Chromium/Linux
+          (FreeType + hinting) QUANTIFIAIT les advances de la police
+          variable en paliers irréguliers (mesuré : 227 px à 6,5 puis
+          325 px à 7 px de police — +43 % sans raison métrique),
+          rendant toute calibration instable d'une taille à l'autre ;
+          text-rendering: geometricPrecision (max-md) désactive ce
+          snapping → rendu LINÉAIRE exact, ratio texte/font mesuré =
+          39,52 (Public Sans 700 majuscules, tracking 0, stable à
+          toutes les tailles et largeurs). Coefficient PORTÉ à
+          min(2.25vw, 0.75rem) : remplissage 88,9 % à plat sur tout
+          l'intervalle vw (< 533 px) — police +12,5 % (8,78 px à
+          390 px au lieu de 7,8), marges ≥ 21 px par côté à 390 px
+          et ≥ 13 px même à 240 px — UNE SEULE LIGNE PAR
+          CONSTRUCTION (nowrap conservé, cap 12 px inchangée pour
+          533-767 px, desktop md:text-sm + tracking 0.1em inchangé).
           Posée HORS du conteneur racine : aucune interférence avec
           son overflow-x.
           ============================================================ */}
@@ -426,7 +436,7 @@ export function PrelaunchPage() {
         role="note"
         className="band-shine fixed inset-x-0 top-0 z-[60] border-b border-black/20 bg-red-button py-2.5 text-center text-white md:py-3"
       >
-        <p className="whitespace-nowrap text-[min(2vw,0.75rem)] font-bold uppercase tracking-normal text-white md:text-sm md:tracking-[0.1em]">
+        <p className="max-md:[text-rendering:geometricPrecision] whitespace-nowrap text-[min(2.25vw,0.75rem)] font-bold uppercase tracking-normal text-white md:text-sm md:tracking-[0.1em]">
           Cohorte strictement limitée • Seulement 05 places sont disponibles
         </p>
       </div>
@@ -1045,19 +1055,22 @@ export function PrelaunchPage() {
                       « maximum » → « disponibles » (instruction
                       propriétaire). TASK 81 (instruction propriétaire,
                       MOBILE) : ce bloc image + texte passe AU-DESSUS du
-                      titre de la section (colonne order-1) ; sous 1024 px
-                      l'image (order-1) précède son texte (order-2,
-                      mt-6) ; à partir de lg : stat au-dessus de
-                      l'image, disposition inchangée. */}
+                      titre de la section (colonne order-1). TASK 82
+                      (instruction propriétaire, MOBILE : « le texte
+                      "05 places disponibles" devrait être au-dessus de
+                      l'image et non en dessous d'elle ») : sous 1024 px
+                      le texte (order-1) précède l'image (order-2, mt-6) ;
+                      à partir de lg : disposition inchangée (stat
+                      au-dessus de l'image, mt-6). */}
                     <Reveal
                       as="p"
                       variant="pop"
                       delay={220}
-                      className="t-stat max-lg:order-2 max-lg:mt-6 text-black"
+                      className="t-stat max-lg:order-1 text-black"
                     >
                       05 <span className="t-stat-unit">places disponibles</span>
                     </Reveal>
-                    <div className="max-lg:order-1 lg:mt-6">
+                    <div className="max-lg:order-2 mt-6">
                       <CadreImage>
                         <div className="aspect-[16/10]">
                           <ResponsiveImage
@@ -1296,7 +1309,13 @@ export function PrelaunchPage() {
                       className="w-full sm:w-auto"
                     />
                   </div>
-                    <p className="t-caption mt-6 text-white/55">
+                    {/* TASK 82 (instruction propriétaire : « le texte
+                        sous le bouton "Je veux découvrir l'offre et
+                        m'inscrire" doit être centré ») : marqueur
+                        .prelaunch-mobile-center — centré SOUS 1024 px
+                        via globals.css (règle hors layer) ; desktop
+                        inchangé. */}
+                    <p className="prelaunch-mobile-center t-caption mt-6 text-white/55">
                       15 000 FCFA · 02 mois d&apos;accompagnement · 05 places
                       disponibles
                     </p>
