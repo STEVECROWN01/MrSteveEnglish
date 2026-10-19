@@ -1054,3 +1054,19 @@ body[data-listbox-open] .sticky-cta {
     transform: translateX(-50%) translateY(0);
   }
 }
+
+/* — TASK 81 (instruction propriétaire : « sur mobile, tous les contenus
+   textes devraient être justifiés et non centrés ») : sous 1024 px —
+   la mise en page mobile de la page pre-launch — les titres et
+   paragraphes de la zone de contenu passent en JUSTIFIÉ. Règle HORS
+   layer (même priorité maximale que la règle sticky-cta ci-dessus) :
+   indispensable pour surmonter .text-center, qui vit dans la couche
+   utilities de Tailwind (l'ordre des couches otherwise l'emporterait
+   quelle que soit la spécificité). Exclus par construction : la bande
+   rouge fixe et les boutons/liens (non ciblés par :is(h1…p)) ; la
+   barre CTA sticky (un lien) reste donc centrée. — */
+@media (max-width: 1023.98px) {
+  .prelaunch-contents :is(h1, h2, h3, h4, p) {
+    text-align: justify;
+  }
+}

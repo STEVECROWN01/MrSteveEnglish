@@ -405,13 +405,19 @@ export function PrelaunchPage() {
           .band-shine — mèche étroite adaptée à la pleine largeur).
           TASK 74 : police AGRANDIE pour une vraie lisibilité.
           TASK 77 (instruction propriétaire : « le texte de la bande
-          soit seulement en majuscule ») : classe uppercase — mesuré
-          navigateur E2E, les capitales élargissent le texte à 39,5 px
-          par pixel de police ; le coefficient mobile est donc
-          RECALIBRÉ à min(2.48vw, 0.75rem) avec tracking normal
-          (2.55vw débordait de 2-3 px à 320-441 px) pour garantir
-          la ligne unique jusqu'à 320 px ; desktop md:text-sm
-          conservé (14 px à 768px = 553 px de texte, large marge).
+          soit seulement en majuscule ») : classe uppercase.
+          TASK 81 (instruction propriétaire : « peu importe la taille
+          ou largeur d'écran, le texte de la bande ne doit jamais
+          être coupé ou coincé à gauche ou à droite, et jamais en
+          deux lignes ») : mesures E2E réelles (Range API, chargement
+          frais) — l'ancien min(2.48vw, 0.75rem) laissait le texte
+          remplir 98-109 % de la largeur entre 280 et 510 px (coupé
+          ou coincé bord à bord) ; ratio texte/font PIRE CAS mesuré
+          = 44 (à 280 px) → coefficient RECALIBRÉ à min(2vw, 0.75rem)
+          : le texte occupe ~83-88 vw à toutes les largeurs mobiles —
+          une seule ligne GARANTIE par construction (nowrap conservé,
+          cap 12 px inchangée) ; desktop md:text-sm + tracking 0.1em
+          inchangé (86 % de remplissage à 768 px).
           Posée HORS du conteneur racine : aucune interférence avec
           son overflow-x.
           ============================================================ */}
@@ -420,7 +426,7 @@ export function PrelaunchPage() {
         role="note"
         className="band-shine fixed inset-x-0 top-0 z-[60] border-b border-black/20 bg-red-button py-2.5 text-center text-white md:py-3"
       >
-        <p className="whitespace-nowrap text-[min(2.48vw,0.75rem)] font-bold uppercase tracking-normal text-white md:text-sm md:tracking-[0.1em]">
+        <p className="whitespace-nowrap text-[min(2vw,0.75rem)] font-bold uppercase tracking-normal text-white md:text-sm md:tracking-[0.1em]">
           Cohorte strictement limitée • Seulement 05 places sont disponibles
         </p>
       </div>
@@ -432,7 +438,7 @@ export function PrelaunchPage() {
           il supprime le micro-débordement horizontal de 8 px. Ne
           touche NI la bande fixe NI la barre sticky mobile (position
           fixed → contenant = viewport, hors du scope de l'overflow). */}
-      <div className="flex min-h-screen flex-col overflow-x-clip bg-white">
+      <div className="prelaunch-contents flex min-h-screen flex-col overflow-x-clip bg-white">
         {/* ============================================================
           SECTION 1 — HERO (brief §1) : question d'accroche, promesse
           des 02 mois, prix, CTA, méta — portrait RÉEL du fondateur à
@@ -567,13 +573,26 @@ export function PrelaunchPage() {
           </svg>
           <Container>
             <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
-              <Reveal variant="left">
-                <Prose>
-                  <h2 className="t-h2 text-black">
-                    Tu connais quelques mots d&apos;anglais. Mais peux-tu
-                    vraiment les utiliser pour parler ?
-                  </h2>
-                  <p className="t-body mt-6 text-black/75">
+              {/* TASK 81 (instruction propriétaire, MOBILE) : l'image vient
+                  JUSTE APRÈS le titre de la section. Le wrapper
+                  max-lg:contents éclate la colonne texte en éléments de
+                  grille sous 1024 px (titre order-1, image order-2,
+                  paragraphes order-3) ; à partir de lg le wrapper
+                  redevient une simple colonne — desktop inchangé (texte
+                  à gauche, image à droite, gap h2→p1 = 24 px conservé
+                  par le lg:mt-6 du premier paragraphe). */}
+              <div className="max-lg:contents">
+                <Reveal variant="left" className="max-lg:order-1">
+                  <Prose>
+                    <h2 className="t-h2 text-black">
+                      Tu connais quelques mots d&apos;anglais. Mais peux-tu
+                      vraiment les utiliser pour parler ?
+                    </h2>
+                  </Prose>
+                </Reveal>
+                <Reveal variant="left" className="max-lg:order-3">
+                  <Prose>
+                    <p className="t-body lg:mt-6 text-black/75">
                     Tu as peut-être déjà appris quelques mots, regardé des
                     vidéos en anglais ou essayé d&apos;apprendre seul.
                   </p>
@@ -603,9 +622,10 @@ export function PrelaunchPage() {
                         précisément dans cette démarche que s'inscrit
                         notre offre de pré-lancement. » SUPPRIMÉ. */}
                   </div>
-                </Prose>
-              </Reveal>
-              <Reveal variant="right" delay={120}>
+                  </Prose>
+                </Reveal>
+              </div>
+              <Reveal variant="right" delay={120} className="max-lg:order-2">
                 <div>
                   {/* TASK 73 : FORMAT VERTICAL 3:4 sur desktop (mobile
                     3:2 inchangé) — recadrage validé visuellement :
@@ -652,8 +672,10 @@ export function PrelaunchPage() {
                 arrivée depuis la gauche ; FORMAT VERTICAL 3:4 sur
                 desktop (mobile 16:10 inchangé), recadrage validé
                 visuellement : 40 % horizontal garde l'apprenante
-                entière avec son ordinateur. */}
-              <Reveal variant="left">
+                entière avec son ordinateur.
+                TASK 81 (instruction propriétaire, MOBILE) : l'image
+                passe JUSTE APRÈS le titre (order-2). */}
+              <Reveal variant="left" className="max-lg:order-2">
                 <div>
                   <CadreImage>
                     <div className="aspect-[16/10] lg:aspect-[3/4]">
@@ -668,13 +690,21 @@ export function PrelaunchPage() {
                   </CadreImage>
                 </div>
               </Reveal>
-              <Reveal variant="right" delay={120}>
-                <Prose>
-                  <h2 className="t-h2 text-white">
-                    Une première cohorte. 05 personnes. Un objectif : commencer
-                    à parler anglais.
-                  </h2>
-                  <p className="t-body mt-6 text-white/75">
+              {/* TASK 81 (instruction propriétaire, MOBILE) : titre
+                  (order-1) → image (order-2) → textes (order-3) ;
+                  desktop inchangé (image à gauche, texte à droite). */}
+              <div className="max-lg:contents">
+                <Reveal variant="right" delay={120} className="max-lg:order-1">
+                  <Prose>
+                    <h2 className="t-h2 text-white">
+                      Une première cohorte. 05 personnes. Un objectif : commencer
+                      à parler anglais.
+                    </h2>
+                  </Prose>
+                </Reveal>
+                <Reveal variant="right" delay={120} className="max-lg:order-3">
+                  <Prose>
+                    <p className="t-body lg:mt-6 text-white/75">
                     Dans le cadre du pré-lancement de notre programme{" "}
                     <span className="font-medium text-white">
                       De <span className="text-red-button">Comprendre</span> à{" "}
@@ -712,12 +742,13 @@ export function PrelaunchPage() {
                       className="w-full sm:w-auto"
                     />
                   </div>
-                  <p className="t-caption mt-4 text-white/55">
-                    15 000 FCFA · 02 mois d&apos;accompagnement · 05 places
-                    disponibles
-                  </p>
-                </Prose>
-              </Reveal>
+                    <p className="t-caption mt-4 text-white/55">
+                      15 000 FCFA · 02 mois d&apos;accompagnement · 05 places
+                      disponibles
+                    </p>
+                  </Prose>
+                </Reveal>
+              </div>
             </div>
           </Container>
         </section>
@@ -971,7 +1002,7 @@ export function PrelaunchPage() {
           <div className="py-12 lg:py-24">
             <Container>
               <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
-                <Reveal variant="left">
+                <Reveal variant="left" className="max-lg:order-2">
                   <Prose>
                     <h2 className="t-h2 text-black">
                       Parce qu&apos;un accompagnement sérieux demande du temps
@@ -1006,22 +1037,27 @@ export function PrelaunchPage() {
                     </p>
                   </Prose>
                 </Reveal>
-                <Reveal variant="right" delay={120}>
-                  <div>
+                <Reveal variant="right" delay={120} className="max-lg:order-1">
+                  <div className="max-lg:flex max-lg:flex-col">
                     {/* « 05 PLACES DISPONIBLES » — vrai texte HTML/CSS,
                       séparé de l'image (exigence du brief). TASK 71 :
                       entrée en rebond léger (pop) au scroll. TASK 75 :
                       « maximum » → « disponibles » (instruction
-                      propriétaire). */}
+                      propriétaire). TASK 81 (instruction propriétaire,
+                      MOBILE) : ce bloc image + texte passe AU-DESSUS du
+                      titre de la section (colonne order-1) ; sous 1024 px
+                      l'image (order-1) précède son texte (order-2,
+                      mt-6) ; à partir de lg : stat au-dessus de
+                      l'image, disposition inchangée. */}
                     <Reveal
                       as="p"
                       variant="pop"
                       delay={220}
-                      className="t-stat text-black"
+                      className="t-stat max-lg:order-2 max-lg:mt-6 text-black"
                     >
                       05 <span className="t-stat-unit">places disponibles</span>
                     </Reveal>
-                    <div className="mt-6">
+                    <div className="max-lg:order-1 lg:mt-6">
                       <CadreImage>
                         <div className="aspect-[16/10]">
                           <ResponsiveImage
@@ -1210,13 +1246,23 @@ export function PrelaunchPage() {
           />
           <Container className="relative">
             <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
-              <Reveal variant="left">
-                <Prose>
-                  <h2 className="t-h2 text-white">
-                    Tu veux commencer à parler anglais ? C&apos;est le moment de
-                    découvrir cette opportunité.
-                  </h2>
-                  <p className="t-body mt-6 text-white/75">
+              {/* TASK 81 (instruction propriétaire, MOBILE) : l'image
+                  vient JUSTE SOUS le titre (titre order-1, image
+                  order-2, textes order-3) ; desktop inchangé (texte à
+                  gauche, image à droite). TASK 81 (correction de
+                  texte) : « découvrir » → « saisir » cette opportunité. */}
+              <div className="max-lg:contents">
+                <Reveal variant="left" className="max-lg:order-1">
+                  <Prose>
+                    <h2 className="t-h2 text-white">
+                      Tu veux commencer à parler anglais ? C&apos;est le moment
+                      de saisir cette opportunité.
+                    </h2>
+                  </Prose>
+                </Reveal>
+                <Reveal variant="left" className="max-lg:order-3">
+                  <Prose>
+                    <p className="t-body lg:mt-6 text-white/75">
                     Tu n&apos;as pas besoin de tout connaître avant de commencer
                     à pratiquer.
                   </p>
@@ -1250,13 +1296,14 @@ export function PrelaunchPage() {
                       className="w-full sm:w-auto"
                     />
                   </div>
-                  <p className="t-caption mt-6 text-white/55">
-                    15 000 FCFA · 02 mois d&apos;accompagnement · 05 places
-                    disponibles
-                  </p>
-                </Prose>
-              </Reveal>
-              <Reveal variant="right" delay={120}>
+                    <p className="t-caption mt-6 text-white/55">
+                      15 000 FCFA · 02 mois d&apos;accompagnement · 05 places
+                      disponibles
+                    </p>
+                  </Prose>
+                </Reveal>
+              </div>
+              <Reveal variant="right" delay={120} className="max-lg:order-2">
                 <div>
                   {/* TASK 73 : FORMAT VERTICAL 3:4 sur desktop (mobile
                     16:10 inchangé) — recadrage validé visuellement :
