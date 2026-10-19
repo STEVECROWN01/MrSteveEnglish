@@ -262,8 +262,10 @@ const FAQ_PRELAUNCH = [
   },
   {
     question: "La formation se déroule-t-elle en présentiel ?",
+    /* TASK 76 (instruction propriétaire) : réponse reformulée — une
+       bonne connexion stable suffit, peu importe où tu es. */
     answer:
-      "Non. L'accompagnement est entièrement en ligne. Tu dois disposer d'une connexion internet adaptée pour participer aux séances.",
+      "Non. L'accompagnement est entièrement en ligne. Tu as juste besoin d'une bonne connexion internet stable pour participer aux séances. Peu importe où tu\u00a0es.",
   },
   {
     question: "Dois-je être disponible à des horaires précis ?",
@@ -785,6 +787,9 @@ export function PrelaunchPage() {
           SECTION 5 — POURQUOI 15 000 FCFA (brief §5 + IMAGE 5
           prelaunch-offer-value.png) : bloc tarifaire en VRAI texte
           HTML/CSS — prix très visible, durée et rythme clairs.
+          TASK 76 (instruction propriétaire) : l'IMAGE devient le FOND
+          de la partie TEXTE (gauche) — cadre 12 px + voile noir pour
+          la lisibilité.
           ============================================================ */}
         <section
           id="tarif"
@@ -800,128 +805,136 @@ export function PrelaunchPage() {
           />
           <Container className="relative">
             <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
+              {/* TASK 76 (instruction propriétaire) : l'image de la
+                  section devient le FOND de la partie TEXTE (à
+                  gauche) — même cadre que le hero (coins 12 px + ombre
+                  douce) ; l'image couvre tout le bloc derrière un voile
+                  noir à 75 % qui garde chaque mot PARFAITEMENT lisible
+                  (texte blanc, passages clés en graisse moyenne). La
+                  colonne droite ne garde que le bloc tarifaire. */}
               <Reveal variant="left">
-                <Prose>
-                  <h2 className="t-h2 text-white">
-                    Une condition exceptionnelle du pré-lancement.
-                  </h2>
-                  {/* TASK 75 (instruction propriétaire) : contenu
-                      REMPLACÉ par la version resserrée — 04
-                      paragraphes, passages clés en graisse moyenne. */}
-                  <p className="t-body mt-6 text-white/75">
-                    Le programme principal{" "}
-                    <span className="font-medium text-white">
-                      De <span className="text-red-button">COMPRENDRE</span> à{" "}
-                      <span className="text-red-button">PARLER</span>
-                      <sup className="top-[-0.6em] text-[0.6em]">™</sup>
-                    </span>{" "}
-                    est prévu sur 03 mois au tarif de 70 000 FCFA. Pour ce
-                    pré-lancement, nous proposons exceptionnellement{" "}
-                    <span className="font-medium text-white">
-                      02 mois d&apos;accompagnement à 15 000 FCFA, réservés à 05
-                      participants seulement
-                    </span>
-                    .
-                  </p>
-                  <p className="t-body mt-4 text-white/75">
-                    Cette première cohorte nous permettra d&apos;accompagner ces
-                    participants, d&apos;observer leurs progrès réels et de
-                    recueillir leurs retours afin de préparer le lancement
-                    officiel sur des bases concrètes.
-                  </p>
-                  <p className="t-body mt-4 text-white/75">
-                    En contrepartie, nous recherchons des personnes sérieuses,
-                    prêtes à s&apos;investir pleinement dans leur apprentissage.
-                  </p>
-                  <p className="t-body mt-4 font-medium text-white">
-                    Une occasion de bénéficier d&apos;un accompagnement
-                    structuré à un tarif exceptionnel, tout en contribuant à la
-                    préparation du programme officiel.
-                  </p>
-                </Prose>
+                <div className="relative overflow-hidden rounded-[12px] shadow-[0_4px_20px_rgba(0,0,0,0.10)]">
+                  <div aria-hidden="true" className="absolute inset-0">
+                    <ResponsiveImage
+                      src="/assets/prelaunch/prelaunch-offer-value.png"
+                      alt=""
+                      fill
+                      sizes="100vw"
+                      className="object-cover"
+                    />
+                    <div className="absolute inset-0 bg-black/75" />
+                  </div>
+                  <div className="relative p-6 md:p-8 lg:p-10">
+                    <Prose>
+                      <h2 className="t-h2 text-white">
+                        Une condition exceptionnelle du pré-lancement.
+                      </h2>
+                      {/* TASK 75 (instruction propriétaire) : contenu
+                          REMPLACÉ par la version resserrée — 04
+                          paragraphes, passages clés en graisse moyenne.
+                          TASK 76 : blanc /85 — lisible sur le fond
+                          image. */}
+                      <p className="t-body mt-6 text-white/85">
+                        Le programme principal{" "}
+                        <span className="font-medium text-white">
+                          De <span className="text-red-button">COMPRENDRE</span> à{" "}
+                          <span className="text-red-button">PARLER</span>
+                          <sup className="top-[-0.6em] text-[0.6em]">™</sup>
+                        </span>{" "}
+                        est prévu sur 03 mois au tarif de 70 000 FCFA. Pour ce
+                        pré-lancement, nous proposons exceptionnellement{" "}
+                        <span className="font-medium text-white">
+                          02 mois d&apos;accompagnement à 15 000 FCFA, réservés à 05
+                          participants seulement
+                        </span>
+                        .
+                      </p>
+                      <p className="t-body mt-4 text-white/85">
+                        Cette première cohorte nous permettra d&apos;accompagner ces
+                        participants, d&apos;observer leurs progrès réels et de
+                        recueillir leurs retours afin de préparer le lancement
+                        officiel sur des bases concrètes.
+                      </p>
+                      <p className="t-body mt-4 text-white/85">
+                        En contrepartie, nous recherchons des personnes sérieuses,
+                        prêtes à s&apos;investir pleinement dans leur apprentissage.
+                      </p>
+                      <p className="t-body mt-4 font-medium text-white">
+                        Une occasion de bénéficier d&apos;un accompagnement
+                        structuré à un tarif exceptionnel, tout en contribuant à la
+                        préparation du programme officiel.
+                      </p>
+                    </Prose>
+                  </div>
+                </div>
               </Reveal>
-              <div className="space-y-6">
-                {/* Bloc tarifaire — PRIX EN VRAI TEXTE HTML/CSS, très
+              {/* Bloc tarifaire — PRIX EN VRAI TEXTE HTML/CSS, très
                   visible ; durée et rythme affichés clairement.
                   TASK 71 : entrée en zoom doux au scroll. */}
-                <Reveal variant="zoom" delay={120}>
-                  <div className="glass-card glass-dark card-hover p-6 text-center md:p-8">
-                    <Eyebrow className="text-white/70">
-                      Pre-launch · Première cohorte
-                    </Eyebrow>
-                    <p className="t-stat mt-4 text-white">15 000 FCFA</p>
-                    <p className="t-body mt-2 text-white/75">
-                      pour les 02 mois d&apos;accompagnement — paiement unique.
-                    </p>
-                    <ul className="mt-6 space-y-2.5 border-t border-white/15 pt-6 text-left">
-                      <li className="flex items-center gap-3">
-                        <IconCheck
-                          className="h-5 w-5 text-[#008000]"
-                          fg="#ffffff"
-                        />
-                        <span className="t-body text-white">
-                          02 mois d&apos;accompagnement intensif
-                        </span>
-                      </li>
-                      <li className="flex items-center gap-3">
-                        <IconCheck
-                          className="h-5 w-5 text-[#008000]"
-                          fg="#ffffff"
-                        />
-                        <span className="t-body text-white">
-                          03 séances de 1 h 30 par semaine
-                        </span>
-                      </li>
-                      <li className="flex items-center gap-3">
-                        <IconCheck
-                          className="h-5 w-5 text-[#008000]"
-                          fg="#ffffff"
-                        />
-                        <span className="t-body text-white">
-                          Exercices pratiques et expressions utiles
-                        </span>
-                      </li>
-                      <li className="flex items-center gap-3">
-                        <IconCheck
-                          className="h-5 w-5 text-[#008000]"
-                          fg="#ffffff"
-                        />
-                        <span className="t-body text-white">
-                          Communauté WhatsApp de la cohorte
-                        </span>
-                      </li>
-                      <li className="flex items-center gap-3">
-                        <IconCheck
-                          className="h-5 w-5 text-[#008000]"
-                          fg="#ffffff"
-                        />
-                        <span className="t-body text-white">
-                          100 % en ligne · 05 places disponibles
-                        </span>
-                      </li>
-                    </ul>
-                    <div className="mt-8">
-                      <CtaOffre
-                        label={CTA_HERO_LABEL}
-                        className="w-full sm:w-auto"
+              <Reveal variant="zoom" delay={120}>
+                <div className="glass-card glass-dark card-hover p-6 text-center md:p-8">
+                  <Eyebrow className="text-white/70">
+                    Pre-launch · Première cohorte
+                  </Eyebrow>
+                  <p className="t-stat mt-4 text-white">15 000 FCFA</p>
+                  <p className="t-body mt-2 text-white/75">
+                    pour les 02 mois d&apos;accompagnement — paiement unique.
+                  </p>
+                  <ul className="mt-6 space-y-2.5 border-t border-white/15 pt-6 text-left">
+                    <li className="flex items-center gap-3">
+                      <IconCheck
+                        className="h-5 w-5 text-[#008000]"
+                        fg="#ffffff"
                       />
-                    </div>
+                      <span className="t-body text-white">
+                        02 mois d&apos;accompagnement intensif
+                      </span>
+                    </li>
+                    <li className="flex items-center gap-3">
+                      <IconCheck
+                        className="h-5 w-5 text-[#008000]"
+                        fg="#ffffff"
+                      />
+                      <span className="t-body text-white">
+                        03 séances de 1 h 30 par semaine
+                      </span>
+                    </li>
+                    <li className="flex items-center gap-3">
+                      <IconCheck
+                        className="h-5 w-5 text-[#008000]"
+                        fg="#ffffff"
+                      />
+                      <span className="t-body text-white">
+                        Exercices pratiques et expressions utiles
+                      </span>
+                    </li>
+                    <li className="flex items-center gap-3">
+                      <IconCheck
+                        className="h-5 w-5 text-[#008000]"
+                        fg="#ffffff"
+                      />
+                      <span className="t-body text-white">
+                        Communauté WhatsApp de la cohorte
+                      </span>
+                    </li>
+                    <li className="flex items-center gap-3">
+                      <IconCheck
+                        className="h-5 w-5 text-[#008000]"
+                        fg="#ffffff"
+                      />
+                      <span className="t-body text-white">
+                        100 % en ligne · 05 places disponibles
+                      </span>
+                    </li>
+                  </ul>
+                  <div className="mt-8">
+                    <CtaOffre
+                      label={CTA_HERO_LABEL}
+                      className="w-full sm:w-auto"
+                    />
                   </div>
-                </Reveal>
-                <Reveal variant="zoom" delay={220}>
-                  <CadreImage>
-                    <div className="aspect-[16/10]">
-                      <ResponsiveImage
-                        src="/assets/prelaunch/prelaunch-offer-value.png"
-                        alt="Bureau minimaliste avec ordinateur portable, carnet et casque audio"
-                        fill
-                        sizes="(min-width: 1024px) 55vw, 100vw"
-                        className="img-zoom object-cover"
-                      />
-                    </div>
-                  </CadreImage>
-                </Reveal>
-              </div>
+                </div>
+              </Reveal>
             </div>
           </Container>
         </section>
@@ -1263,8 +1276,13 @@ export function PrelaunchPage() {
           le pied de page porte le MÊME balayage lumineux que sous le
           formulaire d'inscription du programme (classe .beam-separator
           de globals.css — lumière blanche qui circule de gauche à
-          droite en continu). — */}
-        <div className="beam-separator" aria-hidden="true" />
+          droite en continu). TASK 76 (retour propriétaire : « tu as
+          juste séparé par un espace blanc ») : le conteneur racine de
+          la page est BLANC — sans fond propre, la ligne rendait une
+          simple bande claire. Fond NOIR posé sur la ligne (comme le
+          fond noir de la page d'inscription) : la lumière balaie
+          désormais EXACTEMENT comme sous le formulaire d'inscription. — */}
+        <div className="beam-separator bg-black" aria-hidden="true" />
         <footer className="on-dark mt-auto bg-black py-10 text-white">
           <Container>
             <Reveal>

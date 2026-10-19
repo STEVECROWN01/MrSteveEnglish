@@ -19,7 +19,7 @@ import {
   type InscriptionData,
   type OffreId,
 } from "@/lib/receipt";
-import { Container, Eyebrow, Prose } from "../layout-primitives";
+import { Container, Prose } from "../layout-primitives";
 import { Reveal } from "../reveal";
 import { IconCheck, WhatsAppGlyph } from "../icons";
 import { TelField } from "../tel-field";
@@ -125,7 +125,9 @@ import { FireworksSnow } from "../fireworks-snow";
  *    téléphone et du pays de l'apprenant ;
  *  — le tunnel du programme principal (sans paramètre) est
  *    STRICTEMENT inchangé : aucun champ, bouton immédiatement actif. */
-const COMMUNAUTE_LABEL = "Rejoindre la Communauté WhatsApp du Programme";
+/* TASK 76 (instruction propriétaire) : libellé raccourci — « Rejoindre
+   le groupe WhatsApp » (le même libellé que la variante pre-launch). */
+const COMMUNAUTE_LABEL = "Rejoindre le groupe WhatsApp";
 
 /* Résumé élégant du programme (instruction propriétaire). */
 const PROGRAMME_RECAP = [
@@ -159,15 +161,6 @@ const ETAPES = [
     texte:
       "Nous travaillons à partir de ton niveau actuel pour construire progressivement une expression anglaise plus naturelle et plus confiante.",
   },
-];
-
-/* Statut du récapitulatif (coches vertes « état validé », DA §5 —
-   Task 57 : dernière étape alignée sur le groupe WhatsApp ;
-   Task 63 : « Inscription confirmée » → « Inscription terminée »). */
-const STATUTS = [
-  "Paiement effectué",
-  "Inscription terminée",
-  "Prochaine étape : rejoindre le groupe du programme",
 ];
 
 /* ============================================================
@@ -216,13 +209,6 @@ const PRELAUNCH_ETAPES = [
   },
 ];
 
-/* Statuts du récapitulatif — variante cohorte. */
-const PRELAUNCH_STATUTS = [
-  "Paiement effectué",
-  "Inscription terminée",
-  "Prochaine étape : rejoindre la communauté de la cohorte",
-];
-
 /** Message WhatsApp de REPLI tant que le lien du groupe de la
  * cohorte n'a pas été fourni (PRELAUNCH_WHATSAPP_URL vide) : contact
  * direct du coach — un canal RÉEL, jamais un lien de groupe
@@ -254,10 +240,12 @@ type PrelaunchClient = {
   date: string;
 };
 
-/** Pays du préfixe téléphonique par DÉFAUT : le Bénin — public
- * principal de l'offre (FCFA, indicatif +229). Le client peut le
- * changer dans la dropliste du champ téléphone. */
-const TEL_PAYS_DEFAUT = "bj";
+/** TASK 76 (instruction propriétaire) : PLUS AUCUN pays par défaut —
+ *  le pays doit être SÉLECTIONNÉ dans la dropliste AVANT que le champ
+ *  du numéro de téléphone ne devienne saisissable (le TelField
+ *  verrouille la saisie tant qu'aucun pays n'est choisi). Un client
+ *  qui revient avec un pays déjà sauvegardé le retrouve sélectionné. */
+const TEL_PAYS_DEFAUT = "";
 
 /** Données de repli si les données d'inscription ne sont plus dans le
  *  navigateur (localStorage vidé, autre appareil…) — le reste reste
@@ -999,9 +987,12 @@ export function BienvenuePage() {
         </Container>
       </section>
 
-      {/* — RÉCAPITULATIF — Task 34 : carte en VERRE TRANSPARENT sombre
-          (retour propriétaire : toutes les cartes de la page en verre,
-          exactement comme les cartes verre du site). — */}
+      {/* — DERNIÈRE ÉTAPE : « Prêt(e) à commencer ? » — Task 76
+          (instruction propriétaire) : la carte « Récapitulatif » est
+          SUPPRIMÉE (les DEUX tunnels — programme et pre-launch) ; le
+          bloc « Prêt(e) à commencer ? » (sorti de la carte en Task 75)
+          ouvre la section et reste l'unique point de convergence vers
+          le groupe WhatsApp. — */}
       <section className="relative overflow-hidden py-12 lg:py-16">
         <div
           aria-hidden="true"
@@ -1012,73 +1003,7 @@ export function BienvenuePage() {
           className="pointer-events-none absolute right-[16%] bottom-[1rem] h-[30rem] w-[30rem] rounded-full bg-[radial-gradient(circle,rgba(96,110,190,0.24)_0%,transparent_62%)] blur-2xl"
         />
         <Container className="relative">
-          <Reveal>
-            <div className="glass-card glass-dark mx-auto max-w-[36rem] p-6 md:p-10">
-              <Eyebrow className="text-white/75">Récapitulatif</Eyebrow>
-              <h2 className="t-h3 mt-3 text-white">Ton accompagnement</h2>
-              <dl className="mt-6 divide-y divide-white/15">
-                <div className="flex flex-col gap-1 py-4 sm:flex-row sm:items-baseline sm:justify-between sm:gap-6">
-                  <dt className="t-caption text-white/55">
-                    {prelaunch ? "Offre" : "Programme"}
-                  </dt>
-                  <dd className="t-body font-medium text-white">
-                    {prelaunch ? "Pre-launch — " : ""}De{" "}
-                    <span className="text-red-button">Comprendre</span> à{" "}
-                    <span className="text-red-button">Parler</span>
-                    <sup className="top-[-0.6em] text-[0.6em]">™</sup>
-                  </dd>
-                </div>
-                <div className="flex flex-col gap-1 py-4 sm:flex-row sm:items-baseline sm:justify-between sm:gap-6">
-                  <dt className="t-caption text-white/55">Durée</dt>
-                  {/* Task 36 (retour propriétaire) : « 3 mois » →
-                      « 03 mois ». Task 69 : « 02 mois » en variante
-                      pre-launch. */}
-                  <dd className="t-body font-medium text-white">
-                    {prelaunch ? "02 mois" : "03 mois"}
-                  </dd>
-                </div>
-                <div className="flex flex-col gap-1 py-4 sm:flex-row sm:items-baseline sm:justify-between sm:gap-6">
-                  <dt className="t-caption text-white/55">Format</dt>
-                  <dd className="t-body font-medium text-white">
-                    {prelaunch
-                      ? "Accompagnement intensif 100 % en ligne"
-                      : "Coaching en ligne personnalisé"}
-                  </dd>
-                </div>
-                <div className="flex flex-col gap-1 py-4 sm:flex-row sm:items-baseline sm:justify-between sm:gap-6">
-                  <dt className="t-caption text-white/55">Objectif</dt>
-                  <dd className="t-body font-medium text-white">
-                    {prelaunch
-                      ? "Commencer à pratiquer et à prendre la parole en anglais"
-                      : "Développer ton expression orale et gagner en aisance en anglais"}
-                  </dd>
-                </div>
-              </dl>
-              <div className="mt-6 border-t border-white/15 pt-6">
-                <p className="t-caption text-white/55">Statut</p>
-                <ul className="mt-3 space-y-2.5">
-                  {(prelaunch ? PRELAUNCH_STATUTS : STATUTS).map((s) => (
-                    <li key={s} className="flex items-center gap-3">
-                      {/* Task 36 (retour propriétaire) : coches en VERT
-                          PUR #008000 (comme le cachet PAYÉ du reçu). */}
-                      <IconCheck
-                        className="h-5 w-5 text-[#008000]"
-                        fg="#ffffff"
-                      />
-                      <span className="t-body text-white">{s}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          </Reveal>
-
-          {/* TASK 75 (instruction propriétaire) : la partie « Prêt(e) à
-              commencer ? » — titre, texte et bouton — ne fait PLUS partie
-              de la carte Récapitulatif : elle vit désormais SOUS la
-              carte, au-dessus du message final (la carte se termine sur
-              les statuts). */}
-          <Reveal className="mx-auto mt-8 max-w-[36rem]">
+          <Reveal className="mx-auto max-w-[36rem]">
             <div className="text-center">
               <h3 className="t-h3 text-white">Prêt(e) à commencer ?</h3>
               <p className="t-body mt-3 text-white/75">
@@ -1148,8 +1073,9 @@ export function BienvenuePage() {
               « Rejoindre le Programme » est remplacé par un emoji 👋
               amical — taille moyenne, clairement visible, souligné
               d'une ombre douce pour ressortir du fond noir. Le seul
-              bouton WhatsApp de la page est désormais celui de la
-              carte Récapitulatif. */}
+              bouton WhatsApp de la page est désormais celui du bloc
+              « Prêt(e) à commencer ? » (Task 76 : la carte
+              Récapitulatif est supprimée). */}
           <Reveal className="mt-10">
             <div className="flex justify-center">
               <span

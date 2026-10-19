@@ -41,6 +41,12 @@ import { PAYS_VILLES, flagUrl, normaliser } from "@/lib/pays-villes";
  * (7rem → 8.75rem) — à 1rem de police, l'indicatif « +229 » était
  * rogné en « +… » par le truncate du conteneur trop étroit.
  *
+ * TASK 76 (instruction propriétaire) : le pays est OBLIGATOIRE avant
+ * la saisie — tant qu'aucun pays n'est sélectionné, le champ du
+ * numéro est VERROUILLÉ (disabled, estompé) ; un clic dessus ouvre
+ * la dropliste des pays, et le choix d'un pays y ramène le focus
+ * pour saisir directement le numéro.
+ *
  * Le style reproduit EXACTEMENT celui des champs du formulaire
  * (.form-label / .form-input / .form-error) et du panneau dropliste
  * de ListboxField (pays-ville-fields.tsx) — fermeture au clic
@@ -73,6 +79,10 @@ export function TelField({
   const [query, setQuery] = useState("");
   const rootRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLInputElement>(null);
+  /* TASK 76 : référence du champ numéro — pour y ramener le focus
+     dès qu'un pays est sélectionné (le champ se déverrouille à cet
+     instant précis). */
+  const inputRef = useRef<HTMLInputElement>(null);
 
   /* Infos d'indicatif du pays sélectionné (null si code inconnu). */
   const paysObj = useMemo(
@@ -184,7 +194,9 @@ export function TelField({
             />
           ) : null}
           <span className="min-w-0 flex-1 truncate text-left font-[550] tabular-nums tracking-wide text-white/85">
-            {info ? info.affiche : "…"}
+            {/* TASK 76 : invitation claire tant qu'aucun pays n'est
+                choisi — l'indicatif s'affiche dès la sélection. */}
+            {info ? info.affiche : "Ton pays"}
           </span>
           <svg
             aria-hidden="true"
@@ -203,9 +215,24 @@ export function TelField({
           </svg>
         </button>
 
-        {/* — Numéro local (chiffres, formaté pour le pays) — */}
-        <div className="relative min-w-0 flex-1">
+        {/* — Numéro local (chiffres, formaté pour le pays) —
+            TASK 76 (instruction propriétaire) : le pays doit être
+            sélectionné AVANT la saisie — le champ est VERROUILLÉ tant
+            qu'aucun pays n'est choisi (disabled + pointer-events-none :
+            le clic remonte au conteneur et ouvre la dropliste des
+            pays, au lieu d'être absorbé par le champ inactif). — */}
+        <div
+          className="relative min-w-0 flex-1"
+          onClick={
+            info
+              ? undefined
+              : () => {
+                  setOpen(true);
+                }
+          }
+        >
           <input
+            ref={inputRef}
             id={id}
             type="tel"
             inputMode="tel"
@@ -221,8 +248,14 @@ export function TelField({
             onBlur={onBlur}
             aria-invalid={Boolean(error)}
             aria-describedby={error ? errId : undefined}
-            placeholder={info ? `Ex. : ${info.exemple}` : "Ton numéro"}
-            className={cn("form-input min-w-0", error && "border-red-button")}
+            disabled={!info}
+            placeholder={info ? `Ex. : ${info.exemple}` : "Sélectionne ton pays"}
+            style={info ? undefined : { pointerEvents: "none" }}
+            className={cn(
+              "form-input min-w-0",
+              !info && "cursor-not-allowed opacity-60",
+              error && "border-red-button",
+            )}
           />
         </div>
       </div>
@@ -280,6 +313,13 @@ export function TelField({
                       onPaysChange(p.code);
                       onTelChange("");
                       fermer();
+                      /* TASK 76 : le champ du numéro vient de se
+                         déverrouiller — on y ramène le client pour
+                         qu'il saisisse directement son numéro (après
+                         le rendu qui retire le disabled). */
+                      requestAnimationFrame(() => {
+                        inputRef.current?.focus();
+                      });
                     }}
                     className={cn(
                       "flex w-full items-center gap-3 px-3 py-2.5 text-left text-[0.95rem] transition-colors",
