@@ -125,7 +125,14 @@ function CtaOffre({ label, className }: { label: string; className?: string }) {
  *  propriétaire TASK 71) : coins 12px + ombre douce, SANS bordure ni
  *  fond blanc — le cadrage respire pareil sur fond blanc et sur fond
  *  noir. `group` : zoom discret de l'image au survol (classe img-zoom
- *  posée sur chaque image). */
+ *  posée sur chaque image).
+ *  TASK 78 : `relative` OBLIGATOIRE — sans lui, l'<img fill> en
+ *  `absolute inset-0` remonte à un ancêtre positionné plus haut
+ *  (Reveal) : l'image débordait de son cadre (761 px dans un cadre de
+ *  731 px) et ses coins CARRÉS restaient visibles malgré le
+ *  `overflow-hidden rounded-[12px]`. Avec `relative`, le cadre redevient
+ *  le containing block de l'image : elle est clippée aux coins 12 px
+ *  comme l'image du hero (qui a toujours eu `relative`). */
 function CadreImage({
   children,
   className,
@@ -136,7 +143,7 @@ function CadreImage({
   return (
     <div
       className={cn(
-        "group overflow-hidden rounded-[12px] shadow-[0_4px_20px_rgba(0,0,0,0.10)]",
+        "group relative overflow-hidden rounded-[12px] shadow-[0_4px_20px_rgba(0,0,0,0.10)]",
         className,
       )}
     >
