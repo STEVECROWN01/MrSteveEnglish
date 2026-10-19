@@ -442,8 +442,19 @@ export function PrelaunchPage() {
           TASK 74 : padding supérieur RÉDUIT d'un cran (pt-20/lg:pt-24,
           était pt-24/lg:pt-32) — le propriétaire trouvait l'espace
           entre la bande fixe et l'image trop grand sur desktop.
+          TASK 79 (instruction propriétaire : « le hero doit entièrement
+          couvrir la taille d'écran lorsqu'on est dessus, au top — ça
+          doit s'adapter aux tailles d'écran ») : hauteur minimale
+          100svh (petite hauteur d'écran dynamique — la vraie unité
+          plein écran sur mobile, barres d'interface déduites ; repli
+          vh identique car même valeur) — le hero couvre TOUJOURS au
+          moins exactement l'écran au sommet de la page, et grandit
+          naturellement si le contenu dépasse (petits portables) ; le
+          contenu est centré verticalement dans l'espace disponible
+          (flex-1 + justify-center) — pas de vide noir disgracieux en
+          bas sur grands écrans.
           ============================================================ */}
-        <section className="on-dark relative overflow-hidden bg-black pb-16 pt-20 text-white lg:pb-24 lg:pt-24">
+        <section className="on-dark relative flex min-h-[100svh] flex-col overflow-hidden bg-black pb-16 pt-20 text-white lg:pb-24 lg:pt-24">
           <div
             aria-hidden="true"
             className="blob-drift pointer-events-none absolute left-[4%] top-[12%] h-[32rem] w-[32rem] rounded-full bg-[radial-gradient(circle,rgba(255,26,26,0.28)_0%,transparent_62%)] blur-2xl"
@@ -452,7 +463,7 @@ export function PrelaunchPage() {
             aria-hidden="true"
             className="blob-drift-alt pointer-events-none absolute right-[2%] bottom-[-6rem] h-[36rem] w-[36rem] rounded-full bg-[radial-gradient(circle,rgba(96,110,190,0.30)_0%,transparent_62%)] blur-2xl"
           />
-          <Container className="relative">
+          <Container className="relative flex flex-1 flex-col justify-center">
             {/* TASK 75 (instruction propriétaire) : l'eyebrow du hero
                 est renommé « Pre-launch • De COMPRENDRE à PARLER™ »
                 (nom officiel de l'offre) et posé AU-DESSUS de la

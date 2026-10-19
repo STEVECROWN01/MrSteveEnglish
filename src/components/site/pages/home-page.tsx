@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
-import { useInViewOnce, usePrefersReducedMotion } from "@/lib/motion";
+import { useInView, usePrefersReducedMotion } from "@/lib/motion";
 import { CTA_LABELS, OFFRE } from "@/lib/site";
 import { INCLUS, VALUE_STACK } from "@/lib/inclusions";
 import { Container, Eyebrow, Prose, Section } from "../layout-primitives";
@@ -1656,24 +1656,29 @@ function CtaFinal() {
   );
 }
 
-/** Overlay noir → blanc (500ms, une fois, à l'entrée dans le viewport). */
+/** Overlay noir → blanc (500ms). TASK 79 (instruction propriétaire :
+    « tout doit être dynamique ») : observateur PERSISTANT — le fondu se
+    rejoue à CHAQUE entrée dans le viewport (noir → transparent) et le
+    retour au noir est animé à la sortie (transition posée sur l'état
+    de base en CSS, même langage motion que .reveal). Reduced motion :
+    coupe nette pilotée par le style inline. */
 function DarkFadeOverlay() {
-  const [ref, inView] = useInViewOnce<HTMLDivElement>({ threshold: 0.15 });
+  const [ref, inView] = useInView<HTMLDivElement>({ threshold: 0.15 });
   const reduced = usePrefersReducedMotion();
 
-  // Avant l'entrée : noir plein. À l'entrée : fondu 500ms (ou coupe nette
-  // en reduced motion). Le style inline pilote les cas non animés.
-  const animated = inView && !reduced;
+  // Entrée : fondu 500ms vers transparent (ou coupe nette en reduced
+  // motion). Sortie : retour animé au noir (transition de la base).
+  const revealed = inView && !reduced;
 
   return (
     <div
       ref={ref}
       aria-hidden="true"
       className={cn(
-        "pointer-events-none absolute inset-0 z-10 bg-black",
-        animated && "dark-fade",
+        "dark-fade pointer-events-none absolute inset-0 z-10 bg-black",
+        revealed && "is-visible",
       )}
-      style={animated ? undefined : { opacity: inView ? 0 : 1 }}
+      style={revealed ? undefined : { opacity: inView ? 0 : 1 }}
     />
   );
 }

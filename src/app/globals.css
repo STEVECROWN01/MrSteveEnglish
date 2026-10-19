@@ -598,17 +598,17 @@
     color: var(--red-button);
   }
 
-  /* — Fade noir → blanc à l'entrée de la section Solution — */
-  @keyframes dark-fade {
-    from {
-      opacity: 1;
-    }
-    to {
-      opacity: 0;
-    }
-  }
+  /* — Fade noir → blanc de la section Solution. TASK 79 (instruction
+     propriétaire : « tout doit être dynamique ») : fondu REJOUABLE —
+     la transition vit sur l'ÉTAT DE BASE (le retour au noir à la sortie
+     est animé lui aussi) et l'entrée se rejoue à CHAQUE passage dans le
+     viewport, en descendant comme en remontant — même langage motion que
+     .reveal (transition sur la base + état .is-visible). — */
   .dark-fade {
-    animation: dark-fade 500ms var(--ease-std) forwards;
+    transition: opacity 500ms var(--ease-std);
+  }
+  .dark-fade.is-visible {
+    opacity: 0;
   }
 
   /* — Toggle Avant → Après (350ms) — */
@@ -946,8 +946,7 @@ body[data-listbox-open] .sticky-cta {
     color: var(--red-button);
   }
   .dark-fade {
-    animation: none;
-    opacity: 0;
+    transition: none;
   }
   .ba-text {
     transition: none;
