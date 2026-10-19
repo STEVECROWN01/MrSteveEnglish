@@ -152,11 +152,11 @@ function CadreImage({
   );
 }
 
-/** Légende discrète sous les illustrations à personnages — rappelle
- *  qu'il s'agit d'illustrations fictives (brief §4). */
-function Legende({ children }: { children: React.ReactNode }) {
-  return <p className="t-caption mt-3 text-black/50">{children}</p>;
-}
+/** Légende discrète sous les illustrations — TASK 80 : le composant
+ *  est RETIRÉ (instruction propriétaire : « supprime les légendes
+ *  Illustration… que tu as ajoutées sous les images — je ne t'ai pas
+ *  dit d'ajouter cela ») ; les textes alternatifs alt="" restent
+ *  (invisibles, accessibilité lecteurs d'écran). */
 
 /* — SECTION 4 : les 06 éléments inclus (brief, texte exact) — */
 const INCLUS_PRELAUNCH = [
@@ -621,10 +621,6 @@ export function PrelaunchPage() {
                       />
                     </div>
                   </CadreImage>
-                  <Legende>
-                    Illustration — personnage fictif, représentation du blocage
-                    à l&apos;oral.
-                  </Legende>
                 </div>
               </Reveal>
             </div>
@@ -670,10 +666,6 @@ export function PrelaunchPage() {
                       />
                     </div>
                   </CadreImage>
-                  <p className="t-caption mt-3 text-white/45">
-                    Illustration — apprenante fictive pendant une séance de
-                    pratique orale.
-                  </p>
                 </div>
               </Reveal>
               <Reveal variant="right" delay={120}>
@@ -773,10 +765,6 @@ export function PrelaunchPage() {
                       />
                     </div>
                   </CadreImage>
-                  <Legende>
-                    Illustration — apprenant fictif pendant ses exercices de
-                    pratique.
-                  </Legende>
                 </div>
               </Reveal>
               <Reveal variant="right" delay={160}>
@@ -1045,10 +1033,6 @@ export function PrelaunchPage() {
                           />
                         </div>
                       </CadreImage>
-                      <Legende>
-                        Illustration — personnages fictifs. La capacité réelle
-                        de la cohorte est de 05 participants.
-                      </Legende>
                     </div>
                   </div>
                 </Reveal>
@@ -1289,9 +1273,6 @@ export function PrelaunchPage() {
                       />
                     </div>
                   </CadreImage>
-                  <p className="t-caption mt-3 text-white/45">
-                    Illustration — apprenante fictive.
-                  </p>
                 </div>
               </Reveal>
             </div>
