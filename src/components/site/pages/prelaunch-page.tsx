@@ -84,8 +84,8 @@ const CTA_HREF =
     "Bonjour Coach Stevens, je souhaite rejoindre la première cohorte de l'offre « Pre-launch • De COMPRENDRE à PARLER™ » (02 mois — 15 000 FCFA). Comment je procède pour réserver ma place ?",
   );
 
-const CTA_HERO_LABEL = "Découvrir l'offre et s'inscrire →";
-const CTA_FINAL_LABEL = "Je veux découvrir l'offre et m'inscrire →";
+const CTA_HERO_LABEL = "S'inscrire maintenant";
+const CTA_FINAL_LABEL = "Je m'inscris maintenant";
 
 /** Bouton d'inscription de l'offre pre-launch — externe
  *  (Maketou ou repli WhatsApp), avec événement Meta InitiateCheckout
