@@ -874,13 +874,23 @@ export function PrelaunchPage() {
               <Reveal variant="left">
                 <div className="relative overflow-hidden rounded-[12px] shadow-[0_4px_20px_rgba(0,0,0,0.10)]">
                   <div aria-hidden="true" className="absolute inset-0">
-                    <ResponsiveImage
-                      src="/assets/prelaunch/prelaunch-offer-value.png"
-                      alt=""
-                      fill
-                      sizes="100vw"
-                      className="object-cover"
-                    />
+                    <picture>
+                      {/* Task 85 — fond PORTRAIT dédié mobile : la source paysage 1672×941
+                         était agrandie 2,3× dans la carte 350×722 (flou net). Portrait
+                         720×1440 = natif sur DPR 2, 1,5× sur DPR 3. */}
+                      <source
+                        media="(max-width: 1023.98px)"
+                        srcSet="/assets/prelaunch/prelaunch-offer-value-portrait-480.webp 480w, /assets/prelaunch/prelaunch-offer-value-portrait-720.webp 720w"
+                        sizes="100vw"
+                      />
+                      <ResponsiveImage
+                        src="/assets/prelaunch/prelaunch-offer-value.png"
+                        alt=""
+                        fill
+                        sizes="100vw"
+                        className="object-cover"
+                      />
+                    </picture>
                     <div className="absolute inset-0 bg-black/75" />
                   </div>
                   <div className="prelaunch-mobile-left relative p-6 md:p-8 lg:p-10">
