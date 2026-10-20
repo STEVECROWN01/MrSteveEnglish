@@ -1092,4 +1092,12 @@ body[data-listbox-open] .sticky-cta {
   .prelaunch-contents .prelaunch-mobile-center {
     text-align: center;
   }
+
+  /* Task 84 — exceptions d'alignement à gauche sur mobile (carte noire,
+     paragraphe d'intro des inclus, 6 cartes de section, carte tarif) —
+     spécificité 0-2-0/0-2-1 > justify 0-1-1 de la Task 81 */
+  .prelaunch-contents .prelaunch-mobile-left,
+  .prelaunch-contents .prelaunch-mobile-left p {
+    text-align: left;
+  }
 }

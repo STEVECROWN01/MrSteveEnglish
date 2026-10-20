@@ -622,7 +622,7 @@ export function PrelaunchPage() {
                     besoin d&apos;attendre de tout connaître avant de commencer
                     à pratiquer.
                   </p>
-                  <div className="mt-6 rounded-[12px] bg-black p-6 md:p-7">
+                  <div className="prelaunch-mobile-left mt-6 rounded-[12px] bg-black p-6 md:p-7">
                     <p className="font-display text-[1.25rem] font-medium leading-snug text-white md:text-[1.375rem]">
                       Tu as besoin de travailler ton expression orale, de
                       t&apos;entraîner régulièrement et d&apos;apprendre à
@@ -810,7 +810,7 @@ export function PrelaunchPage() {
               </Reveal>
               <Reveal variant="right" delay={160}>
                 <Prose>
-                  <p className="t-body text-black/75">
+                  <p className="prelaunch-mobile-left t-body text-black/75">
                     Les séances en ligne, la pratique orale, les expressions
                     utiles, les exercices, l&apos;accompagnement et la
                     communauté WhatsApp : voici exactement ce que couvrent les
@@ -822,7 +822,7 @@ export function PrelaunchPage() {
             <div className="mx-auto mt-10 grid max-w-[60rem] gap-6 md:grid-cols-2">
               {INCLUS_PRELAUNCH.map((item, i) => (
                 <Reveal key={item.num} variant="zoom" delay={i * 80}>
-                  <div className="glass-card card-hover h-full p-6 lg:p-7">
+                  <div className="prelaunch-mobile-left glass-card card-hover h-full p-6 lg:p-7">
                     <div className="flex items-baseline gap-4">
                       <Reveal
                         as="p"
@@ -883,7 +883,7 @@ export function PrelaunchPage() {
                     />
                     <div className="absolute inset-0 bg-black/75" />
                   </div>
-                  <div className="relative p-6 md:p-8 lg:p-10">
+                  <div className="prelaunch-mobile-left relative p-6 md:p-8 lg:p-10">
                     <Prose>
                       <h2 className="t-h2 text-white">
                         Une condition exceptionnelle du pré-lancement.
