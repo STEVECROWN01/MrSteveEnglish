@@ -27,22 +27,32 @@ import { PixelNoscript } from "@/components/site/pixel-noscript";
  * 308 PERMANENTE depuis l'ancienne route (next.config.ts) — les
  * liens déjà partagés restent valides.
  */
+/* TASK 87 (instruction propriétaire, 2026-10-21) : CARTE DE PARTAGE
+   (WhatsApp/OG) — le nom « Stevens AKPOVI » et la mention « Première
+   cohorte » ne doivent plus apparaître dans les aperçus de lien. Le
+   suffixe « Première cohorte | Stevens AKPOVI » de l'OG/Twitter title
+   devient « Accompagnement d'Anglais En Ligne » ; le nom sort aussi
+   du <title> de l'onglet (source de repli des aperçus) et du
+   og:siteName (remplacé par la marque « Mr Steve English ») ; la
+   description passe de « Première cohorte de pré-lancement » à
+   « Pré-lancement » (terme préféré du propriétaire). Le contenu
+   visible de la page n'est PAS touché. */
 export const metadata: Metadata = {
   title:
-    "Pre-launch • De COMPRENDRE à PARLER™ — 02 mois · 15 000 FCFA | Stevens AKPOVI",
+    "Pre-launch • De COMPRENDRE à PARLER™ — 02 mois · 15 000 FCFA",
   description:
-    "Première cohorte de pré-lancement : 02 mois d'accompagnement intensif en ligne pour commencer à pratiquer l'anglais — 03 séances de 1h30 par semaine — 15 000 FCFA — 05 places disponibles.",
+    "Pré-lancement : 02 mois d'accompagnement intensif en ligne pour commencer à pratiquer l'anglais — 03 séances de 1h30 par semaine — 15 000 FCFA — 05 places disponibles.",
   alternates: {
     canonical: "/pre-launch",
   },
   openGraph: {
     title:
-      "Pre-launch • De COMPRENDRE à PARLER™ — Première cohorte | Stevens AKPOVI",
+      "Pre-launch • De COMPRENDRE à PARLER™ — Accompagnement d'Anglais En Ligne",
     description:
       "02 mois d'accompagnement intensif en ligne pour commencer à pratiquer l'anglais. 15 000 FCFA — 05 places disponibles.",
     type: "website",
     locale: "fr_FR",
-    siteName: "Stevens AKPOVI",
+    siteName: "Mr Steve English",
     url: "/pre-launch",
     /* TASK 75 (instruction propriétaire) : OG DÉDIÉE au pre-launch —
        image uploadée par le propriétaire
@@ -58,14 +68,14 @@ export const metadata: Metadata = {
         type: "image/jpeg",
         width: 1200,
         height: 1200,
-        alt: "Pre-launch • De COMPRENDRE à PARLER™ — première cohorte de 05 participants.",
+        alt: "Pre-launch • De COMPRENDRE à PARLER™ — Accompagnement d'Anglais En Ligne, 05 places disponibles.",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
     title:
-      "Pre-launch • De COMPRENDRE à PARLER™ — Première cohorte | Stevens AKPOVI",
+      "Pre-launch • De COMPRENDRE à PARLER™ — Accompagnement d'Anglais En Ligne",
     description:
       "02 mois d'accompagnement intensif en ligne pour commencer à pratiquer l'anglais. 15 000 FCFA — 05 places disponibles.",
   },
