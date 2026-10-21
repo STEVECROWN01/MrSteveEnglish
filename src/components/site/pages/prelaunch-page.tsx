@@ -265,7 +265,7 @@ const FAQ_PRELAUNCH = [
   {
     question: "Quel est le tarif ?",
     answer:
-      "La participation est de 15 000 FCFA pour les 02 mois d'accompagnement prévus dans cette offre de pré-lancement.",
+      "La participation est de 15 000 FCFA pour 02 mois d'accompagnement prévus dans cette offre de pré-lancement.",
   },
   {
     question: "La formation se déroule-t-elle en présentiel ?",
@@ -434,8 +434,15 @@ export function PrelaunchPage() {
       <div
         aria-label="Cohorte strictement limitée"
         role="note"
-        className="band-shine fixed inset-x-0 top-0 z-[60] border-b border-black/20 bg-red-button py-2.5 text-center text-white md:py-3"
+        className="band-shine fixed inset-x-0 top-0 z-[60] flex h-9 items-center justify-center border-b border-black/20 bg-red-button text-white md:h-11"
       >
+        {/* TASK 86 : hauteur FIXE (h-9 mobile / h-11 ≥768px, flex
+            centrage vertical) — remplace py-2.5/md:py-3 pour que la
+            hauteur de la bande soit IDENTIQUE sur toutes les largeurs
+            d'écran (le calibrage Task 81/82 du texte — geometricPrecision,
+            nowrap, une seule ligne — est inchangé) ; c'est ce qui permet
+            d'égaliser AU PIXEL PRÈS l'espace bande→texte du hero avec
+            l'espace texte→image, sur tous les écrans. */}
         <p className="max-md:[text-rendering:geometricPrecision] whitespace-nowrap text-[min(2.25vw,0.75rem)] font-bold uppercase tracking-normal text-white md:text-sm md:tracking-[0.1em]">
           Cohorte strictement limitée • Seulement 05 places sont disponibles
         </p>
@@ -465,12 +472,20 @@ export function PrelaunchPage() {
           plein écran sur mobile, barres d'interface déduites ; repli
           vh identique car même valeur) — le hero couvre TOUJOURS au
           moins exactement l'écran au sommet de la page, et grandit
-          naturellement si le contenu dépasse (petits portables) ; le
-          contenu est centré verticalement dans l'espace disponible
-          (flex-1 + justify-center) — pas de vide noir disgracieux en
-          bas sur grands écrans.
+          naturellement si le contenu dépasse (petits portables).
           ============================================================ */}
-        <section className="on-dark relative flex min-h-[100svh] flex-col overflow-hidden bg-black pb-16 pt-20 text-white lg:pb-24 lg:pt-24">
+        {/* TASK 86 (instruction propriétaire : « réduis l'espace entre la
+            bande rouge et le texte "Pre-launch • De COMPRENDRE à PARLER™"
+            pour que cet espace soit égal à l'espace entre ce texte et
+            l'image, sur tous les écrans ») : le hero n'est PLUS centré
+            verticalement (justify-center retiré) — le bloc eyebrow+grille
+            est ancré SOUS la bande fixe ; le padding supérieur est calibré
+            à hauteur de bande + 27 px (= exactement l'écart texte→image
+            mt-6), l'image démarre donc TOUJOURS à la même distance sous
+            le texte, et le texte à la même distance sous la bande,
+            quel que soit l'écran. TASK 79 conservé : le hero couvre
+            toujours 100svh (min-h) et grandit si le contenu dépasse. */}
+        <section className="on-dark relative flex min-h-[100svh] flex-col overflow-hidden bg-black pb-16 pt-[61px] text-white md:pt-[69px] lg:pb-24">
           <div
             aria-hidden="true"
             className="blob-drift pointer-events-none absolute left-[4%] top-[12%] h-[32rem] w-[32rem] rounded-full bg-[radial-gradient(circle,rgba(255,26,26,0.28)_0%,transparent_62%)] blur-2xl"
@@ -479,7 +494,7 @@ export function PrelaunchPage() {
             aria-hidden="true"
             className="blob-drift-alt pointer-events-none absolute right-[2%] bottom-[-6rem] h-[36rem] w-[36rem] rounded-full bg-[radial-gradient(circle,rgba(96,110,190,0.30)_0%,transparent_62%)] blur-2xl"
           />
-          <Container className="relative flex flex-1 flex-col justify-center">
+          <Container className="relative flex flex-1 flex-col">
             {/* TASK 75 (instruction propriétaire) : l'eyebrow du hero
                 est renommé « Pre-launch • De COMPRENDRE à PARLER™ »
                 (nom officiel de l'offre) et posé AU-DESSUS de la
@@ -491,7 +506,13 @@ export function PrelaunchPage() {
               Pre-launch • De COMPRENDRE à PARLER
               <sup className="top-[-0.6em] text-[0.6em]">™</sup>
             </p>
-            <div className="mt-6 grid items-center gap-10 lg:grid-cols-[45%_55%] lg:gap-14">
+            {/* TASK 86 : items-start (était items-center) — l'image
+                démarre TOUJOURS en haut de la grille, collée au même
+                écart de 27 px sous le texte sur tous les écrans (avant,
+                entre 1024 et 1280 px, l'image était centrée verticalement
+                car la colonne de texte était plus haute → écart
+                texte→image gonflé à ~115 px). */}
+            <div className="mt-6 grid items-start gap-10 lg:grid-cols-[45%_55%] lg:gap-14">
               {/* Portrait du fondateur — cadrage IDENTIQUE à l'accueil
                 (TASK 71 : coins 12px, ombre douce, aucune bordure),
                 entrée dédiée hero-portrait-in (fondu + montée + zoom
@@ -544,7 +565,7 @@ export function PrelaunchPage() {
                 <p className="hero-line hero-d5 mt-8 font-display text-[1.75rem] font-medium leading-tight text-white md:text-[2.125rem]">
                   15 000 FCFA{" "}
                   <span className="text-[1.125rem] font-normal text-white/70 md:text-[1.25rem]">
-                    pour les 02 mois d&apos;accompagnement.
+                    pour 02 mois d&apos;accompagnement.
                   </span>
                 </p>
                 <div className="hero-line hero-d5 mt-8 flex justify-center lg:justify-start">
@@ -646,7 +667,12 @@ export function PrelaunchPage() {
                         src="/assets/prelaunch/prelaunch-speaking-block.png"
                         alt="Illustration d'un personnage fictif qui hésite à parler lors d'une conversation en ligne"
                         fill
-                        sizes="100vw"
+                        /* TASK 86 (perf images) : 92vw = largeur réelle du
+                           conteneur (100vw − 2×px-5) — le navigateur
+                           sélectionne la variante 1152w sur téléphones
+                           (3,2× la largeur affichée = net à DPR 3)
+                           au lieu de 1536w : −25 Ko sans perte visible. */
+                        sizes="92vw"
                         className="img-zoom object-cover lg:[object-position:40%_50%]"
                       />
                     </div>
@@ -947,7 +973,7 @@ export function PrelaunchPage() {
                   </Eyebrow>
                   <p className="t-stat mt-4 text-white">15 000 FCFA</p>
                   <p className="t-body mt-2 text-white/75">
-                    pour les 02 mois d&apos;accompagnement — paiement unique.
+                    pour 02 mois d&apos;accompagnement — paiement unique.
                   </p>
                   <ul className="mt-6 space-y-2.5 border-t border-white/15 pt-6 text-left">
                     <li className="flex items-center gap-3">
