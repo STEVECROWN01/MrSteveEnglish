@@ -767,7 +767,9 @@ export function BienvenuePage() {
           className="pointer-events-none absolute right-[10%] top-[2rem] h-[28rem] w-[28rem] rounded-full bg-[radial-gradient(circle,rgba(96,110,190,0.28)_0%,transparent_62%)] blur-2xl"
         />
         <Container className="relative">
-          <Reveal>
+          {/* TASK 89 : cartes et blocs en zoom doux, numéros d'étapes
+              en rebond pop — mêmes motifs que le pre-launch. */}
+          <Reveal variant="zoom">
             <div className="glass-card glass-dark mx-auto max-w-[42rem] p-6 text-center md:p-8">
               <p className="t-body text-white/90">
                 {prelaunch ? (
@@ -857,7 +859,7 @@ export function BienvenuePage() {
           </Reveal>
           <div className="mx-auto mt-10 grid max-w-[46rem] gap-4 sm:grid-cols-2 lg:mt-12">
             {(prelaunch ? PRELAUNCH_RECAP : PROGRAMME_RECAP).map((item, i) => (
-              <Reveal key={item.titre} delay={i * 100}>
+              <Reveal key={item.titre} variant="zoom" delay={i * 100}>
                 <div className="glass-card card-hover h-full p-6">
                   <p className="font-display text-[1.25rem] font-medium leading-snug text-black md:text-[1.375rem]">
                     {item.titre}
@@ -890,11 +892,16 @@ export function BienvenuePage() {
           </Reveal>
           <div className="mx-auto mt-10 grid max-w-[60rem] gap-6 md:grid-cols-3 lg:mt-14">
             {(prelaunch ? PRELAUNCH_ETAPES : ETAPES).map((e, i) => (
-              <Reveal key={e.num} delay={i * 120}>
+              <Reveal key={e.num} variant="zoom" delay={i * 120}>
                 <div className="glass-card glass-dark card-hover h-full p-6 lg:p-7">
-                  <p className="font-display text-[2rem] font-medium leading-none text-white/30">
+                  <Reveal
+                    as="p"
+                    variant="pop"
+                    delay={i * 120 + 200}
+                    className="font-display text-[2rem] font-medium leading-none text-white/30"
+                  >
                     {e.num}
-                  </p>
+                  </Reveal>
                   <h3 className="t-h3 mt-5 text-white">{e.titre}</h3>
                   <p className="t-body mt-3 text-white/75">{e.texte}</p>
                 </div>
@@ -918,7 +925,7 @@ export function BienvenuePage() {
           className="pointer-events-none absolute right-[8%] top-[1rem] h-[32rem] w-[32rem] rounded-full bg-[radial-gradient(circle,rgba(28,28,64,0.30)_0%,transparent_62%)] blur-2xl"
         />
         <Container className="relative">
-          <Reveal>
+          <Reveal variant="zoom">
             <div className="relative mx-auto max-w-[42rem]">
               {/* cartes-fantômes du paquet (purement décoratives) */}
               <div
@@ -1076,7 +1083,9 @@ export function BienvenuePage() {
               bouton WhatsApp de la page est désormais celui du bloc
               « Prêt(e) à commencer ? » (Task 76 : la carte
               Récapitulatif est supprimée). */}
-          <Reveal className="mt-10">
+          {/* TASK 89 : emoji de célébration en rebond pop (petit
+              élément ponctuel — usage réservé du variant pop). */}
+          <Reveal variant="pop" className="mt-10">
             <div className="flex justify-center">
               <span
                 aria-hidden="true"

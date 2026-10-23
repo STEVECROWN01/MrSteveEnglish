@@ -123,7 +123,9 @@ export function ProgrammePage() {
         </div>
 
         <Container className="relative">
-          <Reveal>
+          {/* TASK 89 : carte d'offre en zoom doux (même motif que le
+              pre-launch — cartes et blocs). */}
+          <Reveal variant="zoom">
             <div className="mx-auto max-w-[52rem]">
               {/* Task 29 (instruction propriétaire) : la carte d'offre
                   passe en VERRE TRANSPARENT sombre — la texture
@@ -255,7 +257,7 @@ export function ProgrammePage() {
           {/* Garantie basée sur l'engagement (instruction propriétaire :
               jamais de garantie absolue sans conditions) — Task 27 :
               textes BLANCS, bordure blanche */}
-          <Reveal className="mt-12 lg:mt-16">
+          <Reveal variant="zoom" className="mt-12 lg:mt-16">
             <div className="mx-auto max-w-[52rem] rounded-[12px] border-2 border-white p-6 md:p-8">
               <Eyebrow className="text-white/75">Garantie</Eyebrow>
               <p className="t-body mt-3 text-white/85">
@@ -297,7 +299,7 @@ export function ProgrammePage() {
           className="pointer-events-none absolute right-[2rem] top-[6rem] h-[34rem] w-[34rem] rounded-full bg-[radial-gradient(circle,rgba(28,28,64,0.32)_0%,transparent_62%)] blur-2xl"
         />
         <Container className="relative">
-          <Reveal>
+          <Reveal variant="zoom">
             <div className="glass-card mx-auto max-w-[46rem] p-6 md:p-10">
               <p className="t-body">
                 Trois jours après ton paiement, ton coaching démarre

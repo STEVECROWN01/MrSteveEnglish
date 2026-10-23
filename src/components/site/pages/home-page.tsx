@@ -292,8 +292,8 @@ function ProblemeAgitation() {
         {/* Section Agitation — image PROBLEME-01 à gauche, texte du
             bloc aligné à droite (instruction propriétaire). Mobile :
             image puis texte, empilés. */}
-        <Reveal className="mt-16 lg:mt-24">
-          <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,25rem)_minmax(0,42rem)] lg:justify-between lg:gap-12">
+        <div className="mt-16 grid items-center gap-10 lg:mt-24 lg:grid-cols-[minmax(0,25rem)_minmax(0,42rem)] lg:justify-between lg:gap-12">
+          <Reveal variant="left">
             {/* Image — à gauche du texte (apprenante bloquée, feuille
                 froissée : l'agitation du problème) */}
             <div className="relative mx-auto w-full max-w-[25rem] overflow-hidden rounded-[12px] lg:mx-0">
@@ -306,8 +306,10 @@ function ProblemeAgitation() {
                 className="h-auto w-full"
               />
             </div>
+          </Reveal>
 
-            {/* Texte — positionné à droite de l'image */}
+          {/* Texte — positionné à droite de l'image */}
+          <Reveal variant="right" delay={120}>
             <Prose>
               {/* Deux temps, deux titres (instruction propriétaire) :
                   le constat d&apos;abord, puis la conséquence. */}
@@ -334,13 +336,13 @@ function ProblemeAgitation() {
                 peu plus les prochaines.
               </p>
             </Prose>
-          </div>
-        </Reveal>
+          </Reveal>
+        </div>
 
         {/* Coût de l'inaction — URGENCE ÉTHIQUE en carte (instruction
             propriétaire : le moment d'affirmation prend le même langage
             visuel que l'ancienne carte « quelqu'un d'autre postule »). */}
-        <Reveal className="mt-16 lg:mt-24">
+        <Reveal variant="zoom" className="mt-16 lg:mt-24">
           <CarteUrgenceEthique />
         </Reveal>
       </Container>
@@ -385,7 +387,7 @@ function Solution() {
       <Container className="relative py-12 lg:py-24">
         <div className="grid gap-10 lg:grid-cols-[minmax(0,46rem)_minmax(0,22rem)] lg:items-stretch lg:justify-center lg:gap-12">
           {/* Bloc contenu (à gauche de l'image) */}
-          <Reveal>
+          <Reveal variant="left">
             <div className="glass-card card-hover p-6 md:p-10 lg:p-12">
               <Eyebrow>Ma méthode</Eyebrow>
               <h2 className="t-h2 mt-4 text-black">
@@ -413,10 +415,10 @@ function Solution() {
 
               {/* Chiffre clé — noir pur sur fond blanc, jamais en rouge (DA §5) */}
               <div className="mt-10 flex flex-wrap items-baseline gap-x-4 gap-y-2 border-t border-grey-line pt-8">
-                <p className="t-stat text-black">
+                <Reveal as="p" variant="pop" delay={180} className="t-stat text-black">
                   <CountUp value={98} />
                   <span className="t-stat-unit"> %</span>
-                </p>
+                </Reveal>
                 <p className="max-w-[22rem] text-[0.9375rem] leading-snug text-grey-mid">
                   de mes débutants absolus s&apos;expriment librement après un
                   mois de coaching
@@ -427,7 +429,7 @@ function Solution() {
 
           {/* Image METHOD-01 — même hauteur que le bloc à sa gauche sur
               desktop (lg:h-full + object-cover 60 %). Mobile : 2:3. */}
-          <Reveal delay={120}>
+          <Reveal variant="right" delay={120}>
             <div className="relative mx-auto aspect-[2/3] w-full max-w-[22rem] overflow-hidden rounded-[12px] lg:mx-0 lg:aspect-auto lg:h-full">
               <ResponsiveImage
                 src="/assets/METHOD-01.webp"
@@ -520,7 +522,7 @@ function PourquoiCaMarchaitPas() {
             plus aucun texte ne peut déborder du cadre. */}
         <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:mt-14 lg:gap-8">
           {ANCIENNES_METHODES.map((carte, i) => (
-            <Reveal key={carte.eyebrow} delay={(i % 2) * 120}>
+            <Reveal key={carte.eyebrow} variant="zoom" delay={(i % 2) * 120}>
               <figure className="relative flex min-h-[21rem] flex-col justify-end overflow-hidden rounded-[12px] sm:min-h-[23rem] lg:min-h-[24rem]">
                 <ResponsiveImage
                   src={carte.image}
@@ -561,7 +563,9 @@ function Accompagnement() {
       <Container>
         <div className="grid gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-16">
           <div>
-            <Reveal>
+            {/* TASK 89 : variantes directionnelles comme le pre-launch —
+              colonne texte à gauche → "left". */}
+          <Reveal variant="left">
               <Prose>
                 <h2 className="t-h2 text-white">
                   Trois mois. Trois séances par semaine. Une transformation.
@@ -604,7 +608,7 @@ function Accompagnement() {
                 comme celui de la carte « Paiement unique » (L'offre) —
                 3 points reliés par 2 segments white/40, étiquettes
                 Mois 1 / Mois 2 / Mois 3. */}
-            <Reveal className="mt-12">
+            <Reveal variant="left" className="mt-12">
               <div className="max-w-[34rem]">
                 <div className="flex items-center" aria-hidden="true">
                   <span className="h-3 w-3 shrink-0 rounded-full bg-white" />
@@ -624,7 +628,7 @@ function Accompagnement() {
             {/* Task 50 : CERTIFICAT DE FIN DE PROGRAMME — formulé ici,
                 juste après la présentation des 03 mois de coaching
                 (recommandation expert). Encadré distinct, sobre. */}
-            <Reveal className="mt-8">
+            <Reveal variant="left" className="mt-8">
               <div className="max-w-[34rem] rounded-[12px] border border-white/20 bg-white/[0.04] p-5 md:p-6">
                 <p className="t-caption font-medium uppercase tracking-[0.14em] text-white/75">
                   Certificat de fin de programme
@@ -637,7 +641,7 @@ function Accompagnement() {
               </div>
             </Reveal>
 
-            <Reveal className="mt-12">
+            <Reveal variant="left" className="mt-12">
               <span data-wa-cta className="inline-flex">
                 <CtaButton href="/inscription">{CTA_LABELS.hero}</CtaButton>
               </span>
@@ -649,7 +653,7 @@ function Accompagnement() {
           </div>
 
           {/* Scène 3D — chargée à l'approche du viewport uniquement */}
-          <Reveal delay={120}>
+          <Reveal variant="right" delay={120}>
             <MicrophoneScene className="mx-auto max-w-[30rem] lg:max-w-none" />
           </Reveal>
         </div>
@@ -698,7 +702,7 @@ function AvantApres() {
 
         <div className="mt-10 grid items-stretch gap-6 lg:mt-14 lg:grid-cols-[1fr_auto_1fr] lg:gap-4">
           {/* AVANT */}
-          <Reveal>
+          <Reveal variant="left">
             <figure className="relative h-full min-h-[26rem] overflow-hidden rounded-[12px]">
               <ResponsiveImage
                 src="/assets/PROBLEME-01.webp"
@@ -747,7 +751,7 @@ function AvantApres() {
           </div>
 
           {/* APRÈS */}
-          <Reveal delay={120}>
+          <Reveal variant="right" delay={120}>
             <figure className="relative h-full min-h-[26rem] overflow-hidden rounded-[12px]">
               <ResponsiveImage
                 src="/assets/METHOD-01.webp"
@@ -871,16 +875,23 @@ function CeQuiEstInclus() {
             cartes jamais trop petites, hauteurs uniformes par ligne. */}
         <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:mt-14 lg:grid-cols-4 lg:gap-x-6 lg:gap-y-8">
           {INCLUS.map((item, i) => (
-            <Reveal key={item.num} delay={(i % 4) * 100}>
+            <Reveal key={item.num} variant="zoom" delay={(i % 4) * 100}>
               <div className="glass-card card-hover relative flex h-full flex-col p-6">
                 <div className="flex items-start justify-between gap-3">
                   {/* Task 31 (retour propriétaire) : numéros assombris
                       text-grey-line (#e5e5ea, invisible sur le verre) →
                       black/50 — visibles et lisibles, tout en restant
                       plus doux que le titre noir de la carte. */}
-                  <p className="font-display text-[2rem] font-medium leading-none text-black/50">
+                  {/* TASK 89 : numéro en rebond pop (même motif que le
+                      pre-launch — grands chiffres des cartes). */}
+                  <Reveal
+                    as="p"
+                    variant="pop"
+                    delay={(i % 4) * 100 + 180}
+                    className="font-display text-[2rem] font-medium leading-none text-black/50"
+                  >
                     {item.num}
-                  </p>
+                  </Reveal>
                   {/* Badge BONUS (carte 10 — Task 61 : ex-carte 12)
                       — discret mais visible : pastille contour rouge,
                       sans surcharger la carte (instruction
@@ -931,7 +942,7 @@ function PourquoiMoi() {
         <div className="grid gap-10 lg:grid-cols-[minmax(0,24rem)_minmax(0,40rem)] lg:items-stretch lg:gap-16">
           {/* Portrait Stevens — nouvelle image POURQUOI-Moi (upload
               propriétaire Task 27) */}
-          <Reveal className="flex">
+          <Reveal variant="left" className="flex">
             <div className="relative mx-auto aspect-[2/3] w-full max-w-[22rem] overflow-hidden rounded-[12px] shadow-[0_4px_20px_rgba(0,0,0,0.10)] lg:mx-0 lg:aspect-auto lg:h-full lg:max-w-none">
               <ResponsiveImage
                 src="/assets/POURQUOI-MOI.webp"
@@ -943,7 +954,7 @@ function PourquoiMoi() {
             </div>
           </Reveal>
 
-          <Reveal delay={120}>
+          <Reveal variant="right" delay={120}>
             <Prose>
               <Eyebrow className="text-white/75">Pourquoi moi ?</Eyebrow>
               <h2 className="t-h2 mt-4 text-white">
@@ -1035,7 +1046,7 @@ function PourQui() {
 
         <div className="mt-10 grid gap-6 lg:mt-14 lg:grid-cols-2 lg:gap-8">
           {/* POUR TOI — carte verre */}
-          <Reveal>
+          <Reveal variant="left">
             <div className="glass-card h-full p-6 md:p-8 lg:p-10">
               <h3 className="t-h3 text-black">Ce programme est pour toi si :</h3>
               <ul className="mt-6 space-y-3.5">
@@ -1050,7 +1061,7 @@ function PourQui() {
           </Reveal>
 
           {/* PAS POUR TOI — carte verre */}
-          <Reveal delay={120}>
+          <Reveal variant="right" delay={120}>
             <div className="glass-card h-full p-6 md:p-8 lg:p-10">
               <h3 className="t-h3 text-black">
                 Ce programme n&apos;est PAS pour toi si :
@@ -1211,7 +1222,7 @@ function SectionPrix() {
             égales (plus de colonnes asymétriques 28rem/32rem). */}
         <div className="mx-auto mt-10 grid max-w-[64rem] gap-6 lg:mt-14 lg:grid-cols-2 lg:gap-8">
           {/* Bloc prix */}
-          <Reveal>
+          <Reveal variant="left">
             <div className="glass-card glass-dark flex h-full flex-col p-6 md:p-10">
               {/* Task 50 (recommandation expert marketing) : « Paiement
                   unique » devient « PRIX DE LANCEMENT » — tarif normal
@@ -1307,7 +1318,7 @@ function SectionPrix() {
               maintenue, instruction propriétaire). Task 61 : « Podcasts
               & Ressources » AVANT « Évaluation finale » — la liste se
               termine sur l'Évaluation finale. */}
-          <Reveal delay={120}>
+          <Reveal variant="right" delay={120}>
             <div className="glass-card glass-dark h-full p-6 md:p-10">
               <h3 className="t-h3 text-white">
                 Voici tout ce que tu reçois pour {OFFRE.prix}{" "}
@@ -1353,7 +1364,7 @@ function Garantie() {
       <Container>
         <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-12">
           {/* Cadre garantie — à gauche */}
-          <Reveal>
+          <Reveal variant="left">
             <div className="h-full rounded-[12px] border-2 border-black p-6 md:p-10">
               <Eyebrow>Garantie</Eyebrow>
               <h2 className="t-h2 mt-4 text-black">
@@ -1387,7 +1398,7 @@ function Garantie() {
 
           {/* Preuve — à DROITE du cadre, hors du cadre
               (instruction propriétaire) */}
-          <Reveal delay={120}>
+          <Reveal variant="right" delay={120}>
             <Prose>
               <Eyebrow>Preuve</Eyebrow>
               <h2 className="t-h2 mt-4 text-black">
@@ -1513,7 +1524,7 @@ function FaqSection() {
             </h2>
           </Prose>
         </Reveal>
-        <Reveal className="mt-10 lg:mt-14">
+        <Reveal variant="zoom" className="mt-10 lg:mt-14">
           <FaqAccordion
             className="mx-auto max-w-[52rem]"
             items={FAQ_OBJECTIONS}
@@ -1573,11 +1584,11 @@ function CtaFinal() {
             cohorte » et son résumé vivent directement sous elle
             (esprit Task 28/55 conservé : l'inaction déclenche le
             CTA). */}
-        <Reveal>
+        <Reveal variant="zoom">
           <CarteUrgenceEthique className="mx-auto max-w-[46rem]" />
         </Reveal>
 
-        <Reveal className="mt-10 lg:mt-14">
+        <Reveal className="mt-10 lg:mt-14" delay={200}>
           <div className="flex flex-col items-center gap-5 text-center">
             <span data-wa-cta className="inline-flex">
               <CtaButton href="/inscription">{CTA_LABELS.rejoindreCohorte}</CtaButton>
@@ -1591,7 +1602,7 @@ function CtaFinal() {
             APRÈS le bouton — le CTA reste accroché à la carte « coût
             de l'inaction ». Task 50 : présentation experte de la
             décision — 10 places → prix de lancement → certificat. */}
-        <Reveal className="mt-10 lg:mt-14">
+        <Reveal variant="zoom" className="mt-10 lg:mt-14">
           <div className="glass-card glass-dark mx-auto max-w-[46rem] p-6 md:p-10">
             <p className="t-caption font-medium uppercase tracking-[0.14em] text-white/75">
               « De Comprendre à Parler

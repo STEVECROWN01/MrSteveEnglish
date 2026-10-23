@@ -29,8 +29,9 @@ export function AProposPage() {
           <div className="grid items-start gap-10 pb-12 lg:grid-cols-[2fr_3fr] lg:gap-16 lg:pb-24">
             {/* Portrait — photographie professionnelle de Stevens
                 (ratio 2:3 conservé intégralement — aucun recadrage, le
-                visage reste entier) */}
-            <Reveal className="relative mx-auto w-full max-w-[26rem] lg:mx-0">
+                visage reste entier). TASK 89 : variantes directionnelles
+                comme le pre-launch — portrait à gauche, texte à droite. */}
+            <Reveal variant="left" className="relative mx-auto w-full max-w-[26rem] lg:mx-0">
               <div className="relative aspect-[2/3] overflow-hidden rounded-[12px] shadow-[0_4px_20px_rgba(0,0,0,0.10)]">
                 <ResponsiveImage
                   src="/assets/APROPOS-PORTRAIT.webp"
@@ -45,7 +46,7 @@ export function AProposPage() {
 
             {/* Texte biographique — P1 */}
             <div className="max-w-[42rem]">
-              <Reveal>
+              <Reveal variant="right">
                 <h1 className="t-h1 text-white">
                   Stevens AKPOVI. Pas un accent parfait. Une méthode qui
                   fonctionne.
@@ -62,7 +63,7 @@ export function AProposPage() {
                   que de dérouler un programme prévu à l&apos;avance.
                 </p>
               </Reveal>
-              <Reveal className="mt-10">
+              <Reveal className="mt-10" delay={200}>
                 <span data-wa-cta className="inline-flex">
                   <CtaButton href="/inscription">{CTA_LABELS.hero}</CtaButton>
                 </span>
@@ -95,8 +96,9 @@ export function AProposPage() {
           </Reveal>
 
           <div className="mt-10 grid items-start gap-10 lg:mt-0 lg:grid-cols-[minmax(0,44rem)_minmax(0,22rem)] lg:gap-12">
-            {/* Crédentials — texte à gauche (desktop) */}
-            <Reveal className="lg:pt-2">
+            {/* Crédentials — texte à gauche (desktop). TASK 89 : colonne
+                texte → "left". */}
+            <Reveal variant="left" className="lg:pt-2">
               <Prose>
                 <p className="t-body">
                   Titulaire d&apos;une licence en anglais américain, Stevens
@@ -117,7 +119,7 @@ export function AProposPage() {
                   seulement leur faire réciter des règles.
                 </p>
               </Prose>
-              <Reveal className="mt-12">
+              <Reveal variant="left" delay={160} className="mt-12">
                 <SecondaryLink
                   href="/resultats"
                   className="btn-invert-hover"
@@ -129,7 +131,7 @@ export function AProposPage() {
 
             {/* Image verticale — desktop uniquement, à droite du texte
                 (Task 27 : APROPOS-AMBIANCE-02, format portrait) */}
-            <Reveal delay={120} className="hidden lg:block">
+            <Reveal variant="right" delay={120} className="hidden lg:block">
               <div className="relative aspect-[4/5] overflow-hidden rounded-[12px] shadow-[0_4px_20px_rgba(0,0,0,0.10)]">
                 <ResponsiveImage
                   src="/assets/APROPOS-AMBIANCE-02.webp"

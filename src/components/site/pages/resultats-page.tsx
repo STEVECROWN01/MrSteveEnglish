@@ -105,9 +105,12 @@ export function ResultatsPage() {
             </div>
           </Reveal>
 
-          <Reveal className="mt-10 lg:mt-14">
-            <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
-              {/* Texte « Un parcours réel » — colonne gauche (desktop) */}
+          {/* TASK 89 : découpage de la grille en colonnes animées
+              séparées comme le pre-launch — texte à gauche, avion 3D
+              à droite avec décalage rythmé. */}
+          <div className="mt-10 grid items-center gap-12 lg:mt-14 lg:grid-cols-2 lg:gap-16">
+            {/* Texte « Un parcours réel » — colonne gauche (desktop) */}
+            <Reveal variant="left">
               <Prose>
                 <p className="t-body italic text-grey-mid">
                   Chaque apprenant vient avec un objectif différent — en voici
@@ -136,15 +139,17 @@ export function ResultatsPage() {
                   — avec succès.
                 </p>
               </Prose>
+            </Reveal>
 
-              {/* Avion 3D (référence Spline « 3D Airplane ») — colonne
-                  droite (desktop), oblique montant bas-gauche → haut-
-                  droite ; empilé SOUS le texte sur mobile/tablette. */}
+            {/* Avion 3D (référence Spline « 3D Airplane ») — colonne
+                droite (desktop), oblique montant bas-gauche → haut-
+                droite ; empilé SOUS le texte sur mobile/tablette. */}
+            <Reveal variant="right" delay={120}>
               <AirplaneScene className="mx-auto w-full max-w-[30rem] lg:max-w-none" />
-            </div>
-          </Reveal>
+            </Reveal>
+          </div>
 
-          <Reveal className="mt-10">
+          <Reveal className="mt-10" delay={200}>
             <span data-wa-cta className="inline-flex">
               <CtaButton href="/inscription">{CTA_LABELS.hero}</CtaButton>
             </span>
@@ -168,13 +173,13 @@ export function ResultatsPage() {
           className="pointer-events-none absolute -right-24 top-[30rem] h-[36rem] w-[36rem] rounded-full bg-[radial-gradient(circle,rgba(28,28,64,0.30)_0%,transparent_62%)] blur-2xl"
         />
         <Container className="relative">
-          <Reveal>
+          <Reveal variant="left">
             <h2 className="t-h2 text-black">Témoignages de mes apprenants</h2>
           </Reveal>
 
           <div className="mt-10 grid gap-6 md:grid-cols-2 lg:mt-14 lg:grid-cols-3">
             {TEMOIGNAGES.map((t, i) => (
-              <Reveal key={t.name} delay={i * 120} as="article">
+              <Reveal key={t.name} variant="zoom" delay={i * 120} as="article">
                 <div className="glass-card card-hover flex h-full flex-col p-6 lg:p-7">
                   {/* Avatar à gauche de la citation (DA §12) */}
                   <div className="flex items-start gap-4">

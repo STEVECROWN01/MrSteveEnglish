@@ -426,7 +426,9 @@ export function InscriptionPage() {
             {/* — Message d'accueil chaleureux (instruction propriétaire :
                     juste après le titre, « gravé » au-dessus du formulaire) —
                     Task 29 : VERRE TRANSPARENT sombre (style Pour qui ?). — */}
-            <Reveal>
+            {/* TASK 89 : carte d'accueil en zoom doux (même motif que le
+                pre-launch — cartes et blocs). */}
+            <Reveal variant="zoom">
               <div
                 className="glass-card glass-dark p-6 md:p-8"
                 role="note"

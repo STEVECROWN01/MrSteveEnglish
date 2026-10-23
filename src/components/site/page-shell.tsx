@@ -38,7 +38,7 @@ export function PageShell({
 
   if (focused) {
     return (
-      <div className="app-shell flex min-h-screen flex-col bg-white">
+      <div className="app-shell flex min-h-screen flex-col overflow-x-clip bg-white">
         <main
           id="main-content"
           tabIndex={-1}
@@ -51,7 +51,7 @@ export function PageShell({
   }
 
   return (
-    <div className="app-shell flex min-h-screen flex-col bg-white">
+    <div className="app-shell flex min-h-screen flex-col overflow-x-clip bg-white">
       <Header />
       <main
         id="main-content"
