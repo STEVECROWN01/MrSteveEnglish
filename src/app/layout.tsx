@@ -202,6 +202,33 @@ export default function RootLayout({
               "(function(){try{var sp=new URLSearchParams(location.search);var o={};['source','medium','campaign','content','term'].forEach(function(k){var v=sp.get('utm_'+k);if(v)o[k]=v.slice(0,150);});if(Object.keys(o).length){localStorage.setItem('mse_utm',JSON.stringify(o));}}catch(e){}})();",
           }}
         />
+        {/* TASK 88 — META CLICK ID (fbc) — recommandation Events Manager
+            (instruction propriétaire 2026-10-22) : « Add fbc to
+            ViewContent events » pour améliorer la qualité de
+            correspondance (EMQ) de la Conversions API. Le cookie
+            _fbc — qui transporte l'identifiant du clic publicitaire
+            (fbclid posé par Meta dans l'URL d'arrivée) — n'est
+            normalement créé QUE par fbevents.js : si le visiteur
+            bloque ce script (adblock, iOS ATT…), le fbc est perdu et
+            la conversion ne peut plus être reliée à la pub qui l'a
+            générée. Ce script inline, exécuté AVANT le chargement du
+            pixel, crée lui-même le cookie au format EXACT de Meta
+            (fb.{index}.{timestamp}.{fbclid}, durée 90 jours,
+            SameSite=Lax + Secure en production) dès qu'un fbclid est
+            présent dans l'URL : le pipeline existant (readCookie dans
+            trackPixelWithCAPI → route /api/meta-conversions →
+            user_data.fbc) le relaie ensuite automatiquement à Meta
+            pour TOUS les événements (ViewContent, Lead,
+            InitiateCheckout, Purchase). Idempotent : rechargement de
+            la même URL = aucun écrasement ; NOUVEAU clic pub
+            (fbclid différent) = mise à jour — même comportement que
+            fbevents.js, sans jamais lui confliter. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "(function(){try{var sp=new URLSearchParams(location.search);var f=sp.get('fbclid');if(!f)return;var m=document.cookie.match(/(?:^|; )_fbc=([^;]*)/);if(m&&decodeURIComponent(m[1]).split('.')[3]===f)return;document.cookie='_fbc='+encodeURIComponent('fb.1.'+Date.now()+'.'+f)+'; Max-Age=7776000; Path=/; SameSite=Lax'+(location.protocol==='https:'?'; Secure':'');}catch(e){}})();",
+          }}
+        />
         {/* TASK 59 — META PIXEL (instruction propriétaire, Events
             Manager) : code de base OFFICIEL, installé sur TOUTES les
             pages, avec l'identifiant lu depuis la variable
