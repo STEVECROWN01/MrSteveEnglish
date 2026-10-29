@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { PRELAUNCH_CHECKOUT_URL, waLink } from "@/lib/site";
+import { PRELAUNCH_CHECKOUT_URL, SOCIAL_LINKS, waLink } from "@/lib/site";
 import {
   PRODUIT_PRELAUNCH,
   pixelEventId,
@@ -14,7 +14,7 @@ import { Reveal } from "../reveal";
 import { StickyCTA } from "../sticky-cta";
 import { ResponsiveImage } from "../responsive-image";
 import { FaqAccordion } from "../faq-accordion";
-import { IconCheck } from "../icons";
+import { IconCheck, WhatsAppGlyph } from "../icons";
 
 /**
  * TASK 69 — LANDING « PRE-LAUNCH • DE COMPRENDRE À PARLER™ »
@@ -70,6 +70,15 @@ import { IconCheck } from "../icons";
  * présentées comme témoignages, apprenants réels ou participants de
  * la cohorte. Aucun compteur de places restantes, aucun compte à
  * rebours, aucune promesse de maîtrise garantie.
+ *
+ * TASK 91 (instruction propriétaire : « rassure-toi que le Pre-launch
+ * présente sans ambiguïté : identité du Coach, contenu des séances,
+ * modalités de paiement et contact en cas de difficulté ») : nom et
+ * rôle du coach VISIBLES sous le portrait du hero ; 04 entrées FAQ
+ * (contenu concret des séances, qui accompagne, moyens de paiement,
+ * contact) ; moyens de paiement rappelés dans le bloc tarif et
+ * l'étape 03 ; pied de page enrichi (identité de l'animateur, bouton
+ * WhatsApp de contact, réseaux sociaux officiels, paiement unique).
  */
 
 /** Cible du CTA : page produit Maketou du pre-launch
@@ -86,6 +95,45 @@ const CTA_HREF =
 
 const CTA_HERO_LABEL = "S'inscrire maintenant";
 const CTA_FINAL_LABEL = "Je m'inscris maintenant";
+
+/** TASK 91 (instruction propriétaire : « rassure-toi que le Pre-launch
+ *  présente sans ambiguïté […] le contact en cas de difficulté ») —
+ *  contact WhatsApp du coach avec message pré-rempli (le numéro
+ *  n'est JAMAIS affiché — wa.me interne, même règle que le repli CTA). */
+const CONTACT_PRELAUNCH_WA = waLink(
+  "Bonjour Coach Stevens, j'ai une question concernant l'offre « Pre-launch • De COMPRENDRE à PARLER™ » (02 mois — 15 000 FCFA).",
+);
+
+/** TASK 91 — Icônes sociales officielles (simple-icons, CC0) pour le
+ *  pied de page dédié : mêmes tracés que le footer global (non
+ *  exportés là-bas — copie locale fidèle). */
+function FacebookIconPrelaunch() {
+  return (
+    <svg
+      width="22"
+      height="22"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+    </svg>
+  );
+}
+
+function YouTubeIconPrelaunch() {
+  return (
+    <svg
+      width="22"
+      height="22"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+    </svg>
+  );
+}
 
 /** Bouton d'inscription de l'offre pre-launch — externe
  *  (Maketou ou repli WhatsApp), avec événement Meta InitiateCheckout
@@ -234,7 +282,7 @@ const ETAPES_INSCRIPTION = [
     num: "03",
     titre: "Procède au paiement",
     texte:
-      "Si l'offre te convient, clique sur le bouton d'inscription pour accéder à la page de paiement sécurisée et régler les 15 000 FCFA correspondant aux 02 mois d'accompagnement.",
+      "Si l'offre te convient, clique sur le bouton d'inscription pour accéder à la page de paiement sécurisée et régler les 15 000 FCFA correspondant aux 02 mois d'accompagnement. Le paiement s'effectue par Mobile Money ou par carte bancaire, en une seule fois.",
   },
   {
     num: "04",
@@ -263,9 +311,33 @@ const FAQ_PRELAUNCH = [
       "L'accompagnement dure 02 mois, avec 03 séances de 1 h 30 par semaine.",
   },
   {
+    /* TASK 91 (instruction propriétaire : contenu des séances
+       présenté sans ambiguïté) — construit UNIQUEMENT à partir des
+       faits déjà énoncés sur la page (section 4 + copie), rien
+       d'inventé. */
+    question: "Que fait-on concrètement pendant les séances ?",
+    answer:
+      "Chaque séance est consacrée à la pratique orale : apprendre à formuler des phrases, utiliser des expressions utiles et t'entraîner à communiquer, progressivement et selon ton niveau. Entre les séances, des exercices te permettent de travailler les notions abordées et d'appliquer les conseils reçus. L'objectif n'est pas de réciter des règles, mais de te faire parler, étape par étape.",
+  },
+  {
+    /* TASK 91 (instruction propriétaire : identité du coach présentée
+       sans ambiguïté) — faits issus de la page À propos du coach. */
+    question: "Qui va m'accompagner pendant ces 02 mois ?",
+    answer:
+      "Les séances sont animées par Stevens AKPOVI, coach d'anglais et fondateur de Mr. Steve English. Licencié en anglais américain, il s'est formé sur le terrain dès ses débuts, avec une première certification obtenue en centre de formation et un stage académique de trois mois à l'American Corner, un centre international de la langue anglaise. Il accompagne aujourd'hui des débutants au sein d'une académie internationale en ligne — trois ans de pratique constante.",
+  },
+  {
     question: "Quel est le tarif ?",
     answer:
       "La participation est de 15 000 FCFA pour 02 mois d'accompagnement prévus dans cette offre de pré-lancement.",
+  },
+  {
+    /* TASK 91 (instruction propriétaire : modalités de paiement sans
+       ambiguïté) — moyens réellement acceptés par la page de paiement
+       Maketou (Mobile Money, Visa / Mastercard). */
+    question: "Comment s'effectue le paiement ?",
+    answer:
+      "Le règlement s'effectue en ligne, sur notre page de paiement sécurisée : par Mobile Money ou par carte bancaire (Visa / Mastercard). Le paiement est unique — 15 000 FCFA pour les 02 mois d'accompagnement, sans aucun prélèvement supplémentaire. Après confirmation, tu es redirigé vers la page de bienvenue où tu peux télécharger ton reçu.",
   },
   {
     question: "La formation se déroule-t-elle en présentiel ?",
@@ -301,6 +373,46 @@ const FAQ_PRELAUNCH = [
        remboursement. */
     answer:
       "Toute inscription est définitive. Une fois l'inscription terminée, aucun remboursement ne sera accordé.",
+  },
+  {
+    /* TASK 91 (instruction propriétaire : contact en cas de difficulté
+       sans ambiguïté) — WhatsApp (message pré-rempli, numéro jamais
+       affiché) + réseaux sociaux officiels. */
+    question:
+      "J'ai une question ou je rencontre une difficulté. Comment te contacter ?",
+    answer: (
+      <>
+        Pour toute question sur l&apos;offre, ou en cas de difficulté avec ton
+        inscription ou ton paiement :{" "}
+        <a
+          href={CONTACT_PRELAUNCH_WA}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-medium text-black underline decoration-red-button underline-offset-4 transition-colors hover:text-red-button"
+        >
+          écris au coach sur WhatsApp
+        </a>
+        . Tu peux aussi suivre Mr. Steve English sur{" "}
+        <a
+          href={SOCIAL_LINKS.facebook}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-medium text-black underline decoration-red-button underline-offset-4 transition-colors hover:text-red-button"
+        >
+          Facebook
+        </a>{" "}
+        et{" "}
+        <a
+          href={SOCIAL_LINKS.youtube}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-medium text-black underline decoration-red-button underline-offset-4 transition-colors hover:text-red-button"
+        >
+          YouTube
+        </a>
+        .
+      </>
+    ),
   },
 ];
 
@@ -534,6 +646,15 @@ export function PrelaunchPage() {
                     />
                   </div>
                 </div>
+                {/* TASK 91 (instruction propriétaire : identité du coach
+                    présentée sans ambiguïté) — nom et rôle VISIBLES sous
+                    le portrait réel du fondateur. Centré sous l'image
+                    sur tous les écrans ; anime avec le portrait
+                    (enfant du wrapper hero-portrait-in). */}
+                <p className="t-caption mt-4 text-center text-white/70">
+                  <span className="font-medium text-white">Stevens AKPOVI</span>{" "}
+                  — coach d&apos;anglais, fondateur de Mr. Steve English
+                </p>
               </div>
 
               <div className="text-center lg:order-2 lg:text-left">
@@ -973,7 +1094,8 @@ export function PrelaunchPage() {
                   </Eyebrow>
                   <p className="t-stat mt-4 text-white">15 000 FCFA</p>
                   <p className="t-body mt-2 text-white/75">
-                    pour 02 mois d&apos;accompagnement — paiement unique.
+                    pour 02 mois d&apos;accompagnement — paiement unique, par
+                    Mobile Money ou carte bancaire.
                   </p>
                   <ul className="mt-6 space-y-2.5 border-t border-white/15 pt-6 text-left">
                     <li className="flex items-center gap-3">
@@ -1411,11 +1533,56 @@ export function PrelaunchPage() {
                 </p>
                 <p className="t-body mt-3 text-white/60">
                   Une expérience d&apos;accompagnement en ligne dédiée à la
-                  pratique de l&apos;anglais.
+                  pratique de l&apos;anglais, animée par{" "}
+                  <span className="text-white/85">Stevens AKPOVI</span> —
+                  coach d&apos;anglais et fondateur de Mr. Steve English.
                 </p>
-                <p className="t-caption mt-6 text-white/45">
+                {/* TASK 91 (instruction propriétaire : contact en cas de
+                    difficulté, présenté sans ambiguïté) — bouton WhatsApp
+                    du coach (message pré-rempli, numéro JAMAIS affiché)
+                    + réseaux sociaux officiels. Pas de data-wa-cta : la
+                    barre CTA sticky mobile ne doit pas être affectée. */}
+                <div className="mt-7">
+                  <p className="t-body text-white/85">
+                    Une question ou une difficulté pour t&apos;inscrire ?
+                  </p>
+                  <div className="mt-4">
+                    <a
+                      href={CONTACT_PRELAUNCH_WA}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn btn-secondary-dark t-btn"
+                    >
+                      <WhatsAppGlyph className="h-5 w-5" />
+                      Écrire au coach sur WhatsApp
+                    </a>
+                  </div>
+                  <div className="mt-5 flex items-center justify-center gap-1">
+                    <a
+                      href={SOCIAL_LINKS.facebook}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="Page Facebook de Mr. Steve English (nouvel onglet)"
+                      className="flex h-[44px] w-[44px] items-center justify-center rounded-[8px] text-white/80 transition-colors duration-[240ms] hover:bg-white hover:text-black"
+                    >
+                      <FacebookIconPrelaunch />
+                    </a>
+                    <a
+                      href={SOCIAL_LINKS.youtube}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="Chaîne YouTube de Mr. Steve English (nouvel onglet)"
+                      className="flex h-[44px] w-[44px] items-center justify-center rounded-[8px] text-white/80 transition-colors duration-[240ms] hover:bg-white hover:text-black"
+                    >
+                      <YouTubeIconPrelaunch />
+                    </a>
+                  </div>
+                </div>
+                <p className="t-caption mt-8 text-white/45">
                   Consulte les conditions de participation et les modalités
-                  applicables à l&apos;offre avant de procéder au paiement.
+                  applicables à l&apos;offre avant de procéder au paiement —
+                  paiement unique de 15 000 FCFA, par Mobile Money ou carte
+                  bancaire.
                 </p>
                 <p className="t-caption mt-6 border-t border-white/10 pt-6 text-white/40">
                   © {new Date().getFullYear()} Stevens AKPOVI —{" "}
