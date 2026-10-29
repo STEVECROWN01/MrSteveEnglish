@@ -21,6 +21,17 @@
  *   • Purchase         — page /bienvenue (URL de retour du paiement
  *                        réussi configurée dans Maketou)
  *
+ * TASK 90 — PIXEL DÉDIÉ AU PRE-LAUNCH (instruction propriétaire :
+ * « Ceci c'est pour le Pre-launch qu'on va le faire, afin de
+ * pouvoir tracker aussi les événements sur le pre-launch mais
+ * particulièrement avec ce pixel ») : le tunnel pre-launch
+ * (/pre-launch + /bienvenue?offre=prelaunch) est tracé sur son
+ * PROPRE pixel (META_PIXEL_ID_PRELAUNCH) ; le reste du site garde
+ * le pixel principal (META_PIXEL_ID). Chaque tunnel garde ainsi un
+ * entonnoir PROPRE côté Events Manager — les campagnes du
+ * pre-launch optimisent sans être polluées par les événements du
+ * programme principal, et réciproquement.
+ *
  * VARIABLES D'ENVIRONNEMENT (voir .env.example) :
  *   • NEXT_PUBLIC_META_PIXEL_ID  — identifiant du pixel, PUBLIC par
  *     nature (présent dans le HTML de chaque page), lisible côté
@@ -37,6 +48,45 @@
  *  configurée. */
 export const META_PIXEL_ID =
   process.env.NEXT_PUBLIC_META_PIXEL_ID ?? "1873557434014896";
+
+/** TASK 90 — PIXEL DÉDIÉ AU PRE-LAUNCH : identifiant du pixel du
+ *  tunnel pre-launch (code de base fourni par le propriétaire depuis
+ *  son Events Manager). Priorité à la variable d'environnement
+ *  NEXT_PUBLIC_META_PIXEL_ID_PRELAUNCH (à configurer dans Vercel) ;
+ *  repli sur la valeur fournie pour que le site trace dans tous les
+ *  cas. */
+export const META_PIXEL_ID_PRELAUNCH =
+  process.env.NEXT_PUBLIC_META_PIXEL_ID_PRELAUNCH ?? "1471081818211439";
+
+/** TASK 90 — Une route (pathname + query string) fait-elle partie du
+ *  tunnel PRE-LAUNCH ? La landing /pre-launch, ou le retour paiement
+ *  /bienvenue?offre=prelaunch (URL de retour Maketou du produit
+ *  pre-launch). Fonction PURE : utilisée côté navigateur (choix du
+ *  pixel à l'envoi) et côté serveur (la route /api/meta-conversions
+ *  valide le pixelId reçu avec la MÊME définition). */
+export function contextePrelaunch(pathname: string, search: string): boolean {
+  if (pathname.startsWith("/pre-launch")) return true;
+  if (pathname.startsWith("/bienvenue")) {
+    return new URLSearchParams(search).get("offre") === "prelaunch";
+  }
+  return false;
+}
+
+/** TASK 90 — pixel à utiliser pour un contexte donné (tunnel
+ *  pre-launch → pixel pre-launch ; tout le reste du site → pixel
+ *  principal). */
+export function pixelPourContexte(pathname: string, search: string): string {
+  return contextePrelaunch(pathname, search)
+    ? META_PIXEL_ID_PRELAUNCH
+    : META_PIXEL_ID;
+}
+
+/** TASK 90 — pixel de la page EN COURS (côté navigateur uniquement ;
+ *  côté serveur, renvoie le pixel principal par défaut). */
+function pixelActif(): string {
+  if (typeof window === "undefined") return META_PIXEL_ID;
+  return pixelPourContexte(window.location.pathname, window.location.search);
+}
 
 /** Valeur et devise de l'offre unique (source : lib/site.ts OFFRE —
  *  70 000 FCFA ; XOF est le code ISO du franc CFA). */
@@ -68,6 +118,13 @@ export const PRODUIT_PRELAUNCH = {
 declare global {
   interface Window {
     fbq?: (...args: unknown[]) => void;
+    /** TASK 90 — pixels déjà initialisés (miroir du window._msePx posé
+     *  par le code de base du layout) : garantit qu'un événement part
+     *  toujours sur le pixel de SON tunnel, même après une navigation
+     *  interne <Link> d'un tunnel vers l'autre (ex. lien footer de
+     *  /pre-launch vers l'accueil) — le pixel du tunnel d'arrivée est
+     *  initialisé à la demande juste avant l'envoi. */
+    _msePx?: Record<string, boolean>;
   }
 }
 
@@ -92,6 +149,22 @@ type TrackOptions = {
   eventId?: string;
 };
 
+/** TASK 90 — s'assure que le pixel donné est initialisé (init +
+ *  verrou autoConfigMatching de la Task 60) avant tout envoi :
+ *  idempotent. Nécessaire quand une navigation interne amène un
+ *  visiteur d'un tunnel vers l'autre SANS rechargement — le code de
+ *  base du layout ne s'exécute qu'au chargement d'une page. */
+function assurerPixel(id: string): void {
+  if (typeof window === "undefined" || typeof window.fbq !== "function") {
+    return;
+  }
+  window._msePx = window._msePx ?? {};
+  if (window._msePx[id]) return;
+  window.fbq("init", id);
+  window.fbq("set", "autoConfigMatching", "false", id);
+  window._msePx[id] = true;
+}
+
 /**
  * Envoie un événement Meta Pixel côté navigateur (PageView, Lead,
  * Purchase…). No-op silencieux si le pixel n'est pas disponible :
@@ -99,18 +172,29 @@ type TrackOptions = {
  * désactivé — aucune erreur console, aucun impact sur l'expérience
  * du visiteur. L'event_id, quand il est fourni, est transmis à fbq
  * pour la déduplication avec la copie serveur.
+ *
+ * TASK 90 : l'événement part sur LE PIXEL DU TUNNEL de la page
+ * courante (fbq trackSingle) — jamais « sur tous les pixels
+ * initialisés » (fbq track) — pour que les deux tunnels ne se
+ * polluent JAMAIS mutuellement, même après une navigation interne
+ * entre les deux.
  */
 export function trackPixel(
   event: string,
   params?: Record<string, unknown>,
   options?: TrackOptions,
 ): void {
-  if (typeof window !== "undefined" && typeof window.fbq === "function") {
-    if (options?.eventId) {
-      window.fbq("track", event, params ?? {}, { eventID: options.eventId });
-    } else {
-      window.fbq("track", event, params ?? {});
-    }
+  if (typeof window === "undefined" || typeof window.fbq !== "function") {
+    return;
+  }
+  const id = pixelActif();
+  assurerPixel(id);
+  if (options?.eventId) {
+    window.fbq("trackSingle", id, event, params ?? {}, {
+      eventID: options.eventId,
+    });
+  } else {
+    window.fbq("trackSingle", id, event, params ?? {});
   }
 }
 
@@ -162,6 +246,11 @@ export function trackPixelWithCAPI(
       body: JSON.stringify({
         eventName: event,
         eventId: options.eventId,
+        /* TASK 90 : pixel DU TUNNEL concerné — la copie serveur part
+           sur le MÊME pixel que la copie navigateur (la déduplication
+           event_id de Meta s'applique PAR pixel) ; la route valide
+           ce pixelId contre la liste blanche des deux pixels du site. */
+        pixelId: pixelActif(),
         eventSourceUrl:
           typeof window !== "undefined" ? window.location.href : undefined,
         customData: params,

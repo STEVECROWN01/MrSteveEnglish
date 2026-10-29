@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Fraunces, Public_Sans } from "next/font/google";
-import { META_PIXEL_ID } from "@/lib/meta-pixel";
+import { META_PIXEL_ID, META_PIXEL_ID_PRELAUNCH } from "@/lib/meta-pixel";
 import { MetaPixelPageView } from "@/components/site/meta-pixel-pageview";
 import "./globals.css";
 
@@ -261,15 +261,40 @@ export default function RootLayout({
                indépendamment de ce réglage.
             2. Le PageView du code de base est SAUTÉ sur /bienvenue :
                cette page (retour du paiement réussi) ne doit émettre
-               AUCUN PageView — uniquement l'événement Purchase. */}
+               AUCUN PageView — uniquement l'événement Purchase.
+
+            TASK 90 — PIXEL ROUTE-AWARE (instruction propriétaire :
+            « Ceci c'est pour le Pre-launch qu'on va le faire, afin
+            de pouvoir tracker aussi les événements sur le pre-launch
+            mais particulièrement avec ce pixel ») : le code de base
+            initialise LE PIXEL DU TUNNEL de la page chargée — pixel
+            PRE-LAUNCH sur /pre-launch et sur le retour paiement
+            /bienvenue?offre=prelaunch, pixel principal partout
+            ailleurs. Un SEUL pixel est initialisé par chargement :
+            tous les événements de la page (PageView, ViewContent,
+            InitiateCheckout, Purchase) partent automatiquement sur
+            le bon pixel. Les navigations internes <Link> entre les
+            deux tunnels sont couvertes par assurerPixel
+            (lib/meta-pixel.ts) qui initialise à la demande le pixel
+            du tunnel d'arrivée et envoie via trackSingle. */}
         <script
           dangerouslySetInnerHTML={{
             __html:
-              "!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','" +
+              "!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');" +
+              /* TASK 90 — pixel ROUTE-AWARE : le tunnel pre-launch
+                 (/pre-launch, ou /bienvenue?offre=prelaunch) s'initie
+                 sur le pixel PRE-LAUNCH ; toutes les autres pages sur
+                 le pixel principal. Le saut du PageView sur /bienvenue
+                 (Task 60) et le verrou autoConfigMatching s'appliquent
+                 au pixel retenu. window._msePx retient les pixels
+                 initialisés — miroir de lib/meta-pixel.ts, dont
+                 assurerPixel y ajoute l'autre tunnel à la demande si un
+                 visiteur navigue en <Link> de l'un vers l'autre. */
+              "(function(){var M='" +
               META_PIXEL_ID +
-              "');fbq('set','autoConfigMatching','false','" +
-              META_PIXEL_ID +
-              "');if(location.pathname.indexOf('/bienvenue')!==0){fbq('track','PageView');}",
+              "',P='" +
+              META_PIXEL_ID_PRELAUNCH +
+              "',p=location.pathname,pre=p.indexOf('/pre-launch')===0||(p.indexOf('/bienvenue')===0&&new URLSearchParams(location.search).get('offre')==='prelaunch'),id=pre?P:M;fbq('init',id);fbq('set','autoConfigMatching','false',id);(window._msePx=window._msePx||{})[id]=1;if(p.indexOf('/bienvenue')!==0){fbq('trackSingle',id,'PageView');}})();",
           }}
         />
         {/* Repli <noscript> officiel du pixel (visiteurs sans

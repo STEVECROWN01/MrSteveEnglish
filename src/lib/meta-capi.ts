@@ -26,22 +26,41 @@
  *    navigateur reste la source principale.
  */
 
-import { META_PIXEL_ID } from "./meta-pixel";
+import { META_PIXEL_ID, META_PIXEL_ID_PRELAUNCH } from "./meta-pixel";
 
 /** Version du Graph API utilisée pour la Conversions API. */
 const GRAPH_VERSION = "v21.0";
 
-/** Token d'accès Conversions API (SECREV — serveur uniquement). */
+/** Token d'accès Conversions API principal (SECRET — serveur
+ *  uniquement). */
 function capiAccessToken(): string | undefined {
   const token = process.env.META_CAPI_ACCESS_TOKEN;
   return token && token.trim().length > 0 ? token.trim() : undefined;
 }
 
-/** True si le token CAPI est configuré (sinon la route répond
- *  ok:false sans tenter l'appel — le pixel navigateur fonctionne
- *  toujours, lui). */
+/** TASK 90 — Token d'accès Conversions API pour le PIXEL donné :
+ *  le pixel PRE-LAUNCH peut avoir son propre token
+ *  (META_CAPI_ACCESS_TOKEN_PRELAUNCH — Events Manager → pixel
+ *  pre-launch → Paramètres → Conversions API → Générer un token) ;
+ *  à défaut on réutilise le token principal — les tokens générés
+ *  dans un même Business Manager couvrent souvent tous les actifs.
+ *  Le pixel principal utilise toujours META_CAPI_ACCESS_TOKEN. */
+function capiAccessTokenPour(pixelId: string): string | undefined {
+  if (pixelId === META_PIXEL_ID_PRELAUNCH) {
+    const dedie = process.env.META_CAPI_ACCESS_TOKEN_PRELAUNCH;
+    const propre = dedie?.trim();
+    if (propre && propre.length > 0) return propre;
+  }
+  return capiAccessToken();
+}
+
+/** True si AU MOINS un token CAPI est configuré (sinon la route
+ *  répond ok:false sans tenter l'appel — le pixel navigateur
+ *  fonctionne toujours, lui). TASK 90 : deux tokens possibles
+ *  (principal + pre-launch optionnel). */
 export function capiConfigured(): boolean {
-  return Boolean(capiAccessToken() && META_PIXEL_ID);
+  const dedie = process.env.META_CAPI_ACCESS_TOKEN_PRELAUNCH;
+  return Boolean(capiAccessToken() || (dedie && dedie.trim().length > 0));
 }
 
 /** Normalise puis hache une valeur en SHA-256 (hex) pour user_data.
@@ -129,6 +148,9 @@ function cookieFromHeaders(headers: Headers, name: string): string | undefined {
 export type ServerEventInput = {
   eventName: string;
   eventId: string;
+  /** TASK 90 — pixel cible (liste blanche : META_PIXEL_ID ou
+   *  META_PIXEL_ID_PRELAUNCH) ; absent → pixel principal. */
+  pixelId?: string;
   eventSourceUrl?: string;
   customData?: Record<string, unknown>;
   userData?: {
@@ -149,9 +171,27 @@ export type ServerEventInput = {
 export async function sendServerEvent(
   input: ServerEventInput,
 ): Promise<{ ok: boolean; status?: number; error?: string }> {
-  const token = capiAccessToken();
-  if (!token || !META_PIXEL_ID) {
-    return { ok: false, error: "CAPI non configuré (META_CAPI_ACCESS_TOKEN absent)" };
+  /* TASK 90 — pixel cible : tunnel pre-launch → pixel pre-launch,
+     sinon pixel principal (défaut rétro-compatible avec les clients
+     qui n'envoient pas encore pixelId). La route a déjà validé ce
+     pixelId contre la liste blanche ; on revérifie ici par sûreté —
+     un identifiant arbitraire ne peut JAMAIS atteindre le Graph
+     API. */
+  const pixelId =
+    input.pixelId === META_PIXEL_ID_PRELAUNCH
+      ? META_PIXEL_ID_PRELAUNCH
+      : META_PIXEL_ID;
+  const token = capiAccessTokenPour(pixelId);
+  if (!token) {
+    return {
+      ok: false,
+      error:
+        "CAPI non configuré (token absent pour ce pixel — " +
+        (pixelId === META_PIXEL_ID_PRELAUNCH
+          ? "META_CAPI_ACCESS_TOKEN_PRELAUNCH / META_CAPI_ACCESS_TOKEN"
+          : "META_CAPI_ACCESS_TOKEN") +
+        ")",
+    };
   }
 
   try {
@@ -178,7 +218,7 @@ export async function sendServerEvent(
     };
 
     const res = await fetch(
-      `https://graph.facebook.com/${GRAPH_VERSION}/${META_PIXEL_ID}/events?access_token=${encodeURIComponent(token)}`,
+      `https://graph.facebook.com/${GRAPH_VERSION}/${pixelId}/events?access_token=${encodeURIComponent(token)}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },

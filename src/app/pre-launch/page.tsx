@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { PrelaunchPage } from "@/components/site/pages/prelaunch-page";
 import { PageShell } from "@/components/site/page-shell";
 import { PixelNoscript } from "@/components/site/pixel-noscript";
+import { META_PIXEL_ID_PRELAUNCH } from "@/lib/meta-pixel";
 
 /**
  * PRE-LAUNCH (Task 69 — brief propriétaire 2026-10-18) : landing
@@ -88,8 +89,12 @@ export default function Page() {
         <PrelaunchPage />
       </PageShell>
       {/* Repli <noscript> du pixel Meta (comme toutes les pages de
-          contenu — la page Bienvenue est la seule à ne pas le rendre). */}
-      <PixelNoscript />
+          contenu — la page Bienvenue est la seule à ne pas le rendre).
+          TASK 90 : repli sur LE PIXEL DU PRE-LAUNCH — le PageView des
+          visiteurs sans JavaScript du tunnel pre-launch part sur le
+          pixel dédié (META_PIXEL_ID_PRELAUNCH), pas sur le pixel du
+          programme principal. */}
+      <PixelNoscript pixelId={META_PIXEL_ID_PRELAUNCH} />
     </>
   );
 }

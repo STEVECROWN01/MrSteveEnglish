@@ -1,21 +1,32 @@
 import { NextResponse } from "next/server";
-import { capiConfigured, isAllowedEvent, sendServerEvent } from "@/lib/meta-capi";
+import {
+  capiConfigured,
+  isAllowedEvent,
+  sendServerEvent,
+} from "@/lib/meta-capi";
+import { META_PIXEL_ID, META_PIXEL_ID_PRELAUNCH } from "@/lib/meta-pixel";
 
 /**
  * ROUTE API — PROXY CONVERSIONS API (instruction propriétaire).
  *
  * POST /api/meta-conversions
- * Corps : { eventName, eventId, eventSourceUrl?, customData?, userData? }
+ * Corps : { eventName, eventId, pixelId?, eventSourceUrl?, customData?, userData? }
  *
  * Le navigateur (lib/meta-pixel.ts) y envoie la copie SERVEUR de
  * chaque événement de conversion, avec le MÊME event_id que l'appel
  * pixel fbq correspondant → Meta déduplique automatiquement les deux
  * copies (event_name + event_id).
  *
+ * TASK 90 — pixelId (optionnel) : pixel DU TUNNEL de la page d'où
+ * part l'événement (pixel principal OU pixel pre-launch) ; validé
+ * contre une LISTE BLANCHE stricte des deux pixels du site — la
+ * copie serveur part sur le même pixel que la copie navigateur.
+ *
  * SÉCURITÉ :
  *  • Le token META_CAPI_ACCESS_TOKEN reste 100% côté serveur — il
  *    n'apparaît ni dans la réponse, ni dans le bundle client ;
  *  • Liste blanche des noms d'événements acceptés ;
+ *  • Liste blanche des identifiants de pixels acceptés ;
  *  • Aucune donnée n'est persistée — simple relais vers le Graph API ;
  *  • Réponse toujours 200 { ok: true|false } : le client est en
  *    fire-and-forget, un échec côté Meta ne doit JAMAIS remonter à
@@ -28,6 +39,7 @@ export async function POST(request: Request) {
   let body: {
     eventName?: unknown;
     eventId?: unknown;
+    pixelId?: unknown;
     eventSourceUrl?: unknown;
     customData?: unknown;
     userData?: unknown;
@@ -51,6 +63,15 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, error: "event_id invalide" });
   }
 
+  // TASK 90 — pixel du tunnel : liste blanche stricte des DEUX
+  // pixels du site (absent → pixel principal, rétro-compatible) —
+  // un identifiant arbitraire ne peut jamais atteindre le Graph API.
+  const pixelId =
+    typeof body.pixelId === "string" ? body.pixelId : META_PIXEL_ID;
+  if (pixelId !== META_PIXEL_ID && pixelId !== META_PIXEL_ID_PRELAUNCH) {
+    return NextResponse.json({ ok: false, error: "Pixel non autorisé" });
+  }
+
   // Token absent (Vercel non encore configuré) : réponse douce — le
   // site fonctionne, seule la copie serveur est désactivée.
   if (!capiConfigured()) {
@@ -63,6 +84,7 @@ export async function POST(request: Request) {
   const result = await sendServerEvent({
     eventName,
     eventId,
+    pixelId,
     eventSourceUrl:
       typeof body.eventSourceUrl === "string"
         ? body.eventSourceUrl.slice(0, 500)

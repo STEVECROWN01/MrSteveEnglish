@@ -24,6 +24,12 @@ import { trackPixel } from "@/lib/meta-pixel";
  * paiement réussi) n'émet AUCUN PageView — ni au chargement (le code
  * de base de layout.tsx saute cette route), ni en navigation interne
  * (exclusion ci-dessous). Seul l'événement « Purchase » y est suivi.
+ *
+ * TASK 90 : trackPixel envoie via fbq trackSingle sur LE PIXEL DU
+ * TUNNEL de la page d'arrivée (pixel pre-launch ou principal) et
+ * initialise ce pixel à la demande si besoin — une navigation interne
+ * entre les deux tunnels ne peut JAMAIS envoyer un PageView sur le
+ * mauvais pixel.
  */
 export function MetaPixelPageView() {
   const pathname = usePathname();
